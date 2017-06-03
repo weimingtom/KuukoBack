@@ -125,9 +125,9 @@ namespace KopiLua
 		public class BlockCnt {
 		  public BlockCnt previous;  /* chain */
 		  public int breaklist;  /* list of jumps out of this loop */
-		  public lu_byte nactvar;  /* # active locals outside the breakable structure */
-		  public lu_byte upval;  /* true if some variable in the block is an upvalue */
-		  public lu_byte isbreakable;  /* true if `block' is a loop */
+		  public byte nactvar;  /* # active locals outside the breakable structure */
+		  public byte upval;  /* true if some variable in the block is an upvalue */
+		  public byte isbreakable;  /* true if `block' is a loop */
 		};
 
 

@@ -62,75 +62,75 @@ namespace KopiLua
 			public void set_array(object array)
 			{
 				this.values = (CallInfo[])array;
-				Debug.Assert(this.values != null);
+				ClassType.Assert(this.values != null);
 			}
 
-			public CallInfo this[int offset]
+			public CallInfo get(int offset)
 			{
-				get { return values[index+offset]; }
+				return values[index + offset];
 			}
 
-			public static CallInfo operator +(CallInfo value, int offset)
+			public static CallInfo plus(CallInfo value, int offset)
 			{
 				return value.values[value.index + offset];
 			}
 
-			public static CallInfo operator -(CallInfo value, int offset)
+			public static CallInfo minus(CallInfo value, int offset)
 			{
 				return value.values[value.index - offset];
 			}
 
-			public static int operator -(CallInfo ci, CallInfo[] values)
+			public static int minus(CallInfo ci, CallInfo[] values)
 			{
-				Debug.Assert(ci.values == values);
+				ClassType.Assert(ci.values == values);
 				return ci.index;
 			}
 
-			public static int operator -(CallInfo ci1, CallInfo ci2)
+			public static int minus(CallInfo ci1, CallInfo ci2)
 			{
-				Debug.Assert(ci1.values == ci2.values);
+				ClassType.Assert(ci1.values == ci2.values);
 				return ci1.index - ci2.index;
 			}
 
-			public static bool operator <(CallInfo ci1, CallInfo ci2)
+			public static bool lessThan(CallInfo ci1, CallInfo ci2)
 			{
-				Debug.Assert(ci1.values == ci2.values);
+				ClassType.Assert(ci1.values == ci2.values);
 				return ci1.index < ci2.index;
 			}
 
-			public static bool operator <=(CallInfo ci1, CallInfo ci2)
+			public static bool lessEqual(CallInfo ci1, CallInfo ci2)
 			{
-				Debug.Assert(ci1.values == ci2.values);
+				ClassType.Assert(ci1.values == ci2.values);
 				return ci1.index <= ci2.index;
 			}
 
-			public static bool operator >(CallInfo ci1, CallInfo ci2)
+			public static bool greaterThan(CallInfo ci1, CallInfo ci2)
 			{
-				Debug.Assert(ci1.values == ci2.values);
+				ClassType.Assert(ci1.values == ci2.values);
 				return ci1.index > ci2.index;
 			}
 
-			public static bool operator >=(CallInfo ci1, CallInfo ci2)
+			public static bool greaterEqual(CallInfo ci1, CallInfo ci2)
 			{
-				Debug.Assert(ci1.values == ci2.values);
+				ClassType.Assert(ci1.values == ci2.values);
 				return ci1.index >= ci2.index;
 			}
 
-			public static CallInfo inc(ref CallInfo value)
+			public static CallInfo inc(CallInfo[] value)
 			{
-				value = value[1];
-				return value[-1];
+				value[0] = value[0].get(1);
+				return value[0].get(-1);
 			}
 
-			public static CallInfo dec(ref CallInfo value)
+			public static CallInfo dec(CallInfo[] value)
 			{
-				value = value[-1];
-				return value[1];
+				value[0] = value[0].get(-1);
+				return value[0].get(1);
 			}
 
-			public StkId base_;  /* base for this function */
-			public StkId func;  /* function index in the stack */
-			public StkId top;  /* top for this function */
+			public TValue base_;  /* base for this function */
+			public TValue func;  /* function index in the stack */
+			public TValue top;  /* top for this function */
 			public InstructionPtr savedpc;
 			public int nresults;  /* expected number of results from this function */
 			public int tailcalls;  /* number of tail calls lost under this entry */
@@ -293,18 +293,18 @@ namespace KopiLua
 			{
 				// don't actually need this
 				this.vals = (ArrayRef[])vals;
-				Debug.Assert(this.vals != null);
+				ClassType.Assert(this.vals != null);
 			}
 
 			// ArrayRef is used to reference GCObject objects in an array, the next two members
 			// point to that array and the index of the GCObject element we are referencing
-			GCObject[] array_elements;
-			int array_index;
+			private GCObject[] array_elements;
+			private int array_index;
 
 			// ArrayRef is itself stored in an array and derived from ArrayElement, the next
 			// two members refer to itself i.e. the array and index of it's own instance.
-			ArrayRef[] vals;
-			int index;
+			private ArrayRef[] vals;
+			private int index;
 		}
 
 		public class OpenValRef : GCObjectRef
