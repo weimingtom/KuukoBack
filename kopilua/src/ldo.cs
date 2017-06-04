@@ -52,7 +52,7 @@ namespace KopiLua
 
 
 		/* type of protected functions, to be ran by `runprotected' */
-		public delegate void Pfunc(lua_State L, object ud);
+		public interface Pfunc { void exec(lua_State L, object ud); };
 
 
 		/*
@@ -61,13 +61,13 @@ namespace KopiLua
 		** =======================================================
 		*/
 		
-		public delegate void luai_jmpbuf(lua_Integer b);
+		public interface luai_jmpbuf { void exec(int b);};
 
 		/* chain list of long jump buffers */
 		public class lua_longjmp {
 		  public lua_longjmp previous;
 		  public luai_jmpbuf b;
-		  public volatile int status;  /* error code */
+		  public int status;  /* error code */
 		};
 
 

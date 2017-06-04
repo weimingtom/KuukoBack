@@ -65,11 +65,32 @@ namespace KopiLua
 		/*
 		** Union of all Lua values
 		*/
-		public struct Value {
+		public class Value {
 		  public GCObject gc;
 		  public object p;
-		  public lua_Number n;
+		  public double n;
 		  public int b;
+		  
+			public Value()
+			{
+
+			}
+
+			public Value(Value copy)
+			{
+				this.gc = copy.gc;
+				this.p = copy.p;
+				this.n = copy.n;
+				this.b = copy.b;
+			}
+
+			public void copyFrom(Value copy)
+			{
+				this.gc = copy.gc;
+				this.p = copy.p;
+				this.n = copy.n;
+				this.b = copy.b;
+			}
 		};
 
 
@@ -374,13 +395,13 @@ namespace KopiLua
 		*/
 		public class TString_tsv : GCObject
 		{
-			public lu_byte reserved;
-			public uint hash;
-			public uint len;
+			public byte reserved;
+			public long hash;
+			public int len;
 		};
 		public class TString : TString_tsv {
 			//public L_Umaxalign dummy;  /* ensures maximum alignment for strings */			
-			public TString_tsv tsv { get { return this; } }
+			public TString_tsv getTsv() { return this; }
 
 			public TString()
 			{
@@ -399,14 +420,14 @@ namespace KopiLua
 		{
 			public Table metatable;
 			public Table env;
-			public uint len;
+			public int len;
 		};
 
 		public class Udata : Udata_uv
 		{
 			public Udata() { this.uv = this; }
 
-			public new Udata_uv uv;
+			public Udata_uv uv;
 
 			//public L_Umaxalign dummy;  /* ensures maximum alignment for `local' udata */
 
@@ -426,11 +447,11 @@ namespace KopiLua
 
 		  public Proto[] protos = null;
 		  public int index = 0;
-		  public Proto this[int offset] {get { return this.protos[this.index + offset]; }}
+		  public Proto get(int offset) { return this.protos[this.index + offset]; }
 
 		  public TValue[] k;  /* constants used by the function */
-		  public Instruction[] code;
-		  public new Proto[] p;  /* functions defined inside the function */
+		  public long[] code;
+		  public Proto[] p;  /* functions defined inside the function */
 		  public int[] lineinfo;  /* map from opcodes to source lines */
 		  public LocVar[] locvars;  /* information about local variables */
 		  public TString[] upvalues;  /* upvalue names */
@@ -444,10 +465,10 @@ namespace KopiLua
 		  public int linedefined;
 		  public int lastlinedefined;
 		  public GCObject gclist;
-		  public lu_byte nups;  /* number of upvalues */
-		  public lu_byte numparams;
-		  public lu_byte is_vararg;
-		  public lu_byte maxstacksize;
+		  public byte nups;  /* number of upvalues */
+		  public byte numparams;
+		  public byte is_vararg;
+		  public byte maxstacksize;
 		};
 
 
@@ -481,7 +502,7 @@ namespace KopiLua
 
 				public _l l = new _l();
 		  }
-			public new _u u = new _u();
+			public _u u = new _u();
 		};
 
 
@@ -546,7 +567,7 @@ namespace KopiLua
 		public class TKey_nk : TValue
 		{
 			public TKey_nk() { }
-			public TKey_nk(Value value, int tt, Node next) : base(value, tt)
+			public TKey_nk(Value value, int tt, Node next) : base(new Value(value), tt)
 			{
 				this.next = next;
 			}
@@ -560,15 +581,15 @@ namespace KopiLua
 			}
 			public TKey(TKey copy)
 			{
-				this.nk = new TKey_nk(copy.nk.value, copy.nk.tt, copy.nk.next);
+				this.nk = new TKey_nk(new Value(copy.nk.value), copy.nk.tt, copy.nk.next);
 			}
 			public TKey(Value value, int tt, Node next)
 			{
-				this.nk = new TKey_nk(value, tt, next);
+				this.nk = new TKey_nk(new Value(value), tt, next);
 			}
 
 			public TKey_nk nk = new TKey_nk();
-			public TValue tvk { get { return this.nk; } }
+			public TValue getTvk() { return this.nk; }
 		};
 
 
@@ -666,8 +687,8 @@ namespace KopiLua
 
 
 		public class Table : GCObject {
-		  public lu_byte flags;  /* 1<<p means tagmethod(p) is not present */ 
-		  public lu_byte lsizenode;  /* log2 of size of `node' array */
+		  public byte flags;  /* 1<<p means tagmethod(p) is not present */ 
+		  public byte lsizenode;  /* log2 of size of `node' array */
 		  public Table metatable;
 		  public TValue[] array;  /* array part */
 		  public Node[] node;

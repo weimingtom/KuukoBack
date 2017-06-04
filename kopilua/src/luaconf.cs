@@ -573,7 +573,7 @@ namespace KopiLua
 		*/
 		#if LUA_CORE
 		//#include <math.h>
-		public delegate lua_Number op_delegate(lua_Number a, lua_Number b);
+		public interface op_delegate { double exec(double a, double b);};
 		public static lua_Number luai_numadd(lua_Number a, lua_Number b) { return ((a) + (b)); }
 		public static lua_Number luai_numsub(lua_Number a, lua_Number b) { return ((a) - (b)); }
 		public static lua_Number luai_nummul(lua_Number a, lua_Number b) { return ((a) * (b)); }

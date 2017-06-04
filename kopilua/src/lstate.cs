@@ -41,7 +41,7 @@ namespace KopiLua
 
 		public class stringtable {
 			public GCObject[] hash;
-			public lu_int32 nuse;  /* number of elements */
+			public long nuse;  /* number of elements */
 			public int size;
 		};
 
@@ -151,8 +151,8 @@ namespace KopiLua
 		  public stringtable strt = new stringtable(); /* hash table for strings */
 		  public lua_Alloc frealloc;  /* function to reallocate memory */
 		  public object ud;         /* auxiliary data to `frealloc' */
-		  public lu_byte currentwhite;
-		  public lu_byte gcstate;  /* state of garbage collector */
+		  public byte currentwhite;
+		  public byte gcstate;  /* state of garbage collector */
 		  public int sweepstrgc;  /* position of sweep in `strt' */
 		  public GCObject rootgc;  /* list of all collectable objects */
 		  public GCObjectRef sweepgc;  /* position of sweep in `rootgc' */
@@ -161,17 +161,17 @@ namespace KopiLua
 		  public GCObject weak;  /* list of weak tables (to be cleared) */
 		  public GCObject tmudata;  /* last element of list of userdata to be GC */
 		  public Mbuffer buff = new Mbuffer();  /* temporary buffer for string concatentation */
-		  public lu_mem GCthreshold;
-		  public lu_mem totalbytes;  /* number of bytes currently allocated */
-		  public lu_mem estimate;  /* an estimate of number of bytes actually in use */
-		  public lu_mem gcdept;  /* how much GC is `behind schedule' */
+		  public long GCthreshold;
+		  public long totalbytes;  /* number of bytes currently allocated */
+		  public long estimate;  /* an estimate of number of bytes actually in use */
+		  public long gcdept;  /* how much GC is `behind schedule' */
 		  public int gcpause;  /* size of pause between successive GCs */
 		  public int gcstepmul;  /* GC `granularity' */
 		  public lua_CFunction panic;  /* to be called in unprotected errors */
 		  public TValue l_registry = new TValue();
 		  public lua_State mainthread;
 		  public UpVal uvhead = new UpVal();  /* head of double-linked list of all open upvalues */
-		  public Table[] mt = new Table[NUM_TAGS];  /* metatables for basic types */
+		  public Table[] mt = new Table[LuaObject.NUM_TAGS];  /* metatables for basic types */
 		  public TString[] tmname = new TString[(int)TMS.TM_N];  /* array with tag-method names */
 		};
 
@@ -181,22 +181,22 @@ namespace KopiLua
 		*/
 		public class lua_State : GCObject {
 
-		  public lu_byte status;
-		  public StkId top;  /* first free slot in the stack */
-		  public StkId base_;  /* base of current function */
+		  public byte status;
+		  public TValue top;  /* first free slot in the stack */
+		  public TValue base_;  /* base of current function */
 		  public global_State l_G;
 		  public CallInfo ci;  /* call info for current function */
 		  public InstructionPtr savedpc = new InstructionPtr();  /* `savedpc' of current function */
-		  public StkId stack_last;  /* last free slot in the stack */
-		  public StkId[] stack;  /* stack base */
+		  public TValue stack_last;  /* last free slot in the stack */
+		  public TValue[] stack;  /* stack base */
 		  public CallInfo end_ci;  /* points after end of ci array*/
 		  public CallInfo[] base_ci;  /* array of CallInfo's */
 		  public int stacksize;
 		  public int size_ci;  /* size of array `base_ci' */
-		  public ushort nCcalls;  /* number of nested C calls */
-		  public ushort baseCcalls;  /* nested C calls when resuming coroutine */
-		  public lu_byte hookmask;
-		  public lu_byte allowhook;
+		  public int nCcalls;  /* number of nested C calls */
+		  public int baseCcalls;  /* nested C calls when resuming coroutine */
+		  public byte hookmask;
+		  public byte allowhook;
 		  public int basehookcount;
 		  public int hookcount;
 		  public lua_Hook hook;
@@ -205,7 +205,7 @@ namespace KopiLua
 		  public GCObject openupval;  /* list of open upvalues in this stack */
 		  public GCObject gclist;
 		  public lua_longjmp errorJmp;  /* current error recover point */
-		  public ptrdiff_t errfunc;  /* current error handling function (stack index) */
+		  public int errfunc;  /* current error handling function (stack index) */
 		};
 
 
@@ -233,14 +233,14 @@ namespace KopiLua
 				//Debug.Assert(this.values != null);
 			}
 
-			public GCheader gch {get{return (GCheader)this;}}
-			public TString ts {get{return (TString)this;}}
-			public Udata u {get{return (Udata)this;}}
-			public Closure cl {get{return (Closure)this;}}
-			public Table h {get{return (Table)this;}}
-			public Proto p {get{return (Proto)this;}}
-			public UpVal uv {get{return (UpVal)this;}}
-			public lua_State th {get{return (lua_State)this;}}
+			public GCheader getGch() {return (GCheader)this;}
+			public TString getTs() {return (TString)this;}
+			public Udata getU() {return (Udata)this;}
+			public Closure getCl() {return (Closure)this;}
+			public Table getH() {return (Table)this;}
+			public Proto getP() {return (Proto)this;}
+			public UpVal getUv() {return (UpVal)this;}
+			public lua_State getTh() {return (lua_State)this;}
 		};
 
 		/*	this interface and is used for implementing GCObject references,
@@ -312,7 +312,7 @@ namespace KopiLua
 			public OpenValRef(lua_State L) { this.L = L; }
 			public void set(GCObject value) { this.L.openupval = value; }
 			public GCObject get() { return this.L.openupval; }
-			lua_State L;
+			private lua_State L;
 		}
 
 		public class RootGCRef : GCObjectRef
@@ -320,7 +320,7 @@ namespace KopiLua
 			public RootGCRef(global_State g) { this.g = g; }
 			public void set(GCObject value) { this.g.rootgc = value; }
 			public GCObject get() { return this.g.rootgc; }
-			global_State g;
+			private global_State g;
 		}
 
 		public class NextRef : GCObjectRef
@@ -328,7 +328,7 @@ namespace KopiLua
 			public NextRef(GCheader header) { this.header = header; }
 			public void set(GCObject value) { this.header.next = value; }
 			public GCObject get() { return this.header.next; }
-			GCheader header;
+			private GCheader header;
 		}
 
 		
@@ -366,7 +366,7 @@ namespace KopiLua
 		** Main thread combines a thread state and the global state
 		*/
 		public class LG : lua_State {
-		  public lua_State l {get {return this;}}
+		  public lua_State getL() {return this;}
 		  public global_State g = new global_State();
 		};
 		  

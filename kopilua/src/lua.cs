@@ -49,22 +49,22 @@ namespace KopiLua
 		public const int LUA_ERRERR	= 5;
 
 
-		public delegate int lua_CFunction(lua_State L);
+		public interface lua_CFunction {int exec(lua_State L);};
 
 
 		/*
 		** functions that read/write blocks when loading/dumping Lua chunks
 		*/
-        public delegate CharPtr lua_Reader(lua_State L, object ud, out uint sz);
+        public interface lua_Reader { CharPtr exec(lua_State L, object ud, int[] sz); };
 
-		public delegate int lua_Writer(lua_State L, CharPtr p, uint sz, object ud);
+		public interface lua_Writer { int exec(lua_State L, CharPtr p, int sz, object ud); };
 
 
 		/*
 		** prototype for memory-allocation functions
 		*/
         //public delegate object lua_Alloc(object ud, object ptr, uint osize, uint nsize);
-		public delegate object lua_Alloc(Type t);
+		public interface lua_Alloc {object exec(ClassType t);};
 
 
 		/*
@@ -251,7 +251,7 @@ namespace KopiLua
         public const int LUA_MASKCOUNT = (1 << LUA_HOOKCOUNT);
 
 		/* Functions to be called by the debuger in specific events */
-		public delegate void lua_Hook(lua_State L, lua_Debug ar);
+		public interface lua_Hook {void exec(lua_State L, lua_Debug ar);};
 
 
 		public class lua_Debug {
@@ -264,7 +264,7 @@ namespace KopiLua
 		  public int nups;		/* (u) number of upvalues */
 		  public int linedefined;	/* (S) */
 		  public int lastlinedefined;	/* (S) */
-		  public CharPtr short_src = new char[LUA_IDSIZE]; /* (S) */
+		  public CharPtr short_src = CharPtr.toCharPtr(new char[LuaConf.LUA_IDSIZE]); /* (S) */
 		  /* private part */
 		  public int i_ci;  /* active function */
 		};

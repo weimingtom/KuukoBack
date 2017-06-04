@@ -15,7 +15,7 @@ namespace KopiLua
 	{
 		public const int EOZ = -1;			/* end of stream */
 
-		public class ZIO : Zio { };
+		//public class ZIO { };
 
 		public static int char2int(char c) { return (int)c; }
 
@@ -33,8 +33,8 @@ namespace KopiLua
 
 		public class Mbuffer {
 		  public CharPtr buffer = new CharPtr();
-		  public uint n;
-		  public uint buffsize;
+		  public int n;
+		  public int buffsize;
 		};
 
 		public static void luaZ_initbuffer(lua_State L, Mbuffer buff)
@@ -62,8 +62,8 @@ namespace KopiLua
 
 		/* --------- Private Part ------------------ */
 
-		public class Zio {
-			public uint n;			/* bytes still unread */
+		public class ZIO {
+			public int n;			/* bytes still unread */
 			public CharPtr p;			/* current position in buffer */
 			public lua_Reader reader;
 			public object data;			/* additional data */

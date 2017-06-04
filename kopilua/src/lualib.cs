@@ -4,13 +4,13 @@
 ** See Copyright Notice in lua.h
 */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+//using System;
+//using System.Collections.Generic;
+//using System.Text;
 
 namespace KopiLua
 {
-	public partial class Lua
+	public class LuaLib
 	{
 		/* Key to file-handle type */
 		public const string LUA_FILEHANDLE = "FILE*";

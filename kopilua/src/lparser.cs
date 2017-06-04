@@ -80,8 +80,8 @@ namespace KopiLua
 
 
 		public class upvaldesc {
-		  public lu_byte k;
-		  public lu_byte info;
+		  public byte k;
+		  public byte info;
 		};
 
 
@@ -892,14 +892,14 @@ namespace KopiLua
 
 
 		private class priority_ {
-			public priority_(lu_byte left, lu_byte right)
+			public priority_(byte left, byte right)
 			{
 				this.left = left;
 				this.right = right;
 			}
 
-			public lu_byte left;  /* left priority for each binary operator */
-			public lu_byte right; /* right priority */
+			public byte left;  /* left priority for each binary operator */
+			public byte right; /* right priority */
 		} 
 
 		private static priority_[] priority = {  /* ORDER OPR */

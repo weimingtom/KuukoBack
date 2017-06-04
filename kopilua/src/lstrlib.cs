@@ -180,7 +180,7 @@ namespace KopiLua
 
 		  public MatchState()
 		  {
-			  for (int i = 0; i < LUA_MAXCAPTURES; i++)
+			  for (int i = 0; i < LuaConf.LUA_MAXCAPTURES; i++)
 				  capture[i] = new capture_();
 		  }
 
@@ -191,9 +191,9 @@ namespace KopiLua
 
 		  public class capture_{
 			public CharPtr init;
-			public ptrdiff_t len;
+			public int len;
 		  };
-		  public capture_[] capture = new capture_[LUA_MAXCAPTURES];
+		  public capture_[] capture = new capture_[LuaConf.LUA_MAXCAPTURES];
 		};
 
 

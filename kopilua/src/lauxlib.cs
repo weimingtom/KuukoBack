@@ -76,11 +76,11 @@ namespace KopiLua
 
 		public static void luaL_getmetatable(lua_State L, CharPtr n) { lua_getfield(L, LUA_REGISTRYINDEX, n); }
 
-		public delegate lua_Number luaL_opt_delegate (lua_State L, int narg);		
+		public interface luaL_opt_delegate { double exec(lua_State L, int narg);};		
 		public static lua_Number luaL_opt(lua_State L, luaL_opt_delegate f, int n, lua_Number d) {
 			return lua_isnoneornil(L, (n != 0) ? d : f(L, n)) ? 1 : 0;}
 
-		public delegate lua_Integer luaL_opt_delegate_integer(lua_State L, int narg);
+		public interface luaL_opt_delegate_integer { int exec(lua_State L, int narg);};
 		public static lua_Integer luaL_opt_integer(lua_State L, luaL_opt_delegate_integer f, int n, lua_Number d) {
 			return (lua_Integer)(lua_isnoneornil(L, n) ? d : f(L, (n)));
 		}
@@ -97,7 +97,7 @@ namespace KopiLua
 		  public int p;			/* current position in buffer */
 		  public int lvl;  /* number of strings in the stack (level) */
 		  public lua_State L;
-		  public CharPtr buffer = new char[LUAL_BUFFERSIZE];
+		  public CharPtr buffer = CharPtr.toCharPtr(new char[LuaConf.LUAL_BUFFERSIZE]);
 		};
 
 		public static void luaL_addchar(luaL_Buffer B, char c) {
@@ -642,8 +642,8 @@ namespace KopiLua
 
 		public class LoadF {
 		  public int extraline;
-		  public Stream f;
-		  public CharPtr buff = new char[LUAL_BUFFERSIZE];
+		  public StreamProxy f;
+		  public CharPtr buff = CharPtr.toCharPtr(new char[LuaConf.LUAL_BUFFERSIZE]);
 		};
 
 
@@ -714,7 +714,7 @@ namespace KopiLua
 
 		public class LoadS {
 		  public CharPtr s;
-		  public uint size;
+		  public int size;
 		};
 
 
