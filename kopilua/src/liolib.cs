@@ -17,7 +17,7 @@ namespace KopiLua
 
 	public class FilePtr
 	{
-		public Stream file;
+		public StreamProxy file;
 	}
 
 	public partial class Lua

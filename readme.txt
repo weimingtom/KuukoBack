@@ -5,3 +5,21 @@
 (x) BlockCnt
 (x) CallInfo
 
+(x) CallS
+(x) CCallS
+(x) CClosure
+(-) CharPtr
+(-) ClassType
+(x) Closure
+(x) ClosureHeader
+(x) ClosureType
+(x) CommonHeader
+(x) ConsControl
+(-) DateTimeProxy
+(x) DumpState
+(x) expdesc
+(x) expkind
+(-) expkindUtil
+(-) f_parser_delegate
+(x) FilePtr
+(x) FuncState

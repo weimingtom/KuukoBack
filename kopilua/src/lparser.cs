@@ -70,7 +70,7 @@ namespace KopiLua
 					public int info, aux;
 				};
 			    public _s s = new _s();
-				public lua_Number nval;
+				public double nval;
 			};
 			public _u u = new _u();
 
@@ -106,9 +106,9 @@ namespace KopiLua
 		  public int nk;  /* number of elements in `k' */
 		  public int np;  /* number of elements in `p' */
 		  public short nlocvars;  /* number of elements in `locvars' */
-		  public lu_byte nactvar;  /* number of active local variables */
-		  public upvaldesc[] upvalues = new upvaldesc[LUAI_MAXUPVALUES];  /* upvalues */
-		  public ushort[] actvar = new ushort[LUAI_MAXVARS];  /* declared-variable stack */
+		  public byte nactvar;  /* number of active local variables */
+		  public upvaldesc[] upvalues = new upvaldesc[LuaConf.LUAI_MAXUPVALUES];  /* upvalues */
+		  public int[] actvar = new int[LuaConf.LUAI_MAXVARS];  /* declared-variable stack */
 		};
 
 

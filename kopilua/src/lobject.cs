@@ -48,8 +48,8 @@ namespace KopiLua
 		public class CommonHeader
 		{
 			public GCObject next;
-			public lu_byte tt;
-			public lu_byte marked;
+			public byte tt;
+			public byte marked;
 		}
 
 
@@ -490,23 +490,23 @@ namespace KopiLua
 		*/
 
 		public class ClosureHeader : GCObject {
-			public lu_byte isC;
-			public lu_byte nupvalues;
+			public byte isC;
+			public byte nupvalues;
 			public GCObject gclist;
 			public Table env;
 		};
 
 		public class ClosureType {
 
-			ClosureHeader header;
+			private ClosureHeader header;
 
-			public static implicit operator ClosureHeader(ClosureType ctype) {return ctype.header;}
+			public static ClosureHeader toClosureHeader(ClosureType ctype) {return ctype.header;}
 			public ClosureType(ClosureHeader header) {this.header = header;}
 
-			public lu_byte isC { get { return header.isC; } set { header.isC = value; } }
-			public lu_byte nupvalues { get { return header.nupvalues; } set { header.nupvalues = value; } }
-			public GCObject gclist { get { return header.gclist; } set { header.gclist = value; } }
-			public Table env { get { return header.env; } set { header.env = value; } }
+			public byte getIsC { return header.isC; } public void setIsC(byte val) { header.isC = val; }
+			public byte getNupvalues { return header.nupvalues; } public void setNupvalues(byte val) { header.nupvalues = val; }
+			public GCObject getGclist() { return header.gclist; } public void setGclist(GCObject val) { header.gclist = val; }
+			public Table getEnv { return header.env; } public void setEnv(Table val) { header.env = val; } }
 		}
 
 		public class CClosure : ClosureType {

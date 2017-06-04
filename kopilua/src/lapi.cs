@@ -795,7 +795,7 @@ namespace KopiLua
 		** Execute a protected call.
 		*/
 		public class CallS {  /* data to `f_call' */
-		  public StkId func;
+			public TValue func;
 			public int nresults;
 		};
 
