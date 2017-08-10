@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1F39043F-11B4-4202-9B0A-6606FA7BB355}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Lua</RootNamespace>
+    <AssemblyName>Lua</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;LUA_CORE;_WIN32;LUA_COMPAT_VARARG;LUA_COMPAT_MOD;LUA_COMPAT_GFIND;CATCH_EXCEPTIONS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;LUA_CORE;_WIN32;LUA_COMPAT_VARARG;LUA_COMPAT_MOD;LUA_COMPAT_GFIND;CATCH_EXCEPTIONS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\kurumi\ArrayElement.cs" />
+    <Compile Include="src\kurumi\ArrayRef.cs" />
+    <Compile Include="src\kurumi\BinOpr.cs" />
+    <Compile Include="src\kurumi\BlockCnt.cs" />
+    <Compile Include="src\kurumi\CallInfo.cs" />
+    <Compile Include="src\kurumi\CallS.cs" />
+    <Compile Include="src\kurumi\CCallS.cs" />
+    <Compile Include="src\kurumi\CClosure.cs" />
+    <Compile Include="src\kurumi\CharPtr.cs" />
+    <Compile Include="src\kurumi\ClassType.cs" />
+    <Compile Include="src\kurumi\Closure.cs" />
+    <Compile Include="src\kurumi\ClosureHeader.cs" />
+    <Compile Include="src\kurumi\ClosureType.cs" />
+    <Compile Include="src\kurumi\CommonHeader.cs" />
+    <Compile Include="src\kurumi\ConsControl.cs" />
+    <Compile Include="src\kurumi\DateTimeProxy.cs" />
+    <Compile Include="src\kurumi\DumpState.cs" />
+    <Compile Include="src\kurumi\expdesc.cs" />
+    <Compile Include="src\kurumi\expkind.cs" />
+    <Compile Include="src\kurumi\expkindUtil.cs" />
+    <Compile Include="src\kurumi\FilePtr.cs" />
+    <Compile Include="src\kurumi\FuncState.cs" />
+    <Compile Include="src\kurumi\f_parser_delegate.cs" />
+    <Compile Include="src\kurumi\GCheader.cs" />
+    <Compile Include="src\kurumi\GCObject.cs" />
+    <Compile Include="src\kurumi\GCObjectRef.cs" />
+    <Compile Include="src\kurumi\global_State.cs" />
+    <Compile Include="src\kurumi\InstructionPtr.cs" />
+    <Compile Include="src\kurumi\LClosure.cs" />
+    <Compile Include="src\kurumi\LexState.cs" />
+    <Compile Include="src\kurumi\LG.cs" />
+    <Compile Include="src\kurumi\LHS_assign.cs" />
+    <Compile Include="src\kurumi\LoadF.cs" />
+    <Compile Include="src\kurumi\LoadS.cs" />
+    <Compile Include="src\kurumi\LoadState.cs" />
+    <Compile Include="src\kurumi\LocVar.cs" />
+    <Compile Include="src\kurumi\Lua.cs" />
+    <Compile Include="src\kurumi\LuaAPI.cs" />
+    <Compile Include="src\kurumi\LuaAuxLib.cs" />
+    <Compile Include="src\kurumi\LuaBaseLib.cs" />
+    <Compile Include="src\kurumi\LuaCode.cs" />
+    <Compile Include="src\kurumi\LuaConf.cs" />
+    <Compile Include="src\kurumi\LuacProgram.cs" />
+    <Compile Include="src\kurumi\LuaDebug.cs" />
+    <Compile Include="src\kurumi\LuaDebugLib.cs" />
+    <Compile Include="src\kurumi\LuaDo.cs" />
+    <Compile Include="src\kurumi\LuaDump.cs" />
+    <Compile Include="src\kurumi\LuaException.cs" />
+    <Compile Include="src\kurumi\LuaFunc.cs" />
+    <Compile Include="src\kurumi\LuaGC.cs" />
+    <Compile Include="src\kurumi\LuaInit.cs" />
+    <Compile Include="src\kurumi\LuaIOLib.cs" />
+    <Compile Include="src\kurumi\luai_jmpbuf.cs" />
+    <Compile Include="src\kurumi\LuaLex.cs" />
+    <Compile Include="src\kurumi\LuaLib.cs" />
+    <Compile Include="src\kurumi\LuaLimits.cs" />
+    <Compile Include="src\kurumi\LuaLoadLib.cs" />
+    <Compile Include="src\kurumi\luaL_Buffer.cs" />
+    <Compile Include="src\kurumi\luaL_opt_delegate.cs" />
+    <Compile Include="src\kurumi\luaL_opt_delegate_integer.cs" />
+    <Compile Include="src\kurumi\luaL_Reg.cs" />
+    <Compile Include="src\kurumi\LuaMathLib.cs" />
+    <Compile Include="src\kurumi\LuaMem.cs" />
+    <Compile Include="src\kurumi\LuaObject.cs" />
+    <Compile Include="src\kurumi\LuaOpCodes.cs" />
+    <Compile Include="src\kurumi\LuaOSLib.cs" />
+    <Compile Include="src\kurumi\LuaParser.cs" />
+    <Compile Include="src\kurumi\LuaPrint.cs" />
+    <Compile Include="src\kurumi\LuaProgram.cs" />
+    <Compile Include="src\kurumi\LuaState.cs" />
+    <Compile Include="src\kurumi\LuaString.cs" />
+    <Compile Include="src\kurumi\LuaStrLib.cs" />
+    <Compile Include="src\kurumi\LuaStrLib_delegate.cs" />
+    <Compile Include="src\kurumi\LuaTable.cs" />
+    <Compile Include="src\kurumi\LuaTableLib.cs" />
+    <Compile Include="src\kurumi\LuaTM.cs" />
+    <Compile Include="src\kurumi\LuaUndump.cs" />
+    <Compile Include="src\kurumi\LuaVM.cs" />
+    <Compile Include="src\kurumi\LuaZIO.cs" />
+    <Compile Include="src\kurumi\lua_Alloc.cs" />
+    <Compile Include="src\kurumi\lua_CFunction.cs" />
+    <Compile Include="src\kurumi\lua_Debug.cs" />
+    <Compile Include="src\kurumi\lua_Hook.cs" />
+    <Compile Include="src\kurumi\lua_longjmp.cs" />
+    <Compile Include="src\kurumi\lua_Reader.cs" />
+    <Compile Include="src\kurumi\lua_State.cs" />
+    <Compile Include="src\kurumi\lua_Writer.cs" />
+    <Compile Include="src\kurumi\MatchState.cs" />
+    <Compile Include="src\kurumi\Mbuffer.cs" />
+    <Compile Include="src\kurumi\NextRef.cs" />
+    <Compile Include="src\kurumi\Node.cs" />
+    <Compile Include="src\kurumi\OpArgMask.cs" />
+    <Compile Include="src\kurumi\OpCode.cs" />
+    <Compile Include="src\kurumi\OpCodeUtil.cs" />
+    <Compile Include="src\kurumi\OpenValRef.cs" />
+    <Compile Include="src\kurumi\OpMode.cs" />
+    <Compile Include="src\kurumi\op_delegate.cs" />
+    <Compile Include="src\kurumi\Pfunc.cs" />
+    <Compile Include="src\kurumi\priority_.cs" />
+    <Compile Include="src\kurumi\Program.cs" />
+    <Compile Include="src\kurumi\Proto.cs" />
+    <Compile Include="src\kurumi\RESERVED.cs" />
+    <Compile Include="src\kurumi\resume_delegate.cs" />
+    <Compile Include="src\kurumi\RootGCRef.cs" />
+    <Compile Include="src\kurumi\SemInfo.cs" />
+    <Compile Include="src\kurumi\Smain.cs" />
+    <Compile Include="src\kurumi\SParser.cs" />
+    <Compile Include="src\kurumi\StreamProxy.cs" />
+    <Compile Include="src\kurumi\stringtable.cs" />
+    <Compile Include="src\kurumi\Table.cs" />
+    <Compile Include="src\kurumi\TKey.cs" />
+    <Compile Include="src\kurumi\TKey_nk.cs" />
+    <Compile Include="src\kurumi\TMS.cs" />
+    <Compile Include="src\kurumi\TMSUtil.cs" />
+    <Compile Include="src\kurumi\Token.cs" />
+    <Compile Include="src\kurumi\Tools.cs" />
+    <Compile Include="src\kurumi\TString.cs" />
+    <Compile Include="src\kurumi\TString_tsv.cs" />
+    <Compile Include="src\kurumi\TValue.cs" />
+    <Compile Include="src\kurumi\Udata.cs" />
+    <Compile Include="src\kurumi\Udata_uv.cs" />
+    <Compile Include="src\kurumi\UnOpr.cs" />
+    <Compile Include="src\kurumi\UpVal.cs" />
+    <Compile Include="src\kurumi\upvaldesc.cs" />
+    <Compile Include="src\kurumi\Value.cs" />
+    <Compile Include="src\kurumi\ZIO.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src" />
+    <Folder Include="src\kurumi" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

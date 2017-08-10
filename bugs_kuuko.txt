@@ -1,6 +1,0 @@
-	(todo:) remove 'volatile'
-	(todo:) op_delegate Double->double
-	(todo:) remove #if LUA_CORE
-	(todo:) TString -> public override string ToString() { return str.ToString(); } // for debugging
-	(todo:) remove Zio??? Zio->ZIO
-	
