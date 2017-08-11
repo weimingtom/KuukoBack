@@ -1,0 +1,32 @@
+20:47 2017-08-11
+ArrayElement
+20:49 2017-08-11
+ArrayRef
+20:51 2017-08-11
+BinOpr
+	getValue()
+	forValue()
+20:55 2017-08-11
+BlockCnt
+21:00 2017-08-11
+CallInfo
+21:03 2017-08-11
+CallS
+21:06 2017-08-11
+CCallS
+21:08 2017-08-11
+CClosure
+21:17 2017-08-11
+CharPtr
+(x) 21:18 2017-08-11
+(x) ClassType
+21:31 2017-08-11
+Closure
+21:33 2017-08-11
+ClosureHeader
+21:36 2017-08-11
+ClosureType
+21:37 2017-08-11
+CommonHeader
+21:38 2017-08-11
+ConsControl
