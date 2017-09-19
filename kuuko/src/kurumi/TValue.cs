@@ -7,7 +7,7 @@ using System;
 
 namespace kurumi
 {
-	public class TValue : ArrayElement
+	public class TValue : LuaObject.ArrayElement
 	{
 		private TValue[] values = null;
 		private int index = -1;

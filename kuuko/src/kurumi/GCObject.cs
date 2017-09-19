@@ -8,7 +8,7 @@ namespace kurumi
 	/*
 	 ** Union of all collectable objects (not a union anymore in the C# port)
 	 */
-	public class GCObject : GCheader, ArrayElement
+	public class GCObject : GCheader, LuaObject.ArrayElement
 	{
 		// todo: remove this?
 		//private GCObject[] values = null;

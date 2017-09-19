@@ -28,6 +28,12 @@ namespace kurumi
 		public const int LUA_TUPVAL	= (LAST_TAG + 2);
 		public const int LUA_TDEADKEY = (LAST_TAG + 3);
 
+		public interface ArrayElement
+		{
+			void set_index(int index);
+			void set_array(object array);
+		}		
+		
 		/*
 		 ** Tagged Values
 		 */

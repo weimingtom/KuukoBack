@@ -8,7 +8,7 @@ package kurumi;
     /*
     ** informations about a call
     */
-	public class CallInfo implements ArrayElement 
+	public class CallInfo implements LuaObject.ArrayElement 
     {
         private CallInfo[] values = null;
         private int index = -1;

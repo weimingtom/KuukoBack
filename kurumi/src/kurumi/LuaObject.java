@@ -26,6 +26,12 @@ public class LuaObject {
 	public static final int LUA_TUPVAL = (LAST_TAG + 2);
 	public static final int LUA_TDEADKEY = (LAST_TAG + 3);
 
+	public interface ArrayElement 
+	{
+		void set_index(int index);
+		void set_array(Object array);
+	}	
+	
 //        
 //		 ** Tagged Values
 //		 

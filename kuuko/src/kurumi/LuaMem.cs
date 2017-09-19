@@ -656,7 +656,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);
@@ -686,7 +686,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);
@@ -748,7 +748,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);
@@ -778,7 +778,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);
@@ -808,7 +808,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);
@@ -838,7 +838,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);
@@ -932,7 +932,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);
@@ -962,7 +962,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);
@@ -992,7 +992,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);
@@ -1022,7 +1022,7 @@ namespace kurumi
             {
                 for (int i = 0; i < new_size; i++)
                 {
-                    ArrayElement elem = new_block[i] as ArrayElement;
+                    LuaObject.ArrayElement elem = new_block[i] as LuaObject.ArrayElement;
                     ClassType.Assert(elem != null, String.Format("Need to derive type {0} from ArrayElement", t.GetTypeString()));
                     elem.set_index(i);
                     elem.set_array(new_block);

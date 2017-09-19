@@ -6,7 +6,7 @@
 
 package kurumi;
 //{
-	public class TValue implements ArrayElement 
+	public class TValue implements LuaObject.ArrayElement 
 	{
 		private TValue[] values = null;
 		private int index = -1;

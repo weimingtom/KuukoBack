@@ -5,7 +5,7 @@
  */
 namespace kurumi
 {
-	public class Node : ArrayElement
+	public class Node : LuaObject.ArrayElement
 	{
 		private Node[] values = null;
 		private int index = -1;

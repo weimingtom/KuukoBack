@@ -5,7 +5,7 @@
  */
 package kurumi;
 //{
-	public class Node implements ArrayElement 
+	public class Node implements LuaObject.ArrayElement 
 	{
 		private Node[] values = null;
 		private int index = -1;

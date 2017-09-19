@@ -8,7 +8,7 @@ package kurumi;
 	/*
 	 ** Union of all collectable objects (not a union anymore in the C# port)
 	 */
-	public class GCObject extends GCheader implements ArrayElement 
+	public class GCObject extends GCheader implements LuaObject.ArrayElement 
 	{
 		// todo: remove this?
 		//private GCObject[] values = null;

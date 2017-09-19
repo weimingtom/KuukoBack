@@ -5,7 +5,7 @@
  */
 namespace kurumi
 {
-    public class ArrayRef : GCObjectRef, ArrayElement
+    public class ArrayRef : GCObjectRef, LuaObject.ArrayElement
     {
         // ArrayRef is used to reference GCObject objects in an array, the next two members
         // point to that array and the index of the GCObject element we are referencing

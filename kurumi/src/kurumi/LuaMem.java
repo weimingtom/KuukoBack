@@ -549,7 +549,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
@@ -574,7 +574,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
@@ -627,7 +627,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
@@ -652,7 +652,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
@@ -677,7 +677,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
@@ -702,7 +702,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
@@ -783,7 +783,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
@@ -808,7 +808,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
@@ -833,7 +833,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
@@ -858,7 +858,7 @@ public class LuaMem {
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
-				ArrayElement elem = (ArrayElement)((new_block[i] instanceof ArrayElement) ? new_block[i] : null);
+				LuaObject.ArrayElement elem = (LuaObject.ArrayElement)((new_block[i] instanceof LuaObject.ArrayElement) ? new_block[i] : null);
 				ClassType.Assert(elem != null, String.format("Need to derive type %1$s from ArrayElement", t.GetTypeString()));
 				elem.set_index(i);
 				elem.set_array(new_block);
