@@ -1207,7 +1207,7 @@ namespace kurumi
             {
                 return 2;
             }
-            else if (t == typeof(BlockCnt))
+            else if (t == typeof(LuaParser.BlockCnt))
             {
                 return 12;
             }

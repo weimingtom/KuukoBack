@@ -13,7 +13,7 @@ namespace kurumi
 		public FuncState prev;  /* enclosing function */
 		public LexState ls;  /* lexical state */
 		public lua_State L;  /* copy of the Lua state */
-		public BlockCnt bl;  /* chain of current blocks */
+		public LuaParser.BlockCnt bl;  /* chain of current blocks */
 		public int pc;  /* next position to code (equivalent to `ncode') */
 		public int lasttarget;   /* `pc' of last `jump target' */
 		public int jpc;  /* list of pending jumps to `pc' */

@@ -24,6 +24,18 @@ public class LuaParser {
 		}
 	}
 
+    /*
+    ** nodes for block list (list of active blocks)
+    */
+    public static class BlockCnt {
+        public BlockCnt previous;  /* chain */
+        public int breaklist;  /* list of jumps out of this loop */
+        public byte nactvar;  /*Byte lu_byte*/ /* # active locals outside the breakable structure */
+        public byte upval;  /*Byte lu_byte*/ /* true if some variable in the block is an upvalue */
+        public byte isbreakable;  /*Bytelu_byte*/ /* true if `block' is a loop */
+    }	
+	
+	
 	private static void anchor_token(LexState ls) {
 		if (ls.t.token == (int)RESERVED.TK_NAME || ls.t.token == (int)RESERVED.TK_STRING) {
 			TString ts = ls.t.seminfo.ts;
