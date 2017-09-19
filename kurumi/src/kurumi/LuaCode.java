@@ -17,6 +17,37 @@ public class LuaCode {
 //		 
 	public static final int NO_JUMP = (-1);
 
+	/*
+	 ** grep "ORDER OPR" if you change these enums
+	 */
+	public static enum BinOpr
+	{
+		OPR_ADD, 
+		OPR_SUB, 
+		OPR_MUL, 
+		OPR_DIV, 
+		OPR_MOD, 
+		OPR_POW,
+		OPR_CONCAT,
+		OPR_NE, 
+		OPR_EQ,
+		OPR_LT, 
+		OPR_LE, 
+		OPR_GT, 
+		OPR_GE,
+		OPR_AND, 
+		OPR_OR,
+		OPR_NOBINOPR;
+
+		public int getValue() {
+			return this.ordinal();
+		}
+
+		public static BinOpr forValue(int value) {
+			return values()[value];
+		}
+	}	
+	
 	public static InstructionPtr getcode(FuncState fs, expdesc e) {
 		return new InstructionPtr(fs.f.code, e.u.s.info);
 	}

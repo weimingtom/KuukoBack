@@ -972,73 +972,73 @@ namespace kurumi
 			}
 		}
 
-		private static BinOpr getbinopr(int op)
+		private static LuaCode.BinOpr getbinopr(int op)
 		{
 			switch (op) 
 			{
 				case '+': 
 					{
-						return BinOpr.OPR_ADD;
+						return LuaCode.BinOpr.OPR_ADD;
 					}
 				case '-': 
 					{
-						return BinOpr.OPR_SUB;
+						return LuaCode.BinOpr.OPR_SUB;
 					}
 				case '*': 
 					{
-						return BinOpr.OPR_MUL;
+						return LuaCode.BinOpr.OPR_MUL;
 					}
 				case '/': 
 					{
-						return BinOpr.OPR_DIV;
+						return LuaCode.BinOpr.OPR_DIV;
 					}
 				case '%': 
 					{
-						return BinOpr.OPR_MOD;
+						return LuaCode.BinOpr.OPR_MOD;
 					}
 				case '^': 
 					{
-						return BinOpr.OPR_POW;
+						return LuaCode.BinOpr.OPR_POW;
 					}
 				case (int)RESERVED.TK_CONCAT: 
 					{
-						return BinOpr.OPR_CONCAT;
+						return LuaCode.BinOpr.OPR_CONCAT;
 					}
 				case (int)RESERVED.TK_NE: 
 					{
-						return BinOpr.OPR_NE;
+						return LuaCode.BinOpr.OPR_NE;
 					}
 				case (int)RESERVED.TK_EQ: 
 					{
-						return BinOpr.OPR_EQ;
+						return LuaCode.BinOpr.OPR_EQ;
 					}
 				case '<': 
 					{
-						return BinOpr.OPR_LT;
+						return LuaCode.BinOpr.OPR_LT;
 					}
 				case (int)RESERVED.TK_LE: 
 					{
-						return BinOpr.OPR_LE;
+						return LuaCode.BinOpr.OPR_LE;
 					}
 				case '>': 
 					{
-						return BinOpr.OPR_GT;
+						return LuaCode.BinOpr.OPR_GT;
 					}
 				case (int)RESERVED.TK_GE: 
 					{
-						return BinOpr.OPR_GE;
+						return LuaCode.BinOpr.OPR_GE;
 					}
 				case (int)RESERVED.TK_AND: 
 					{
-						return BinOpr.OPR_AND;
+						return LuaCode.BinOpr.OPR_AND;
 					}
 				case (int)RESERVED.TK_OR: 
 					{
-						return BinOpr.OPR_OR;
+						return LuaCode.BinOpr.OPR_OR;
 					}
 				default: 
 					{
-						return BinOpr.OPR_NOBINOPR;
+						return LuaCode.BinOpr.OPR_NOBINOPR;
 					}
 			}
 		}
@@ -1077,9 +1077,9 @@ namespace kurumi
 		 ** subexpr . (simpleexp | unop subexpr) { binop subexpr }
 		 ** where `binop' is any binary operator with a priority higher than `limit'
 		 */
-		private static BinOpr subexpr(LexState ls, expdesc v, int/*uint*/ limit) 
+		private static LuaCode.BinOpr subexpr(LexState ls, expdesc v, int/*uint*/ limit) 
 		{
-			BinOpr op;// = new BinOpr();
+			LuaCode.BinOpr op;// = new BinOpr();
 			UnOpr uop;// = new UnOpr();
 			enterlevel(ls);
 			uop = getunopr(ls.t.token);
@@ -1095,10 +1095,10 @@ namespace kurumi
 			}
 			/* expand while operators have priorities higher than `limit' */
 			op = getbinopr(ls.t.token);
-			while (op != BinOpr.OPR_NOBINOPR && priority[(int)op].left > limit)
+			while (op != LuaCode.BinOpr.OPR_NOBINOPR && priority[(int)op].left > limit)
 			{
 				expdesc v2 = new expdesc();
-				BinOpr nextop;
+				LuaCode.BinOpr nextop;
 				LuaLex.luaX_next(ls);
 				LuaCode.luaK_infix(ls.fs, op, v);
 				/* read sub-expression with higher priority */
