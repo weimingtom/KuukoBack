@@ -266,7 +266,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_CALLINFO)
 	            {
-	                result = new CallInfo();
+	                result = new LuaState.CallInfo();
 	            }
 	            else if (type == TYPE_PROTO)
 	            {
@@ -985,7 +985,7 @@ namespace kurumi
             }
             else if (type == TYPE_CALLINFO)
             {
-                return typeof(CallInfo);
+                return typeof(LuaState.CallInfo);
             }
             else if (type == TYPE_PROTO)
             {
@@ -1075,7 +1075,7 @@ namespace kurumi
             {
                 return 228;
             }
-            else if (t == typeof(CallInfo))
+            else if (t == typeof(LuaState.CallInfo))
             {
                 return 24;
             }

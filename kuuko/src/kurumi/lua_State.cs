@@ -14,12 +14,12 @@ namespace kurumi
 		public TValue/*StkId*/ top;  /* first free slot in the stack */
 		public TValue/*StkId*/ base_;  /* base of current function */
 		public global_State l_G;
-		public CallInfo ci;  /* call info for current function */
+		public LuaState.CallInfo ci;  /* call info for current function */
 		public InstructionPtr savedpc = new InstructionPtr();  /* `savedpc' of current function */
 		public TValue/*StkId*/ stack_last;  /* last free slot in the stack */
 		public TValue[]/*StkId[]*/ stack;  /* stack base */
-		public CallInfo end_ci;  /* points after end of ci array*/
-		public CallInfo[] base_ci;  /* array of CallInfo's */
+		public LuaState.CallInfo end_ci;  /* points after end of ci array*/
+		public LuaState.CallInfo[] base_ci;  /* array of CallInfo's */
 		public int stacksize;
 		public int size_ci;  /* size of array `base_ci' */
 		public int/*ushort*/ nCcalls;  /* number of nested C calls */

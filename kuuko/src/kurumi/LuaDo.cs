@@ -50,12 +50,12 @@ namespace kurumi
 			return L.stack[n]; 
 		}
 		
-		public static int saveci(lua_State L, CallInfo p)		
+		public static int saveci(lua_State L, LuaState.CallInfo p)		
 		{
-			return CallInfo.minus(p, L.base_ci);
+			return LuaState.CallInfo.minus(p, L.base_ci);
 		}
 		
-		public static CallInfo restoreci(lua_State L, int n)	
+		public static LuaState.CallInfo restoreci(lua_State L, int n)	
 		{ 
 			return L.base_ci[n]; 
 		}
@@ -95,7 +95,7 @@ namespace kurumi
 			if (L.size_ci > LuaConf.LUAI_MAXCALLS)
 			{  
 				/* there was an overflow? */
-				int inuse = CallInfo.minus(L.ci, L.base_ci);
+				int inuse = LuaState.CallInfo.minus(L.ci, L.base_ci);
 				if (inuse + 1 < LuaConf.LUAI_MAXCALLS)  /* can `undo' overflow? */
 				{
 					luaD_reallocCI(L, LuaConf.LUAI_MAXCALLS);
@@ -212,13 +212,13 @@ namespace kurumi
 
 		public static void luaD_reallocCI (lua_State L, int newsize) 
 		{
-			CallInfo oldci = L.base_ci[0];
-			CallInfo[][] base_ci = new CallInfo[1][];
+			LuaState.CallInfo oldci = L.base_ci[0];
+			LuaState.CallInfo[][] base_ci = new LuaState.CallInfo[1][];
 			base_ci[0] = L.base_ci;
 			LuaMem.luaM_reallocvector_CallInfo(L, /*ref*/ base_ci, L.size_ci, newsize/*, CallInfo*/, new ClassType(ClassType.TYPE_CALLINFO));
 			L.base_ci = base_ci[0];
 			L.size_ci = newsize;
-			L.ci = L.base_ci[CallInfo.minus(L.ci, oldci)];
+			L.ci = L.base_ci[LuaState.CallInfo.minus(L.ci, oldci)];
 			L.end_ci = L.base_ci[L.size_ci - 1];
 		}
 
@@ -234,7 +234,7 @@ namespace kurumi
 			}
 		}
 		
-		private static CallInfo growCI (lua_State L) 
+		private static LuaState.CallInfo growCI (lua_State L) 
 		{
 			if (L.size_ci > LuaConf.LUAI_MAXCALLS)  /* overflow while handling overflow? */
 			{
@@ -248,9 +248,9 @@ namespace kurumi
 					LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("stack overflow"));
 				}
 			}
-			CallInfo[] ci_ref = new CallInfo[1];
+			LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
 			ci_ref[0] = L.ci;
-			CallInfo.inc(/*ref*/ ci_ref);
+			LuaState.CallInfo.inc(/*ref*/ ci_ref);
 			L.ci = ci_ref[0];
 			return L.ci;
 		}
@@ -271,7 +271,7 @@ namespace kurumi
 				}
 				else
 				{
-					ar.i_ci = CallInfo.minus(L.ci, L.base_ci);
+					ar.i_ci = LuaState.CallInfo.minus(L.ci, L.base_ci);
 				}
 				luaD_checkstack(L, Lua.LUA_MINSTACK);  /* ensure minimum stack size */
 				L.ci.top = TValue.plus(L.top, Lua.LUA_MINSTACK);
@@ -366,16 +366,16 @@ namespace kurumi
 
 
 
-		public static CallInfo inc_ci(lua_State L)
+		public static LuaState.CallInfo inc_ci(lua_State L)
 		{
 			if (L.ci == L.end_ci) 
 			{
 				return growCI(L);
 			}
 			//   (condhardstacktests(luaD_reallocCI(L, L.size_ci)), ++L.ci))
-			CallInfo[] ci_ref = new CallInfo[1];
+			LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
 			ci_ref[0] = L.ci;
-			CallInfo.inc(/*ref*/ ci_ref);
+			LuaState.CallInfo.inc(/*ref*/ ci_ref);
 			L.ci = ci_ref[0];
 			return L.ci;
 		}
@@ -393,7 +393,7 @@ namespace kurumi
 			if (cl.getIsC() == 0) 
             {  
                 /* Lua function? prepare its call */
-				CallInfo ci;
+				LuaState.CallInfo ci;
 				TValue[]/*StkId*/ st = new TValue[1];
 				st[0] = new TValue();
 				TValue/*StkId*/ base_;
@@ -443,7 +443,7 @@ namespace kurumi
 				return PCRLUA;
 			}
 			else {  /* if is a C function, call it */
-				CallInfo ci;
+				LuaState.CallInfo ci;
 				int n;
 				luaD_checkstack(L, Lua.LUA_MINSTACK);  /* ensure minimum stack size */
 				ci = inc_ci(L);  /* now `enter' new function */
@@ -489,19 +489,19 @@ namespace kurumi
 		{
 			TValue/*StkId*/ res;
 			int wanted, i;
-			CallInfo ci;
+			LuaState.CallInfo ci;
 			if ((L.hookmask & Lua.LUA_MASKRET) != 0)
 			{
 				firstResult = callrethooks(L, firstResult);
 			}
-			CallInfo[] ci_ref = new CallInfo[1];
+			LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
 			ci_ref[0] = L.ci;
-			ci = CallInfo.dec(/*ref*/ ci_ref);
+			ci = LuaState.CallInfo.dec(/*ref*/ ci_ref);
 			L.ci = ci_ref[0];
 			res = ci.func;  /* res == final position of 1st result */
 			wanted = ci.nresults;
-			L.base_ = CallInfo.minus(ci, 1).base_;  /* restore base */
-			L.savedpc = InstructionPtr.Assign(CallInfo.minus(ci, 1).savedpc);  /* restore savedpc */
+			L.base_ = LuaState.CallInfo.minus(ci, 1).base_;  /* restore base */
+			L.savedpc = InstructionPtr.Assign(LuaState.CallInfo.minus(ci, 1).savedpc);  /* restore savedpc */
 			/* move results to correct place */
 			for (i = wanted; i != 0 && TValue.lessThan(firstResult, L.top); i--)
 			{
@@ -551,7 +551,7 @@ namespace kurumi
 		public static void resume(lua_State L, object ud) 
         {
 			TValue/*StkId*/ firstArg = (TValue/*StkId*/)ud;
-			CallInfo ci = L.ci;
+			LuaState.CallInfo ci = L.ci;
 			if (L.status == 0) 
             {  
                 /* start coroutine? */
@@ -570,8 +570,8 @@ namespace kurumi
                 {
                     /* `common' yield? */
                     /* finish interrupted execution of `OP_CALL' */
-                    LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_CALL ||
-                                         LuaOpCodes.GET_OPCODE(CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_TAILCALL);
+                    LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(LuaState.CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_CALL ||
+                                         LuaOpCodes.GET_OPCODE(LuaState.CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_TAILCALL);
                     if (luaD_poscall(L, firstArg) != 0)
                     {
                         /* complete it... */
@@ -584,7 +584,7 @@ namespace kurumi
                     L.base_ = L.ci.base_;
                 }
 			}
-			LuaVM.luaV_execute(L, CallInfo.minus(L.ci, L.base_ci));
+			LuaVM.luaV_execute(L, LuaState.CallInfo.minus(L.ci, L.base_ci));
 		}
 		
 		private static int resume_error(lua_State L, CharPtr msg) 

@@ -29,7 +29,7 @@ namespace kurumi
 			L.hookcount = L.basehookcount; 
 		}
 
-		private static int currentpc (lua_State L, CallInfo ci) 
+		private static int currentpc (lua_State L, LuaState.CallInfo ci) 
 		{
 			if (!LuaState.isLua(ci)) 
 			{
@@ -42,7 +42,7 @@ namespace kurumi
 			return pcRel(ci.savedpc, LuaState.ci_func(ci).l.p);
 		}
 
-		private static int currentline(lua_State L, CallInfo ci) 
+		private static int currentline(lua_State L, LuaState.CallInfo ci) 
 		{
 			int pc = currentpc(L, ci);
 			if (pc < 0)
@@ -91,10 +91,10 @@ namespace kurumi
 		public static int lua_getstack (lua_State L, int level, lua_Debug ar) 
 		{
 			int status;
-			CallInfo[] ci = new CallInfo[1];
-			ci[0] = new CallInfo();
+			LuaState.CallInfo[] ci = new LuaState.CallInfo[1];
+			ci[0] = new LuaState.CallInfo();
 			LuaLimits.lua_lock(L);
-			for (ci[0] = L.ci; level > 0 && CallInfo.greaterThan(ci[0], L.base_ci[0]); CallInfo.dec(/*ref*/ ci))
+			for (ci[0] = L.ci; level > 0 && LuaState.CallInfo.greaterThan(ci[0], L.base_ci[0]); LuaState.CallInfo.dec(/*ref*/ ci))
 			{
 				level--;
 				if (LuaState.f_isLua(ci[0]))  /* Lua function? */
@@ -102,11 +102,11 @@ namespace kurumi
 					level -= ci[0].tailcalls;  /* skip lost tail calls */
 				}
 			}
-			if (level == 0 && CallInfo.greaterThan(ci[0], L.base_ci[0]))
+			if (level == 0 && LuaState.CallInfo.greaterThan(ci[0], L.base_ci[0]))
 			{  
 				/* level found? */
 				status = 1;
-				ar.i_ci = CallInfo.minus(ci[0], L.base_ci[0]);
+				ar.i_ci = LuaState.CallInfo.minus(ci[0], L.base_ci[0]);
 			}
 			else if (level < 0) 
 			{  
@@ -123,12 +123,12 @@ namespace kurumi
 		}
 
 
-		private static Proto getluaproto(CallInfo ci) 
+		private static Proto getluaproto(LuaState.CallInfo ci) 
 		{
 			return (LuaState.isLua(ci) ? LuaState.ci_func(ci).l.p : null);
 		}
 
-		private static CharPtr findlocal(lua_State L, CallInfo ci, int n) 
+		private static CharPtr findlocal(lua_State L, LuaState.CallInfo ci, int n) 
 		{
 			CharPtr name;
 			Proto fp = getluaproto(ci);
@@ -138,7 +138,7 @@ namespace kurumi
 			}
 			else 
 			{
-				TValue/*StkId*/ limit = (ci == L.ci) ? L.top : (CallInfo.plus(ci, 1)).func;
+				TValue/*StkId*/ limit = (ci == L.ci) ? L.top : (LuaState.CallInfo.plus(ci, 1)).func;
 				if (TValue.minus(limit, ci.base_) >= n && n > 0)  /* is 'n' inside 'ci' stack? */
 				{
 					return CharPtr.toCharPtr("(*temporary)");
@@ -152,7 +152,7 @@ namespace kurumi
 
 		public static CharPtr lua_getlocal(lua_State L, lua_Debug ar, int n) 
 		{
-			CallInfo ci = L.base_ci[ar.i_ci];
+			LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 			CharPtr name = findlocal(L, ci, n);
 			LuaLimits.lua_lock(L);
 			if (CharPtr.isNotEqual(name, null))
@@ -165,7 +165,7 @@ namespace kurumi
 
 		public static CharPtr lua_setlocal(lua_State L, lua_Debug ar, int n) 
 		{
-			CallInfo ci = L.base_ci[ar.i_ci];
+			LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 			CharPtr name = findlocal(L, ci, n);
 			LuaLimits.lua_lock(L);
 			if (CharPtr.isNotEqual(name, null))
@@ -230,7 +230,7 @@ namespace kurumi
 		}
 
 		private static int auxgetinfo (lua_State L, CharPtr what, lua_Debug ar,
-			Closure f, CallInfo ci) 
+			Closure f, LuaState.CallInfo ci) 
 		{
 			int status = 1;
 			if (f == null) 
@@ -289,7 +289,7 @@ namespace kurumi
 		{
 			int status;
 			Closure f = null;
-			CallInfo ci = null;
+			LuaState.CallInfo ci = null;
 			LuaLimits.lua_lock(L);
 			if (CharPtr.isEqualChar(what, '>')) 
 			{
@@ -775,7 +775,7 @@ namespace kurumi
 		}
 
 
-		private static CharPtr getobjname(lua_State L, CallInfo ci, int stackpos,
+		private static CharPtr getobjname(lua_State L, LuaState.CallInfo ci, int stackpos,
 		                                  /*ref*/ CharPtr[] name)
 		{
 			if (LuaState.isLua(ci))
@@ -837,16 +837,16 @@ namespace kurumi
 			return null;  /* no useful name found */
 		}
 
-		private static CharPtr getfuncname(lua_State L, CallInfo ci, /*ref*/ CharPtr[] name)
+		private static CharPtr getfuncname(lua_State L, LuaState.CallInfo ci, /*ref*/ CharPtr[] name)
 		{
 			long/*UInt32*//*Instruction*/ i;
-			if ((LuaState.isLua(ci) && ci.tailcalls > 0) || !LuaState.isLua(CallInfo.minus(ci, 1)))
+			if ((LuaState.isLua(ci) && ci.tailcalls > 0) || !LuaState.isLua(LuaState.CallInfo.minus(ci, 1)))
 			{
 				return null;  /* calling function is not Lua (or is unknown) */
 			}
-			CallInfo[] ci_ref = new CallInfo[1];
+			LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
 			ci_ref[0] = ci;
-			CallInfo.dec(/*ref*/ ci_ref);  /* calling function */
+			LuaState.CallInfo.dec(/*ref*/ ci_ref);  /* calling function */
 			ci = ci_ref[0];
 			i = LuaState.ci_func(ci).l.p.code[currentpc(L, ci)];
 			if (LuaOpCodes.GET_OPCODE(i) == OpCode.OP_CALL || LuaOpCodes.GET_OPCODE(i) == OpCode.OP_TAILCALL ||
@@ -861,7 +861,7 @@ namespace kurumi
 		}
 
 		/* only ANSI way to check whether a pointer points to an array */
-		private static int isinstack (CallInfo ci, TValue o) 
+		private static int isinstack (LuaState.CallInfo ci, TValue o) 
 		{
 			TValue[]/*StkId*/ p = new TValue[1];
 			p[0] = new TValue();
@@ -933,7 +933,7 @@ namespace kurumi
 
 		private static void addinfo(lua_State L, CharPtr msg) 
         {
-			CallInfo ci = L.ci;
+			LuaState.CallInfo ci = L.ci;
 			if (LuaState.isLua(ci))
 			{  
 				/* is Lua code? */

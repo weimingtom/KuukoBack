@@ -890,10 +890,10 @@ TValue rb = RB(L, base_, i);
 							switch (LuaDo.luaD_precall(L, ra, Lua.LUA_MULTRET)) {
 								case LuaDo.PCRLUA: {
 										// tail call: put new frame in place of previous one 
-										CallInfo ci = CallInfo.minus(L.ci, 1); // previous frame 
+										LuaState.CallInfo ci = LuaState.CallInfo.minus(L.ci, 1); // previous frame 
 										int aux;
 										TValue func = ci.func; //StkId
-										TValue pfunc = CallInfo.plus(ci, 1).func; // previous function index  - StkId
+										TValue pfunc = LuaState.CallInfo.plus(ci, 1).func; // previous function index  - StkId
 										if (L.openupval != null) {
 											LuaFunc.luaF_close(L, ci.base_);
 										}
@@ -905,9 +905,9 @@ TValue rb = RB(L, base_, i);
 										LuaLimits.lua_assert(L.top == TValue.plus(L.base_, LuaObject.clvalue(func).l.p.maxstacksize));
 										ci.savedpc = InstructionPtr.Assign(L.savedpc);
 										ci.tailcalls++; // one more call lost 
-										CallInfo[] ci_ref3 = new CallInfo[1];
+										LuaState.CallInfo[] ci_ref3 = new LuaState.CallInfo[1];
 										ci_ref3[0] = L.ci;
-										CallInfo.dec(ci_ref3); // remove new frame  - ref
+										LuaState.CallInfo.dec(ci_ref3); // remove new frame  - ref
 										L.ci = ci_ref3[0];
 										//goto reentry;
 										reentry4 = true;
@@ -1092,7 +1092,7 @@ TValue rb = RB(L, base_, i);
 					case OP_VARARG: {
 							int b = LuaOpCodes.GETARG_B(i) - 1;
 							int j;
-							CallInfo ci = L.ci;
+							LuaState.CallInfo ci = L.ci;
 							int n = LuaLimits.cast_int(TValue.minus(ci.base_, ci.func)) - cl.p.numparams - 1;
 							if (b == Lua.LUA_MULTRET) {
 								//Protect(

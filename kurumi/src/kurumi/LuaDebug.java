@@ -24,7 +24,7 @@ public class LuaDebug {
 		L.hookcount = L.basehookcount;
 	}
 
-	private static int currentpc(lua_State L, CallInfo ci) {
+	private static int currentpc(lua_State L, LuaState.CallInfo ci) {
 		if (!LuaState.isLua(ci)) {
 			return -1; // function is not a Lua function? 
 		}
@@ -34,7 +34,7 @@ public class LuaDebug {
 		return pcRel(ci.savedpc, LuaState.ci_func(ci).l.p);
 	}
 
-	private static int currentline(lua_State L, CallInfo ci) {
+	private static int currentline(lua_State L, LuaState.CallInfo ci) {
 		int pc = currentpc(L, ci);
 		if (pc < 0) {
 			return -1; // only active lua functions have current-line information 
@@ -74,19 +74,19 @@ public class LuaDebug {
 
 	public static int lua_getstack(lua_State L, int level, lua_Debug ar) {
 		int status;
-		CallInfo[] ci = new CallInfo[1];
-		ci[0] = new CallInfo();
+		LuaState.CallInfo[] ci = new LuaState.CallInfo[1];
+		ci[0] = new LuaState.CallInfo();
 		LuaLimits.lua_lock(L);
-		for (ci[0] = L.ci; level > 0 && CallInfo.greaterThan(ci[0], L.base_ci[0]); CallInfo.dec(ci)) { //ref
+		for (ci[0] = L.ci; level > 0 && LuaState.CallInfo.greaterThan(ci[0], L.base_ci[0]); LuaState.CallInfo.dec(ci)) { //ref
 			level--;
 			if (LuaState.f_isLua(ci[0])) { // Lua function? 
 				level -= ci[0].tailcalls; // skip lost tail calls 
 			}
 		}
-		if (level == 0 && CallInfo.greaterThan(ci[0], L.base_ci[0])) {
+		if (level == 0 && LuaState.CallInfo.greaterThan(ci[0], L.base_ci[0])) {
 			// level found? 
 			status = 1;
-			ar.i_ci = CallInfo.minus(ci[0], L.base_ci[0]);
+			ar.i_ci = LuaState.CallInfo.minus(ci[0], L.base_ci[0]);
 		}
 		else if (level < 0) {
 			// level is of a lost tail call? 
@@ -101,18 +101,18 @@ public class LuaDebug {
 	}
 
 
-	private static Proto getluaproto(CallInfo ci) {
+	private static Proto getluaproto(LuaState.CallInfo ci) {
 		return (LuaState.isLua(ci) ? LuaState.ci_func(ci).l.p : null);
 	}
 
-	private static CharPtr findlocal(lua_State L, CallInfo ci, int n) {
+	private static CharPtr findlocal(lua_State L, LuaState.CallInfo ci, int n) {
 		CharPtr name;
 		Proto fp = getluaproto(ci);
 		if ((fp != null) && CharPtr.isNotEqual((name = LuaFunc.luaF_getlocalname(fp, n, currentpc(L, ci))), null)) {
 			return name; // is a local variable in a Lua function 
 		}
 		else {
-			TValue limit = (ci == L.ci) ? L.top : (CallInfo.plus(ci, 1)).func; //StkId
+			TValue limit = (ci == L.ci) ? L.top : (LuaState.CallInfo.plus(ci, 1)).func; //StkId
 			if (TValue.minus(limit, ci.base_) >= n && n > 0) { // is 'n' inside 'ci' stack? 
 				return CharPtr.toCharPtr("(*temporary)");
 			}
@@ -123,7 +123,7 @@ public class LuaDebug {
 	}
 
 	public static CharPtr lua_getlocal(lua_State L, lua_Debug ar, int n) {
-		CallInfo ci = L.base_ci[ar.i_ci];
+		LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 		CharPtr name = findlocal(L, ci, n);
 		LuaLimits.lua_lock(L);
 		if (CharPtr.isNotEqual(name, null)) {
@@ -134,7 +134,7 @@ public class LuaDebug {
 	}
 
 	public static CharPtr lua_setlocal(lua_State L, lua_Debug ar, int n) {
-		CallInfo ci = L.base_ci[ar.i_ci];
+		LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 		CharPtr name = findlocal(L, ci, n);
 		LuaLimits.lua_lock(L);
 		if (CharPtr.isNotEqual(name, null)) {
@@ -190,7 +190,7 @@ TValue.dec(top); // pop value  - ref
 		LuaDo.incr_top(L);
 	}
 
-	private static int auxgetinfo(lua_State L, CharPtr what, lua_Debug ar, Closure f, CallInfo ci) {
+	private static int auxgetinfo(lua_State L, CharPtr what, lua_Debug ar, Closure f, LuaState.CallInfo ci) {
 		int status = 1;
 		if (f == null) {
 			info_tailcall(ar);
@@ -237,7 +237,7 @@ TValue.dec(top); // pop value  - ref
 	public static int lua_getinfo(lua_State L, CharPtr what, lua_Debug ar) {
 		int status;
 		Closure f = null;
-		CallInfo ci = null;
+		LuaState.CallInfo ci = null;
 		LuaLimits.lua_lock(L);
 		if (CharPtr.isEqualChar(what, '>')) {
 			TValue func = TValue.minus(L.top, 1); //StkId
@@ -618,7 +618,7 @@ TValue.dec(top); // pop function  - ref
 	}
 
 
-	private static CharPtr getobjname(lua_State L, CallInfo ci, int stackpos, CharPtr[] name) { //ref
+	private static CharPtr getobjname(lua_State L, LuaState.CallInfo ci, int stackpos, CharPtr[] name) { //ref
 		if (LuaState.isLua(ci)) {
 			// a Lua function? 
 			Proto p = LuaState.ci_func(ci).l.p;
@@ -668,14 +668,14 @@ TValue.dec(top); // pop function  - ref
 		return null; // no useful name found 
 	}
 
-	private static CharPtr getfuncname(lua_State L, CallInfo ci, CharPtr[] name) { //ref
+	private static CharPtr getfuncname(lua_State L, LuaState.CallInfo ci, CharPtr[] name) { //ref
 		long i; //Instruction - UInt32
-		if ((LuaState.isLua(ci) && ci.tailcalls > 0) || !LuaState.isLua(CallInfo.minus(ci, 1))) {
+		if ((LuaState.isLua(ci) && ci.tailcalls > 0) || !LuaState.isLua(LuaState.CallInfo.minus(ci, 1))) {
 			return null; // calling function is not Lua (or is unknown) 
 		}
-		CallInfo[] ci_ref = new CallInfo[1];
+		LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
 		ci_ref[0] = ci;
-		CallInfo.dec(ci_ref); // calling function  - ref
+		LuaState.CallInfo.dec(ci_ref); // calling function  - ref
 		ci = ci_ref[0];
 		i = LuaState.ci_func(ci).l.p.code[currentpc(L, ci)];
 		if (LuaOpCodes.GET_OPCODE(i) == OpCode.OP_CALL || LuaOpCodes.GET_OPCODE(i) == OpCode.OP_TAILCALL || LuaOpCodes.GET_OPCODE(i) == OpCode.OP_TFORLOOP) {
@@ -687,7 +687,7 @@ TValue.dec(top); // pop function  - ref
 	}
 
 	// only ANSI way to check whether a pointer points to an array 
-	private static int isinstack(CallInfo ci, TValue o) {
+	private static int isinstack(LuaState.CallInfo ci, TValue o) {
 		TValue[] p = new TValue[1]; //StkId
 		p[0] = new TValue();
 		for (p[0] = ci.base_; TValue.lessThan(p[0], ci.top); TValue.inc(p)) { //ref - StkId
@@ -742,7 +742,7 @@ TValue.dec(top); // pop function  - ref
 	}
 
 	private static void addinfo(lua_State L, CharPtr msg) {
-		CallInfo ci = L.ci;
+		LuaState.CallInfo ci = L.ci;
 		if (LuaState.isLua(ci)) {
 			// is Lua code? 
 			CharPtr buff = new CharPtr(new char[LuaConf.LUA_IDSIZE]); // add file:line information 

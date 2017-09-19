@@ -209,7 +209,7 @@ public class ClassType {
 				result = new lua_State();
 			}
 			else if (type == TYPE_CALLINFO) {
-				result = new CallInfo();
+				result = new LuaState.CallInfo();
 			}
 			else if (type == TYPE_PROTO) {
 				result = new Proto();

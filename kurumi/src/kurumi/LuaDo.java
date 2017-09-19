@@ -43,11 +43,11 @@ TValue.inc(top); //ref
 		return L.stack[n];
 	}
 
-	public static int saveci(lua_State L, CallInfo p) {
-		return CallInfo.minus(p, L.base_ci);
+	public static int saveci(lua_State L, LuaState.CallInfo p) {
+		return LuaState.CallInfo.minus(p, L.base_ci);
 	}
 
-	public static CallInfo restoreci(lua_State L, int n) {
+	public static LuaState.CallInfo restoreci(lua_State L, int n) {
 		return L.base_ci[n];
 	}
 
@@ -79,7 +79,7 @@ TValue.inc(top); //ref
 		LuaLimits.lua_assert(TValue.toInt(L.stack_last) == L.stacksize - LuaState.EXTRA_STACK - 1);
 		if (L.size_ci > LuaConf.LUAI_MAXCALLS) {
 			// there was an overflow? 
-			int inuse = CallInfo.minus(L.ci, L.base_ci);
+			int inuse = LuaState.CallInfo.minus(L.ci, L.base_ci);
 			if (inuse + 1 < LuaConf.LUAI_MAXCALLS) { // can `undo' overflow? 
 				luaD_reallocCI(L, LuaConf.LUAI_MAXCALLS);
 			}
@@ -178,13 +178,13 @@ TValue.inc(top); //ref
 	}
 
 	public static void luaD_reallocCI(lua_State L, int newsize) {
-		CallInfo oldci = L.base_ci[0];
-		CallInfo[][] base_ci = new CallInfo[1][];
+		LuaState.CallInfo oldci = L.base_ci[0];
+		LuaState.CallInfo[][] base_ci = new LuaState.CallInfo[1][];
 		base_ci[0] = L.base_ci;
 		LuaMem.luaM_reallocvector_CallInfo(L, base_ci, L.size_ci, newsize, new ClassType(ClassType.TYPE_CALLINFO)); //, CallInfo - ref
 		L.base_ci = base_ci[0];
 		L.size_ci = newsize;
-		L.ci = L.base_ci[CallInfo.minus(L.ci, oldci)];
+		L.ci = L.base_ci[LuaState.CallInfo.minus(L.ci, oldci)];
 		L.end_ci = L.base_ci[L.size_ci - 1];
 	}
 
@@ -197,7 +197,7 @@ TValue.inc(top); //ref
 		}
 	}
 
-	private static CallInfo growCI(lua_State L) {
+	private static LuaState.CallInfo growCI(lua_State L) {
 		if (L.size_ci > LuaConf.LUAI_MAXCALLS) { // overflow while handling overflow? 
 			luaD_throw(L, Lua.LUA_ERRERR);
 		}
@@ -207,9 +207,9 @@ TValue.inc(top); //ref
 				LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("stack overflow"));
 			}
 		}
-		CallInfo[] ci_ref = new CallInfo[1];
+		LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
 		ci_ref[0] = L.ci;
-		CallInfo.inc(ci_ref); //ref
+		LuaState.CallInfo.inc(ci_ref); //ref
 		L.ci = ci_ref[0];
 		return L.ci;
 	}
@@ -226,7 +226,7 @@ TValue.inc(top); //ref
 				ar.i_ci = 0; // tail call; no debug information about it 
 			}
 			else {
-				ar.i_ci = CallInfo.minus(L.ci, L.base_ci);
+				ar.i_ci = LuaState.CallInfo.minus(L.ci, L.base_ci);
 			}
 			luaD_checkstack(L, Lua.LUA_MINSTACK); // ensure minimum stack size 
 			L.ci.top = TValue.plus(L.top, Lua.LUA_MINSTACK);
@@ -316,14 +316,14 @@ TValue.inc(top_ref); //ref
 
 
 
-	public static CallInfo inc_ci(lua_State L) {
+	public static LuaState.CallInfo inc_ci(lua_State L) {
 		if (L.ci == L.end_ci) {
 			return growCI(L);
 		}
 		//   (condhardstacktests(luaD_reallocCI(L, L.size_ci)), ++L.ci))
-		CallInfo[] ci_ref = new CallInfo[1];
+		LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
 		ci_ref[0] = L.ci;
-		CallInfo.inc(ci_ref); //ref
+		LuaState.CallInfo.inc(ci_ref); //ref
 		L.ci = ci_ref[0];
 		return L.ci;
 	}
@@ -340,7 +340,7 @@ TValue.inc(top_ref); //ref
 		L.ci.savedpc = InstructionPtr.Assign(L.savedpc);
 		if (cl.getIsC() == 0) {
 			// Lua function? prepare its call 
-			CallInfo ci;
+			LuaState.CallInfo ci;
 			TValue[] st = new TValue[1]; //StkId
 			st[0] = new TValue();
 			TValue base_; //StkId
@@ -385,7 +385,7 @@ TValue.inc(top_ref); //ref
 			return PCRLUA;
 		}
 		else { // if is a C function, call it 
-			CallInfo ci;
+			LuaState.CallInfo ci;
 			int n;
 			luaD_checkstack(L, Lua.LUA_MINSTACK); // ensure minimum stack size 
 			ci = inc_ci(L); // now `enter' new function 
@@ -427,18 +427,18 @@ TValue.inc(top_ref); //ref
 	public static int luaD_poscall(lua_State L, TValue firstResult) { //StkId
 		TValue res; //StkId
 		int wanted, i;
-		CallInfo ci;
+		LuaState.CallInfo ci;
 		if ((L.hookmask & Lua.LUA_MASKRET) != 0) {
 			firstResult = callrethooks(L, firstResult);
 		}
-		CallInfo[] ci_ref = new CallInfo[1];
+		LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
 		ci_ref[0] = L.ci;
-		ci = CallInfo.dec(ci_ref); //ref
+		ci = LuaState.CallInfo.dec(ci_ref); //ref
 		L.ci = ci_ref[0];
 		res = ci.func; // res == final position of 1st result 
 		wanted = ci.nresults;
-		L.base_ = CallInfo.minus(ci, 1).base_; // restore base 
-		L.savedpc = InstructionPtr.Assign(CallInfo.minus(ci, 1).savedpc); // restore savedpc 
+		L.base_ = LuaState.CallInfo.minus(ci, 1).base_; // restore base 
+		L.savedpc = InstructionPtr.Assign(LuaState.CallInfo.minus(ci, 1).savedpc); // restore savedpc 
 		// move results to correct place 
 		for (i = wanted; i != 0 && TValue.lessThan(firstResult, L.top); i--) {
 			LuaObject.setobjs2s(L, res, firstResult);
@@ -482,7 +482,7 @@ TValue.inc(top_ref); //ref
 
 	public static void resume(lua_State L, Object ud) {
 		TValue firstArg = (TValue)ud; //StkId - StkId
-		CallInfo ci = L.ci;
+		LuaState.CallInfo ci = L.ci;
 		if (L.status == 0) {
 			// start coroutine? 
 			LuaLimits.lua_assert(ci == L.base_ci[0] && TValue.greaterThan(firstArg, L.base_));
@@ -497,7 +497,7 @@ TValue.inc(top_ref); //ref
 			if (!LuaState.f_isLua(ci)) {
 				// `common' yield? 
 				// finish interrupted execution of `OP_CALL' 
-				LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_CALL || LuaOpCodes.GET_OPCODE(CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_TAILCALL);
+				LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(LuaState.CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_CALL || LuaOpCodes.GET_OPCODE(LuaState.CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_TAILCALL);
 				if (luaD_poscall(L, firstArg) != 0) {
 					// complete it... 
 					L.top = L.ci.top; // and correct top if not multiple results 
@@ -508,7 +508,7 @@ TValue.inc(top_ref); //ref
 				L.base_ = L.ci.base_;
 			}
 		}
-		LuaVM.luaV_execute(L, CallInfo.minus(L.ci, L.base_ci));
+		LuaVM.luaV_execute(L, LuaState.CallInfo.minus(L.ci, L.base_ci));
 	}
 
 	private static int resume_error(lua_State L, CharPtr msg) {

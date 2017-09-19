@@ -532,7 +532,7 @@ namespace kurumi
 
 		private static void checkstacksizes(lua_State L, TValue/*StkId*/ max)
 		{
-			int ci_used = LuaLimits.cast_int(CallInfo.minus(L.ci, L.base_ci[0]));  /* number of `ci' in use */
+			int ci_used = LuaLimits.cast_int(LuaState.CallInfo.minus(L.ci, L.base_ci[0]));  /* number of `ci' in use */
 			int s_used = LuaLimits.cast_int(TValue.minus(max, L.stack));  /* part of stack in use */
 			if (L.size_ci > LuaConf.LUAI_MAXCALLS)  /* handling overflow? */
 			{
@@ -556,11 +556,11 @@ namespace kurumi
 			TValue[]/*StkId*/ o = new TValue[1];
 			o[0] = new TValue();
 			TValue/*StkId*/ lim;
-			CallInfo[] ci = new CallInfo[1];
-			ci[0] = new CallInfo();
+			LuaState.CallInfo[] ci = new LuaState.CallInfo[1];
+			ci[0] = new LuaState.CallInfo();
 			markvalue(g, LuaState.gt(l));
 			lim = l.top;
-			for (ci[0] = l.base_ci[0]; CallInfo.lessEqual(ci[0], l.ci); CallInfo.inc(/*ref*/ ci))
+			for (ci[0] = l.base_ci[0]; LuaState.CallInfo.lessEqual(ci[0], l.ci); LuaState.CallInfo.inc(/*ref*/ ci))
 			{
 				LuaLimits.lua_assert(TValue.lessEqual(ci[0].top, l.stack_last));
 				if (TValue.lessThan(lim, ci[0].top)) 

@@ -23,8 +23,8 @@ public class LuaMem {
 		return (TString[])luaM_realloc__TString(L, block, new_size, t);
 	}
 
-	public static CallInfo[] luaM_reallocv_CallInfo(lua_State L, CallInfo[] block, int new_size, ClassType t) {
-		return (CallInfo[])luaM_realloc__CallInfo(L, block, new_size, t);
+	public static LuaState.CallInfo[] luaM_reallocv_CallInfo(lua_State L, LuaState.CallInfo[] block, int new_size, ClassType t) {
+		return (LuaState.CallInfo[])luaM_realloc__CallInfo(L, block, new_size, t);
 	}
 
 	public static long[] luaM_reallocv_long(lua_State L, long[] block, int new_size, ClassType t) {
@@ -110,7 +110,7 @@ public class LuaMem {
 		luaM_reallocv_Node(L, b, 0, t);
 	}
 
-	public static void luaM_freearray_CallInfo(lua_State L, CallInfo[] b, ClassType t) {
+	public static void luaM_freearray_CallInfo(lua_State L, LuaState.CallInfo[] b, ClassType t) {
 		luaM_reallocv_CallInfo(L, b, 0, t);
 	}
 
@@ -173,7 +173,7 @@ public class LuaMem {
 		return luaM_reallocv_TValue(L, null, n, t);
 	}
 
-	public static CallInfo[] luaM_newvector_CallInfo(lua_State L, int n, ClassType t) {
+	public static LuaState.CallInfo[] luaM_newvector_CallInfo(lua_State L, int n, ClassType t) {
 		return luaM_reallocv_CallInfo(L, null, n, t);
 	}
 
@@ -247,7 +247,7 @@ public class LuaMem {
 		return v[0];
 	}
 
-	public static CallInfo[] luaM_reallocvector_CallInfo(lua_State L, CallInfo[][] v, int oldn, int n, ClassType t) { //ref
+	public static LuaState.CallInfo[] luaM_reallocvector_CallInfo(lua_State L, LuaState.CallInfo[][] v, int oldn, int n, ClassType t) { //ref
 		ClassType.Assert((v[0] == null && oldn == 0) || (v[0].length == oldn));
 		v[0] = luaM_reallocv_CallInfo(L, v[0], n, t);
 		return v[0];
@@ -688,17 +688,17 @@ public class LuaMem {
 		return new_block;
 	}
 
-	public static Object luaM_realloc__CallInfo(lua_State L, CallInfo[] old_block, int new_size, ClassType t) {
+	public static Object luaM_realloc__CallInfo(lua_State L, LuaState.CallInfo[] old_block, int new_size, ClassType t) {
 		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
-		CallInfo[] new_block = new CallInfo[new_size];
+		LuaState.CallInfo[] new_block = new LuaState.CallInfo[new_size];
 		for (int i = 0; i < Math.min(old_size, new_size); i++) {
 			new_block[i] = old_block[i];
 		}
 		for (int i = old_size; i < new_size; i++) {
-			new_block[i] = (CallInfo)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
+			new_block[i] = (LuaState.CallInfo)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
