@@ -56,6 +56,56 @@ public class LuaState {
 		L.l_G = s;
 	}
 
+	public static class ArrayRef implements GCObjectRef, LuaObject.ArrayElement {
+		// ArrayRef is used to reference GCObject objects in an array, the next two members
+		// point to that array and the index of the GCObject element we are referencing
+		private GCObject[] array_elements;
+		private int array_index;
+
+		// ArrayRef is itself stored in an array and derived from ArrayElement, the next
+		// two members refer to itself i.e. the array and index of it's own instance.
+		private ArrayRef[] vals;
+		private int index;
+
+		public ArrayRef() 
+		{
+			this.array_elements = null;
+			this.array_index = 0;
+			this.vals = null;
+			this.index = 0;
+		}
+
+		public ArrayRef(GCObject[] array_elements, int array_index) 
+		{
+			this.array_elements = array_elements;
+			this.array_index = array_index;
+			this.vals = null;
+			this.index = 0;
+		}
+
+		public void set(GCObject value) 
+		{
+			array_elements[array_index] = value;
+		}
+
+		public GCObject get() 
+		{
+			return array_elements[array_index];
+		}
+
+		public void set_index(int index) 
+		{
+			this.index = index;
+		}
+
+		public void set_array(Object vals) 
+		{
+			// don't actually need this
+			this.vals = (ArrayRef[])vals;
+			ClassType.Assert(this.vals != null);
+		}
+	}	
+	
 	// macros to convert a GCObject into a specific value 
 	public static TString rawgco2ts(GCObject o) {
 		return (TString)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TSTRING, o.getTs());

@@ -884,7 +884,7 @@ namespace kurumi
 			sweepwholelist(L, new RootGCRef(g));
 			for (i = 0; i < g.strt.size; i++)  /* free all string lists */
 			{
-				sweepwholelist(L, new ArrayRef(g.strt.hash, i));
+				sweepwholelist(L, new LuaState.ArrayRef(g.strt.hash, i));
 			}
 		}
 
@@ -986,7 +986,7 @@ namespace kurumi
 				case GCSsweepstring: 
 					{
 						long/*UInt32*//*lu_mem*/ old = (long/*UInt32*//*lu_mem*/)g.totalbytes;
-						sweepwholelist(L, new ArrayRef(g.strt.hash, g.sweepstrgc++));
+						sweepwholelist(L, new LuaState.ArrayRef(g.strt.hash, g.sweepstrgc++));
 						if (g.sweepstrgc >= g.strt.size)  /* nothing more to sweep? */
 						{
 							g.gcstate = GCSsweep;  /* end sweep-string phase */

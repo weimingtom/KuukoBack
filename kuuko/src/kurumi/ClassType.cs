@@ -1099,7 +1099,7 @@ namespace kurumi
             {
                 return 4;
             }
-            else if (t == typeof(ArrayRef))
+            else if (t == typeof(LuaState.ArrayRef))
             {
                 return 4;
             }

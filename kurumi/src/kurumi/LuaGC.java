@@ -718,7 +718,7 @@ public class LuaGC {
 		g.currentwhite = (byte)(WHITEBITS | bitmask(SFIXEDBIT)); // mask to collect all elements 
 		sweepwholelist(L, new RootGCRef(g));
 		for (i = 0; i < g.strt.size; i++) { // free all string lists 
-			sweepwholelist(L, new ArrayRef(g.strt.hash, i));
+			sweepwholelist(L, new LuaState.ArrayRef(g.strt.hash, i));
 		}
 	}
 
@@ -805,7 +805,7 @@ public class LuaGC {
 				}
 			case GCSsweepstring: {
 					long old = (long)g.totalbytes; //lu_mem - UInt32 - lu_mem - UInt32
-					sweepwholelist(L, new ArrayRef(g.strt.hash, g.sweepstrgc++));
+					sweepwholelist(L, new LuaState.ArrayRef(g.strt.hash, g.sweepstrgc++));
 					if (g.sweepstrgc >= g.strt.size) { // nothing more to sweep? 
 						g.gcstate = GCSsweep; // end sweep-string phase 
 					}
