@@ -48,3 +48,6 @@ expdesc->LuaParser.expdesc
 
 expkind->LuaParser.expkind
 04:58 2017-09-21
+
+FilePtr->LuaIOLib.FilePtr
+05:20 2017-09-21

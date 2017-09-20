@@ -57,7 +57,6 @@
     <Compile Include="src\kurumi\ClassType.cs" />
     <Compile Include="src\kurumi\DateTimeProxy.cs" />
     <Compile Include="src\kurumi\expkindUtil.cs" />
-    <Compile Include="src\kurumi\FilePtr.cs" />
     <Compile Include="src\kurumi\FuncState.cs" />
     <Compile Include="src\kurumi\f_parser_delegate.cs" />
     <Compile Include="src\kurumi\GCheader.cs" />

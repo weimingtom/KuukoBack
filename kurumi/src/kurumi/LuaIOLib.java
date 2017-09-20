@@ -9,6 +9,10 @@ package kurumi;
 //using lua_Integer = System.Int32;
 
 public class LuaIOLib {
+	public static class FilePtr {
+        public StreamProxy file;
+	}	
+	
 	public static final int IO_INPUT = 1;
 	public static final int IO_OUTPUT = 2;
 

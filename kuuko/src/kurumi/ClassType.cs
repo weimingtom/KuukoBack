@@ -223,7 +223,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_FILEPTR)
 	            {
-	                result = new FilePtr();
+	                result = new LuaIOLib.FilePtr();
 	            }
 	            else if (type == TYPE_TVALUE)
 	            {
@@ -945,7 +945,7 @@ namespace kurumi
             }
             else if (type == TYPE_FILEPTR)
             {
-                return typeof(FilePtr);
+                return typeof(LuaIOLib.FilePtr);
             }
             else if (type == TYPE_TVALUE)
             {
@@ -1231,7 +1231,7 @@ namespace kurumi
             {
                 return 12;
             }
-            else if (t == typeof(FilePtr))
+            else if (t == typeof(LuaIOLib.FilePtr))
             {
                 return 4;
             }

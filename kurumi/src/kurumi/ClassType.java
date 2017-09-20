@@ -176,7 +176,7 @@ public class ClassType {
 				result = new LG();
 			}
 			else if (type == TYPE_FILEPTR) {
-				result = new FilePtr();
+				result = new LuaIOLib.FilePtr();
 			}
 			else if (type == TYPE_TVALUE) {
 				result = new TValue();

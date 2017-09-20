@@ -10,6 +10,11 @@ namespace kurumi
 
 	public class LuaIOLib
 	{
+		public class FilePtr
+		{
+	        public StreamProxy file;
+		}		
+		
 		public const int IO_INPUT = 1;
 		public const int IO_OUTPUT = 2;
 
