@@ -106,13 +106,13 @@ public class LuaString {
 	public static TString luaS_newlstr(lua_State L, CharPtr str, int l) { //uint
 		GCObject o;
 		//FIXME:
-		long h = l & 0xffffffff; // seed  - (uint) - uint - int
+		long h = ((long)l) & 0xffffffffL; // seed  - (uint) - uint - int
 		int step = (l >> 5) + 1; // if string is too long, don't hash all its chars  - uint
 		int l1; //uint
 		for (l1 = l; l1 >= step; l1 -= step) {
 			//FIXME:
 			// compute hash 
-			h = (0xffffffff) & (h ^ ((h << 5)+(h >> 2) + (byte)str.get(l1 - 1)));
+			h = (0xffffffffL) & ((long)(h ^ ((h << 5)+(h >> 2) + (byte)str.get(l1 - 1))));
 		}
 		for (o = LuaState.G(L).strt.hash[(int)LuaConf.lmod(h, LuaState.G(L).strt.size)]; o != null; o = o.getGch().next) {
 			TString ts = LuaState.rawgco2ts(o);

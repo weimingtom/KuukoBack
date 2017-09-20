@@ -817,6 +817,16 @@ TValue.dec(top); //ref
 		LuaLimits.lua_unlock(L);
 	}
 
+	/*
+	 ** Execute a protected call.
+	 */
+	public static class CallS
+	{
+		/* data to `f_call' */
+		public TValue func; /*StkId*/
+		public int nresults;
+	}	
+	
 	private static void f_call(lua_State L, Object ud) {
 		CallS c = (CallS)((ud instanceof CallS) ? ud : null);
 		LuaDo.luaD_call(L, c.func, c.nresults);

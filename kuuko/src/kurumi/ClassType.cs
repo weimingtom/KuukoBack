@@ -1127,7 +1127,7 @@ namespace kurumi
             {
                 return 100;
             }
-            else if (t == typeof(CallS))
+            else if (t == typeof(LuaAPI.CallS))
             {
                 return 8;
             }

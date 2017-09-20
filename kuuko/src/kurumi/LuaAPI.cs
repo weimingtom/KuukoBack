@@ -954,6 +954,16 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
+		/*
+		 ** Execute a protected call.
+		 */
+		public class CallS
+		{
+			/* data to `f_call' */
+			public TValue func; /*StkId*/
+			public int nresults;
+		}		
+		
 		static void f_call(lua_State L, object ud) 
 		{
 			CallS c = ud as CallS;
