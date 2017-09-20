@@ -1,0 +1,12 @@
+(1)
+
+		//FIXME:
+0xffffffffL & (long)---->		long h = ((long)l) & 0xffffffffL; // seed  - (uint) - uint - int
+		int step = (l >> 5) + 1; // if string is too long, don't hash all its chars  - uint
+		int l1; //uint
+		for (l1 = l; l1 >= step; l1 -= step) {
+			//FIXME:
+			// compute hash 
+0xffffffffL & (long)---->		h = (0xffffffffL) & ((long)(h ^ ((h << 5)+(h >> 2) + (byte)str.get(l1 - 1))));
+		}
+		
