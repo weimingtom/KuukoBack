@@ -294,6 +294,19 @@ public class LuaObject {
 		}
 	}	
 	
+	
+	
+	public static class Closure extends ClosureHeader {	
+		public LuaObject.CClosure c;
+		public LClosure l;
+		
+		public Closure()
+		{
+			c = new LuaObject.CClosure(this);
+			l = new LClosure(this);
+		}
+	}
+	
 	public static boolean iscfunction(TValue o) {
 		return ((ttype(o) == Lua.LUA_TFUNCTION) && (clvalue(o).c.getIsC() != 0));
 	}

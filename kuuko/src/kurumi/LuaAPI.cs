@@ -71,7 +71,7 @@ namespace kurumi
 						}
 					case Lua.LUA_ENVIRONINDEX:
 						{
-							Closure func = LuaState.curr_func(L);
+							LuaObject.Closure func = LuaState.curr_func(L);
 							LuaObject.sethvalue(L, L.env, func.c.getEnv());
 							return L.env;
 						}
@@ -81,7 +81,7 @@ namespace kurumi
 						}
 					default:
 						{
-							Closure func = LuaState.curr_func(L);
+							LuaObject.Closure func = LuaState.curr_func(L);
 							idx = Lua.LUA_GLOBALSINDEX - idx;
 							return (idx <= func.c.getNupvalues())
 								? func.c.upvalue[idx-1]
@@ -99,7 +99,7 @@ namespace kurumi
 			}
 			else
 			{
-				Closure func = LuaState.curr_func(L);
+				LuaObject.Closure func = LuaState.curr_func(L);
 				return func.c.getEnv();
 			}
 		}
@@ -259,7 +259,7 @@ namespace kurumi
 			api_checkvalidindex(L, o);
 			if (idx == Lua.LUA_ENVIRONINDEX)
 			{
-				Closure func = LuaState.curr_func(L);
+				LuaObject.Closure func = LuaState.curr_func(L);
 				LuaLimits.api_check(L, LuaObject.ttistable(TValue.minus(L.top, 1)));
 				func.c.setEnv(LuaObject.hvalue(TValue.minus(L.top, 1)));
 				LuaGC.luaC_barrier(L, func, TValue.minus(L.top, 1));
@@ -598,7 +598,7 @@ namespace kurumi
 
 		public static void lua_pushcclosure(lua_State L, lua_CFunction fn, int n)
 		{
-			Closure cl;
+			LuaObject.Closure cl;
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
 			api_checknelems(L, n);
@@ -1017,7 +1017,7 @@ namespace kurumi
 		static void f_Ccall(lua_State L, object ud) 
 		{
 			CCallS c = ud as CCallS;
-			Closure cl;
+			LuaObject.Closure cl;
 			cl = LuaFunc.luaF_newCclosure(L, 0, getcurrenv(L));
 			cl.c.f = c.func;
 			LuaObject.setclvalue(L, L.top, cl);  /* push function */
@@ -1270,7 +1270,7 @@ namespace kurumi
 
 		static LuaConf.CharPtr aux_upvalue(TValue/*StkId*/ fi, int n, /*ref*/ TValue[] val)
 		{
-			Closure f;
+			LuaObject.Closure f;
 			if (!LuaObject.ttisfunction(fi))
 			{
 				return null;

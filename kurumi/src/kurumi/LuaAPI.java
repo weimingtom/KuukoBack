@@ -55,7 +55,7 @@ TValue.inc(top); //ref
 						return LuaState.registry(L);
 					}
 				case Lua.LUA_ENVIRONINDEX: {
-						Closure func = LuaState.curr_func(L);
+						LuaObject.Closure func = LuaState.curr_func(L);
 						LuaObject.sethvalue(L, L.env, func.c.getEnv());
 						return L.env;
 					}
@@ -63,7 +63,7 @@ TValue.inc(top); //ref
 						return LuaState.gt(L);
 					}
 				default: {
-						Closure func = LuaState.curr_func(L);
+						LuaObject.Closure func = LuaState.curr_func(L);
 						idx = Lua.LUA_GLOBALSINDEX - idx;
 						return (idx <= func.c.getNupvalues()) ? func.c.upvalue[idx-1] : (TValue)LuaObject.luaO_nilobject;
 					}
@@ -76,7 +76,7 @@ TValue.inc(top); //ref
 			return LuaObject.hvalue(LuaState.gt(L)); // use global table as environment 
 		}
 		else {
-			Closure func = LuaState.curr_func(L);
+			LuaObject.Closure func = LuaState.curr_func(L);
 			return func.c.getEnv();
 		}
 	}
@@ -214,7 +214,7 @@ TValue.dec(top); //ref
 		o = index2adr(L, idx);
 		api_checkvalidindex(L, o);
 		if (idx == Lua.LUA_ENVIRONINDEX) {
-			Closure func = LuaState.curr_func(L);
+			LuaObject.Closure func = LuaState.curr_func(L);
 			LuaLimits.api_check(L, LuaObject.ttistable(TValue.minus(L.top, 1)));
 			func.c.setEnv(LuaObject.hvalue(TValue.minus(L.top, 1)));
 			LuaGC.luaC_barrier(L, func, TValue.minus(L.top, 1));
@@ -503,7 +503,7 @@ TValue.dec(top); //ref
 	}
 
 	public static void lua_pushcclosure(lua_State L, lua_CFunction fn, int n) {
-		Closure cl;
+		LuaObject.Closure cl;
 		LuaLimits.lua_lock(L);
 		LuaGC.luaC_checkGC(L);
 		api_checknelems(L, n);
@@ -872,7 +872,7 @@ TValue.dec(top); //ref
 	
 	private static void f_Ccall(lua_State L, Object ud) {
 		CCallS c = (CCallS)((ud instanceof CCallS) ? ud : null);
-		Closure cl;
+		LuaObject.Closure cl;
 		cl = LuaFunc.luaF_newCclosure(L, 0, getcurrenv(L));
 		cl.c.f = c.func;
 		LuaObject.setclvalue(L, L.top, cl); // push function 
@@ -1089,7 +1089,7 @@ TValue.dec(top); // remove key  - ref
 	}
 
 	private static LuaConf.CharPtr aux_upvalue(TValue fi, int n, TValue[] val) { //ref - StkId
-		Closure f;
+		LuaObject.Closure f;
 		if (!LuaObject.ttisfunction(fi)) {
 			return null;
 		}

@@ -40,9 +40,9 @@ namespace kurumi
             return (Udata)this;
         }
 
-        public Closure getCl()
+        public LuaObject.Closure getCl()
         {
-            return (Closure)this;
+            return (LuaObject.Closure)this;
         }
 
         public Table getH()

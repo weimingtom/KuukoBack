@@ -18,9 +18,9 @@ public class LuaFunc {
 		return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LCLOSURE)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * (n - 1); //typeof(LClosure)//typeof(TValue)
 	}
 
-	public static Closure luaF_newCclosure(lua_State L, int nelems, Table e) {
+	public static LuaObject.Closure luaF_newCclosure(lua_State L, int nelems, Table e) {
 		//Closure c = (Closure)luaM_malloc(L, sizeCclosure(nelems));
-		Closure c = LuaMem.luaM_new_Closure(L, new ClassType(ClassType.TYPE_CLOSURE));
+		LuaObject.Closure c = LuaMem.luaM_new_Closure(L, new ClassType(ClassType.TYPE_CLOSURE));
 		LuaMem.AddTotalBytes(L, sizeCclosure(nelems));
 		LuaGC.luaC_link(L, LuaState.obj2gco(c), (byte)Lua.LUA_TFUNCTION);
 		c.c.setIsC((byte)1);
@@ -33,9 +33,9 @@ public class LuaFunc {
 		return c;
 	}
 
-	public static Closure luaF_newLclosure(lua_State L, int nelems, Table e) {
+	public static LuaObject.Closure luaF_newLclosure(lua_State L, int nelems, Table e) {
 		//Closure c = (Closure)luaM_malloc(L, sizeLclosure(nelems));
-		Closure c = LuaMem.luaM_new_Closure(L, new ClassType(ClassType.TYPE_CLOSURE));
+		LuaObject.Closure c = LuaMem.luaM_new_Closure(L, new ClassType(ClassType.TYPE_CLOSURE));
 		LuaMem.AddTotalBytes(L, sizeLclosure(nelems));
 		LuaGC.luaC_link(L, LuaState.obj2gco(c), (byte)Lua.LUA_TFUNCTION);
 		c.l.setIsC((byte)0);
@@ -160,7 +160,7 @@ public class LuaFunc {
 	}
 
 	// we have a gc, so nothing to do
-	public static void luaF_freeclosure(lua_State L, Closure c) {
+	public static void luaF_freeclosure(lua_State L, LuaObject.Closure c) {
 		int size = (c.c.getIsC() != 0) ? sizeCclosure(c.c.getNupvalues()) : sizeLclosure(c.l.getNupvalues());
 		//luaM_freemem(L, c, size);
 		LuaMem.SubtractTotalBytes(L, size);

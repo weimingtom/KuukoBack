@@ -278,7 +278,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_CLOSURE)
 	            {
-	                result = new Closure();
+	                result = new LuaObject.Closure();
 	            }
 	            else if (type == TYPE_UPVAL)
 	            {
@@ -997,7 +997,7 @@ namespace kurumi
             }
             else if (type == TYPE_CLOSURE)
             {
-                return typeof(Closure);
+                return typeof(LuaObject.Closure);
             }
             else if (type == TYPE_UPVAL)
             {
@@ -1103,7 +1103,7 @@ namespace kurumi
             {
                 return 4;
             }
-            else if (t == typeof(Closure))
+            else if (t == typeof(LuaObject.Closure))
             {
                 return 0;	// handle this one manually in the code
             }

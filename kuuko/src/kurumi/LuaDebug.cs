@@ -180,7 +180,7 @@ namespace kurumi
 			return name;
 		}
 
-		private static void funcinfo (lua_Debug ar, Closure cl) 
+		private static void funcinfo (lua_Debug ar, LuaObject.Closure cl) 
 		{
 			if (cl.c.getIsC() != 0) 
 			{
@@ -209,7 +209,7 @@ namespace kurumi
 			ar.nups = 0;
 		}
 
-		private static void collectvalidlines(lua_State L, Closure f) 
+		private static void collectvalidlines(lua_State L, LuaObject.Closure f) 
 		{
 			if (f == null || (f.c.getIsC() != 0)) 
 			{
@@ -230,7 +230,7 @@ namespace kurumi
 		}
 
 		private static int auxgetinfo (lua_State L, LuaConf.CharPtr what, lua_Debug ar,
-			Closure f, LuaState.CallInfo ci) 
+			LuaObject.Closure f, LuaState.CallInfo ci) 
 		{
 			int status = 1;
 			if (f == null) 
@@ -288,7 +288,7 @@ namespace kurumi
 		public static int lua_getinfo(lua_State L, LuaConf.CharPtr what, lua_Debug ar) 
 		{
 			int status;
-			Closure f = null;
+			LuaObject.Closure f = null;
 			LuaState.CallInfo ci = null;
 			LuaLimits.lua_lock(L);
 			if (LuaConf.CharPtr.isEqualChar(what, '>')) 

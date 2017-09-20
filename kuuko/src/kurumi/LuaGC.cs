@@ -507,7 +507,7 @@ namespace kurumi
 			}
 		}
 
-		private static void traverseclosure(global_State g, Closure cl) 
+		private static void traverseclosure(global_State g, LuaObject.Closure cl) 
 		{
 			markobject(g, cl.c.getEnv());
 			if (cl.c.getIsC() != 0) 
@@ -604,7 +604,7 @@ namespace kurumi
 					}
 				case Lua.LUA_TFUNCTION:
 					{
-						Closure cl = LuaState.gco2cl(o);
+						LuaObject.Closure cl = LuaState.gco2cl(o);
 						g.gray = cl.c.getGclist();
 						traverseclosure(g, cl);
 						return (cl.c.getIsC() != 0) ? LuaFunc.sizeCclosure(cl.c.getNupvalues()) :

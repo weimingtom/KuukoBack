@@ -675,7 +675,7 @@ namespace kurumi
 		{
 			int i;
 			Proto tf;
-			Closure cl;
+			LuaObject.Closure cl;
 			SParser p = (SParser)ud;
 			int c = LuaZIO.luaZ_lookahead(p.z);
 			LuaGC.luaC_checkGC(L);

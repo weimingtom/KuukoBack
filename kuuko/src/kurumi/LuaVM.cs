@@ -1268,7 +1268,7 @@ namespace kurumi
 						case OpCode.OP_CLOSURE: 
 							{
 								Proto p;
-								Closure ncl;
+								LuaObject.Closure ncl;
 								int nup, j;
 								p = cl.p.p[LuaOpCodes.GETARG_Bx(i)];
 								nup = p.nups;

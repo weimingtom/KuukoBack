@@ -419,7 +419,7 @@ public class LuaGC {
 		}
 	}
 
-	private static void traverseclosure(global_State g, Closure cl) {
+	private static void traverseclosure(global_State g, LuaObject.Closure cl) {
 		markobject(g, cl.c.getEnv());
 		if (cl.c.getIsC() != 0) {
 			int i;
@@ -494,7 +494,7 @@ public class LuaGC {
 					return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TABLE)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * h.sizearray + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_NODE)) * LuaObject.sizenode(h); //typeof(Node) - typeof(TValue) - typeof(Table)
 				}
 			case Lua.LUA_TFUNCTION: {
-					Closure cl = LuaState.gco2cl(o);
+					LuaObject.Closure cl = LuaState.gco2cl(o);
 					g.gray = cl.c.getGclist();
 					traverseclosure(g, cl);
 					return (cl.c.getIsC() != 0) ? LuaFunc.sizeCclosure(cl.c.getNupvalues()) : LuaFunc.sizeLclosure(cl.l.getNupvalues());

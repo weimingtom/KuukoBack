@@ -24,3 +24,6 @@ CClosure->LuaObject.CClosure
 
 CharPtr->LuaConf.CharPtr
 14:17 2017/9/20
+
+Closure->LuaObject.Closure
+20:28 2017-09-20

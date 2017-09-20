@@ -587,7 +587,7 @@ TValue.inc(top_ref); //ref
 	public static void f_parser(lua_State L, Object ud) {
 		int i;
 		Proto tf;
-		Closure cl;
+		LuaObject.Closure cl;
 		SParser p = (SParser)ud;
 		int c = LuaZIO.luaZ_lookahead(p.z);
 		LuaGC.luaC_checkGC(L);

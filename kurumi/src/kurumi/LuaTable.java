@@ -478,7 +478,7 @@ public class LuaTable {
 //		 
 	public static TValue luaH_getnum(Table t, int key) {
 		// (1 <= key && key <= t.sizearray) 
-		if ((long)((key - 1) & 0xffffffff) < (long)(t.sizearray & 0xffffffff)) { //uint - uint
+		if ((long)(((long)(key - 1)) & 0xffffffffL) < (long)(((long)t.sizearray) & 0xffffffffL)) { //uint - uint
 			return t.array[key - 1];
 		}
 		else {

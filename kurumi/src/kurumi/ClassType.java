@@ -218,7 +218,7 @@ public class ClassType {
 				result = new LocVar();
 			}
 			else if (type == TYPE_CLOSURE) {
-				result = new Closure();
+				result = new LuaObject.Closure();
 			}
 			else if (type == TYPE_UPVAL) {
 				result = new UpVal();

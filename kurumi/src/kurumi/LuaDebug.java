@@ -149,7 +149,7 @@ TValue.dec(top); // pop value  - ref
 		return name;
 	}
 
-	private static void funcinfo(lua_Debug ar, Closure cl) {
+	private static void funcinfo(lua_Debug ar, LuaObject.Closure cl) {
 		if (cl.c.getIsC() != 0) {
 			ar.source = LuaConf.CharPtr.toCharPtr("=[C]");
 			ar.linedefined = -1;
@@ -174,7 +174,7 @@ TValue.dec(top); // pop value  - ref
 		ar.nups = 0;
 	}
 
-	private static void collectvalidlines(lua_State L, Closure f) {
+	private static void collectvalidlines(lua_State L, LuaObject.Closure f) {
 		if (f == null || (f.c.getIsC() != 0)) {
 			LuaObject.setnilvalue(L.top);
 		}
@@ -190,7 +190,7 @@ TValue.dec(top); // pop value  - ref
 		LuaDo.incr_top(L);
 	}
 
-	private static int auxgetinfo(lua_State L, LuaConf.CharPtr what, lua_Debug ar, Closure f, LuaState.CallInfo ci) {
+	private static int auxgetinfo(lua_State L, LuaConf.CharPtr what, lua_Debug ar, LuaObject.Closure f, LuaState.CallInfo ci) {
 		int status = 1;
 		if (f == null) {
 			info_tailcall(ar);
@@ -236,7 +236,7 @@ TValue.dec(top); // pop value  - ref
 
 	public static int lua_getinfo(lua_State L, LuaConf.CharPtr what, lua_Debug ar) {
 		int status;
-		Closure f = null;
+		LuaObject.Closure f = null;
 		LuaState.CallInfo ci = null;
 		LuaLimits.lua_lock(L);
 		if (LuaConf.CharPtr.isEqualChar(what, '>')) {

@@ -121,11 +121,11 @@ public class LuaState {
         }
     }
 	
-	public static Closure curr_func(lua_State L) {
+	public static LuaObject.Closure curr_func(lua_State L) {
 		return (LuaObject.clvalue(L.ci.func));
 	}
 
-	public static Closure ci_func(CallInfo ci) {
+	public static LuaObject.Closure ci_func(CallInfo ci) {
 		return (LuaObject.clvalue(ci.func));
 	}
 
@@ -212,8 +212,8 @@ public class LuaState {
 		return (Udata)(rawgco2u(o).uv);
 	}
 
-	public static Closure gco2cl(GCObject o) {
-		return (Closure)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TFUNCTION, o.getCl());
+	public static LuaObject.Closure gco2cl(GCObject o) {
+		return (LuaObject.Closure)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TFUNCTION, o.getCl());
 	}
 
 	public static Table gco2h(GCObject o) {

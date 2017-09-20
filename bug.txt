@@ -1,4 +1,4 @@
-(1)
+(1) Java, console init throw error
 
 		//FIXME:
 0xffffffffL & (long)---->		long h = ((long)l) & 0xffffffffL; // seed  - (uint) - uint - int
@@ -8,5 +8,21 @@
 			//FIXME:
 			// compute hash 
 0xffffffffL & (long)---->		h = (0xffffffffL) & ((long)(h ^ ((h << 5)+(h >> 2) + (byte)str.get(l1 - 1))));
+		}
+		
+		
+(2) Java, execute 'return 0'
+
+	public static TValue luaH_getnum(Table t, int key) {
+		// (1 <= key && key <= t.sizearray) 
+---->		if ((long)((key - 1) & 0xffffffff) < (long)(t.sizearray & 0xffffffff)) { //uint - uint
+			return t.array[key - 1];
+		}
+		
+		
+	public static TValue luaH_getnum(Table t, int key) {
+		// (1 <= key && key <= t.sizearray) 
+		if ((long)(((long)(key - 1)) & 0xffffffffL) < (long)(((long)t.sizearray) & 0xffffffffL)) { //uint - uint
+			return t.array[key - 1];
 		}
 		

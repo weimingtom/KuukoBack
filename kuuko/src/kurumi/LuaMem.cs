@@ -157,9 +157,9 @@ namespace kurumi
 			return (Proto)luaM_realloc__Proto(L, t); 
 		}
 
-        public static Closure luaM_new_Closure(lua_State L, ClassType t)
+        public static LuaObject.Closure luaM_new_Closure(lua_State L, ClassType t)
         {
-            return (Closure)luaM_realloc__Closure(L, t);
+            return (LuaObject.Closure)luaM_realloc__Closure(L, t);
         }
 
         public static UpVal luaM_new_UpVal(lua_State L, ClassType t)
@@ -554,7 +554,7 @@ namespace kurumi
         {
             int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
             int nsize = unmanaged_size;
-            Closure new_obj = (Closure)t.Alloc();//System.Activator.CreateInstance(typeof(T));
+            LuaObject.Closure new_obj = (LuaObject.Closure)t.Alloc();//System.Activator.CreateInstance(typeof(T));
             AddTotalBytes(L, nsize);
             return new_obj;
         }
