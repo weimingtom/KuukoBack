@@ -1155,7 +1155,7 @@ namespace kurumi
             {
                 return 52;
             }
-            else if (t == typeof(FuncState))
+            else if (t == typeof(LuaParser.FuncState))
             {
                 return 572;
             }

@@ -12,7 +12,7 @@ namespace kurumi
 		public int lastline;  /* line of last token `consumed' */
 		public Token t = new Token();  /* current token */
 		public Token lookahead = new Token();  /* look ahead token */
-		public FuncState fs;  /* `FuncState' is private to the parser */
+		public LuaParser.FuncState fs;  /* `FuncState' is private to the parser */
 		public lua_State L;
 		public ZIO z;  /* input stream */
 		public Mbuffer buff;  /* buffer for tokens */
