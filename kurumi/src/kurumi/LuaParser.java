@@ -18,7 +18,7 @@ public class LuaParser {
 		return fs.f.locvars[fs.actvar[i]];
 	}
 
-	public static void luaY_checklimit(FuncState fs, int v, int l, CharPtr m) {
+	public static void luaY_checklimit(FuncState fs, int v, int l, LuaConf.CharPtr m) {
 		if ((v) > (l)) {
 			errorlimit(fs, l, m);
 		}
@@ -44,11 +44,11 @@ public class LuaParser {
 	}
 
 	private static void error_expected(LexState ls, int token) {
-		LuaLex.luaX_syntaxerror(ls, LuaObject.luaO_pushfstring(ls.L, CharPtr.toCharPtr(LuaConf.getLUA_QS() + " expected"), LuaLex.luaX_token2str(ls, token)));
+		LuaLex.luaX_syntaxerror(ls, LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr(LuaConf.getLUA_QS() + " expected"), LuaLex.luaX_token2str(ls, token)));
 	}
 
-	private static void errorlimit(FuncState fs, int limit, CharPtr what) {
-		CharPtr msg = (fs.f.linedefined == 0) ? LuaObject.luaO_pushfstring(fs.L, CharPtr.toCharPtr("main function has more than %d %s"), limit, what) : LuaObject.luaO_pushfstring(fs.L, CharPtr.toCharPtr("function at line %d has more than %d %s"), fs.f.linedefined, limit, what);
+	private static void errorlimit(FuncState fs, int limit, LuaConf.CharPtr what) {
+		LuaConf.CharPtr msg = (fs.f.linedefined == 0) ? LuaObject.luaO_pushfstring(fs.L, LuaConf.CharPtr.toCharPtr("main function has more than %d %s"), limit, what) : LuaObject.luaO_pushfstring(fs.L, LuaConf.CharPtr.toCharPtr("function at line %d has more than %d %s"), fs.f.linedefined, limit, what);
 		LuaLex.luaX_lexerror(fs.ls, msg, 0);
 	}
 
@@ -73,7 +73,7 @@ public class LuaParser {
 		LuaLex.luaX_next(ls);
 	}
 
-	public static void check_condition(LexState ls, boolean c, CharPtr msg) {
+	public static void check_condition(LexState ls, boolean c, LuaConf.CharPtr msg) {
 		if (!(c)) {
 			LuaLex.luaX_syntaxerror(ls, msg);
 		}
@@ -85,7 +85,7 @@ public class LuaParser {
 				error_expected(ls, what);
 			}
 			else {
-				LuaLex.luaX_syntaxerror(ls, LuaObject.luaO_pushfstring(ls.L, CharPtr.toCharPtr(LuaConf.getLUA_QS() + " expected (to close " + LuaConf.getLUA_QS() + " at line %d)"), LuaLex.luaX_token2str(ls, what), LuaLex.luaX_token2str(ls, who), where));
+				LuaLex.luaX_syntaxerror(ls, LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr(LuaConf.getLUA_QS() + " expected (to close " + LuaConf.getLUA_QS() + " at line %d)"), LuaLex.luaX_token2str(ls, what), LuaLex.luaX_token2str(ls, who), where));
 			}
 		}
 	}
@@ -120,7 +120,7 @@ public class LuaParser {
 		locvars_ref[0] = f.locvars;
 		int[] sizelocvars_ref = new int[1];
 		sizelocvars_ref[0] = f.sizelocvars;
-		LuaMem.luaM_growvector_LocVar(ls.L, locvars_ref, fs.nlocvars, sizelocvars_ref, (int)LuaConf.SHRT_MAX, CharPtr.toCharPtr("too many local variables"), new ClassType(ClassType.TYPE_LOCVAR)); //ref - ref
+		LuaMem.luaM_growvector_LocVar(ls.L, locvars_ref, fs.nlocvars, sizelocvars_ref, (int)LuaConf.SHRT_MAX, LuaConf.CharPtr.toCharPtr("too many local variables"), new ClassType(ClassType.TYPE_LOCVAR)); //ref - ref
 		f.sizelocvars = sizelocvars_ref[0];
 		f.locvars = locvars_ref[0];
 		while (oldsize < f.sizelocvars) {
@@ -131,13 +131,13 @@ public class LuaParser {
 		return fs.nlocvars++;
 	}
 
-	public static void new_localvarliteral(LexState ls, CharPtr v, int n) {
-		new_localvar(ls, LuaLex.luaX_newstring(ls, CharPtr.toCharPtr("" + v), (v.chars.length - 1)), n); //(uint)
+	public static void new_localvarliteral(LexState ls, LuaConf.CharPtr v, int n) {
+		new_localvar(ls, LuaLex.luaX_newstring(ls, LuaConf.CharPtr.toCharPtr("" + v), (v.chars.length - 1)), n); //(uint)
 	}
 
 	private static void new_localvar(LexState ls, TString name, int n) {
 		FuncState fs = ls.fs;
-		luaY_checklimit(fs, fs.nactvar + n + 1, LuaConf.LUAI_MAXVARS, CharPtr.toCharPtr("local variables"));
+		luaY_checklimit(fs, fs.nactvar + n + 1, LuaConf.LUAI_MAXVARS, LuaConf.CharPtr.toCharPtr("local variables"));
 		fs.actvar[fs.nactvar + n] = (int)registerlocalvar(ls, name); //ushort
 	}
 
@@ -167,12 +167,12 @@ public class LuaParser {
 			}
 		}
 		// new one 
-		luaY_checklimit(fs, f.nups + 1, LuaConf.LUAI_MAXUPVALUES, CharPtr.toCharPtr("upvalues"));
+		luaY_checklimit(fs, f.nups + 1, LuaConf.LUAI_MAXUPVALUES, LuaConf.CharPtr.toCharPtr("upvalues"));
 		TString[][] upvalues_ref = new TString[1][];
 		upvalues_ref[0] = f.upvalues;
 		int[] sizeupvalues_ref = new int[1];
 		sizeupvalues_ref[0] = f.sizeupvalues;
-		LuaMem.luaM_growvector_TString(fs.L, upvalues_ref, f.nups, sizeupvalues_ref, LuaLimits.MAX_INT, CharPtr.toCharPtr(""), new ClassType(ClassType.TYPE_TSTRING)); //ref - ref
+		LuaMem.luaM_growvector_TString(fs.L, upvalues_ref, f.nups, sizeupvalues_ref, LuaLimits.MAX_INT, LuaConf.CharPtr.toCharPtr(""), new ClassType(ClassType.TYPE_TSTRING)); //ref - ref
 		f.sizeupvalues = sizeupvalues_ref[0];
 		f.upvalues = upvalues_ref[0];
 		while (oldsize < f.sizeupvalues) {
@@ -268,7 +268,7 @@ public class LuaParser {
 
 	private static void enterlevel(LexState ls) {
 		if (++ls.L.nCcalls > LuaConf.LUAI_MAXCCALLS) {
-			LuaLex.luaX_lexerror(ls, CharPtr.toCharPtr("chunk has too many syntax levels"), 0);
+			LuaLex.luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("chunk has too many syntax levels"), 0);
 		}
 	}
 
@@ -309,7 +309,7 @@ public class LuaParser {
 		p_ref[0] = f.p;
 		int[] sizep_ref = new int[1];
 		sizep_ref[0] = f.sizep;
-		LuaMem.luaM_growvector_Proto(ls.L, p_ref, fs.np, sizep_ref, LuaOpCodes.MAXARG_Bx, CharPtr.toCharPtr("constant table overflow"), new ClassType(ClassType.TYPE_PROTO)); //ref - ref
+		LuaMem.luaM_growvector_Proto(ls.L, p_ref, fs.np, sizep_ref, LuaOpCodes.MAXARG_Bx, LuaConf.CharPtr.toCharPtr("constant table overflow"), new ClassType(ClassType.TYPE_PROTO)); //ref - ref
 		f.sizep = sizep_ref[0];
 		f.p = p_ref[0];
 		while (oldsize < f.sizep) {
@@ -404,7 +404,7 @@ public class LuaParser {
 		}
 	}
 
-	public static Proto luaY_parser(lua_State L, ZIO z, Mbuffer buff, CharPtr name) {
+	public static Proto luaY_parser(lua_State L, ZIO z, Mbuffer buff, LuaConf.CharPtr name) {
 		LexState lexstate = new LexState();
 		FuncState funcstate = new FuncState();
 		lexstate.buff = buff;
@@ -455,7 +455,7 @@ public class LuaParser {
 		expdesc key = new expdesc(), val = new expdesc();
 		int rkkey;
 		if (ls.t.token == (int)RESERVED.TK_NAME) {
-			luaY_checklimit(fs, cc.nh, LuaLimits.MAX_INT, CharPtr.toCharPtr("items in a constructor"));
+			luaY_checklimit(fs, cc.nh, LuaLimits.MAX_INT, LuaConf.CharPtr.toCharPtr("items in a constructor"));
 			checkname(ls, key);
 		}
 		else { // ls.t.token == '[' 
@@ -501,7 +501,7 @@ public class LuaParser {
 
 	private static void listfield(LexState ls, ConsControl cc) {
 		expr(ls, cc.v);
-		luaY_checklimit(ls.fs, cc.na, LuaLimits.MAX_INT, CharPtr.toCharPtr("items in a constructor"));
+		luaY_checklimit(ls.fs, cc.na, LuaLimits.MAX_INT, LuaConf.CharPtr.toCharPtr("items in a constructor"));
 		cc.na++;
 		cc.tostore++;
 	}
@@ -577,14 +577,14 @@ public class LuaParser {
 							LuaLex.luaX_next(ls);
 							///#if LUA_COMPAT_VARARG
 							// use `arg' as default name 
-							new_localvarliteral(ls, CharPtr.toCharPtr("arg"), nparams++);
+							new_localvarliteral(ls, LuaConf.CharPtr.toCharPtr("arg"), nparams++);
 							f.is_vararg = LuaObject.VARARG_HASARG | LuaObject.VARARG_NEEDSARG;
 							///#endif
 							f.is_vararg |= LuaObject.VARARG_ISVARARG;
 							break;
 						}
 					default: {
-							LuaLex.luaX_syntaxerror(ls, CharPtr.toCharPtr("<name> or " + LuaConf.LUA_QL("...") + " expected"));
+							LuaLex.luaX_syntaxerror(ls, LuaConf.CharPtr.toCharPtr("<name> or " + LuaConf.LUA_QL("...") + " expected"));
 							break;
 						}
 				}
@@ -603,7 +603,7 @@ public class LuaParser {
 		new_fs.f.linedefined = line;
 		checknext(ls, '(');
 		if (needself != 0) {
-			new_localvarliteral(ls, CharPtr.toCharPtr("self"), 0);
+			new_localvarliteral(ls, LuaConf.CharPtr.toCharPtr("self"), 0);
 			adjustlocalvars(ls, 1);
 		}
 		parlist(ls);
@@ -636,7 +636,7 @@ public class LuaParser {
 			case '(': {
 					// funcargs . `(' [ explist1 ] `)' 
 					if (line != ls.lastline) {
-						LuaLex.luaX_syntaxerror(ls, CharPtr.toCharPtr("ambiguous syntax (function call x new statement)"));
+						LuaLex.luaX_syntaxerror(ls, LuaConf.CharPtr.toCharPtr("ambiguous syntax (function call x new statement)"));
 					}
 					LuaLex.luaX_next(ls);
 					if (ls.t.token == ')') { // arg list is empty? 
@@ -661,7 +661,7 @@ public class LuaParser {
 					break;
 				}
 			default: {
-					LuaLex.luaX_syntaxerror(ls, CharPtr.toCharPtr("function arguments expected"));
+					LuaLex.luaX_syntaxerror(ls, LuaConf.CharPtr.toCharPtr("function arguments expected"));
 					return;
 				}
 		}
@@ -704,7 +704,7 @@ public class LuaParser {
 					return;
 				}
 			default: {
-					LuaLex.luaX_syntaxerror(ls, CharPtr.toCharPtr("unexpected symbol"));
+					LuaLex.luaX_syntaxerror(ls, LuaConf.CharPtr.toCharPtr("unexpected symbol"));
 					return;
 				}
 		}
@@ -782,7 +782,7 @@ public class LuaParser {
 			case (int)RESERVED.TK_DOTS: {
 					// vararg 
 					FuncState fs = ls.fs;
-					check_condition(ls, fs.f.is_vararg != 0, CharPtr.toCharPtr("cannot use " + LuaConf.LUA_QL("...") + " outside a vararg function"));
+					check_condition(ls, fs.f.is_vararg != 0, LuaConf.CharPtr.toCharPtr("cannot use " + LuaConf.LUA_QL("...") + " outside a vararg function"));
 					fs.f.is_vararg &= ((byte)((~LuaObject.VARARG_NEEDSARG) & 0xff)); // don't need 'arg'  - lu_byte - unchecked
 					init_exp(v, expkind.VVARARG, LuaCode.luaK_codeABC(fs, OpCode.OP_VARARG, 0, 1, 0));
 					break;
@@ -988,7 +988,7 @@ public class LuaParser {
 
 	private static void assignment(LexState ls, LHS_assign lh, int nvars) {
 		expdesc e = new expdesc();
-		check_condition(ls, expkindUtil.expkindToInt(expkind.VLOCAL) <= expkindUtil.expkindToInt(lh.v.k) && expkindUtil.expkindToInt(lh.v.k) <= expkindUtil.expkindToInt(expkind.VINDEXED), CharPtr.toCharPtr("syntax error"));
+		check_condition(ls, expkindUtil.expkindToInt(expkind.VLOCAL) <= expkindUtil.expkindToInt(lh.v.k) && expkindUtil.expkindToInt(lh.v.k) <= expkindUtil.expkindToInt(expkind.VINDEXED), LuaConf.CharPtr.toCharPtr("syntax error"));
 		if (testnext(ls, ',') != 0) {
 			// assignment . `,' primaryexp assignment 
 			LHS_assign nv = new LHS_assign();
@@ -997,7 +997,7 @@ public class LuaParser {
 			if (nv.v.k == expkind.VLOCAL) {
 				check_conflict(ls, lh, nv.v);
 			}
-			luaY_checklimit(ls.fs, nvars, LuaConf.LUAI_MAXCCALLS - ls.L.nCcalls, CharPtr.toCharPtr("variables in assignment"));
+			luaY_checklimit(ls.fs, nvars, LuaConf.LUAI_MAXCCALLS - ls.L.nCcalls, LuaConf.CharPtr.toCharPtr("variables in assignment"));
 			assignment(ls, nv, nvars+1);
 		}
 		else {
@@ -1041,7 +1041,7 @@ public class LuaParser {
 			bl = bl.previous;
 		}
 		if (bl==null) {
-			LuaLex.luaX_syntaxerror(ls, CharPtr.toCharPtr("no loop to break"));
+			LuaLex.luaX_syntaxerror(ls, LuaConf.CharPtr.toCharPtr("no loop to break"));
 		}
 		if (upval != 0) {
 			LuaCode.luaK_codeABC(fs, OpCode.OP_CLOSE, bl.nactvar, 0, 0);
@@ -1129,9 +1129,9 @@ public class LuaParser {
 		// fornum . NAME = exp1,exp1[,exp1] forbody 
 		FuncState fs = ls.fs;
 		int base_ = fs.freereg;
-		new_localvarliteral(ls, CharPtr.toCharPtr("(for index)"), 0);
-		new_localvarliteral(ls, CharPtr.toCharPtr("(for limit)"), 1);
-		new_localvarliteral(ls, CharPtr.toCharPtr("(for step)"), 2);
+		new_localvarliteral(ls, LuaConf.CharPtr.toCharPtr("(for index)"), 0);
+		new_localvarliteral(ls, LuaConf.CharPtr.toCharPtr("(for limit)"), 1);
+		new_localvarliteral(ls, LuaConf.CharPtr.toCharPtr("(for step)"), 2);
 		new_localvar(ls, varname, 3);
 		checknext(ls, '=');
 		exp1(ls); // initial value 
@@ -1156,9 +1156,9 @@ public class LuaParser {
 		int line;
 		int base_ = fs.freereg;
 		// create control variables 
-		new_localvarliteral(ls, CharPtr.toCharPtr("(for generator)"), nvars++);
-		new_localvarliteral(ls, CharPtr.toCharPtr("(for state)"), nvars++);
-		new_localvarliteral(ls, CharPtr.toCharPtr("(for control)"), nvars++);
+		new_localvarliteral(ls, LuaConf.CharPtr.toCharPtr("(for generator)"), nvars++);
+		new_localvarliteral(ls, LuaConf.CharPtr.toCharPtr("(for state)"), nvars++);
+		new_localvarliteral(ls, LuaConf.CharPtr.toCharPtr("(for control)"), nvars++);
 		// create declared variables 
 		new_localvar(ls, indexname, nvars++);
 		while (testnext(ls, ',') != 0) {
@@ -1190,7 +1190,7 @@ public class LuaParser {
 					break;
 				}
 			default: {
-					LuaLex.luaX_syntaxerror(ls, CharPtr.toCharPtr(LuaConf.LUA_QL("=") + " or " + LuaConf.LUA_QL("in") + " expected"));
+					LuaLex.luaX_syntaxerror(ls, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("=") + " or " + LuaConf.LUA_QL("in") + " expected"));
 					break;
 				}
 		}

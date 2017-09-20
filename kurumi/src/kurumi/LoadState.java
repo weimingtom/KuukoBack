@@ -10,6 +10,6 @@ package kurumi;
 		public lua_State L;
 		public ZIO Z;
 		public Mbuffer b;
-		public CharPtr name;
+		public LuaConf.CharPtr name;
 	}
 //}

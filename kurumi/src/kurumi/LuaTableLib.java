@@ -75,7 +75,7 @@ public class LuaTableLib {
 		///#ifndef luaL_setn
 		//luaL_setn(L, 1, luaL_checkint(L, 2));
 		///#else
-		LuaAuxLib.luaL_error(L, CharPtr.toCharPtr(LuaConf.LUA_QL("setn") + " is obsolete"));
+		LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("setn") + " is obsolete"));
 		///#endif
 		LuaAPI.lua_pushvalue(L, 1);
 		return 1;
@@ -104,7 +104,7 @@ public class LuaTableLib {
 					break;
 				}
 			default: {
-					return LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("wrong number of arguments to " + LuaConf.LUA_QL("insert")));
+					return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("wrong number of arguments to " + LuaConf.LUA_QL("insert")));
 				}
 		}
 		LuaAuxLib.luaL_setn(L, 1, e); // new size 
@@ -132,7 +132,7 @@ public class LuaTableLib {
 	private static void addfield(lua_State L, luaL_Buffer b, int i) {
 		LuaAPI.lua_rawgeti(L, 1, i);
 		if (LuaAPI.lua_isstring(L, -1) == 0) {
-			LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("invalid value (%s) at index %d in table for " + LuaConf.LUA_QL("concat")), LuaAuxLib.luaL_typename(L, -1), i);
+			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid value (%s) at index %d in table for " + LuaConf.LUA_QL("concat")), LuaAuxLib.luaL_typename(L, -1), i);
 		}
 		LuaAuxLib.luaL_addvalue(b);
 	}
@@ -142,7 +142,7 @@ public class LuaTableLib {
 		luaL_Buffer b = new luaL_Buffer();
 		int[] lsep = new int[1]; //uint
 		int i, last;
-		CharPtr sep = LuaAuxLib.luaL_optlstring(L, 2, CharPtr.toCharPtr(""), lsep); //out
+		LuaConf.CharPtr sep = LuaAuxLib.luaL_optlstring(L, 2, LuaConf.CharPtr.toCharPtr(""), lsep); //out
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		i = LuaAuxLib.luaL_optint(L, 3, 1);
 		last = LuaAuxLib.luaL_opt_integer(L, new LuaAuxLib.luaL_checkint_delegate(), 4, LuaAuxLib.luaL_getn(L, 1));
@@ -251,7 +251,7 @@ public class LuaTableLib {
 						break;
 					}
 					if (i > u) {
-						LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("invalid order function for sorting"));
+						LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid order function for sorting"));
 					}
 					Lua.lua_pop(L, 1); // remove a[i] 
 				}
@@ -265,7 +265,7 @@ public class LuaTableLib {
 						break;
 					}
 					if (j < l) {
-						LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("invalid order function for sorting"));
+						LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid order function for sorting"));
 					}
 					Lua.lua_pop(L, 1); // remove a[j] 
 				}
@@ -296,7 +296,7 @@ public class LuaTableLib {
 
 	private static int sort(lua_State L) {
 		int n = aux_getn(L, 1);
-		LuaAuxLib.luaL_checkstack(L, 40, CharPtr.toCharPtr("")); // assume array is smaller than 2^40 
+		LuaAuxLib.luaL_checkstack(L, 40, LuaConf.CharPtr.toCharPtr("")); // assume array is smaller than 2^40 
 		if (!Lua.lua_isnoneornil(L, 2)) { // is there a 2nd argument? 
 			LuaAuxLib.luaL_checktype(L, 2, Lua.LUA_TFUNCTION);
 		}
@@ -307,10 +307,21 @@ public class LuaTableLib {
 
 	// }====================================================== 
 
-	private final static luaL_Reg[] tab_funcs = { new luaL_Reg(CharPtr.toCharPtr("concat"), new LuaTableLib_delegate("tconcat")), new luaL_Reg(CharPtr.toCharPtr("foreach"), new LuaTableLib_delegate("_foreach")), new luaL_Reg(CharPtr.toCharPtr("foreachi"), new LuaTableLib_delegate("foreachi")), new luaL_Reg(CharPtr.toCharPtr("getn"), new LuaTableLib_delegate("getn")), new luaL_Reg(CharPtr.toCharPtr("maxn"), new LuaTableLib_delegate("maxn")), new luaL_Reg(CharPtr.toCharPtr("insert"), new LuaTableLib_delegate("tinsert")), new luaL_Reg(CharPtr.toCharPtr("remove"), new LuaTableLib_delegate("tremove")), new luaL_Reg(CharPtr.toCharPtr("setn"), new LuaTableLib_delegate("setn")), new luaL_Reg(CharPtr.toCharPtr("sort"), new LuaTableLib_delegate("sort")), new luaL_Reg(null, null) };
+	private final static luaL_Reg[] tab_funcs = { 
+		new luaL_Reg(LuaConf.CharPtr.toCharPtr("concat"), new LuaTableLib_delegate("tconcat")), 
+		new luaL_Reg(LuaConf.CharPtr.toCharPtr("foreach"), new LuaTableLib_delegate("_foreach")), 
+		new luaL_Reg(LuaConf.CharPtr.toCharPtr("foreachi"), new LuaTableLib_delegate("foreachi")), 
+		new luaL_Reg(LuaConf.CharPtr.toCharPtr("getn"), new LuaTableLib_delegate("getn")), 
+		new luaL_Reg(LuaConf.CharPtr.toCharPtr("maxn"), new LuaTableLib_delegate("maxn")), 
+		new luaL_Reg(LuaConf.CharPtr.toCharPtr("insert"), new LuaTableLib_delegate("tinsert")), 
+		new luaL_Reg(LuaConf.CharPtr.toCharPtr("remove"), new LuaTableLib_delegate("tremove")), 
+		new luaL_Reg(LuaConf.CharPtr.toCharPtr("setn"), new LuaTableLib_delegate("setn")), 
+		new luaL_Reg(LuaConf.CharPtr.toCharPtr("sort"), new LuaTableLib_delegate("sort")), 
+		new luaL_Reg(null, null) 
+	};
 
 	public static int luaopen_table(lua_State L) {
-		LuaAuxLib.luaL_register(L, CharPtr.toCharPtr(LuaLib.LUA_TABLIBNAME), tab_funcs);
+		LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_TABLIBNAME), tab_funcs);
 		return 1;
 	}
 

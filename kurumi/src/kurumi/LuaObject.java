@@ -269,11 +269,11 @@ public class LuaObject {
 		return (ttype(o) >= Lua.LUA_TSTRING);
 	}
 
-	public static CharPtr getstr(TString ts) {
+	public static LuaConf.CharPtr getstr(TString ts) {
 		return ts.str;
 	}
 
-	public static CharPtr svalue(TValue o) { //StkId
+	public static LuaConf.CharPtr svalue(TValue o) { //StkId
 		return getstr(rawtsvalue(o));
 	}
 
@@ -390,11 +390,11 @@ public class LuaObject {
 		}
 	}
 
-	public static int luaO_str2d(CharPtr s, double[] result) { //lua_Number - out
-		CharPtr[] endptr = new CharPtr[1];
-		endptr[0] = new CharPtr();
+	public static int luaO_str2d(LuaConf.CharPtr s, double[] result) { //lua_Number - out
+		LuaConf.CharPtr[] endptr = new LuaConf.CharPtr[1];
+		endptr[0] = new LuaConf.CharPtr();
 		result[0] = LuaConf.lua_str2number(s, endptr); //out
-		if (CharPtr.isEqual(endptr[0], s)) {
+		if (LuaConf.CharPtr.isEqual(endptr[0], s)) {
 			return 0; // conversion failed 
 		}
 		if (endptr[0].get(0) == 'x' || endptr[0].get(0) == 'X') { // maybe an hexadecimal constant? 
@@ -412,38 +412,38 @@ public class LuaObject {
 		return 1;
 	}
 
-	private static void pushstr(lua_State L, CharPtr str) {
+	private static void pushstr(lua_State L, LuaConf.CharPtr str) {
 		setsvalue2s(L, L.top, LuaString.luaS_new(L, str));
 		LuaDo.incr_top(L);
 	}
 
 	// this function handles only `%d', `%c', %f, %p, and `%s' formats 
-	public static CharPtr luaO_pushvfstring(lua_State L, CharPtr fmt, Object... argp) {
+	public static LuaConf.CharPtr luaO_pushvfstring(lua_State L, LuaConf.CharPtr fmt, Object... argp) {
 		int parm_index = 0;
 		int n = 1;
-		pushstr(L, CharPtr.toCharPtr(""));
+		pushstr(L, LuaConf.CharPtr.toCharPtr(""));
 		for (;;) {
-			CharPtr e = LuaConf.strchr(fmt, '%');
-			if (CharPtr.isEqual(e, null)) {
+			LuaConf.CharPtr e = LuaConf.strchr(fmt, '%');
+			if (LuaConf.CharPtr.isEqual(e, null)) {
 				break;
 			}
-			setsvalue2s(L, L.top, LuaString.luaS_newlstr(L, fmt, CharPtr.minus(e, fmt))); //(uint)
+			setsvalue2s(L, L.top, LuaString.luaS_newlstr(L, fmt, LuaConf.CharPtr.minus(e, fmt))); //(uint)
 			LuaDo.incr_top(L);
 			switch (e.get(1)) {
 				case 's': {
 						Object o = argp[parm_index++];
-						CharPtr s = (CharPtr)((o instanceof CharPtr) ? o : null);
-						if (CharPtr.isEqual(s, null)) {
-							s = CharPtr.toCharPtr((String)o);
+						LuaConf.CharPtr s = (LuaConf.CharPtr)((o instanceof LuaConf.CharPtr) ? o : null);
+						if (LuaConf.CharPtr.isEqual(s, null)) {
+							s = LuaConf.CharPtr.toCharPtr((String)o);
 						}
-						if (CharPtr.isEqual(s, null)) {
-							s = CharPtr.toCharPtr("(null)");
+						if (LuaConf.CharPtr.isEqual(s, null)) {
+							s = LuaConf.CharPtr.toCharPtr("(null)");
 						}
 						pushstr(L, s);
 						break;
 					}
 				case 'c': {
-						CharPtr buff = CharPtr.toCharPtr(new char[2]);
+					LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[2]);
 						buff.set(0, (char)((Integer)argp[parm_index++]).intValue());
 						buff.set(1, '\0');
 						pushstr(L, buff);
@@ -461,17 +461,17 @@ public class LuaObject {
 					}
 				case 'p': {
 						//CharPtr buff = new char[4*sizeof(void *) + 8]; /* should be enough space for a `%p' */
-						CharPtr buff = CharPtr.toCharPtr(new char[32]);
-						LuaConf.sprintf(buff, CharPtr.toCharPtr("0x%08x"), argp[parm_index++].hashCode());
+						LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[32]);
+						LuaConf.sprintf(buff, LuaConf.CharPtr.toCharPtr("0x%08x"), argp[parm_index++].hashCode());
 						pushstr(L, buff);
 						break;
 					}
 				case '%': {
-						pushstr(L, CharPtr.toCharPtr("%"));
+						pushstr(L, LuaConf.CharPtr.toCharPtr("%"));
 						break;
 					}
 				default: {
-						CharPtr buff = CharPtr.toCharPtr(new char[3]);
+						LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[3]);
 						buff.set(0, '%');
 						buff.set(1, e.get(1));
 						buff.set(2, '\0');
@@ -480,7 +480,7 @@ public class LuaObject {
 					}
 			}
 			n += 2;
-			fmt = CharPtr.plus(e, 2);
+			fmt = LuaConf.CharPtr.plus(e, 2);
 		}
 		pushstr(L, fmt);
 		LuaVM.luaV_concat(L, n + 1, LuaLimits.cast_int(TValue.minus(L.top, L.base_)) - 1);
@@ -488,14 +488,14 @@ public class LuaObject {
 		return svalue(TValue.minus(L.top, 1));
 	}
 
-	public static CharPtr luaO_pushfstring(lua_State L, CharPtr fmt, Object... args) {
+	public static LuaConf.CharPtr luaO_pushfstring(lua_State L, LuaConf.CharPtr fmt, Object... args) {
 		return luaO_pushvfstring(L, fmt, args);
 	}
 
-	public static void luaO_chunkid(CharPtr out_, CharPtr source, int bufflen) { //uint
+	public static void luaO_chunkid(LuaConf.CharPtr out_, LuaConf.CharPtr source, int bufflen) { //uint
 		//out_ = "";
 		if (source.get(0) == '=') {
-			LuaConf.strncpy(out_, CharPtr.plus(source, 1), bufflen); // remove first char  - (int)
+			LuaConf.strncpy(out_, LuaConf.CharPtr.plus(source, 1), bufflen); // remove first char  - (int)
 			out_.set(bufflen - 1, '\0'); // ensures null termination 
 		}
 		else {
@@ -505,30 +505,30 @@ public class LuaObject {
 				source = source.next(); // skip the `@' 
 				bufflen -= ((new String(" '...' ")).length() + 1); //FIXME: - (uint)
 				l = LuaConf.strlen(source); //(uint)
-				LuaConf.strcpy(out_, CharPtr.toCharPtr(""));
+				LuaConf.strcpy(out_, LuaConf.CharPtr.toCharPtr(""));
 				if (l > bufflen) {
-					source = CharPtr.plus(source, (l - bufflen)); // get last part of file name 
-					LuaConf.strcat(out_, CharPtr.toCharPtr("..."));
+					source = LuaConf.CharPtr.plus(source, (l - bufflen)); // get last part of file name 
+					LuaConf.strcat(out_, LuaConf.CharPtr.toCharPtr("..."));
 				}
 				LuaConf.strcat(out_, source);
 			}
 			else {
 				// out = [string "string"] 
-				int len = LuaConf.strcspn(source, CharPtr.toCharPtr("\n\r")); // stop at first newline  - uint
+				int len = LuaConf.strcspn(source, LuaConf.CharPtr.toCharPtr("\n\r")); // stop at first newline  - uint
 				bufflen -= ((new String(" [string \"...\"] ")).length() + 1); //(uint)
 				if (len > bufflen) {
 					len = bufflen;
 				}
-				LuaConf.strcpy(out_, CharPtr.toCharPtr("[string \""));
+				LuaConf.strcpy(out_, LuaConf.CharPtr.toCharPtr("[string \""));
 				if (source.get(len) != '\0') {
 					// must truncate? 
 					LuaConf.strncat(out_, source, (int)len);
-					LuaConf.strcat(out_, CharPtr.toCharPtr("..."));
+					LuaConf.strcat(out_, LuaConf.CharPtr.toCharPtr("..."));
 				}
 				else {
 					LuaConf.strcat(out_, source);
 				}
-				LuaConf.strcat(out_, CharPtr.toCharPtr("\"]"));
+				LuaConf.strcat(out_, LuaConf.CharPtr.toCharPtr("\"]"));
 			}
 		}
 	}

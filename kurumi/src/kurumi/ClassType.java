@@ -230,7 +230,7 @@ public class ClassType {
 				result = new GCObject();
 			}
 			else if (type == TYPE_CHARPTR) {
-				result = new CharPtr();
+				result = new LuaConf.CharPtr();
 			}
 			//return null;
 			if (result == null) {

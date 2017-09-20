@@ -11,10 +11,10 @@ package kurumi;
 //{
 	public class luaL_Reg
 	{
-		public CharPtr name;
+		public LuaConf.CharPtr name;
 		public lua_CFunction func;
 		
-		public luaL_Reg(CharPtr name, lua_CFunction func)
+		public luaL_Reg(LuaConf.CharPtr name, lua_CFunction func)
 		{
 			this.name = name;
 			this.func = func;

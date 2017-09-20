@@ -17,11 +17,11 @@ public class LuaString {
 		return (int)u.len;
 	}
 
-	public static TString luaS_new(lua_State L, CharPtr s) {
+	public static TString luaS_new(lua_State L, LuaConf.CharPtr s) {
 		return luaS_newlstr(L, s, LuaConf.strlen(s)); //(uint)
 	}
 
-	public static TString luaS_newliteral(lua_State L, CharPtr s) {
+	public static TString luaS_newliteral(lua_State L, LuaConf.CharPtr s) {
 		return luaS_newlstr(L, s, LuaConf.strlen(s)); //(uint)
 	}
 
@@ -76,13 +76,13 @@ public class LuaString {
 		tb.hash = newhash;
 	}
 
-	public static TString newlstr(lua_State L, CharPtr str, int l, long h) { //uint - int - uint
+	public static TString newlstr(lua_State L, LuaConf.CharPtr str, int l, long h) { //uint - int - uint
 		TString ts;
 		stringtable tb;
 		if (l + 1 > LuaLimits.MAX_SIZET / LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR))) { //typeof(char)
 			LuaMem.luaM_toobig(L);
 		}
-		ts = new TString(CharPtr.toCharPtr(new char[l + 1]));
+		ts = new TString(LuaConf.CharPtr.toCharPtr(new char[l + 1]));
 		LuaMem.AddTotalBytes(L, (int)(l + 1) * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TSTRING))); //typeof(TString)//typeof(char)
 		ts.getTsv().len = l;
 		ts.getTsv().hash = h;
@@ -103,7 +103,7 @@ public class LuaString {
 		return ts;
 	}
 
-	public static TString luaS_newlstr(lua_State L, CharPtr str, int l) { //uint
+	public static TString luaS_newlstr(lua_State L, LuaConf.CharPtr str, int l) { //uint
 		GCObject o;
 		//FIXME:
 		long h = ((long)l) & 0xffffffffL; // seed  - (uint) - uint - int

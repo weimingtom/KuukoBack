@@ -296,7 +296,7 @@ public class LuaState {
 		LuaString.luaS_resize(L, LuaLimits.MINSTRTABSIZE); // initial size of string table 
 		LuaTM.luaT_init(L);
 		LuaLex.luaX_init(L);
-		LuaString.luaS_fix(LuaString.luaS_newliteral(L, CharPtr.toCharPtr(LuaMem.MEMERRMSG)));
+		LuaString.luaS_fix(LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr(LuaMem.MEMERRMSG)));
 		g.GCthreshold = 4 * g.totalbytes;
 	}
 

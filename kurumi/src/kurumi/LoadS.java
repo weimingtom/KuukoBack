@@ -11,7 +11,7 @@ package kurumi;
 //{
 	public class LoadS
 	{
-		public CharPtr s;
+		public LuaConf.CharPtr s;
 		public int/*uint*/ size;
 	}
 //}

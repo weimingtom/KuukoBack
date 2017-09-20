@@ -28,34 +28,34 @@ public class LuacProgram {
 	///#include "lstring.h"
 	///#include "lundump.h"
 
-	private static CharPtr PROGNAME = CharPtr.toCharPtr("luac"); // default program name 
-	private static CharPtr OUTPUT = CharPtr.toCharPtr(PROGNAME + ".out"); // default output file 
+	private static LuaConf.CharPtr PROGNAME = LuaConf.CharPtr.toCharPtr("luac"); // default program name 
+	private static LuaConf.CharPtr OUTPUT = LuaConf.CharPtr.toCharPtr(PROGNAME + ".out"); // default output file 
 
 	private static int listing = 0; // list bytecodes? 
 	private static int dumping = 1; // dump bytecodes? 
 	private static int stripping = 0; // strip debug information? 
-	private static CharPtr Output = OUTPUT; // default output file name 
-	private static CharPtr output = Output; // actual output file name 
-	private static CharPtr progname = PROGNAME; // actual program name 
+	private static LuaConf.CharPtr Output = OUTPUT; // default output file name 
+	private static LuaConf.CharPtr output = Output; // actual output file name 
+	private static LuaConf.CharPtr progname = PROGNAME; // actual program name 
 
-	private static void fatal(CharPtr message) {
-		LuaConf.fprintf(LuaConf.stderr, CharPtr.toCharPtr("%s: %s\n"), progname, message);
+	private static void fatal(LuaConf.CharPtr message) {
+		LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("%s: %s\n"), progname, message);
 		System.exit(LuaConf.EXIT_FAILURE);
 	}
 
-	private static void cannot(CharPtr what) {
-		LuaConf.fprintf(LuaConf.stderr, CharPtr.toCharPtr("%s: cannot %s %s: %s\n"), progname, what, output, LuaConf.strerror(LuaConf.errno()));
+	private static void cannot(LuaConf.CharPtr what) {
+		LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("%s: cannot %s %s: %s\n"), progname, what, output, LuaConf.strerror(LuaConf.errno()));
 		System.exit(LuaConf.EXIT_FAILURE);
 	}
 
-	private static void usage(CharPtr message) {
+	private static void usage(LuaConf.CharPtr message) {
 		if (message.get(0) == '-') {
-			LuaConf.fprintf(LuaConf.stderr, CharPtr.toCharPtr("%s: unrecognized option " + LuaConf.getLUA_QS() + "\n"), progname, message);
+			LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("%s: unrecognized option " + LuaConf.getLUA_QS() + "\n"), progname, message);
 		}
 		else {
-			LuaConf.fprintf(LuaConf.stderr, CharPtr.toCharPtr("%s: %s\n"), progname, message);
+			LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("%s: %s\n"), progname, message);
 		}
-		LuaConf.fprintf(LuaConf.stderr, CharPtr.toCharPtr("usage: %s [options] [filenames].\n" + "Available options are:\n" + "  -        process stdin\n" + "  -l       list\n" + "  -o name  output to file " + LuaConf.LUA_QL("name") + " (default is \"%s\")\n" + "  -p       parse only\n" + "  -s       strip debug information\n" + "  -v       show version information\n" + "  --       stop handling options\n"), progname, Output);
+		LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("usage: %s [options] [filenames].\n" + "Available options are:\n" + "  -        process stdin\n" + "  -l       list\n" + "  -o name  output to file " + LuaConf.LUA_QL("name") + " (default is \"%s\")\n" + "  -p       parse only\n" + "  -s       strip debug information\n" + "  -v       show version information\n" + "  --       stop handling options\n"), progname, Output);
 		System.exit(LuaConf.EXIT_FAILURE);
 	}
 
@@ -65,45 +65,45 @@ public class LuacProgram {
 		int i;
 		int version = 0;
 		if ((argv.length > 0) && (!argv[0].equals(""))) {
-			progname = CharPtr.toCharPtr(argv[0]);
+			progname = LuaConf.CharPtr.toCharPtr(argv[0]);
 		}
 		for (i = 1; i < argc; i++) {
 			if (argv[i].charAt(0) != '-') { // end of options; keep it 
 				break;
 			}
-			else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("--")) == 0) { // end of options; skip it 
+			else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("--")) == 0) { // end of options; skip it 
 				++i;
 				if (version != 0) {
 					++version;
 				}
 				break;
 			}
-			else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-")) == 0) { // end of options; use stdin 
+			else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-")) == 0) { // end of options; use stdin 
 				break;
 			}
-			else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-l")) == 0) { // list 
+			else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-l")) == 0) { // list 
 				++listing;
 			}
-			else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-o")) == 0) { // output file 
-				output = CharPtr.toCharPtr(argv[++i]);
-				if (CharPtr.isEqual(output, null) || (output.get(0) == 0)) {
-					usage(CharPtr.toCharPtr(LuaConf.LUA_QL("-o") + " needs argument"));
+			else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-o")) == 0) { // output file 
+				output = LuaConf.CharPtr.toCharPtr(argv[++i]);
+				if (LuaConf.CharPtr.isEqual(output, null) || (output.get(0) == 0)) {
+					usage(LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("-o") + " needs argument"));
 				}
-				if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-")) == 0) {
+				if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-")) == 0) {
 					output = null;
 				}
 			}
-			else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-p")) == 0) { // parse only 
+			else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-p")) == 0) { // parse only 
 				dumping = 0;
 			}
-			else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-s")) == 0) { // strip debug information 
+			else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-s")) == 0) { // strip debug information 
 				stripping = 1;
 			}
-			else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-v")) == 0) { // show version 
+			else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-v")) == 0) { // show version 
 				++version;
 			}
 			else { // unknown option 
-				usage(CharPtr.toCharPtr(argv[i]));
+				usage(LuaConf.CharPtr.toCharPtr(argv[i]));
 			}
 		}
 		if (i == argc && ((listing != 0) || (dumping == 0))) {
@@ -111,7 +111,7 @@ public class LuacProgram {
 			argv[--i] = Output.toString();
 		}
 		if (version != 0) {
-			LuaConf.printf(CharPtr.toCharPtr("%s  %s\n"), Lua.LUA_RELEASE, Lua.LUA_COPYRIGHT);
+			LuaConf.printf(LuaConf.CharPtr.toCharPtr("%s  %s\n"), Lua.LUA_RELEASE, Lua.LUA_COPYRIGHT);
 			if (version == argc - 1) {
 				System.exit(LuaConf.EXIT_SUCCESS);
 			}
@@ -132,7 +132,7 @@ public class LuacProgram {
 			Proto f = LuaFunc.luaF_newproto(L);
 			LuaObject.setptvalue2s(L, L.top, f);
 			LuaDo.incr_top(L);
-			f.source = LuaString.luaS_newliteral(L, CharPtr.toCharPtr("=(" + PROGNAME + ")"));
+			f.source = LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("=(" + PROGNAME + ")"));
 			f.maxstacksize = 1;
 			pc = 2 * n + 1;
 			//UInt32[]
@@ -155,13 +155,13 @@ public class LuacProgram {
 	}
 
 	//FIXME:StreamProxy/*object*/ u
-	private static int writer(lua_State L, CharPtr p, int size, Object u) { //uint
+	private static int writer(lua_State L, LuaConf.CharPtr p, int size, Object u) { //uint
 		//UNUSED(L);
 		return ((LuaConf.fwrite(p, (int)size, 1, (StreamProxy)u) != 1) && (size != 0)) ? 1 : 0;
 	}
 
 	public static class writer_delegate implements lua_Writer {
-		public final int exec(lua_State L, CharPtr p, int sz, Object ud) { //uint
+		public final int exec(lua_State L, LuaConf.CharPtr p, int sz, Object ud) { //uint
 			//FIXME:StreamProxy/*object*/ u
 			return writer(L, p, sz, ud);
 		}
@@ -174,10 +174,10 @@ public class LuacProgram {
 		Proto f;
 		int i;
 		if (LuaAPI.lua_checkstack(L, argc) == 0) {
-			fatal(CharPtr.toCharPtr("too many input files"));
+			fatal(LuaConf.CharPtr.toCharPtr("too many input files"));
 		}
 		for (i = 0; i < argc; i++) {
-			CharPtr filename = (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-")) == 0) ? null : CharPtr.toCharPtr(argv[i]);
+			LuaConf.CharPtr filename = (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-")) == 0) ? null : LuaConf.CharPtr.toCharPtr(argv[i]);
 			if (LuaAuxLib.luaL_loadfile(L, filename) != 0) {
 				fatal(Lua.lua_tostring(L, -1));
 			}
@@ -187,18 +187,18 @@ public class LuacProgram {
 			LuaPrint.luaU_print(f, (listing > 1) ? 1 : 0);
 		}
 		if (dumping!=0) {
-			StreamProxy D = (CharPtr.isEqual(output, null)) ? LuaConf.stdout : LuaConf.fopen(output, CharPtr.toCharPtr("wb"));
+			StreamProxy D = (LuaConf.CharPtr.isEqual(output, null)) ? LuaConf.stdout : LuaConf.fopen(output, LuaConf.CharPtr.toCharPtr("wb"));
 			if (D == null) {
-				cannot(CharPtr.toCharPtr("open"));
+				cannot(LuaConf.CharPtr.toCharPtr("open"));
 			}
 			LuaLimits.lua_lock(L);
 			LuaDump.luaU_dump(L, f, new writer_delegate(), D, stripping);
 			LuaLimits.lua_unlock(L);
 			if (LuaConf.ferror(D) != 0) {
-				cannot(CharPtr.toCharPtr("write"));
+				cannot(LuaConf.CharPtr.toCharPtr("write"));
 			}
 			if (LuaConf.fclose(D) != 0) {
-				cannot(CharPtr.toCharPtr("close"));
+				cannot(LuaConf.CharPtr.toCharPtr("close"));
 			}
 		}
 		return 0;
@@ -227,11 +227,11 @@ public class LuacProgram {
 		argc -= i;
 		args = newargs2; //(string[])newargs.ToArray();
 		if (argc <= 0) {
-			usage(CharPtr.toCharPtr("no input files given"));
+			usage(LuaConf.CharPtr.toCharPtr("no input files given"));
 		}
 		L = Lua.lua_open();
 		if (L == null) {
-			fatal(CharPtr.toCharPtr("not enough memory for state"));
+			fatal(LuaConf.CharPtr.toCharPtr("not enough memory for state"));
 		}
 		s.argc = argc;
 		s.argv = args;

@@ -38,7 +38,7 @@ public class LuaLex {
 		if (b.n + 1 > b.buffsize) {
 			int newsize; //uint
 			if (b.buffsize >= LuaLimits.MAX_SIZET / 2) {
-				luaX_lexerror(ls, CharPtr.toCharPtr("lexical element too long"), 0);
+				luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("lexical element too long"), 0);
 			}
 			newsize = b.buffsize * 2;
 			LuaZIO.luaZ_resizebuffer(ls.L, b, (int)newsize);
@@ -49,7 +49,7 @@ public class LuaLex {
 	public static void luaX_init(lua_State L) {
 		int i;
 		for (i = 0; i < NUM_RESERVED; i++) {
-			TString ts = LuaString.luaS_new(L, CharPtr.toCharPtr(luaX_tokens[i]));
+			TString ts = LuaString.luaS_new(L, LuaConf.CharPtr.toCharPtr(luaX_tokens[i]));
 			LuaString.luaS_fix(ts); // reserved words are never collected 
 			LuaLimits.lua_assert(luaX_tokens[i].length() + 1 <= TOKEN_LEN);
 			ts.getTsv().reserved = LuaLimits.cast_byte(i + 1); // reserved word 
@@ -58,17 +58,17 @@ public class LuaLex {
 
 	public static final int MAXSRC = 80;
 
-	public static CharPtr luaX_token2str(LexState ls, int token) {
+	public static LuaConf.CharPtr luaX_token2str(LexState ls, int token) {
 		if (token < FIRST_RESERVED) {
 			LuaLimits.lua_assert(token == (byte)token);
-			return (LuaConf.iscntrl(token)) ? LuaObject.luaO_pushfstring(ls.L, CharPtr.toCharPtr("char(%d)"), token) : LuaObject.luaO_pushfstring(ls.L, CharPtr.toCharPtr("%c"), token);
+			return (LuaConf.iscntrl(token)) ? LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr("char(%d)"), token) : LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr("%c"), token);
 		}
 		else {
-			return CharPtr.toCharPtr(luaX_tokens[(int)token - FIRST_RESERVED]);
+			return LuaConf.CharPtr.toCharPtr(luaX_tokens[(int)token - FIRST_RESERVED]);
 		}
 	}
 
-	public static CharPtr txtToken(LexState ls, int token) {
+	public static LuaConf.CharPtr txtToken(LexState ls, int token) {
 		switch (token) {
 			case (int)RESERVED.TK_NAME:
 			case (int)RESERVED.TK_STRING:
@@ -82,21 +82,21 @@ public class LuaLex {
 		}
 	}
 
-	public static void luaX_lexerror(LexState ls, CharPtr msg, int token) {
-		CharPtr buff = CharPtr.toCharPtr(new char[MAXSRC]);
+	public static void luaX_lexerror(LexState ls, LuaConf.CharPtr msg, int token) {
+		LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[MAXSRC]);
 		LuaObject.luaO_chunkid(buff, LuaObject.getstr(ls.source), MAXSRC);
-		msg = LuaObject.luaO_pushfstring(ls.L, CharPtr.toCharPtr("%s:%d: %s"), buff, ls.linenumber, msg);
+		msg = LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr("%s:%d: %s"), buff, ls.linenumber, msg);
 		if (token != 0) {
-			LuaObject.luaO_pushfstring(ls.L, CharPtr.toCharPtr("%s near " + LuaConf.getLUA_QS()), msg, txtToken(ls, token));
+			LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr("%s near " + LuaConf.getLUA_QS()), msg, txtToken(ls, token));
 		}
 		LuaDo.luaD_throw(ls.L, Lua.LUA_ERRSYNTAX);
 	}
 
-	public static void luaX_syntaxerror(LexState ls, CharPtr msg) {
+	public static void luaX_syntaxerror(LexState ls, LuaConf.CharPtr msg) {
 		luaX_lexerror(ls, msg, ls.t.token);
 	}
 
-	public static TString luaX_newstring(LexState ls, CharPtr str, int l) { //uint
+	public static TString luaX_newstring(LexState ls, LuaConf.CharPtr str, int l) { //uint
 		lua_State L = ls.L;
 		TString ts = LuaString.luaS_newlstr(L, str, l);
 		TValue o = LuaTable.luaH_setstr(L, ls.fs.h, ts); // entry for `str' 
@@ -114,7 +114,7 @@ public class LuaLex {
 			next(ls); // skip `\n\r' or `\r\n' 
 		}
 		if (++ls.linenumber >= LuaLimits.MAX_INT) {
-			luaX_syntaxerror(ls, CharPtr.toCharPtr("chunk has too many lines"));
+			luaX_syntaxerror(ls, LuaConf.CharPtr.toCharPtr("chunk has too many lines"));
 		}
 	}
 
@@ -136,8 +136,8 @@ public class LuaLex {
 //		 ** LEXICAL ANALYZER
 //		 ** =======================================================
 //		 
-	private static int check_next(LexState ls, CharPtr set) {
-		if (CharPtr.isEqual(LuaConf.strchr(set, (char)ls.current), null)) {
+	private static int check_next(LexState ls, LuaConf.CharPtr set) {
+		if (LuaConf.CharPtr.isEqual(LuaConf.strchr(set, (char)ls.current), null)) {
 			return 0;
 		}
 		save_and_next(ls);
@@ -146,7 +146,7 @@ public class LuaLex {
 
 	private static void buffreplace(LexState ls, char from, char to) {
 		int n = LuaZIO.luaZ_bufflen(ls.buff); //uint
-		CharPtr p = LuaZIO.luaZ_buffer(ls.buff);
+		LuaConf.CharPtr p = LuaZIO.luaZ_buffer(ls.buff);
 		while ((n--) != 0) {
 			if (p.get(n) == from) {
 				p.set(n, to);
@@ -168,7 +168,7 @@ public class LuaLex {
 		if (ret == 0) {
 			// format error with correct decimal point: no more options 
 			buffreplace(ls, ls.decpoint, '.'); // undo change (for error message) 
-			luaX_lexerror(ls, CharPtr.toCharPtr("malformed number"), (int)RESERVED.TK_NUMBER);
+			luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("malformed number"), (int)RESERVED.TK_NUMBER);
 		}
 	}
 
@@ -178,8 +178,8 @@ public class LuaLex {
 		do {
 			save_and_next(ls);
 		} while (LuaConf.isdigit(ls.current) || ls.current == '.');
-		if (check_next(ls, CharPtr.toCharPtr("Ee")) != 0) { // `E'? 
-			check_next(ls, CharPtr.toCharPtr("+-")); // optional exponent sign 
+		if (check_next(ls, LuaConf.CharPtr.toCharPtr("Ee")) != 0) { // `E'? 
+			check_next(ls, LuaConf.CharPtr.toCharPtr("+-")); // optional exponent sign 
 		}
 		while (LuaConf.isalnum(ls.current) || ls.current == '_') {
 			save_and_next(ls);
@@ -218,7 +218,7 @@ public class LuaLex {
 			boolean endloop = false;
 			switch (ls.current) {
 				case LuaZIO.EOZ: {
-						luaX_lexerror(ls, (seminfo != null) ? CharPtr.toCharPtr("unfinished long string") : CharPtr.toCharPtr("unfinished long comment"), (int)RESERVED.TK_EOS);
+						luaX_lexerror(ls, (seminfo != null) ? LuaConf.CharPtr.toCharPtr("unfinished long string") : LuaConf.CharPtr.toCharPtr("unfinished long comment"), (int)RESERVED.TK_EOS);
 						break; // to avoid warnings 
 					}
 				///#if LUA_COMPAT_LSTR
@@ -276,7 +276,7 @@ public class LuaLex {
 		}
 //endloop:
 		if (seminfo != null) {
-			seminfo.ts = luaX_newstring(ls, CharPtr.plus(LuaZIO.luaZ_buffer(ls.buff), (2 + sep)), (LuaZIO.luaZ_bufflen(ls.buff) - 2 * (2 + sep))); //(uint)
+			seminfo.ts = luaX_newstring(ls, LuaConf.CharPtr.plus(LuaZIO.luaZ_buffer(ls.buff), (2 + sep)), (LuaZIO.luaZ_bufflen(ls.buff) - 2 * (2 + sep))); //(uint)
 		}
 	}
 
@@ -286,12 +286,12 @@ public class LuaLex {
 		while (ls.current != del) {
 			switch (ls.current) {
 				case LuaZIO.EOZ: {
-						luaX_lexerror(ls, CharPtr.toCharPtr("unfinished string"), (int)RESERVED.TK_EOS);
+						luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("unfinished string"), (int)RESERVED.TK_EOS);
 						continue; // to avoid warnings 
 					}
 				case '\n':
 				case '\r': {
-						luaX_lexerror(ls, CharPtr.toCharPtr("unfinished string"), (int)RESERVED.TK_STRING);
+						luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("unfinished string"), (int)RESERVED.TK_STRING);
 						continue; // to avoid warnings 
 					}
 				case '\\': {
@@ -349,7 +349,7 @@ public class LuaLex {
 										} while (++i < 3 && LuaConf.isdigit(ls.current));
 										//System.Byte.MaxValue
 										if (c > Byte.MAX_VALUE) {
-											luaX_lexerror(ls, CharPtr.toCharPtr("escape sequence too large"), (int)RESERVED.TK_STRING);
+											luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("escape sequence too large"), (int)RESERVED.TK_STRING);
 										}
 										save(ls, c);
 									}
@@ -367,7 +367,7 @@ public class LuaLex {
 			}
 		}
 		save_and_next(ls); // skip delimiter 
-		seminfo.ts = luaX_newstring(ls, CharPtr.plus(LuaZIO.luaZ_buffer(ls.buff), 1), LuaZIO.luaZ_bufflen(ls.buff) - 2);
+		seminfo.ts = luaX_newstring(ls, LuaConf.CharPtr.plus(LuaZIO.luaZ_buffer(ls.buff), 1), LuaZIO.luaZ_bufflen(ls.buff) - 2);
 	}
 
 	private static int llex(LexState ls, SemInfo seminfo) {
@@ -411,7 +411,7 @@ public class LuaLex {
 							return '[';
 						}
 						else {
-							luaX_lexerror(ls, CharPtr.toCharPtr("invalid long string delimiter"), (int)RESERVED.TK_STRING);
+							luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("invalid long string delimiter"), (int)RESERVED.TK_STRING);
 						}
 					}
 					break;
@@ -462,8 +462,8 @@ public class LuaLex {
 					}
 				case '.': {
 						save_and_next(ls);
-						if (check_next(ls, CharPtr.toCharPtr(".")) != 0) {
-							if (check_next(ls, CharPtr.toCharPtr(".")) != 0) {
+						if (check_next(ls, LuaConf.CharPtr.toCharPtr(".")) != 0) {
+							if (check_next(ls, LuaConf.CharPtr.toCharPtr(".")) != 0) {
 								return (int)RESERVED.TK_DOTS; //... 
 							}
 							else {

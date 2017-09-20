@@ -120,7 +120,7 @@ public class LuaCode {
 		int offset = dest-(pc+1);
 		LuaLimits.lua_assert(dest != NO_JUMP);
 		if (Math.abs(offset) > LuaOpCodes.MAXARG_sBx) {
-			LuaLex.luaX_syntaxerror(fs.ls, CharPtr.toCharPtr("control structure too long"));
+			LuaLex.luaX_syntaxerror(fs.ls, LuaConf.CharPtr.toCharPtr("control structure too long"));
 		}
 		LuaOpCodes.SETARG_sBx(jmp, offset);
 	}
@@ -246,7 +246,7 @@ public class LuaCode {
 		int newstack = fs.freereg + n;
 		if (newstack > fs.f.maxstacksize) {
 			if (newstack >= LuaLimits.MAXSTACK) {
-				LuaLex.luaX_syntaxerror(fs.ls, CharPtr.toCharPtr("function or expression too complex"));
+				LuaLex.luaX_syntaxerror(fs.ls, LuaConf.CharPtr.toCharPtr("function or expression too complex"));
 			}
 			fs.f.maxstacksize = LuaLimits.cast_byte(newstack);
 		}
@@ -286,7 +286,7 @@ public class LuaCode {
 			k_ref[0] = f.k;
 			int[] sizek_ref = new int[1];
 			sizek_ref[0] = f.sizek;
-			LuaMem.luaM_growvector_TValue(L, k_ref, fs.nk, sizek_ref, LuaOpCodes.MAXARG_Bx, CharPtr.toCharPtr("constant table overflow"), new ClassType(ClassType.TYPE_TVALUE)); //ref - ref
+			LuaMem.luaM_growvector_TValue(L, k_ref, fs.nk, sizek_ref, LuaOpCodes.MAXARG_Bx, LuaConf.CharPtr.toCharPtr("constant table overflow"), new ClassType(ClassType.TYPE_TVALUE)); //ref - ref
 			f.sizek = sizek_ref[0];
 			f.k = k_ref[0];
 			while (oldsize < f.sizek) {
@@ -965,7 +965,7 @@ public class LuaCode {
 		code_ref[0] = f.code;
 		int[] sizecode_ref = new int[1];
 		sizecode_ref[0] = f.sizecode;
-		LuaMem.luaM_growvector_long(fs.L, code_ref, fs.pc, sizecode_ref, LuaLimits.MAX_INT, CharPtr.toCharPtr("code size overflow"), new ClassType(ClassType.TYPE_LONG)); //ref - ref
+		LuaMem.luaM_growvector_long(fs.L, code_ref, fs.pc, sizecode_ref, LuaLimits.MAX_INT, LuaConf.CharPtr.toCharPtr("code size overflow"), new ClassType(ClassType.TYPE_LONG)); //ref - ref
 		f.sizecode = sizecode_ref[0];
 		f.code = code_ref[0];
 		f.code[fs.pc] = (long)i; //uint
@@ -974,7 +974,7 @@ public class LuaCode {
 		lineinfo_ref[0] = f.lineinfo;
 		int[] sizelineinfo_ref = new int[1];
 		sizelineinfo_ref[0] = f.sizelineinfo;
-		LuaMem.luaM_growvector_int(fs.L, lineinfo_ref, fs.pc, sizelineinfo_ref, LuaLimits.MAX_INT, CharPtr.toCharPtr("code size overflow"), new ClassType(ClassType.TYPE_INT)); //ref - ref
+		LuaMem.luaM_growvector_int(fs.L, lineinfo_ref, fs.pc, sizelineinfo_ref, LuaLimits.MAX_INT, LuaConf.CharPtr.toCharPtr("code size overflow"), new ClassType(ClassType.TYPE_INT)); //ref - ref
 		f.sizelineinfo = sizelineinfo_ref[0];
 		f.lineinfo = lineinfo_ref[0];
 		f.lineinfo[fs.pc] = line;

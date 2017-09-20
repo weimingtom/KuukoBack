@@ -21,3 +21,6 @@ CCallS->LuaAPI.CCallS
 
 CClosure->LuaObject.CClosure
 14:10 2017/9/20
+
+CharPtr->LuaConf.CharPtr
+14:17 2017/9/20

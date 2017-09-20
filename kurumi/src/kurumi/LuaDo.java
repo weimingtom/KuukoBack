@@ -59,11 +59,11 @@ TValue.inc(top); //ref
 	public static void luaD_seterrorobj(lua_State L, int errcode, TValue oldtop) { //StkId
 		switch (errcode) {
 			case Lua.LUA_ERRMEM: {
-					LuaObject.setsvalue2s(L, oldtop, LuaString.luaS_newliteral(L, CharPtr.toCharPtr(LuaMem.MEMERRMSG)));
+					LuaObject.setsvalue2s(L, oldtop, LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr(LuaMem.MEMERRMSG)));
 					break;
 				}
 			case Lua.LUA_ERRERR: {
-					LuaObject.setsvalue2s(L, oldtop, LuaString.luaS_newliteral(L, CharPtr.toCharPtr("error in error handling")));
+					LuaObject.setsvalue2s(L, oldtop, LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("error in error handling")));
 					break;
 				}
 			case Lua.LUA_ERRSYNTAX:
@@ -204,7 +204,7 @@ TValue.inc(top); //ref
 		else {
 			luaD_reallocCI(L, 2*L.size_ci);
 			if (L.size_ci > LuaConf.LUAI_MAXCALLS) {
-				LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("stack overflow"));
+				LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("stack overflow"));
 			}
 		}
 		LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
@@ -266,7 +266,7 @@ TValue.inc(top); //ref
 			LuaObject.setobj2n(L, LuaTable.luaH_setnum(L, htab, i + 1), TValue.plus(TValue.minus(L.top, nvar), i)); //FIXME:
 			}
 			// store counter in field `n' 
-			LuaObject.setnvalue(LuaTable.luaH_setstr(L, htab, LuaString.luaS_newliteral(L, CharPtr.toCharPtr("n"))), LuaLimits.cast_num(nvar));
+			LuaObject.setnvalue(LuaTable.luaH_setstr(L, htab, LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("n"))), LuaLimits.cast_num(nvar));
 		}
 		///#endif
 		// move fixed parameters to final position 
@@ -302,7 +302,7 @@ TValue.inc(top_ref); //ref
 		p[0] = new TValue();
 		int funcr = savestack(L, func); //ptrdiff_t - Int32
 		if (!LuaObject.ttisfunction(tm)) {
-			LuaDebug.luaG_typeerror(L, func, CharPtr.toCharPtr("call"));
+			LuaDebug.luaG_typeerror(L, func, LuaConf.CharPtr.toCharPtr("call"));
 		}
 		// Open a hole inside the stack at `func' 
 		for (p[0] = L.top; TValue.greaterThan(p[0], func); TValue.dec(p)) { //ref - StkId
@@ -467,7 +467,7 @@ TValue.inc(top_ref); //ref
 	public static void luaD_call(lua_State L, TValue func, int nResults) { //StkId
 		if (++L.nCcalls >= LuaConf.LUAI_MAXCCALLS) {
 			if (L.nCcalls == LuaConf.LUAI_MAXCCALLS) {
-				LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("C stack overflow"));
+				LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("C stack overflow"));
 			}
 			else if (L.nCcalls >= (LuaConf.LUAI_MAXCCALLS + (LuaConf.LUAI_MAXCCALLS >> 3))) {
 				luaD_throw(L, Lua.LUA_ERRERR); // error while handing stack error 
@@ -511,7 +511,7 @@ TValue.inc(top_ref); //ref
 		LuaVM.luaV_execute(L, LuaState.CallInfo.minus(L.ci, L.base_ci));
 	}
 
-	private static int resume_error(lua_State L, CharPtr msg) {
+	private static int resume_error(lua_State L, LuaConf.CharPtr msg) {
 		L.top = L.ci.base_;
 		LuaObject.setsvalue2s(L, L.top, LuaString.luaS_new(L, msg));
 		incr_top(L);
@@ -524,10 +524,10 @@ TValue.inc(top_ref); //ref
 		int status;
 		LuaLimits.lua_lock(L);
 		if (L.status != Lua.LUA_YIELD && (L.status != 0 || (L.ci != L.base_ci[0]))) {
-			return resume_error(L, CharPtr.toCharPtr("cannot resume non-suspended coroutine"));
+			return resume_error(L, LuaConf.CharPtr.toCharPtr("cannot resume non-suspended coroutine"));
 		}
 		if (L.nCcalls >= LuaConf.LUAI_MAXCCALLS) {
-			return resume_error(L, CharPtr.toCharPtr("C stack overflow"));
+			return resume_error(L, LuaConf.CharPtr.toCharPtr("C stack overflow"));
 		}
 		LuaConf.luai_userstateresume(L, nargs);
 		LuaLimits.lua_assert(L.errfunc == 0);
@@ -552,7 +552,7 @@ TValue.inc(top_ref); //ref
 		LuaConf.luai_userstateyield(L, nresults);
 		LuaLimits.lua_lock(L);
 		if (L.nCcalls > L.baseCcalls) {
-			LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("attempt to yield across metamethod/C-call boundary"));
+			LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("attempt to yield across metamethod/C-call boundary"));
 		}
 		L.base_ = TValue.minus(L.top, nresults); // protect stack slots below 
 		L.status = Lua.LUA_YIELD;
@@ -601,11 +601,11 @@ TValue.inc(top_ref); //ref
 		incr_top(L);
 	}
 
-	public static int luaD_protectedparser(lua_State L, ZIO z, CharPtr name) {
+	public static int luaD_protectedparser(lua_State L, ZIO z, LuaConf.CharPtr name) {
 		SParser p = new SParser();
 		int status;
 		p.z = z;
-		p.name = new CharPtr(name);
+		p.name = new LuaConf.CharPtr(name);
 		LuaZIO.luaZ_initbuffer(L, p.buff);
 		status = luaD_pcall(L, new f_parser_delegate(), p, savestack(L, L.top), L.errfunc);
 		LuaZIO.luaZ_freebuffer(L, p.buff);

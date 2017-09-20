@@ -208,7 +208,7 @@ TValue.dec(top); //ref
 		LuaLimits.lua_lock(L);
 		// explicit test for incompatible code 
 		if (idx == Lua.LUA_ENVIRONINDEX && L.ci == L.base_ci[0]) {
-			LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("no calling environment"));
+			LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("no calling environment"));
 		}
 		api_checknelems(L, 1);
 		o = index2adr(L, idx);
@@ -248,9 +248,9 @@ TValue.dec(top); //ref
 		return (o == LuaObject.luaO_nilobject) ? Lua.LUA_TNONE : LuaObject.ttype(o);
 	}
 
-	public static CharPtr lua_typename(lua_State L, int t) {
+	public static LuaConf.CharPtr lua_typename(lua_State L, int t) {
 		//UNUSED(L);
-		return (t == Lua.LUA_TNONE) ? CharPtr.toCharPtr("no value") : LuaTM.luaT_typenames[t];
+		return (t == Lua.LUA_TNONE) ? LuaConf.CharPtr.toCharPtr("no value") : LuaTM.luaT_typenames[t];
 	}
 
 	public static boolean lua_iscfunction(lua_State L, int idx) {
@@ -344,7 +344,7 @@ TValue.dec(top); //ref
 		return (LuaObject.l_isfalse(o) == 0) ? 1 : 0;
 	}
 
-	public static CharPtr lua_tolstring(lua_State L, int idx, int[] len) { //uint - out
+	public static LuaConf.CharPtr lua_tolstring(lua_State L, int idx, int[] len) { //uint - out
 		TValue o = index2adr(L, idx); //StkId
 		if (!LuaObject.ttisstring(o)) {
 			LuaLimits.lua_lock(L); // `luaV_tostring' may create a new string 
@@ -458,7 +458,7 @@ TValue.dec(top); //ref
 		LuaLimits.lua_unlock(L);
 	}
 
-	public static void lua_pushlstring(lua_State L, CharPtr s, int len) { //uint
+	public static void lua_pushlstring(lua_State L, LuaConf.CharPtr s, int len) { //uint
 		LuaLimits.lua_lock(L);
 		LuaGC.luaC_checkGC(L);
 		LuaObject.setsvalue2s(L, L.top, LuaString.luaS_newlstr(L, s, len));
@@ -466,8 +466,8 @@ TValue.dec(top); //ref
 		LuaLimits.lua_unlock(L);
 	}
 
-	public static void lua_pushstring(lua_State L, CharPtr s) {
-		if (CharPtr.isEqual(s, null)) {
+	public static void lua_pushstring(lua_State L, LuaConf.CharPtr s) {
+		if (LuaConf.CharPtr.isEqual(s, null)) {
 			lua_pushnil(L);
 		}
 		else {
@@ -475,8 +475,8 @@ TValue.dec(top); //ref
 		}
 	}
 
-	public static CharPtr lua_pushvfstring(lua_State L, CharPtr fmt, Object[] argp) {
-		CharPtr ret;
+	public static LuaConf.CharPtr lua_pushvfstring(lua_State L, LuaConf.CharPtr fmt, Object[] argp) {
+		LuaConf.CharPtr ret;
 		LuaLimits.lua_lock(L);
 		LuaGC.luaC_checkGC(L);
 		ret = LuaObject.luaO_pushvfstring(L, fmt, argp);
@@ -484,8 +484,8 @@ TValue.dec(top); //ref
 		return ret;
 	}
 
-	public static CharPtr lua_pushfstring(lua_State L, CharPtr fmt) {
-		CharPtr ret;
+	public static LuaConf.CharPtr lua_pushfstring(lua_State L, LuaConf.CharPtr fmt) {
+		LuaConf.CharPtr ret;
 		LuaLimits.lua_lock(L);
 		LuaGC.luaC_checkGC(L);
 		ret = LuaObject.luaO_pushvfstring(L, fmt, null);
@@ -493,8 +493,8 @@ TValue.dec(top); //ref
 		return ret;
 	}
 
-	public static CharPtr lua_pushfstring(lua_State L, CharPtr fmt, Object... p) {
-		CharPtr ret;
+	public static LuaConf.CharPtr lua_pushfstring(lua_State L, LuaConf.CharPtr fmt, Object... p) {
+		LuaConf.CharPtr ret;
 		LuaLimits.lua_lock(L);
 		LuaGC.luaC_checkGC(L);
 		ret = LuaObject.luaO_pushvfstring(L, fmt, p);
@@ -554,7 +554,7 @@ TValue.dec(top); //ref
 		LuaLimits.lua_unlock(L);
 	}
 
-	public static void lua_getfield(lua_State L, int idx, CharPtr k) {
+	public static void lua_getfield(lua_State L, int idx, LuaConf.CharPtr k) {
 		TValue t; //StkId
 		TValue key = new TValue();
 		LuaLimits.lua_lock(L);
@@ -667,7 +667,7 @@ TValue.dec(top); //ref
 		LuaLimits.lua_unlock(L);
 	}
 
-	public static void lua_setfield(lua_State L, int idx, CharPtr k) {
+	public static void lua_setfield(lua_State L, int idx, LuaConf.CharPtr k) {
 		TValue t; //StkId
 		TValue key = new TValue();
 		LuaLimits.lua_lock(L);
@@ -899,12 +899,12 @@ TValue.dec(top); //ref
 		return status;
 	}
 
-	public static int lua_load(lua_State L, lua_Reader reader, Object data, CharPtr chunkname) {
+	public static int lua_load(lua_State L, lua_Reader reader, Object data, LuaConf.CharPtr chunkname) {
 		ZIO z = new ZIO();
 		int status;
 		LuaLimits.lua_lock(L);
-		if (CharPtr.isEqual(chunkname, null)) {
-			chunkname = CharPtr.toCharPtr("?");
+		if (LuaConf.CharPtr.isEqual(chunkname, null)) {
+			chunkname = LuaConf.CharPtr.toCharPtr("?");
 		}
 		LuaZIO.luaZ_init(L, z, reader, data);
 		status = LuaDo.luaD_protectedparser(L, z, chunkname);
@@ -1041,7 +1041,7 @@ TValue.dec(top); // remove key  - ref
 		}
 		else if (n == 0) {
 			// push empty string 
-			LuaObject.setsvalue2s(L, L.top, LuaString.luaS_newlstr(L, CharPtr.toCharPtr(""), 0));
+			LuaObject.setsvalue2s(L, L.top, LuaString.luaS_newlstr(L, LuaConf.CharPtr.toCharPtr(""), 0));
 			api_incr_top(L);
 		}
 		// else n == 1; nothing to do 
@@ -1088,7 +1088,7 @@ TValue.dec(top); // remove key  - ref
 		return u.user_data;
 	}
 
-	private static CharPtr aux_upvalue(TValue fi, int n, TValue[] val) { //ref - StkId
+	private static LuaConf.CharPtr aux_upvalue(TValue fi, int n, TValue[] val) { //ref - StkId
 		Closure f;
 		if (!LuaObject.ttisfunction(fi)) {
 			return null;
@@ -1099,7 +1099,7 @@ TValue.dec(top); // remove key  - ref
 				return null;
 			}
 			val[0] = f.c.upvalue[n - 1];
-			return CharPtr.toCharPtr("");
+			return LuaConf.CharPtr.toCharPtr("");
 		}
 		else {
 			Proto p = f.l.p;
@@ -1111,15 +1111,15 @@ TValue.dec(top); // remove key  - ref
 		}
 	}
 
-	public static CharPtr lua_getupvalue(lua_State L, int funcindex, int n) {
-		CharPtr name;
+	public static LuaConf.CharPtr lua_getupvalue(lua_State L, int funcindex, int n) {
+		LuaConf.CharPtr name;
 		TValue val = new TValue();
 		LuaLimits.lua_lock(L);
 		TValue[] val_ref = new TValue[1];
 		val_ref[0] = val;
 		name = aux_upvalue(index2adr(L, funcindex), n, val_ref); //ref
 		val = val_ref[0];
-		if (CharPtr.isNotEqual(name, null)) {
+		if (LuaConf.CharPtr.isNotEqual(name, null)) {
 			LuaObject.setobj2s(L, L.top, val);
 			api_incr_top(L);
 		}
@@ -1127,8 +1127,8 @@ TValue.dec(top); // remove key  - ref
 		return name;
 	}
 
-	public static CharPtr lua_setupvalue(lua_State L, int funcindex, int n) {
-		CharPtr name;
+	public static LuaConf.CharPtr lua_setupvalue(lua_State L, int funcindex, int n) {
+		LuaConf.CharPtr name;
 		TValue val = new TValue();
 		TValue fi; //StkId
 		LuaLimits.lua_lock(L);
@@ -1138,7 +1138,7 @@ TValue.dec(top); // remove key  - ref
 		val_ref[0] = val;
 		name = aux_upvalue(fi, n, val_ref); //ref
 		val = val_ref[0];
-		if (CharPtr.isNotEqual(name, null)) {
+		if (LuaConf.CharPtr.isNotEqual(name, null)) {
 			TValue[] top = new TValue[1];
 			top[0] = L.top;
 			//StkId

@@ -348,8 +348,8 @@ public class LuaGC {
 		mode = LuaTM.gfasttm(g, h.metatable, TMS.TM_MODE);
 		if ((mode != null) && LuaObject.ttisstring(mode)) {
 			// is there a weak mode? 
-			weakkey = (CharPtr.isNotEqual(LuaConf.strchr(LuaObject.svalue(mode), 'k'), null)) ? 1 : 0;
-			weakvalue = (CharPtr.isNotEqual(LuaConf.strchr(LuaObject.svalue(mode), 'v'), null)) ? 1 : 0;
+			weakkey = (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaObject.svalue(mode), 'k'), null)) ? 1 : 0;
+			weakvalue = (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaObject.svalue(mode), 'v'), null)) ? 1 : 0;
 			if ((weakkey != 0) || (weakvalue != 0)) {
 				// is really weak? 
 				h.marked &= (byte)~(KEYWEAK | VALUEWEAK); // clear bits 

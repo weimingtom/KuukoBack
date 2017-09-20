@@ -9,15 +9,15 @@ package kurumi;
 	public class lua_Debug
 	{
 		public int event_;
-		public CharPtr name;	/* (n) */
-		public CharPtr namewhat;	/* (n) `global', `local', `field', `method' */
-		public CharPtr what;	/* (S) `Lua', `C', `main', `tail' */
-		public CharPtr source;	/* (S) */
+		public LuaConf.CharPtr name;	/* (n) */
+		public LuaConf.CharPtr namewhat;	/* (n) `global', `local', `field', `method' */
+		public LuaConf.CharPtr what;	/* (S) `Lua', `C', `main', `tail' */
+		public LuaConf.CharPtr source;	/* (S) */
 		public int currentline;	/* (l) */
 		public int nups;		/* (u) number of upvalues */
 		public int linedefined;	/* (S) */
 		public int lastlinedefined;	/* (S) */
-		public CharPtr short_src = CharPtr.toCharPtr(new char[LuaConf.LUA_IDSIZE]); /* (S) */
+		public LuaConf.CharPtr short_src = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUA_IDSIZE]); /* (S) */
 		/* private part */
 		public int i_ci;  /* active function */
 	}

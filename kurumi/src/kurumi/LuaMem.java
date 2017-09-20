@@ -189,37 +189,37 @@ public class LuaMem {
 
 
 
-	public static void luaM_growvector_long(lua_State L, long[][] v, int nelems, int[] size, int limit, CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_long(lua_State L, long[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (long[])luaM_growaux__long(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_Proto(lua_State L, Proto[][] v, int nelems, int[] size, int limit, CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_Proto(lua_State L, Proto[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (Proto[])luaM_growaux__Proto(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_TString(lua_State L, TString[][] v, int nelems, int[] size, int limit, CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_TString(lua_State L, TString[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (TString[])luaM_growaux__TString(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_TValue(lua_State L, TValue[][] v, int nelems, int[] size, int limit, CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_TValue(lua_State L, TValue[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (TValue[])luaM_growaux__TValue(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_LocVar(lua_State L, LocVar[][] v, int nelems, int[] size, int limit, CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_LocVar(lua_State L, LocVar[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (LocVar[])luaM_growaux__LocVar(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_int(lua_State L, int[][] v, int nelems, int[] size, int limit, CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_int(lua_State L, int[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (int[])luaM_growaux__int(L, v, size, limit, e, t); //ref - ref
 		}
@@ -300,7 +300,7 @@ public class LuaMem {
 	public static final int MINSIZEARRAY = 4;
 
 
-	public static long[] luaM_growaux__long(lua_State L, long[][] block, int[] size, int limit, CharPtr errormsg, ClassType t) { //ref - ref
+	public static long[] luaM_growaux__long(lua_State L, long[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
 		long[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -321,7 +321,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static Proto[] luaM_growaux__Proto(lua_State L, Proto[][] block, int[] size, int limit, CharPtr errormsg, ClassType t) { //ref - ref
+	public static Proto[] luaM_growaux__Proto(lua_State L, Proto[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
 		Proto[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -342,7 +342,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static TString[] luaM_growaux__TString(lua_State L, TString[][] block, int[] size, int limit, CharPtr errormsg, ClassType t) { //ref - ref
+	public static TString[] luaM_growaux__TString(lua_State L, TString[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
 		TString[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -363,7 +363,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static TValue[] luaM_growaux__TValue(lua_State L, TValue[][] block, int[] size, int limit, CharPtr errormsg, ClassType t) { //ref - ref
+	public static TValue[] luaM_growaux__TValue(lua_State L, TValue[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
 		TValue[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -384,7 +384,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static LocVar[] luaM_growaux__LocVar(lua_State L, LocVar[][] block, int[] size, int limit, CharPtr errormsg, ClassType t) { //ref - ref
+	public static LocVar[] luaM_growaux__LocVar(lua_State L, LocVar[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
 		LocVar[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -405,7 +405,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static int[] luaM_growaux__int(lua_State L, int[][] block, int[] size, int limit, CharPtr errormsg, ClassType t) { //ref - ref
+	public static int[] luaM_growaux__int(lua_State L, int[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
 		int[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -429,7 +429,7 @@ public class LuaMem {
 	//-------------------------------
 
 	public static Object luaM_toobig(lua_State L) {
-		LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("memory allocation error: block too big"));
+		LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("memory allocation error: block too big"));
 		return null; // to avoid warnings 
 	}
 

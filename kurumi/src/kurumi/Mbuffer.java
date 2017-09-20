@@ -7,7 +7,7 @@ package kurumi;
 //{
 	public class Mbuffer
 	{
-		public CharPtr buffer = new CharPtr();
+		public LuaConf.CharPtr buffer = new LuaConf.CharPtr();
 		public int n; /*uint*/
 		public int buffsize; /*uint*/
 	}

@@ -13,6 +13,6 @@ package kurumi;
 	{
 		public int extraline;
 		public StreamProxy f;
-		public CharPtr buff = CharPtr.toCharPtr(new char[LuaConf.LUAL_BUFFERSIZE]);
+		public LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUAL_BUFFERSIZE]);
 	}
 //}

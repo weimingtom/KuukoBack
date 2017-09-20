@@ -50,7 +50,7 @@ public class LuaVM {
 		}
 		else {
 			double n = LuaObject.nvalue(obj); //lua_Number
-			CharPtr s = LuaConf.lua_number2str(n);
+			LuaConf.CharPtr s = LuaConf.lua_number2str(n);
 			LuaObject.setsvalue2s(L, obj, LuaString.luaS_new(L, s));
 			return 1;
 		}
@@ -121,7 +121,7 @@ TValue.dec(top); //ref
 				// else will try the tag method 
 			}
 			else if (LuaObject.ttisnil(tm = LuaTM.luaT_gettmbyobj(L, t, TMS.TM_INDEX))) {
-				LuaDebug.luaG_typeerror(L, t, CharPtr.toCharPtr("index"));
+				LuaDebug.luaG_typeerror(L, t, LuaConf.CharPtr.toCharPtr("index"));
 			}
 			if (LuaObject.ttisfunction(tm)) {
 				callTMres(L, val, tm, t, key);
@@ -129,7 +129,7 @@ TValue.dec(top); //ref
 			}
 			t = tm; // else repeat with `tm' 
 		}
-		LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("loop in gettable"));
+		LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("loop in gettable"));
 	}
 
 	public static void luaV_settable(lua_State L, TValue t, TValue key, TValue val) { //StkId
@@ -150,7 +150,7 @@ TValue.dec(top); //ref
 				// else will try the tag method 
 			}
 			else if (LuaObject.ttisnil(tm = LuaTM.luaT_gettmbyobj(L, t, TMS.TM_NEWINDEX))) {
-				LuaDebug.luaG_typeerror(L, t, CharPtr.toCharPtr("index"));
+				LuaDebug.luaG_typeerror(L, t, LuaConf.CharPtr.toCharPtr("index"));
 			}
 			if (LuaObject.ttisfunction(tm)) {
 				callTM(L, tm, t, key, val);
@@ -158,7 +158,7 @@ TValue.dec(top); //ref
 			}
 			t = tm; // else repeat with `tm' 
 		}
-		LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("loop in settable"));
+		LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("loop in settable"));
 	}
 
 	private static int call_binTM(lua_State L, TValue p1, TValue p2, TValue res, TMS event_) { //StkId
@@ -207,9 +207,9 @@ TValue.dec(top); //ref
 	}
 
 	private static int l_strcmp(TString ls, TString rs) {
-		CharPtr l = LuaObject.getstr(ls);
+		LuaConf.CharPtr l = LuaObject.getstr(ls);
 		int ll = ls.getTsv().len; //uint
-		CharPtr r = LuaObject.getstr(rs);
+		LuaConf.CharPtr r = LuaObject.getstr(rs);
 		int lr = rs.getTsv().len; //uint
 		for (;;) {
 			//int temp = strcoll(l, r);
@@ -228,9 +228,9 @@ TValue.dec(top); //ref
 				}
 				// both strings longer than `len'; go on comparing (after the `\0') 
 				len++;
-				l = CharPtr.plus(l, len);
+				l = LuaConf.CharPtr.plus(l, len);
 				ll -= len;
-				r = CharPtr.plus(r, len);
+				r = LuaConf.CharPtr.plus(r, len);
 				lr -= len;
 			}
 		}
@@ -274,7 +274,7 @@ TValue.dec(top); //ref
 		return LuaDebug.luaG_ordererror(L, l, r);
 	}
 
-	private static CharPtr mybuff = null;
+	private static LuaConf.CharPtr mybuff = null;
 
 	public static int luaV_equalval(lua_State L, TValue t1, TValue t2) {
 		TValue tm = null;
@@ -332,18 +332,18 @@ TValue.dec(top); //ref
 			else {
 				// at least two string values; get as many as possible 
 				int tl = LuaObject.tsvalue(TValue.minus(top, 1)).len; //uint
-				CharPtr buffer;
+				LuaConf.CharPtr buffer;
 				int i;
 				// collect total length 
 				for (n = 1; n < total && (tostring(L, TValue.minus(TValue.minus(top, n), 1)) != 0); n++) { //FIXME:
 					int l = LuaObject.tsvalue(TValue.minus(TValue.minus(top, n), 1)).len; //uint
 					if (l >= LuaLimits.MAX_SIZET - tl) {
-						LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("string length overflow"));
+						LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("string length overflow"));
 					}
 					tl += l;
 				}
 				buffer = LuaZIO.luaZ_openspace(L, LuaState.G(L).buff, tl);
-				if (CharPtr.isEqual(mybuff, null)) {
+				if (LuaConf.CharPtr.isEqual(mybuff, null)) {
 					mybuff = buffer;
 				}
 				tl = 0;
@@ -753,7 +753,7 @@ TValue rb = RB(L, base_, i);
 										//Protect(
 										L.savedpc = InstructionPtr.Assign(pc);
 										if (call_binTM(L, rb, LuaObject.luaO_nilobject, ra, TMS.TM_LEN) == 0) {
-											LuaDebug.luaG_typeerror(L, rb, CharPtr.toCharPtr("get length of"));
+											LuaDebug.luaG_typeerror(L, rb, LuaConf.CharPtr.toCharPtr("get length of"));
 										}
 										base_ = L.base_;
 										//)
@@ -977,7 +977,7 @@ TValue rb = RB(L, base_, i);
 							retxxx = tonumber(init_ref, ra); //ref
 							init = init_ref[0];
 							if (retxxx == 0) {
-								LuaDebug.luaG_runerror(L, CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " initial value must be a number"));
+								LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " initial value must be a number"));
 							}
 							else {
 								TValue[] plimit_ref = new TValue[1];
@@ -985,7 +985,7 @@ TValue rb = RB(L, base_, i);
 								retxxx = tonumber(plimit_ref, TValue.plus(ra, 1)); //ref
 								plimit = plimit_ref[0];
 								if (retxxx == 0) {
-									LuaDebug.luaG_runerror(L, CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " limit must be a number"));
+									LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " limit must be a number"));
 								}
 								else {
 									TValue[] pstep_ref = new TValue[1];
@@ -993,7 +993,7 @@ TValue rb = RB(L, base_, i);
 									retxxx = tonumber(pstep_ref, TValue.plus(ra, 2)); //ref
 									pstep = pstep_ref[0];
 									if (retxxx == 0) {
-										LuaDebug.luaG_runerror(L, CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " step must be a number"));
+										LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " step must be a number"));
 									}
 								}
 							}

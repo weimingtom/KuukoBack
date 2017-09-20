@@ -7,7 +7,7 @@ package kurumi;
 //{
 	public class TString extends TString_tsv 
 	{
-		public CharPtr str;
+		public LuaConf.CharPtr str;
 		
 		//public L_Umaxalign dummy;  /* ensures maximum alignment for strings */
 
@@ -21,7 +21,7 @@ package kurumi;
 			
 		}
 		
-		public TString(CharPtr str) 
+		public TString(LuaConf.CharPtr str) 
 		{ 
 			this.str = str; 
 		}

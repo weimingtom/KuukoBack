@@ -39,15 +39,15 @@ public class LuaAuxLib {
 //		 
 	public static void luaL_argcheck(lua_State L, boolean cond, int numarg, String extramsg) {
 		if (!cond) {
-			luaL_argerror(L, numarg, CharPtr.toCharPtr(extramsg));
+			luaL_argerror(L, numarg, LuaConf.CharPtr.toCharPtr(extramsg));
 		}
 	}
 
-	public static CharPtr luaL_checkstring(lua_State L, int n) {
+	public static LuaConf.CharPtr luaL_checkstring(lua_State L, int n) {
 		return luaL_checklstring(L, n);
 	}
 
-	public static CharPtr luaL_optstring(lua_State L, int n, CharPtr d) {
+	public static LuaConf.CharPtr luaL_optstring(lua_State L, int n, LuaConf.CharPtr d) {
 		int[] len = new int[1]; //uint
 		return luaL_optlstring(L, n, d, len); //out
 	}
@@ -74,7 +74,7 @@ public class LuaAuxLib {
 		return luaL_optinteger(L, n, d);
 	}
 
-	public static CharPtr luaL_typename(lua_State L, int i) {
+	public static LuaConf.CharPtr luaL_typename(lua_State L, int i) {
 		return LuaAPI.lua_typename(L, LuaAPI.lua_type(L, i));
 	}
 
@@ -84,7 +84,7 @@ public class LuaAuxLib {
 	///#define luaL_dostring(L, s) \
 	//    (luaL_loadstring(L, s) || lua_pcall(L, 0, LUA_MULTRET, 0))
 
-	public static void luaL_getmetatable(lua_State L, CharPtr n) {
+	public static void luaL_getmetatable(lua_State L, LuaConf.CharPtr n) {
 		LuaAPI.lua_getfield(L, Lua.LUA_REGISTRYINDEX, n);
 	}
 
@@ -156,26 +156,26 @@ public class LuaAuxLib {
 //		 ** Error-report functions
 //		 ** =======================================================
 //		 
-	public static int luaL_argerror(lua_State L, int narg, CharPtr extramsg) {
+	public static int luaL_argerror(lua_State L, int narg, LuaConf.CharPtr extramsg) {
 		lua_Debug ar = new lua_Debug();
 		if (LuaDebug.lua_getstack(L, 0, ar) == 0) { // no stack frame? 
-			return luaL_error(L, CharPtr.toCharPtr("bad argument #%d (%s)"), narg, extramsg);
+			return luaL_error(L, LuaConf.CharPtr.toCharPtr("bad argument #%d (%s)"), narg, extramsg);
 		}
-		LuaDebug.lua_getinfo(L, CharPtr.toCharPtr("n"), ar);
-		if (LuaConf.strcmp(ar.namewhat, CharPtr.toCharPtr("method")) == 0) {
+		LuaDebug.lua_getinfo(L, LuaConf.CharPtr.toCharPtr("n"), ar);
+		if (LuaConf.strcmp(ar.namewhat, LuaConf.CharPtr.toCharPtr("method")) == 0) {
 			narg--; // do not count `self' 
 			if (narg == 0) { // error is in the self argument itself? 
-				return luaL_error(L, CharPtr.toCharPtr("calling " + LuaConf.getLUA_QS() + " on bad self ({1})"), ar.name, extramsg); //FIXME:
+				return luaL_error(L, LuaConf.CharPtr.toCharPtr("calling " + LuaConf.getLUA_QS() + " on bad self ({1})"), ar.name, extramsg); //FIXME:
 			}
 		}
-		if (CharPtr.isEqual(ar.name, null)) {
-			ar.name = CharPtr.toCharPtr("?");
+		if (LuaConf.CharPtr.isEqual(ar.name, null)) {
+			ar.name = LuaConf.CharPtr.toCharPtr("?");
 		}
-		return luaL_error(L, CharPtr.toCharPtr("bad argument #%d to " + LuaConf.getLUA_QS() + " (%s)"), narg, ar.name, extramsg);
+		return luaL_error(L, LuaConf.CharPtr.toCharPtr("bad argument #%d to " + LuaConf.getLUA_QS() + " (%s)"), narg, ar.name, extramsg);
 	}
 
-	public static int luaL_typerror(lua_State L, int narg, CharPtr tname) {
-		CharPtr msg = LuaAPI.lua_pushfstring(L, CharPtr.toCharPtr("%s expected, got %s"), tname, luaL_typename(L, narg));
+	public static int luaL_typerror(lua_State L, int narg, LuaConf.CharPtr tname) {
+		LuaConf.CharPtr msg = LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("%s expected, got %s"), tname, luaL_typename(L, narg));
 		return luaL_argerror(L, narg, msg);
 	}
 
@@ -187,17 +187,17 @@ public class LuaAuxLib {
 		lua_Debug ar = new lua_Debug();
 		if (LuaDebug.lua_getstack(L, level, ar) != 0) {
 			// check function at level 
-			LuaDebug.lua_getinfo(L, CharPtr.toCharPtr("Sl"), ar); // get info about it 
+			LuaDebug.lua_getinfo(L, LuaConf.CharPtr.toCharPtr("Sl"), ar); // get info about it 
 			if (ar.currentline > 0) {
 				// is there info? 
-				LuaAPI.lua_pushfstring(L, CharPtr.toCharPtr("%s:%d: "), ar.short_src, ar.currentline);
+				LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("%s:%d: "), ar.short_src, ar.currentline);
 				return;
 			}
 		}
-		Lua.lua_pushliteral(L, CharPtr.toCharPtr("")); // else, no information available... 
+		Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("")); // else, no information available... 
 	}
 
-	public static int luaL_error(lua_State L, CharPtr fmt, Object... p) {
+	public static int luaL_error(lua_State L, LuaConf.CharPtr fmt, Object... p) {
 		luaL_where(L, 1);
 		LuaAPI.lua_pushvfstring(L, fmt, p);
 		LuaAPI.lua_concat(L, 2);
@@ -206,18 +206,18 @@ public class LuaAuxLib {
 
 	// }====================================================== 
 
-	public static int luaL_checkoption(lua_State L, int narg, CharPtr def, CharPtr[] lst) {
-		CharPtr name = (CharPtr.isNotEqual(def, null)) ? luaL_optstring(L, narg, def) : luaL_checkstring(L, narg);
+	public static int luaL_checkoption(lua_State L, int narg, LuaConf.CharPtr def, LuaConf.CharPtr[] lst) {
+		LuaConf.CharPtr name = (LuaConf.CharPtr.isNotEqual(def, null)) ? luaL_optstring(L, narg, def) : luaL_checkstring(L, narg);
 		int i;
 		for (i = 0; i < lst.length; i++) {
 			if (LuaConf.strcmp(lst[i], name) == 0) {
 				return i;
 			}
 		}
-		return luaL_argerror(L, narg, LuaAPI.lua_pushfstring(L, CharPtr.toCharPtr("invalid option " + LuaConf.getLUA_QS()), name));
+		return luaL_argerror(L, narg, LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("invalid option " + LuaConf.getLUA_QS()), name));
 	}
 
-	public static int luaL_newmetatable(lua_State L, CharPtr tname) {
+	public static int luaL_newmetatable(lua_State L, LuaConf.CharPtr tname) {
 		LuaAPI.lua_getfield(L, Lua.LUA_REGISTRYINDEX, tname); // get registry.name 
 		if (!Lua.lua_isnil(L, -1)) { // name already in use? 
 			return 0; // leave previous value on top, but return 0 
@@ -229,7 +229,7 @@ public class LuaAuxLib {
 		return 1;
 	}
 
-	public static Object luaL_checkudata(lua_State L, int ud, CharPtr tname) {
+	public static Object luaL_checkudata(lua_State L, int ud, LuaConf.CharPtr tname) {
 		Object p = LuaAPI.lua_touserdata(L, ud);
 		if (p != null) {
 			// value is a userdata? 
@@ -247,9 +247,9 @@ public class LuaAuxLib {
 		return null; // to avoid warnings 
 	}
 
-	public static void luaL_checkstack(lua_State L, int space, CharPtr mes) {
+	public static void luaL_checkstack(lua_State L, int space, LuaConf.CharPtr mes) {
 		if (LuaAPI.lua_checkstack(L, space) == 0) {
-			luaL_error(L, CharPtr.toCharPtr("stack overflow (%s)"), mes);
+			luaL_error(L, LuaConf.CharPtr.toCharPtr("stack overflow (%s)"), mes);
 		}
 	}
 
@@ -262,31 +262,31 @@ public class LuaAuxLib {
 
 	public static void luaL_checkany(lua_State L, int narg) {
 		if (LuaAPI.lua_type(L, narg) == Lua.LUA_TNONE) {
-			luaL_argerror(L, narg, CharPtr.toCharPtr("value expected"));
+			luaL_argerror(L, narg, LuaConf.CharPtr.toCharPtr("value expected"));
 		}
 	}
 
-	public static CharPtr luaL_checklstring(lua_State L, int narg) {
+	public static LuaConf.CharPtr luaL_checklstring(lua_State L, int narg) {
 		int[] len = new int[1]; //uint
 		return luaL_checklstring(L, narg, len); //out
 	}
 
-	public static CharPtr luaL_checklstring(lua_State L, int narg, int[] len) { //uint - out
-		CharPtr s = LuaAPI.lua_tolstring(L, narg, len); //out
-		if (CharPtr.isEqual(s, null)) {
+	public static LuaConf.CharPtr luaL_checklstring(lua_State L, int narg, int[] len) { //uint - out
+		LuaConf.CharPtr s = LuaAPI.lua_tolstring(L, narg, len); //out
+		if (LuaConf.CharPtr.isEqual(s, null)) {
 			tag_error(L, narg, Lua.LUA_TSTRING);
 		}
 		return s;
 	}
 
-	public static CharPtr luaL_optlstring(lua_State L, int narg, CharPtr def) {
+	public static LuaConf.CharPtr luaL_optlstring(lua_State L, int narg, LuaConf.CharPtr def) {
 		int[] len = new int[1]; //uint
 		return luaL_optlstring(L, narg, def, len); //out
 	}
 
-	public static CharPtr luaL_optlstring(lua_State L, int narg, CharPtr def, int[] len) { //uint - out
+	public static LuaConf.CharPtr luaL_optlstring(lua_State L, int narg, LuaConf.CharPtr def, int[] len) { //uint - out
 		if (Lua.lua_isnoneornil(L, narg)) {
-			len[0] = ((CharPtr.isNotEqual(def, null)) ? LuaConf.strlen(def) : 0); //(uint)
+			len[0] = ((LuaConf.CharPtr.isNotEqual(def, null)) ? LuaConf.strlen(def) : 0); //(uint)
 			return def;
 		}
 		else {
@@ -330,7 +330,7 @@ public class LuaAuxLib {
 		return luaL_opt_integer(L, new luaL_checkinteger_delegate(), narg, def);
 	}
 
-	public static int luaL_getmetafield(lua_State L, int obj, CharPtr event_) {
+	public static int luaL_getmetafield(lua_State L, int obj, LuaConf.CharPtr event_) {
 		if (LuaAPI.lua_getmetatable(L, obj) == 0) { // no metatable? 
 			return 0;
 		}
@@ -346,7 +346,7 @@ public class LuaAuxLib {
 		}
 	}
 
-	public static int luaL_callmeta(lua_State L, int obj, CharPtr event_) {
+	public static int luaL_callmeta(lua_State L, int obj, LuaConf.CharPtr event_) {
 		obj = abs_index(L, obj);
 		if (luaL_getmetafield(L, obj, event_)==0) { // no metafield? 
 			return 0;
@@ -356,7 +356,7 @@ public class LuaAuxLib {
 		return 1;
 	}
 
-	public static void luaL_register(lua_State L, CharPtr libname, luaL_Reg[] l) {
+	public static void luaL_register(lua_State L, LuaConf.CharPtr libname, luaL_Reg[] l) {
 		luaI_openlib(L, libname, l, 0);
 	}
 
@@ -364,24 +364,24 @@ public class LuaAuxLib {
 	// to keep it as close to the C implementation as possible.
 	private static int libsize(luaL_Reg[] l) {
 		int size = 0;
-		for (; CharPtr.isNotEqual(l[size].name, null); size++) {
+		for (; LuaConf.CharPtr.isNotEqual(l[size].name, null); size++) {
 			;
 		}
 		return size;
 	}
 
-	public static void luaI_openlib(lua_State L, CharPtr libname, luaL_Reg[] l, int nup) {
-		if (CharPtr.isNotEqual(libname, null)) {
+	public static void luaI_openlib(lua_State L, LuaConf.CharPtr libname, luaL_Reg[] l, int nup) {
+		if (LuaConf.CharPtr.isNotEqual(libname, null)) {
 			int size = libsize(l);
 			// check whether lib already exists 
-			luaL_findtable(L, Lua.LUA_REGISTRYINDEX, CharPtr.toCharPtr("_LOADED"), 1);
+			luaL_findtable(L, Lua.LUA_REGISTRYINDEX, LuaConf.CharPtr.toCharPtr("_LOADED"), 1);
 			LuaAPI.lua_getfield(L, -1, libname); // get _LOADED[libname] 
 			if (!Lua.lua_istable(L, -1)) {
 				// not found? 
 				Lua.lua_pop(L, 1); // remove previous result 
 				// try global variable (and create one if it does not exist) 
-				if (CharPtr.isNotEqual(luaL_findtable(L, Lua.LUA_GLOBALSINDEX, libname, size), null)) {
-					luaL_error(L, CharPtr.toCharPtr("name conflict for module " + LuaConf.getLUA_QS()), libname);
+				if (LuaConf.CharPtr.isNotEqual(luaL_findtable(L, Lua.LUA_GLOBALSINDEX, libname, size), null)) {
+					luaL_error(L, LuaConf.CharPtr.toCharPtr("name conflict for module " + LuaConf.getLUA_QS()), libname);
 				}
 				LuaAPI.lua_pushvalue(L, -1);
 				LuaAPI.lua_setfield(L, -3, libname); // _LOADED[libname] = new table 
@@ -390,7 +390,7 @@ public class LuaAuxLib {
 			LuaAPI.lua_insert(L, -(nup + 1)); // move library table to below upvalues 
 		}
 		int reg_num = 0;
-		for (; CharPtr.isNotEqual(l[reg_num].name, null); reg_num++) {
+		for (; LuaConf.CharPtr.isNotEqual(l[reg_num].name, null); reg_num++) {
 			int i;
 			for (i = 0; i < nup; i++) { // copy upvalues to the top 
 				LuaAPI.lua_pushvalue(L, -nup);
@@ -480,36 +480,36 @@ public class LuaAuxLib {
 
 	// }====================================================== 
 
-	public static CharPtr luaL_gsub(lua_State L, CharPtr s, CharPtr p, CharPtr r) {
-		CharPtr wild;
+	public static LuaConf.CharPtr luaL_gsub(lua_State L, LuaConf.CharPtr s, LuaConf.CharPtr p, LuaConf.CharPtr r) {
+		LuaConf.CharPtr wild;
 		int l = LuaConf.strlen(p); //(uint) - uint
 		luaL_Buffer b = new luaL_Buffer();
 		luaL_buffinit(L, b);
-		while (CharPtr.isNotEqual((wild = LuaConf.strstr(s, p)), null)) {
-			luaL_addlstring(b, s, CharPtr.minus(wild, s)); // push prefix  - (uint)
+		while (LuaConf.CharPtr.isNotEqual((wild = LuaConf.strstr(s, p)), null)) {
+			luaL_addlstring(b, s, LuaConf.CharPtr.minus(wild, s)); // push prefix  - (uint)
 			luaL_addstring(b, r); // push replacement in place of pattern 
-			s = CharPtr.plus(wild, l); // continue after `p' 
+			s = LuaConf.CharPtr.plus(wild, l); // continue after `p' 
 		}
 		luaL_addstring(b, s); // push last suffix 
 		luaL_pushresult(b);
 		return Lua.lua_tostring(L, -1);
 	}
 
-	public static CharPtr luaL_findtable(lua_State L, int idx, CharPtr fname, int szhint) {
-		CharPtr e;
+	public static LuaConf.CharPtr luaL_findtable(lua_State L, int idx, LuaConf.CharPtr fname, int szhint) {
+		LuaConf.CharPtr e;
 		LuaAPI.lua_pushvalue(L, idx);
 		do {
 			e = LuaConf.strchr(fname, '.');
-			if (CharPtr.isEqual(e, null)) {
-				e = CharPtr.plus(fname, LuaConf.strlen(fname));
+			if (LuaConf.CharPtr.isEqual(e, null)) {
+				e = LuaConf.CharPtr.plus(fname, LuaConf.strlen(fname));
 			}
-			LuaAPI.lua_pushlstring(L, fname, CharPtr.minus(e, fname)); //(uint)
+			LuaAPI.lua_pushlstring(L, fname, LuaConf.CharPtr.minus(e, fname)); //(uint)
 			LuaAPI.lua_rawget(L, -2);
 			if (Lua.lua_isnil(L, -1)) {
 				// no such field? 
 				Lua.lua_pop(L, 1); // remove this nil 
-				LuaAPI.lua_createtable(L, 0, (CharPtr.isEqualChar(e, '.') ? 1 : szhint)); // new table for field 
-				LuaAPI.lua_pushlstring(L, fname, CharPtr.minus(e, fname)); //(uint)
+				LuaAPI.lua_createtable(L, 0, (LuaConf.CharPtr.isEqualChar(e, '.') ? 1 : szhint)); // new table for field 
+				LuaAPI.lua_pushlstring(L, fname, LuaConf.CharPtr.minus(e, fname)); //(uint)
 				LuaAPI.lua_pushvalue(L, -2);
 				LuaAPI.lua_settable(L, -4); // set new table into field 
 			}
@@ -519,8 +519,8 @@ public class LuaAuxLib {
 				return fname; // return problematic part of the name 
 			}
 			LuaAPI.lua_remove(L, -2); // remove previous table 
-			fname = CharPtr.plus(e, 1);
-		} while (CharPtr.isEqualChar(e, '.'));
+			fname = LuaConf.CharPtr.plus(e, 1);
+		} while (LuaConf.CharPtr.isEqualChar(e, '.'));
 		return null;
 	}
 
@@ -572,14 +572,14 @@ public class LuaAuxLib {
 		}
 	}
 
-	public static CharPtr luaL_prepbuffer(luaL_Buffer B) {
+	public static LuaConf.CharPtr luaL_prepbuffer(luaL_Buffer B) {
 		if (emptybuffer(B) != 0) {
 			adjuststack(B);
 		}
-		return new CharPtr(B.buffer, B.p);
+		return new LuaConf.CharPtr(B.buffer, B.p);
 	}
 
-	public static void luaL_addlstring(luaL_Buffer B, CharPtr s, int l) { //uint
+	public static void luaL_addlstring(luaL_Buffer B, LuaConf.CharPtr s, int l) { //uint
 		while (l-- != 0) {
 			char c = s.get(0);
 			s = s.next();
@@ -587,7 +587,7 @@ public class LuaAuxLib {
 		}
 	}
 
-	public static void luaL_addstring(luaL_Buffer B, CharPtr s) {
+	public static void luaL_addstring(luaL_Buffer B, LuaConf.CharPtr s) {
 		luaL_addlstring(B, s, LuaConf.strlen(s)); //(uint)
 	}
 
@@ -600,11 +600,11 @@ public class LuaAuxLib {
 	public static void luaL_addvalue(luaL_Buffer B) {
 		lua_State L = B.L;
 		int[] vl = new int[1]; //uint
-		CharPtr s = LuaAPI.lua_tolstring(L, -1, vl); //out
+		LuaConf.CharPtr s = LuaAPI.lua_tolstring(L, -1, vl); //out
 		if (vl[0] <= bufffree(B)) {
 			// fit into buffer? 
-			CharPtr dst = new CharPtr(B.buffer.chars, B.buffer.index + B.p);
-			CharPtr src = new CharPtr(s.chars, s.index);
+			LuaConf.CharPtr dst = new LuaConf.CharPtr(B.buffer.chars, B.buffer.index + B.p);
+			LuaConf.CharPtr src = new LuaConf.CharPtr(s.chars, s.index);
 			for (int i = 0; i < vl[0]; i++) { //uint
 				dst.set(i, src.get(i));
 			}
@@ -667,45 +667,45 @@ public class LuaAuxLib {
 //		 ** Load functions
 //		 ** =======================================================
 //		 
-	public static CharPtr getF(lua_State L, Object ud, int[] size) { //uint - out
+	public static LuaConf.CharPtr getF(lua_State L, Object ud, int[] size) { //uint - out
 		size[0] = 0;
 		LoadF lf = (LoadF)ud;
 		//(void)L;
 		if (lf.extraline != 0) {
 			lf.extraline = 0;
 			size[0] = 1;
-			return CharPtr.toCharPtr("\n");
+			return LuaConf.CharPtr.toCharPtr("\n");
 		}
 		if (LuaConf.feof(lf.f) != 0) {
 			return null;
 		}
 		size[0] = LuaConf.fread(lf.buff, 1, lf.buff.chars.length, lf.f); //(uint)
-		return (size[0] > 0) ? new CharPtr(lf.buff) : null;
+		return (size[0] > 0) ? new LuaConf.CharPtr(lf.buff) : null;
 	}
 
-	private static int errfile(lua_State L, CharPtr what, int fnameindex) {
-		CharPtr serr = LuaConf.strerror(LuaConf.errno());
-		CharPtr filename = CharPtr.plus(Lua.lua_tostring(L, fnameindex), 1);
-		LuaAPI.lua_pushfstring(L, CharPtr.toCharPtr("cannot %s %s: %s"), what, filename, serr);
+	private static int errfile(lua_State L, LuaConf.CharPtr what, int fnameindex) {
+		LuaConf.CharPtr serr = LuaConf.strerror(LuaConf.errno());
+		LuaConf.CharPtr filename = LuaConf.CharPtr.plus(Lua.lua_tostring(L, fnameindex), 1);
+		LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("cannot %s %s: %s"), what, filename, serr);
 		LuaAPI.lua_remove(L, fnameindex);
 		return LUA_ERRFILE;
 	}
 
-	public static int luaL_loadfile(lua_State L, CharPtr filename) {
+	public static int luaL_loadfile(lua_State L, LuaConf.CharPtr filename) {
 		LoadF lf = new LoadF();
 		int status, readstatus;
 		int c;
 		int fnameindex = LuaAPI.lua_gettop(L) + 1; // index of filename on the stack 
 		lf.extraline = 0;
-		if (CharPtr.isEqual(filename, null)) {
-			Lua.lua_pushliteral(L, CharPtr.toCharPtr("=stdin"));
+		if (LuaConf.CharPtr.isEqual(filename, null)) {
+			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("=stdin"));
 			lf.f = LuaConf.stdin;
 		}
 		else {
-			LuaAPI.lua_pushfstring(L, CharPtr.toCharPtr("@%s"), filename);
-			lf.f = LuaConf.fopen(filename, CharPtr.toCharPtr("r"));
+			LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("@%s"), filename);
+			lf.f = LuaConf.fopen(filename, LuaConf.CharPtr.toCharPtr("r"));
 			if (lf.f == null) {
-				return errfile(L, CharPtr.toCharPtr("open"), fnameindex);
+				return errfile(L, LuaConf.CharPtr.toCharPtr("open"), fnameindex);
 			}
 		}
 		c = LuaConf.getc(lf.f);
@@ -719,11 +719,11 @@ public class LuaAuxLib {
 				c = LuaConf.getc(lf.f);
 			}
 		}
-		if (c == Lua.LUA_SIGNATURE.charAt(0) && (CharPtr.isNotEqual(filename, null))) {
+		if (c == Lua.LUA_SIGNATURE.charAt(0) && (LuaConf.CharPtr.isNotEqual(filename, null))) {
 			// binary file? 
-			lf.f = LuaConf.freopen(filename, CharPtr.toCharPtr("rb"), lf.f); // reopen in binary mode 
+			lf.f = LuaConf.freopen(filename, LuaConf.CharPtr.toCharPtr("rb"), lf.f); // reopen in binary mode 
 			if (lf.f == null) {
-				return errfile(L, CharPtr.toCharPtr("reopen"), fnameindex);
+				return errfile(L, LuaConf.CharPtr.toCharPtr("reopen"), fnameindex);
 			}
 			// skip eventual `#!...' 
 			while ((c = LuaConf.getc(lf.f)) != LuaConf.EOF && c != Lua.LUA_SIGNATURE.charAt(0)) {
@@ -734,18 +734,18 @@ public class LuaAuxLib {
 		LuaConf.ungetc(c, lf.f);
 		status = LuaAPI.lua_load(L, new getF_delegate(), lf, Lua.lua_tostring(L, -1));
 		readstatus = LuaConf.ferror(lf.f);
-		if (CharPtr.isNotEqual(filename, null)) {
+		if (LuaConf.CharPtr.isNotEqual(filename, null)) {
 			LuaConf.fclose(lf.f); // close file (even in case of errors) 
 		}
 		if (readstatus != 0) {
 			LuaAPI.lua_settop(L, fnameindex); // ignore results from `lua_load' 
-			return errfile(L, CharPtr.toCharPtr("read"), fnameindex);
+			return errfile(L, LuaConf.CharPtr.toCharPtr("read"), fnameindex);
 		}
 		LuaAPI.lua_remove(L, fnameindex);
 		return status;
 	}
 
-	private static CharPtr getS(lua_State L, Object ud, int[] size) { //uint - out
+	private static LuaConf.CharPtr getS(lua_State L, Object ud, int[] size) { //uint - out
 		LoadS ls = (LoadS)ud;
 		//(void)L;
 		//if (ls.size == 0) return null;
@@ -754,14 +754,14 @@ public class LuaAuxLib {
 		return ls.s;
 	}
 
-	public static int luaL_loadbuffer(lua_State L, CharPtr buff, int size, CharPtr name) { //uint
+	public static int luaL_loadbuffer(lua_State L, LuaConf.CharPtr buff, int size, LuaConf.CharPtr name) { //uint
 		LoadS ls = new LoadS();
-		ls.s = new CharPtr(buff);
+		ls.s = new LuaConf.CharPtr(buff);
 		ls.size = size;
 		return LuaAPI.lua_load(L, new getS_delegate(), ls, name);
 	}
 
-	public static int luaL_loadstring(lua_State L, CharPtr s) {
+	public static int luaL_loadstring(lua_State L, LuaConf.CharPtr s) {
 		return luaL_loadbuffer(L, s, LuaConf.strlen(s), s); //(uint)
 	}
 
@@ -779,7 +779,7 @@ public class LuaAuxLib {
 
 	private static int panic(lua_State L) {
 		//(void)L;  /* to avoid warnings */
-		LuaConf.fprintf(LuaConf.stderr, CharPtr.toCharPtr("PANIC: unprotected error in call to Lua API (%s)\n"), Lua.lua_tostring(L, -1));
+		LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("PANIC: unprotected error in call to Lua API (%s)\n"), Lua.lua_tostring(L, -1));
 		return 0;
 	}
 
@@ -810,13 +810,13 @@ public class LuaAuxLib {
 	}
 
 	public static class getF_delegate implements lua_Reader {
-		public final CharPtr exec(lua_State L, Object ud, int[] sz) { //uint - out
+		public final LuaConf.CharPtr exec(lua_State L, Object ud, int[] sz) { //uint - out
 			return getF(L, ud, sz); //out
 		}
 	}
 
 	public static class getS_delegate implements lua_Reader {
-		public final CharPtr exec(lua_State L, Object ud, int[] sz) { //uint - out
+		public final LuaConf.CharPtr exec(lua_State L, Object ud, int[] sz) { //uint - out
 			return getS(L, ud, sz); //out
 		}
 	}

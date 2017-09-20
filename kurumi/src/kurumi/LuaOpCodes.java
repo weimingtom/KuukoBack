@@ -265,7 +265,46 @@ public class LuaOpCodes {
 	public static final int LFIELDS_PER_FLUSH = 50;
 
 	// ORDER OP 
-	public final static CharPtr[] luaP_opnames = { CharPtr.toCharPtr("MOVE"), CharPtr.toCharPtr("LOADK"), CharPtr.toCharPtr("LOADBOOL"), CharPtr.toCharPtr("LOADNIL"), CharPtr.toCharPtr("GETUPVAL"), CharPtr.toCharPtr("GETGLOBAL"), CharPtr.toCharPtr("GETTABLE"), CharPtr.toCharPtr("SETGLOBAL"), CharPtr.toCharPtr("SETUPVAL"), CharPtr.toCharPtr("SETTABLE"), CharPtr.toCharPtr("NEWTABLE"), CharPtr.toCharPtr("SELF"), CharPtr.toCharPtr("ADD"), CharPtr.toCharPtr("SUB"), CharPtr.toCharPtr("MUL"), CharPtr.toCharPtr("DIV"), CharPtr.toCharPtr("MOD"), CharPtr.toCharPtr("POW"), CharPtr.toCharPtr("UNM"), CharPtr.toCharPtr("NOT"), CharPtr.toCharPtr("LEN"), CharPtr.toCharPtr("CONCAT"), CharPtr.toCharPtr("JMP"), CharPtr.toCharPtr("EQ"), CharPtr.toCharPtr("LT"), CharPtr.toCharPtr("LE"), CharPtr.toCharPtr("TEST"), CharPtr.toCharPtr("TESTSET"), CharPtr.toCharPtr("CALL"), CharPtr.toCharPtr("TAILCALL"), CharPtr.toCharPtr("RETURN"), CharPtr.toCharPtr("FORLOOP"), CharPtr.toCharPtr("FORPREP"), CharPtr.toCharPtr("TFORLOOP"), CharPtr.toCharPtr("SETLIST"), CharPtr.toCharPtr("CLOSE"), CharPtr.toCharPtr("CLOSURE"), CharPtr.toCharPtr("VARARG") };
+	public final static LuaConf.CharPtr[] luaP_opnames = { 
+		LuaConf.CharPtr.toCharPtr("MOVE"), 
+		LuaConf.CharPtr.toCharPtr("LOADK"), 
+		LuaConf.CharPtr.toCharPtr("LOADBOOL"), 
+		LuaConf.CharPtr.toCharPtr("LOADNIL"), 
+		LuaConf.CharPtr.toCharPtr("GETUPVAL"), 
+		LuaConf.CharPtr.toCharPtr("GETGLOBAL"), 
+		LuaConf.CharPtr.toCharPtr("GETTABLE"), 
+		LuaConf.CharPtr.toCharPtr("SETGLOBAL"), 
+		LuaConf.CharPtr.toCharPtr("SETUPVAL"), 
+		LuaConf.CharPtr.toCharPtr("SETTABLE"), 
+		LuaConf.CharPtr.toCharPtr("NEWTABLE"), 
+		LuaConf.CharPtr.toCharPtr("SELF"), 
+		LuaConf.CharPtr.toCharPtr("ADD"), 
+		LuaConf.CharPtr.toCharPtr("SUB"), 
+		LuaConf.CharPtr.toCharPtr("MUL"), 
+		LuaConf.CharPtr.toCharPtr("DIV"), 
+		LuaConf.CharPtr.toCharPtr("MOD"), 
+		LuaConf.CharPtr.toCharPtr("POW"), 
+		LuaConf.CharPtr.toCharPtr("UNM"), 
+		LuaConf.CharPtr.toCharPtr("NOT"), 
+		LuaConf.CharPtr.toCharPtr("LEN"), 
+		LuaConf.CharPtr.toCharPtr("CONCAT"), 
+		LuaConf.CharPtr.toCharPtr("JMP"), 
+		LuaConf.CharPtr.toCharPtr("EQ"), 
+		LuaConf.CharPtr.toCharPtr("LT"),
+		LuaConf.CharPtr.toCharPtr("LE"), 
+		LuaConf.CharPtr.toCharPtr("TEST"), 
+		LuaConf.CharPtr.toCharPtr("TESTSET"), 
+		LuaConf.CharPtr.toCharPtr("CALL"), 
+		LuaConf.CharPtr.toCharPtr("TAILCALL"), 
+		LuaConf.CharPtr.toCharPtr("RETURN"), 
+		LuaConf.CharPtr.toCharPtr("FORLOOP"), 
+		LuaConf.CharPtr.toCharPtr("FORPREP"), 
+		LuaConf.CharPtr.toCharPtr("TFORLOOP"), 
+		LuaConf.CharPtr.toCharPtr("SETLIST"), 
+		LuaConf.CharPtr.toCharPtr("CLOSE"), 
+		LuaConf.CharPtr.toCharPtr("CLOSURE"), 
+		LuaConf.CharPtr.toCharPtr("VARARG") 
+	};
 
 
 	private static byte opmode(byte t, byte a, OpArgMask b, OpArgMask c, OpMode m) { //lu_byte - lu_byte - lu_byte
