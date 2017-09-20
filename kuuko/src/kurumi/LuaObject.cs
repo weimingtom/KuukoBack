@@ -34,6 +34,17 @@ namespace kurumi
 			void set_array(object array);
 		}		
 		
+	    /*
+	     ** Common Header for all collectable objects (in macro form, to be
+	     ** included in other objects)
+	     */
+	    public class CommonHeader
+	    {
+	    	public GCObject next;
+	    	public byte tt; /*Byte*/ /*lu_byte*/
+	    	public byte marked; /*Byte*/ /*lu_byte*/
+	    }
+		
 		/*
 		 ** Tagged Values
 		 */

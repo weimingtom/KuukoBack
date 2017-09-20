@@ -26,11 +26,22 @@ public class LuaObject {
 	public static final int LUA_TUPVAL = (LAST_TAG + 2);
 	public static final int LUA_TDEADKEY = (LAST_TAG + 3);
 
-	public interface ArrayElement 
+	public static interface ArrayElement 
 	{
 		void set_index(int index);
 		void set_array(Object array);
 	}	
+	
+    /*
+     ** Common Header for all collectable objects (in macro form, to be
+     ** included in other objects)
+     */
+    public static class CommonHeader
+    {
+    	public GCObject next;
+    	public byte tt; /*Byte*/ /*lu_byte*/
+    	public byte marked; /*Byte*/ /*lu_byte*/
+    }	
 	
 //        
 //		 ** Tagged Values

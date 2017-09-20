@@ -8,7 +8,7 @@ package kurumi;
 	/*
 	 ** Common header in struct form
 	 */
-	public class GCheader extends CommonHeader 
+	public class GCheader extends LuaObject.CommonHeader 
 	{
 		
 	}
