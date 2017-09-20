@@ -21,18 +21,38 @@ namespace kurumi
 			return gfasttm(LuaState.G(l), et, e); 
 		}
 
-		public readonly static CharPtr[] luaT_typenames = {
-			CharPtr.toCharPtr("nil"), CharPtr.toCharPtr("boolean"), CharPtr.toCharPtr("userdata"), CharPtr.toCharPtr("number"),
-			CharPtr.toCharPtr("string"), CharPtr.toCharPtr("table"), CharPtr.toCharPtr("function"), CharPtr.toCharPtr("userdata"), CharPtr.toCharPtr("thread"),
-			CharPtr.toCharPtr("proto"), CharPtr.toCharPtr("upval")
+		public readonly static LuaConf.CharPtr[] luaT_typenames = {
+			LuaConf.CharPtr.toCharPtr("nil"), 
+			LuaConf.CharPtr.toCharPtr("boolean"), 
+			LuaConf.CharPtr.toCharPtr("userdata"), 
+			LuaConf.CharPtr.toCharPtr("number"),
+			LuaConf.CharPtr.toCharPtr("string"), 
+			LuaConf.CharPtr.toCharPtr("table"), 
+			LuaConf.CharPtr.toCharPtr("function"), 
+			LuaConf.CharPtr.toCharPtr("userdata"), 
+			LuaConf.CharPtr.toCharPtr("thread"),
+			LuaConf.CharPtr.toCharPtr("proto"), 
+			LuaConf.CharPtr.toCharPtr("upval")
 		};
 
-		private readonly static CharPtr[] luaT_eventname = {  /* ORDER TM */
-			CharPtr.toCharPtr("__index"), CharPtr.toCharPtr("__newindex"),
-			CharPtr.toCharPtr("__gc"), CharPtr.toCharPtr("__mode"), CharPtr.toCharPtr("__eq"),
-			CharPtr.toCharPtr("__add"), CharPtr.toCharPtr("__sub"), CharPtr.toCharPtr("__mul"), CharPtr.toCharPtr("__div"), CharPtr.toCharPtr("__mod"),
-			CharPtr.toCharPtr("__pow"), CharPtr.toCharPtr("__unm"), CharPtr.toCharPtr("__len"), CharPtr.toCharPtr("__lt"), CharPtr.toCharPtr("__le"),
-			CharPtr.toCharPtr("__concat"), CharPtr.toCharPtr("__call")
+		private readonly static LuaConf.CharPtr[] luaT_eventname = {  /* ORDER TM */
+			LuaConf.CharPtr.toCharPtr("__index"), 
+			LuaConf.CharPtr.toCharPtr("__newindex"),
+			LuaConf.CharPtr.toCharPtr("__gc"), 
+			LuaConf.CharPtr.toCharPtr("__mode"), 
+			LuaConf.CharPtr.toCharPtr("__eq"),
+			LuaConf.CharPtr.toCharPtr("__add"), 
+			LuaConf.CharPtr.toCharPtr("__sub"), 
+			LuaConf.CharPtr.toCharPtr("__mul"), 
+			LuaConf.CharPtr.toCharPtr("__div"), 
+			LuaConf.CharPtr.toCharPtr("__mod"),
+			LuaConf.CharPtr.toCharPtr("__pow"), 
+			LuaConf.CharPtr.toCharPtr("__unm"), 
+			LuaConf.CharPtr.toCharPtr("__len"), 
+			LuaConf.CharPtr.toCharPtr("__lt"), 
+			LuaConf.CharPtr.toCharPtr("__le"),
+			LuaConf.CharPtr.toCharPtr("__concat"), 
+			LuaConf.CharPtr.toCharPtr("__call")
 		};
 
 		public static void luaT_init(lua_State L) 

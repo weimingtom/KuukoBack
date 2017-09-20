@@ -194,7 +194,7 @@ namespace kurumi
 		 ** Look for n-th local variable at line `line' in function `func'.
 		 ** Returns null if not found.
 		 */
-		public static CharPtr luaF_getlocalname(Proto f, int local_number, int pc) 
+		public static LuaConf.CharPtr luaF_getlocalname(Proto f, int local_number, int pc) 
 		{
 			int i;
 			for (i = 0; i<f.sizelocvars && f.locvars[i].startpc <= pc; i++) 

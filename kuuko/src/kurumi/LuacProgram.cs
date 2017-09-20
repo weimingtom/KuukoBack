@@ -30,43 +30,43 @@ namespace kurumi
 		//#include "lstring.h"
 		//#include "lundump.h"
 
-		static CharPtr PROGNAME = CharPtr.toCharPtr("luac");		/* default program name */
-		static CharPtr OUTPUT = CharPtr.toCharPtr(PROGNAME + ".out"); /* default output file */
+		static LuaConf.CharPtr PROGNAME = LuaConf.CharPtr.toCharPtr("luac");		/* default program name */
+		static LuaConf.CharPtr OUTPUT = LuaConf.CharPtr.toCharPtr(PROGNAME + ".out"); /* default output file */
 
 		static int listing = 0;			/* list bytecodes? */
 		static int dumping = 1;			/* dump bytecodes? */
 		static int stripping = 0;			/* strip debug information? */
-		static CharPtr Output = OUTPUT;	/* default output file name */
-		static CharPtr output = Output;	/* actual output file name */
-		static CharPtr progname = PROGNAME;	/* actual program name */
+		static LuaConf.CharPtr Output = OUTPUT;	/* default output file name */
+		static LuaConf.CharPtr output = Output;	/* actual output file name */
+		static LuaConf.CharPtr progname = PROGNAME;	/* actual program name */
 
-		static void fatal(CharPtr message)
+		static void fatal(LuaConf.CharPtr message)
 		{
-			LuaConf.fprintf(LuaConf.stderr, CharPtr.toCharPtr("%s: %s\n"), progname, message);
+			LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("%s: %s\n"), progname, message);
 			Environment.Exit(LuaConf.EXIT_FAILURE);
 		}
 
-		static void cannot(CharPtr what)
+		static void cannot(LuaConf.CharPtr what)
 		{
-			LuaConf.fprintf(LuaConf.stderr, CharPtr.toCharPtr("%s: cannot %s %s: %s\n"), progname, what, output, LuaConf.strerror(LuaConf.errno()));
+			LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("%s: cannot %s %s: %s\n"), progname, what, output, LuaConf.strerror(LuaConf.errno()));
 			Environment.Exit(LuaConf.EXIT_FAILURE);
 		}
 
-		static void usage(CharPtr message)
+		static void usage(LuaConf.CharPtr message)
 		{
 			if (message.get(0) == '-')			
 			{
 				LuaConf.fprintf(LuaConf.stderr, 
-					CharPtr.toCharPtr("%s: unrecognized option " + LuaConf.getLUA_QS() + "\n"), 
+					LuaConf.CharPtr.toCharPtr("%s: unrecognized option " + LuaConf.getLUA_QS() + "\n"), 
 					progname, message);
 			}
 			else
 			{
-				LuaConf.fprintf(LuaConf.stderr, CharPtr.toCharPtr("%s: %s\n"), 
+				LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("%s: %s\n"), 
 				    progname, message);
 			}
 			LuaConf.fprintf(LuaConf.stderr,
-			                CharPtr.toCharPtr("usage: %s [options] [filenames].\n" +
+			                LuaConf.CharPtr.toCharPtr("usage: %s [options] [filenames].\n" +
 			                "Available options are:\n" +
 			                "  -        process stdin\n" +
 			                "  -l       list\n" +
@@ -87,7 +87,7 @@ namespace kurumi
 			int version = 0;
 			if ((argv.Length > 0) && (!argv[0].Equals(""))) 
 			{
-				progname = CharPtr.toCharPtr(argv[0]);
+				progname = LuaConf.CharPtr.toCharPtr(argv[0]);
 			}
 			for (i = 1; i < argc; i++)
 			{
@@ -95,7 +95,7 @@ namespace kurumi
 				{
 					break;
 				}
-				else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("--")) == 0)			/* end of options; skip it */
+				else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("--")) == 0)			/* end of options; skip it */
 				{
 					++i;
 					if (version != 0) 
@@ -104,41 +104,41 @@ namespace kurumi
 					}
 					break;
 				}
-				else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-")) == 0)			/* end of options; use stdin */
+				else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-")) == 0)			/* end of options; use stdin */
 				{
 					break;
 				}
-				else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-l")) == 0)			/* list */
+				else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-l")) == 0)			/* list */
 				{
 					++listing;
 				}
-				else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-o")) == 0)			/* output file */
+				else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-o")) == 0)			/* output file */
 				{
-					output = CharPtr.toCharPtr(argv[++i]);
-					if (CharPtr.isEqual(output, null) || (output.get(0) == 0)) 
+					output = LuaConf.CharPtr.toCharPtr(argv[++i]);
+					if (LuaConf.CharPtr.isEqual(output, null) || (output.get(0) == 0)) 
 					{
-						usage(CharPtr.toCharPtr(LuaConf.LUA_QL("-o") + " needs argument"));
+						usage(LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("-o") + " needs argument"));
 					}
-					if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-")) == 0) 
+					if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-")) == 0) 
 					{
 						output = null;
 					}
 				}
-				else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-p")) == 0)			/* parse only */
+				else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-p")) == 0)			/* parse only */
 				{
 					dumping = 0;
 				}
-				else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-s")) == 0)			/* strip debug information */
+				else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-s")) == 0)			/* strip debug information */
 				{
 					stripping = 1;
 				}
-				else if (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-v")) == 0)			/* show version */
+				else if (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-v")) == 0)			/* show version */
 				{
 					++version;
 				}
 				else					/* unknown option */
 				{
-					usage(CharPtr.toCharPtr(argv[i]));
+					usage(LuaConf.CharPtr.toCharPtr(argv[i]));
 				}
 			}
 			if (i == argc && ((listing != 0) || (dumping == 0)))
@@ -148,7 +148,7 @@ namespace kurumi
 			}
 			if (version != 0)
 			{
-				LuaConf.printf(CharPtr.toCharPtr("%s  %s\n"), Lua.LUA_RELEASE, Lua.LUA_COPYRIGHT);
+				LuaConf.printf(LuaConf.CharPtr.toCharPtr("%s  %s\n"), Lua.LUA_RELEASE, Lua.LUA_COPYRIGHT);
 				if (version == argc - 1) 
 				{
 					Environment.Exit(LuaConf.EXIT_SUCCESS);
@@ -174,7 +174,7 @@ namespace kurumi
 				Proto f = LuaFunc.luaF_newproto(L);
 				LuaObject.setptvalue2s(L, L.top,f); 
 				LuaDo.incr_top(L);
-				f.source = LuaString.luaS_newliteral(L, CharPtr.toCharPtr("=(" + PROGNAME + ")"));
+				f.source = LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("=(" + PROGNAME + ")"));
 				f.maxstacksize = 1;
 				pc = 2 * n + 1;
                 /*UInt32[]*/
@@ -198,7 +198,7 @@ namespace kurumi
 		}
 
         //FIXME:StreamProxy/*object*/ u
-		static int writer(lua_State L, CharPtr p, int/*uint*/ size, object u)
+		static int writer(lua_State L, LuaConf.CharPtr p, int/*uint*/ size, object u)
 		{
 			//UNUSED(L);
 			return ((LuaConf.fwrite(p, (int)size, 1, (StreamProxy)u) != 1) && (size != 0)) ? 1 : 0;
@@ -206,7 +206,7 @@ namespace kurumi
 		
 		public class writer_delegate : lua_Writer
 		{
-			public int exec(lua_State L, CharPtr p, int/*uint*/ sz, object ud)
+			public int exec(lua_State L, LuaConf.CharPtr p, int/*uint*/ sz, object ud)
 			{
                 //FIXME:StreamProxy/*object*/ u
 				return writer(L, p, sz, ud);
@@ -222,11 +222,11 @@ namespace kurumi
 			int i;
 			if (LuaAPI.lua_checkstack(L,argc) == 0) 
 			{
-				fatal(CharPtr.toCharPtr("too many input files"));
+				fatal(LuaConf.CharPtr.toCharPtr("too many input files"));
 			}
 			for (i = 0; i < argc; i++)
 			{
-				CharPtr filename = (LuaConf.strcmp(CharPtr.toCharPtr(argv[i]), CharPtr.toCharPtr("-")) == 0) ? null : CharPtr.toCharPtr(argv[i]);
+				LuaConf.CharPtr filename = (LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[i]), LuaConf.CharPtr.toCharPtr("-")) == 0) ? null : LuaConf.CharPtr.toCharPtr(argv[i]);
 				if (LuaAuxLib.luaL_loadfile(L,filename) != 0) 
 				{
 					fatal(Lua.lua_tostring(L,-1));
@@ -239,21 +239,21 @@ namespace kurumi
 			}
 			if (dumping!=0)
 			{
-				StreamProxy D = (CharPtr.isEqual(output, null)) ? LuaConf.stdout : LuaConf.fopen(output, CharPtr.toCharPtr("wb"));
+				StreamProxy D = (LuaConf.CharPtr.isEqual(output, null)) ? LuaConf.stdout : LuaConf.fopen(output, LuaConf.CharPtr.toCharPtr("wb"));
                 if (D == null)
                 {
-                    cannot(CharPtr.toCharPtr("open"));
+                    cannot(LuaConf.CharPtr.toCharPtr("open"));
                 }
                 LuaLimits.lua_lock(L);
                 LuaDump.luaU_dump(L, f, new writer_delegate(), D, stripping);
 				LuaLimits.lua_unlock(L);
                 if (LuaConf.ferror(D) != 0)
                 {
-                    cannot(CharPtr.toCharPtr("write"));
+                    cannot(LuaConf.CharPtr.toCharPtr("write"));
                 }
                 if (LuaConf.fclose(D) != 0)
                 {
-                    cannot(CharPtr.toCharPtr("close"));
+                    cannot(LuaConf.CharPtr.toCharPtr("close"));
                 }
 			}
 			return 0;
@@ -286,12 +286,12 @@ namespace kurumi
 			args = newargs2;//(string[])newargs.ToArray();
 			if (argc <= 0) 
 			{
-				usage(CharPtr.toCharPtr("no input files given"));
+				usage(LuaConf.CharPtr.toCharPtr("no input files given"));
 			}
 			L = Lua.lua_open();
 			if (L == null) 
 			{
-				fatal(CharPtr.toCharPtr("not enough memory for state"));
+				fatal(LuaConf.CharPtr.toCharPtr("not enough memory for state"));
 			}
 			s.argc = argc;
 			s.argv = args;

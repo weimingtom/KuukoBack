@@ -252,7 +252,7 @@ namespace kurumi
 			/* explicit test for incompatible code */
 			if (idx == Lua.LUA_ENVIRONINDEX && L.ci == L.base_ci[0])
 			{
-				LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("no calling environment"));
+				LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("no calling environment"));
 			}
 			api_checknelems(L, 1);
 			o = index2adr(L, idx);
@@ -296,10 +296,10 @@ namespace kurumi
 			return (o == LuaObject.luaO_nilobject) ? Lua.LUA_TNONE : LuaObject.ttype(o);
 		}
 
-		public static CharPtr lua_typename(lua_State L, int t)
+		public static LuaConf.CharPtr lua_typename(lua_State L, int t)
 		{
 			//UNUSED(L);
-			return (t == Lua.LUA_TNONE) ? CharPtr.toCharPtr("no value") : LuaTM.luaT_typenames[t];
+			return (t == Lua.LUA_TNONE) ? LuaConf.CharPtr.toCharPtr("no value") : LuaTM.luaT_typenames[t];
 		}
 
 		public static bool lua_iscfunction(lua_State L, int idx)
@@ -409,7 +409,7 @@ namespace kurumi
 			return (LuaObject.l_isfalse(o) == 0) ? 1 : 0;
 		}
 
-		public static CharPtr lua_tolstring(lua_State L, int idx, /*out*/ int[]/*uint*/ len)
+		public static LuaConf.CharPtr lua_tolstring(lua_State L, int idx, /*out*/ int[]/*uint*/ len)
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			if (!LuaObject.ttisstring(o))
@@ -545,7 +545,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_pushlstring (lua_State L, CharPtr s, int/*uint*/ len) 
+		public static void lua_pushlstring (lua_State L, LuaConf.CharPtr s, int/*uint*/ len) 
 		{
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
@@ -554,9 +554,9 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_pushstring(lua_State L, CharPtr s) 
+		public static void lua_pushstring(lua_State L, LuaConf.CharPtr s) 
 		{
-			if (CharPtr.isEqual(s, null))
+			if (LuaConf.CharPtr.isEqual(s, null))
 			{
 				lua_pushnil(L);
 			}
@@ -566,9 +566,9 @@ namespace kurumi
 			}
 		}
 
-		public static CharPtr lua_pushvfstring(lua_State L, CharPtr fmt, object[] argp) 
+		public static LuaConf.CharPtr lua_pushvfstring(lua_State L, LuaConf.CharPtr fmt, object[] argp) 
 		{
-			CharPtr ret;
+			LuaConf.CharPtr ret;
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
 			ret = LuaObject.luaO_pushvfstring(L, fmt, argp);
@@ -576,9 +576,9 @@ namespace kurumi
 			return ret;
 		}
 
-		public static CharPtr lua_pushfstring(lua_State L, CharPtr fmt)
+		public static LuaConf.CharPtr lua_pushfstring(lua_State L, LuaConf.CharPtr fmt)
 		{
-			CharPtr ret;
+			LuaConf.CharPtr ret;
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
 			ret = LuaObject.luaO_pushvfstring(L, fmt, null);
@@ -586,9 +586,9 @@ namespace kurumi
 			return ret;
 		}
 
-		public static CharPtr lua_pushfstring(lua_State L, CharPtr fmt, params object[] p)
+		public static LuaConf.CharPtr lua_pushfstring(lua_State L, LuaConf.CharPtr fmt, params object[] p)
 		{
-			CharPtr ret;
+			LuaConf.CharPtr ret;
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
 			ret = LuaObject.luaO_pushvfstring(L, fmt, p);
@@ -654,7 +654,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_getfield(lua_State L, int idx, CharPtr k)
+		public static void lua_getfield(lua_State L, int idx, LuaConf.CharPtr k)
 		{
 			TValue/*StkId*/ t;
 			TValue key = new TValue();
@@ -785,7 +785,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_setfield(lua_State L, int idx, CharPtr k) 
+		public static void lua_setfield(lua_State L, int idx, LuaConf.CharPtr k) 
 		{
 			TValue/*StkId*/ t;
 			TValue key = new TValue();
@@ -1047,14 +1047,14 @@ namespace kurumi
 			return status;
 		}
 
-		public static int lua_load(lua_State L, lua_Reader reader, object data, CharPtr chunkname) 
+		public static int lua_load(lua_State L, lua_Reader reader, object data, LuaConf.CharPtr chunkname) 
 		{
 			ZIO z = new ZIO();
 			int status;
 			LuaLimits.lua_lock(L);
-			if (CharPtr.isEqual(chunkname, null)) 
+			if (LuaConf.CharPtr.isEqual(chunkname, null)) 
 			{
-				chunkname = CharPtr.toCharPtr("?");
+				chunkname = LuaConf.CharPtr.toCharPtr("?");
 			}
 			LuaZIO.luaZ_init(L, z, reader, data);
 			status = LuaDo.luaD_protectedparser(L, z, chunkname);
@@ -1216,7 +1216,7 @@ namespace kurumi
 			else if (n == 0)
 			{
 				/* push empty string */
-				LuaObject.setsvalue2s(L, L.top, LuaString.luaS_newlstr(L, CharPtr.toCharPtr(""), 0));
+				LuaObject.setsvalue2s(L, L.top, LuaString.luaS_newlstr(L, LuaConf.CharPtr.toCharPtr(""), 0));
 				api_incr_top(L);
 			}
 			/* else n == 1; nothing to do */
@@ -1268,7 +1268,7 @@ namespace kurumi
 			return u.user_data;
 		}
 
-		static CharPtr aux_upvalue(TValue/*StkId*/ fi, int n, /*ref*/ TValue[] val)
+		static LuaConf.CharPtr aux_upvalue(TValue/*StkId*/ fi, int n, /*ref*/ TValue[] val)
 		{
 			Closure f;
 			if (!LuaObject.ttisfunction(fi))
@@ -1283,7 +1283,7 @@ namespace kurumi
 					return null;
 				}
 				val[0] = f.c.upvalue[n - 1];
-				return CharPtr.toCharPtr("");
+				return LuaConf.CharPtr.toCharPtr("");
 			}
 			else
 			{
@@ -1297,16 +1297,16 @@ namespace kurumi
 			}
 		}
 
-		public static CharPtr lua_getupvalue(lua_State L, int funcindex, int n)
+		public static LuaConf.CharPtr lua_getupvalue(lua_State L, int funcindex, int n)
 		{
-			CharPtr name;
+			LuaConf.CharPtr name;
 			TValue val = new TValue();
 			LuaLimits.lua_lock(L);
 			TValue[] val_ref = new TValue[1];
 			val_ref[0] = val;
 			name = aux_upvalue(index2adr(L, funcindex), n, /*ref*/ val_ref);
 			val = val_ref[0];
-			if (CharPtr.isNotEqual(name, null))
+			if (LuaConf.CharPtr.isNotEqual(name, null))
 			{
 				LuaObject.setobj2s(L, L.top, val);
 				api_incr_top(L);
@@ -1315,9 +1315,9 @@ namespace kurumi
 			return name;
 		}
 
-		public static CharPtr lua_setupvalue(lua_State L, int funcindex, int n)
+		public static LuaConf.CharPtr lua_setupvalue(lua_State L, int funcindex, int n)
 		{
-			CharPtr name;
+			LuaConf.CharPtr name;
 			TValue val = new TValue();
 			TValue/*StkId*/ fi;
 			LuaLimits.lua_lock(L);
@@ -1327,7 +1327,7 @@ namespace kurumi
 			val_ref[0] = val;
 			name = aux_upvalue(fi, n, /*ref*/ val_ref);
 			val = val_ref[0];
-			if (CharPtr.isNotEqual(name, null))
+			if (LuaConf.CharPtr.isNotEqual(name, null))
 			{
 				TValue[] top = new TValue[1];
 				top[0] = L.top;

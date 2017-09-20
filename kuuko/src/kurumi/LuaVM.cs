@@ -62,7 +62,7 @@ namespace kurumi
 			else 
 			{
 				Double/*lua_Number*/ n = LuaObject.nvalue(obj);
-				CharPtr s = LuaConf.lua_number2str(n);
+				LuaConf.CharPtr s = LuaConf.lua_number2str(n);
 				LuaObject.setsvalue2s(L, obj, LuaString.luaS_new(L, s));
 				return 1;
 			}
@@ -146,7 +146,7 @@ namespace kurumi
 				}
 				else if (LuaObject.ttisnil(tm = LuaTM.luaT_gettmbyobj(L, t, TMS.TM_INDEX)))
 				{
-					LuaDebug.luaG_typeerror(L, t, CharPtr.toCharPtr("index"));
+					LuaDebug.luaG_typeerror(L, t, LuaConf.CharPtr.toCharPtr("index"));
 				}
 				if (LuaObject.ttisfunction(tm))
 				{
@@ -155,7 +155,7 @@ namespace kurumi
 				}
 				t = tm;  /* else repeat with `tm' */
 			}
-			LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("loop in gettable"));
+			LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("loop in gettable"));
 		}
 
 		public static void luaV_settable(lua_State L, TValue t, TValue key, TValue/*StkId*/ val)
@@ -182,7 +182,7 @@ namespace kurumi
 				}
 				else if (LuaObject.ttisnil(tm = LuaTM.luaT_gettmbyobj(L, t, TMS.TM_NEWINDEX)))
 				{
-					LuaDebug.luaG_typeerror(L, t, CharPtr.toCharPtr("index"));
+					LuaDebug.luaG_typeerror(L, t, LuaConf.CharPtr.toCharPtr("index"));
 				}
 				if (LuaObject.ttisfunction(tm))
 				{
@@ -191,7 +191,7 @@ namespace kurumi
 				}
 				t = tm;  /* else repeat with `tm' */
 			}
-			LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("loop in settable"));
+			LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("loop in settable"));
 		}
 
 		private static int call_binTM(lua_State L, TValue p1, TValue p2,
@@ -255,9 +255,9 @@ namespace kurumi
 
 		private static int l_strcmp(TString ls, TString rs) 
 		{
-			CharPtr l = LuaObject.getstr(ls);
+			LuaConf.CharPtr l = LuaObject.getstr(ls);
             int/*uint*/ ll = ls.getTsv().len;
-			CharPtr r = LuaObject.getstr(rs);
+			LuaConf.CharPtr r = LuaObject.getstr(rs);
             int/*uint*/ lr = rs.getTsv().len;
 			for (;;) 
 			{
@@ -281,9 +281,9 @@ namespace kurumi
 					}
 					/* both strings longer than `len'; go on comparing (after the `\0') */
 					len++;
-					l = CharPtr.plus(l, len);
+					l = LuaConf.CharPtr.plus(l, len);
 					ll -= len;
-					r = CharPtr.plus(r, len);
+					r = LuaConf.CharPtr.plus(r, len);
 					lr -= len;
 				}
 			}
@@ -338,7 +338,7 @@ namespace kurumi
 			return LuaDebug.luaG_ordererror(L, l, r);
 		}
 
-		static CharPtr mybuff = null;
+		static LuaConf.CharPtr mybuff = null;
 
 		public static int luaV_equalval(lua_State L, TValue t1, TValue t2) 
 		{
@@ -415,7 +415,7 @@ namespace kurumi
 				{
 					/* at least two string values; get as many as possible */
 					int/*uint*/ tl = LuaObject.tsvalue(TValue.minus(top, 1)).len;
-					CharPtr buffer;
+					LuaConf.CharPtr buffer;
 					int i;
 					/* collect total length */
 					for (n = 1; n < total && (tostring(L, TValue.minus(TValue.minus(top, n), 1)) != 0); n++) //FIXME:
@@ -423,12 +423,12 @@ namespace kurumi
 						int/*uint*/ l = LuaObject.tsvalue(TValue.minus(TValue.minus(top, n), 1)).len;
 						if (l >= LuaLimits.MAX_SIZET - tl) 
 						{
-							LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("string length overflow"));
+							LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("string length overflow"));
 						}
 						tl += l;
 					}
 					buffer = LuaZIO.luaZ_openspace(L, LuaState.G(L).buff, tl);
-					if (CharPtr.isEqual(mybuff, null))
+					if (LuaConf.CharPtr.isEqual(mybuff, null))
 					{
 						mybuff = buffer;
 					}
@@ -909,7 +909,7 @@ namespace kurumi
 											L.savedpc = InstructionPtr.Assign(pc);
 											if (call_binTM(L, rb, LuaObject.luaO_nilobject, ra, TMS.TM_LEN) == 0)
 											{
-												LuaDebug.luaG_typeerror(L, rb, CharPtr.toCharPtr("get length of"));
+												LuaDebug.luaG_typeerror(L, rb, LuaConf.CharPtr.toCharPtr("get length of"));
 											}
 											base_ = L.base_;
 											//)
@@ -1172,7 +1172,7 @@ namespace kurumi
 								init = init_ref[0];
 								if (retxxx == 0)
 								{
-									LuaDebug.luaG_runerror(L, CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " initial value must be a number"));
+									LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " initial value must be a number"));
 								} 
 								else 
 								{
@@ -1182,7 +1182,7 @@ namespace kurumi
 									plimit = plimit_ref[0];
 									if (retxxx == 0)
 									{
-		                                LuaDebug.luaG_runerror(L, CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " limit must be a number"));
+		                                LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " limit must be a number"));
 									}
 									else
 									{
@@ -1192,7 +1192,7 @@ namespace kurumi
 										pstep = pstep_ref[0];									
 										if (retxxx == 0)
 										{
-											LuaDebug.luaG_runerror(L, CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " step must be a number"));
+											LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " step must be a number"));
 										}
 									}
 								}

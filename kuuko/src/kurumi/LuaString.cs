@@ -21,12 +21,12 @@ namespace kurumi
 			return (int)u.len; 
 		}
 
-		public static TString luaS_new(lua_State L, CharPtr s) 
+		public static TString luaS_new(lua_State L, LuaConf.CharPtr s) 
 		{ 
 			return luaS_newlstr(L, s, /*(uint)*/LuaConf.strlen(s)); 
 		}
 		
-		public static TString luaS_newliteral(lua_State L, CharPtr s) 
+		public static TString luaS_newliteral(lua_State L, LuaConf.CharPtr s) 
 		{ 
 			return luaS_newlstr(L, s, /*(uint)*/LuaConf.strlen(s)); 
 		}
@@ -89,7 +89,7 @@ namespace kurumi
 			tb.hash = newhash;
 		}
 
-		public static TString newlstr(lua_State L, CharPtr str, int/*uint*/ l, long/*int*//*uint*/ h) 
+		public static TString newlstr(lua_State L, LuaConf.CharPtr str, int/*uint*/ l, long/*int*//*uint*/ h) 
 		{
 			TString ts;
 			stringtable tb;
@@ -97,7 +97,7 @@ namespace kurumi
 			{
 				LuaMem.luaM_toobig(L);
 			}
-			ts = new TString(CharPtr.toCharPtr(new char[l + 1]));
+			ts = new TString(LuaConf.CharPtr.toCharPtr(new char[l + 1]));
             LuaMem.AddTotalBytes(L, (int)(l + 1) * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TSTRING))); //typeof(TString)//typeof(char)
 			ts.getTsv().len = l;
             ts.getTsv().hash = h;
@@ -119,7 +119,7 @@ namespace kurumi
 			return ts;
 		}
 
-		public static TString luaS_newlstr(lua_State L, CharPtr str, int/*uint*/ l) 
+		public static TString luaS_newlstr(lua_State L, LuaConf.CharPtr str, int/*uint*/ l) 
 		{
 			GCObject o;
 			/*FIXME:*/

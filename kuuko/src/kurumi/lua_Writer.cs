@@ -5,6 +5,6 @@
 	public interface lua_Writer
     {
         //uint sz
-        int exec(lua_State L, CharPtr p, int sz, object ud);
+        int exec(lua_State L, LuaConf.CharPtr p, int sz, object ud);
     }
 }

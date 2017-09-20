@@ -33,7 +33,7 @@ namespace kurumi
 			buff.buffer = null;
 		}
 
-		public static CharPtr luaZ_buffer(Mbuffer buff)	
+		public static LuaConf.CharPtr luaZ_buffer(Mbuffer buff)	
 		{
 			return buff.buffer;
 		}
@@ -55,9 +55,9 @@ namespace kurumi
 
 		public static void luaZ_resizebuffer(lua_State L, Mbuffer buff, int size)
 		{
-			if (CharPtr.isEqual(buff.buffer, null))
+			if (LuaConf.CharPtr.isEqual(buff.buffer, null))
 			{
-				buff.buffer = new CharPtr();
+				buff.buffer = new LuaConf.CharPtr();
 			}
 			char[][] chars_ref = new char[1][];
 			chars_ref[0] = buff.buffer.chars;
@@ -77,16 +77,16 @@ namespace kurumi
 		{
 			int[]/*uint*/ size = new int[1];
 			lua_State L = z.L;
-			CharPtr buff;
+			LuaConf.CharPtr buff;
 			LuaLimits.lua_unlock(L);
 			buff = z.reader.exec(L, z.data, /*out*/ size);
 			LuaLimits.lua_lock(L);
-			if (CharPtr.isEqual(buff, null) || size[0] == 0) 
+			if (LuaConf.CharPtr.isEqual(buff, null) || size[0] == 0) 
 			{
 				return EOZ;
 			}
 			z.n = size[0] - 1;
-			z.p = new CharPtr(buff);
+			z.p = new LuaConf.CharPtr(buff);
 			int result = char2int(z.p.get(0));
 			z.p.inc();
 			return result;
@@ -119,9 +119,9 @@ namespace kurumi
 		}
 
 		/* --------------------------------------------------------------- read --- */
-		public static int/*uint*/ luaZ_read(ZIO z, CharPtr b, int/*uint*/ n) 
+		public static int/*uint*/ luaZ_read(ZIO z, LuaConf.CharPtr b, int/*uint*/ n) 
 		{
-			b = new CharPtr(b);
+			b = new LuaConf.CharPtr(b);
 			while (n != 0) 
 			{
 				int/*uint*/ m;
@@ -132,15 +132,15 @@ namespace kurumi
 				m = (n <= z.n) ? n : z.n;  // min. between n and z.n
 				LuaConf.memcpy(b, z.p, m);
 				z.n -= m;
-				z.p = CharPtr.plus(z.p, m);
-				b = CharPtr.plus(b, m);
+				z.p = LuaConf.CharPtr.plus(z.p, m);
+				b = LuaConf.CharPtr.plus(b, m);
 				n -= m;
 			}
 			return 0;
 		}
 
 		/* ------------------------------------------------------------------------ */
-		public static CharPtr luaZ_openspace (lua_State L, Mbuffer buff, int/*uint*/ n) 
+		public static LuaConf.CharPtr luaZ_openspace (lua_State L, Mbuffer buff, int/*uint*/ n) 
 		{
 			if (n > buff.buffsize) 
 			{

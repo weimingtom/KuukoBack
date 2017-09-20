@@ -94,7 +94,7 @@ namespace kurumi
 			LuaAPI.lua_createtable(L, 0, 0);
 		}
 
-		public static void lua_register(lua_State L, CharPtr n, lua_CFunction f)
+		public static void lua_register(lua_State L, LuaConf.CharPtr n, lua_CFunction f)
 		{
 			lua_pushcfunction(L, f);
 			lua_setglobal(L, n);
@@ -150,24 +150,24 @@ namespace kurumi
 			return LuaAPI.lua_type(L, (int)n) <= 0;
 		}
 
-		public static void lua_pushliteral(lua_State L, CharPtr s)
+		public static void lua_pushliteral(lua_State L, LuaConf.CharPtr s)
 		{
 			//TODO: Implement use using lua_pushlstring instead of lua_pushstring
 			//lua_pushlstring(L, "" s, (sizeof(s)/GetUnmanagedSize(typeof(char)))-1)
 			LuaAPI.lua_pushstring(L, s);
 		}
 
-		public static void lua_setglobal(lua_State L, CharPtr s)
+		public static void lua_setglobal(lua_State L, LuaConf.CharPtr s)
 		{
 			LuaAPI.lua_setfield(L, LUA_GLOBALSINDEX, s);
 		}
 
-		public static void lua_getglobal(lua_State L, CharPtr s)
+		public static void lua_getglobal(lua_State L, LuaConf.CharPtr s)
 		{
 			LuaAPI.lua_getfield(L, LUA_GLOBALSINDEX, s);
 		}
 
-		public static CharPtr lua_tostring(lua_State L, int i)
+		public static LuaConf.CharPtr lua_tostring(lua_State L, int i)
 		{
 			int[]/*uint*/ blah = new int[1];
 			return LuaAPI.lua_tolstring(L, i, /*out*/ blah);

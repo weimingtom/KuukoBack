@@ -33,7 +33,7 @@ namespace kurumi
 		public static int str_sub(lua_State L) 
 		{
 			int[]/*uint*/ l = new int[1];
-			CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
+			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			int/*Int32*//*ptrdiff_t*/ start = posrelat(LuaAuxLib.luaL_checkinteger(L, 2), l[0]);
 			int/*Int32*//*ptrdiff_t*/ end = posrelat(LuaAuxLib.luaL_optinteger(L, 3, -1), l[0]);
 			if (start < 1) 
@@ -46,11 +46,11 @@ namespace kurumi
 			}
 			if (start <= end)
 			{
-				LuaAPI.lua_pushlstring(L, CharPtr.plus(s, start - 1), /*(uint)*/(end - start + 1));
+				LuaAPI.lua_pushlstring(L, LuaConf.CharPtr.plus(s, start - 1), /*(uint)*/(end - start + 1));
 			}
 			else 
 			{
-				Lua.lua_pushliteral(L, CharPtr.toCharPtr(""));
+				Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(""));
 			}
 			return 1;
 		}
@@ -59,7 +59,7 @@ namespace kurumi
 		{
 			int[]/*uint*/ l = new int[1];
 			luaL_Buffer b = new luaL_Buffer();
-			CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
+			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			LuaAuxLib.luaL_buffinit(L, b);
 			while ((l[0]--) != 0)
 			{
@@ -74,7 +74,7 @@ namespace kurumi
 			int[]/*uint*/ l = new int[1];
 			int/*uint*/ i;
 			luaL_Buffer b = new luaL_Buffer();
-			CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
+			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			LuaAuxLib.luaL_buffinit(L, b);
 			for (i = 0; i < l[0]; i++)
 			{
@@ -89,7 +89,7 @@ namespace kurumi
 			int[]/*uint*/ l = new int[1];
 			int/*uint*/ i;
 			luaL_Buffer b = new luaL_Buffer();
-			CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
+			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			LuaAuxLib.luaL_buffinit(L, b);
 			for (i = 0; i < l[0]; i++)
 			{
@@ -103,7 +103,7 @@ namespace kurumi
 		{
 			int[]/*uint*/ l = new int[1];
 			luaL_Buffer b = new luaL_Buffer();
-			CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
+			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			int n = LuaAuxLib.luaL_checkint(L, 2);
 			LuaAuxLib.luaL_buffinit(L, b);
 			while (n-- > 0)
@@ -117,7 +117,7 @@ namespace kurumi
 		public static int str_byte(lua_State L)
 		{
 			int[]/*uint*/ l = new int[1];
-			CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
+			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			int/*Int32*//*ptrdiff_t*/ posi = posrelat(LuaAuxLib.luaL_optinteger(L, 2, 1), l[0]);
             int/*Int32*//*ptrdiff_t*/ pose = posrelat(LuaAuxLib.luaL_optinteger(L, 3, posi), l[0]);
 			int n, i;
@@ -136,9 +136,9 @@ namespace kurumi
 			n = (int)(pose -  posi + 1);
 			if (posi + n <= pose)  /* overflow? */
 			{
-				LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("string slice too long"));
+				LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("string slice too long"));
 			}
-			LuaAuxLib.luaL_checkstack(L, n, CharPtr.toCharPtr("string slice too long"));
+			LuaAuxLib.luaL_checkstack(L, n, LuaConf.CharPtr.toCharPtr("string slice too long"));
 			for (i = 0; i < n; i++)
 			{
 				LuaAPI.lua_pushinteger(L, (byte)(s.get(posi + i - 1)));
@@ -174,15 +174,15 @@ namespace kurumi
                 {
                     chars[i] = (char)bytes[i];
                 }
-                b = new CharPtr(chars);
+                b = new LuaConf.CharPtr(chars);
 			}
-			LuaAuxLib.luaL_addlstring((luaL_Buffer)B, (CharPtr)b, size);
+			LuaAuxLib.luaL_addlstring((luaL_Buffer)B, (LuaConf.CharPtr)b, size);
 			return 0;
 		}
 		
 		public class writer_delegate : lua_Writer
 		{
-			public int exec(lua_State L, CharPtr p, int/*uint*/ sz, object ud)
+			public int exec(lua_State L, LuaConf.CharPtr p, int/*uint*/ sz, object ud)
 			{
 				return writer(L, p, sz, ud, new ClassType(ClassType.TYPE_CHARPTR));
 			}
@@ -196,7 +196,7 @@ namespace kurumi
 			LuaAuxLib.luaL_buffinit(L, b);
 			if (LuaAPI.lua_dump(L, new writer_delegate(), b) != 0)
 			{
-				LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("unable to dump given function"));
+				LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("unable to dump given function"));
 			}
 			LuaAuxLib.luaL_pushresult(b);
 			return 1;
@@ -219,7 +219,7 @@ namespace kurumi
 			l -= '1';
 			if (l < 0 || l >= ms.level || ms.capture[l].len == CAP_UNFINISHED)
 			{
-				return LuaAuxLib.luaL_error(ms.L, CharPtr.toCharPtr("invalid capture index"));
+				return LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("invalid capture index"));
 			}
 			return l;
 		}
@@ -234,12 +234,12 @@ namespace kurumi
 					return level;
 				}
 			}
-			return LuaAuxLib.luaL_error(ms.L, CharPtr.toCharPtr("invalid pattern capture"));
+			return LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("invalid pattern capture"));
 		}
 
-		private static CharPtr classend(MatchState ms, CharPtr p) 
+		private static LuaConf.CharPtr classend(MatchState ms, LuaConf.CharPtr p) 
 		{
-			p = new CharPtr(p);
+			p = new LuaConf.CharPtr(p);
 			char c = p.get(0);
 			p = p.next();
 			switch (c) 
@@ -248,9 +248,9 @@ namespace kurumi
 					{
 						if (p.get(0) == '\0')
 						{
-							LuaAuxLib.luaL_error(ms.L, CharPtr.toCharPtr("malformed pattern (ends with " + LuaConf.LUA_QL("%%") + ")"));
+							LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("malformed pattern (ends with " + LuaConf.LUA_QL("%%") + ")"));
 						}
-						return CharPtr.plus(p, 1);
+						return LuaConf.CharPtr.plus(p, 1);
 					}
 				case '[': 
 					{
@@ -263,7 +263,7 @@ namespace kurumi
 							/* look for a `]' */
 							if (p.get(0) == '\0')
 							{
-								LuaAuxLib.luaL_error(ms.L, CharPtr.toCharPtr("malformed pattern (missing " + LuaConf.LUA_QL("]") + ")"));
+								LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("malformed pattern (missing " + LuaConf.LUA_QL("]") + ")"));
 							}
 							c = p.get(0);
 							p = p.next();
@@ -272,7 +272,7 @@ namespace kurumi
 								p = p.next();  /* skip escapes (e.g. `%]') */
 							}
 						} while (p.get(0) != ']');
-						return CharPtr.plus(p, 1);
+						return LuaConf.CharPtr.plus(p, 1);
 					}
 				default: 
 					{
@@ -345,7 +345,7 @@ namespace kurumi
 			return (LuaConf.islower(cl) ? (res ? 1 : 0) : ((!res) ? 1 : 0));
 		}
 
-		private static int matchbracketclass(int c, CharPtr p, CharPtr ec) 
+		private static int matchbracketclass(int c, LuaConf.CharPtr p, LuaConf.CharPtr ec) 
 		{
 			int sig = 1;
 			if (p.get(1) == '^') 
@@ -353,9 +353,9 @@ namespace kurumi
 				sig = 0;
 				p = p.next();  /* skip the `^' */
 			}
-			while (CharPtr.lessThan((p = p.next()), ec)) 
+			while (LuaConf.CharPtr.lessThan((p = p.next()), ec)) 
 			{
-				if (CharPtr.isEqualChar(p, L_ESC)) 
+				if (LuaConf.CharPtr.isEqualChar(p, L_ESC)) 
 				{
 					p = p.next();
 					if (match_class(c, (byte)(p.get(0))) != 0)
@@ -363,9 +363,9 @@ namespace kurumi
 						return sig;
 					}
 				}
-                else if ((p.get(1) == '-') && (CharPtr.lessThan(CharPtr.plus(p, 2), ec)))
+                else if ((p.get(1) == '-') && (LuaConf.CharPtr.lessThan(LuaConf.CharPtr.plus(p, 2), ec)))
 				{
-					p = CharPtr.plus(p, 2);
+					p = LuaConf.CharPtr.plus(p, 2);
 					if ((byte)((p.get(-2))) <= c && (c <= (byte)p.get(0)))
 					{
 						return sig;
@@ -379,7 +379,7 @@ namespace kurumi
 			return (sig == 0) ? 1 : 0;
 		}
 
-		private static int singlematch(int c, CharPtr p, CharPtr ep) 
+		private static int singlematch(int c, LuaConf.CharPtr p, LuaConf.CharPtr ep) 
 		{
 			switch (p.get(0)) 
 			{
@@ -393,7 +393,7 @@ namespace kurumi
 					}
 				case '[': 
 					{
-						return matchbracketclass(c, p, CharPtr.minus(ep, 1));
+						return matchbracketclass(c, p, LuaConf.CharPtr.minus(ep, 1));
 					}
 				default: 
 					{
@@ -402,12 +402,12 @@ namespace kurumi
 			}
 		}
 
-		private static CharPtr matchbalance(MatchState ms, CharPtr s,
-			CharPtr p) 
+		private static LuaConf.CharPtr matchbalance(MatchState ms, LuaConf.CharPtr s,
+			LuaConf.CharPtr p) 
 		{
 			if ((p.get(0) == 0) || (p.get(1) == 0))
 			{
-				LuaAuxLib.luaL_error(ms.L, CharPtr.toCharPtr("unbalanced pattern"));
+				LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("unbalanced pattern"));
 			}
 			if (s.get(0) != p.get(0)) 
 			{
@@ -418,13 +418,13 @@ namespace kurumi
 				int b = p.get(0);
 				int e = p.get(1);
 				int cont = 1;
-                while (CharPtr.lessThan((s = s.next()), ms.src_end)) 
+                while (LuaConf.CharPtr.lessThan((s = s.next()), ms.src_end)) 
 				{
 					if (s.get(0) == e)
 					{
 						if (--cont == 0) 
 						{
-							return CharPtr.plus(s, 1);
+							return LuaConf.CharPtr.plus(s, 1);
 						}
 					}
 					else if (s.get(0) == b) 
@@ -436,19 +436,19 @@ namespace kurumi
 			return null;  /* string ends out of balance */
 		}
 
-		private static CharPtr max_expand(MatchState ms, CharPtr s,
-			CharPtr p, CharPtr ep) 
+		private static LuaConf.CharPtr max_expand(MatchState ms, LuaConf.CharPtr s,
+			LuaConf.CharPtr p, LuaConf.CharPtr ep) 
 		{
             int/*Int32*//*ptrdiff_t*/ i = 0;  /* counts maximum expand for item */
-            while ((CharPtr.lessThan(CharPtr.plus(s, i), ms.src_end)) && (singlematch((byte)(s.get(i)), p, ep) != 0))
+            while ((LuaConf.CharPtr.lessThan(LuaConf.CharPtr.plus(s, i), ms.src_end)) && (singlematch((byte)(s.get(i)), p, ep) != 0))
 			{
 				i++;
 			}
 			/* keeps trying to match with the maximum repetitions */
 			while (i >= 0) 
 			{
-				CharPtr res = match(ms, CharPtr.plus(s, i), CharPtr.plus(ep, 1));
-				if (CharPtr.isNotEqual(res, null)) 
+				LuaConf.CharPtr res = match(ms, LuaConf.CharPtr.plus(s, i), LuaConf.CharPtr.plus(ep, 1));
+				if (LuaConf.CharPtr.isNotEqual(res, null)) 
 				{
 					return res;
 				}
@@ -457,17 +457,17 @@ namespace kurumi
 			return null;
 		}
 
-		private static CharPtr min_expand(MatchState ms, CharPtr s,
-			CharPtr p, CharPtr ep) 
+		private static LuaConf.CharPtr min_expand(MatchState ms, LuaConf.CharPtr s,
+			LuaConf.CharPtr p, LuaConf.CharPtr ep) 
 		{
 			for (;;)
 			{
-				CharPtr res = match(ms, s, CharPtr.plus(ep, 1));
-				if (CharPtr.isNotEqual(res, null))
+				LuaConf.CharPtr res = match(ms, s, LuaConf.CharPtr.plus(ep, 1));
+				if (LuaConf.CharPtr.isNotEqual(res, null))
 				{
 					return res;
 				}
-                else if ((CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0))
+                else if ((LuaConf.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0))
 				{
 					s = s.next();  /* try with one more repetition */
 				}
@@ -478,47 +478,47 @@ namespace kurumi
 			}
 		}
 
-		private static CharPtr start_capture(MatchState ms, CharPtr s,
-			CharPtr p, int what) 
+		private static LuaConf.CharPtr start_capture(MatchState ms, LuaConf.CharPtr s,
+			LuaConf.CharPtr p, int what) 
 		{
-			CharPtr res;
+			LuaConf.CharPtr res;
 			int level = ms.level;
 			if (level >= LuaConf.LUA_MAXCAPTURES) 
 			{
-				LuaAuxLib.luaL_error(ms.L, CharPtr.toCharPtr("too many captures"));
+				LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("too many captures"));
 			}
 			ms.capture[level].init = s;
 			ms.capture[level].len = what;
 			ms.level = level+1;
-			if (CharPtr.isEqual((res = match(ms, s, p)), null))  /* match failed? */
+			if (LuaConf.CharPtr.isEqual((res = match(ms, s, p)), null))  /* match failed? */
 			{
 				ms.level--;  /* undo capture */
 			}
 			return res;
 		}
 
-		private static CharPtr end_capture(MatchState ms, CharPtr s,
-			CharPtr p) 
+		private static LuaConf.CharPtr end_capture(MatchState ms, LuaConf.CharPtr s,
+			LuaConf.CharPtr p) 
 		{
 			int l = capture_to_close(ms);
-			CharPtr res;
-			ms.capture[l].len = CharPtr.minus(s, ms.capture[l].init);  /* close capture */
-			if (CharPtr.isEqual((res = match(ms, s, p)), null))  /* match failed? */
+			LuaConf.CharPtr res;
+			ms.capture[l].len = LuaConf.CharPtr.minus(s, ms.capture[l].init);  /* close capture */
+			if (LuaConf.CharPtr.isEqual((res = match(ms, s, p)), null))  /* match failed? */
 			{
 				ms.capture[l].len = CAP_UNFINISHED;  /* undo capture */
 			}
 			return res;
 		}
 
-		private static CharPtr match_capture(MatchState ms, CharPtr s, int l)
+		private static LuaConf.CharPtr match_capture(MatchState ms, LuaConf.CharPtr s, int l)
 		{
 			int/*uint*/ len;
 			l = check_capture(ms, l);
 			len = /*(uint)*/ms.capture[l].len;
-			if ((int/*uint*/)CharPtr.minus(ms.src_end, s) >= len &&
+			if ((int/*uint*/)LuaConf.CharPtr.minus(ms.src_end, s) >= len &&
 			    LuaConf.memcmp(ms.capture[l].init, s, len) == 0)
 			{
-				return CharPtr.plus(s, len);
+				return LuaConf.CharPtr.plus(s, len);
 			}
 			else 
 			{
@@ -526,10 +526,10 @@ namespace kurumi
 			}
 		}
 
-		private static CharPtr match(MatchState ms, CharPtr s, CharPtr p) 
+		private static LuaConf.CharPtr match(MatchState ms, LuaConf.CharPtr s, LuaConf.CharPtr p) 
 		{
-			s = new CharPtr(s);
-			p = new CharPtr(p);
+			s = new LuaConf.CharPtr(s);
+			p = new LuaConf.CharPtr(p);
 			//init: /* using goto's to optimize tail recursion */
 			while (true)
 			{
@@ -541,17 +541,17 @@ namespace kurumi
 							/* start capture */
 							if (p.get(1) == ')')  /* position capture? */
 							{
-								return start_capture(ms, s, CharPtr.plus(p, 2), CAP_POSITION);
+								return start_capture(ms, s, LuaConf.CharPtr.plus(p, 2), CAP_POSITION);
 							}
 							else
 							{
-								return start_capture(ms, s, CharPtr.plus(p, 1), CAP_UNFINISHED);
+								return start_capture(ms, s, LuaConf.CharPtr.plus(p, 1), CAP_UNFINISHED);
 							}
 						}
 					case ')': 
 						{  
 							/* end capture */
-							return end_capture(ms, s, CharPtr.plus(p, 1));
+							return end_capture(ms, s, LuaConf.CharPtr.plus(p, 1));
 						}
 					case L_ESC: 
 						{
@@ -561,12 +561,12 @@ namespace kurumi
 								case 'b': 
 									{  
 										/* balanced string? */
-										s = matchbalance(ms, s, CharPtr.plus(p, 2));
-										if (CharPtr.isEqual(s, null)) 
+										s = matchbalance(ms, s, LuaConf.CharPtr.plus(p, 2));
+										if (LuaConf.CharPtr.isEqual(s, null)) 
 										{
 											return null;
 										}
-										p = CharPtr.plus(p, 4);
+										p = LuaConf.CharPtr.plus(p, 4);
 										//goto init;  /* else return match(ms, s, p+4); */
 										init2 = true;
 										break;
@@ -574,18 +574,18 @@ namespace kurumi
 								case 'f': 
 									{  
 										/* frontier? */
-										CharPtr ep; 
+										LuaConf.CharPtr ep; 
 										char previous;
-										p = CharPtr.plus(p, 2);
+										p = LuaConf.CharPtr.plus(p, 2);
 										if (p.get(0) != '[')
 										{
-											LuaAuxLib.luaL_error(ms.L, CharPtr.toCharPtr("missing " + LuaConf.LUA_QL("[") + " after " +
+											LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("missing " + LuaConf.LUA_QL("[") + " after " +
 												LuaConf.LUA_QL("%%f") + " in pattern"));
 										}
 										ep = classend(ms, p);  /* points to what is next */
-										previous = (CharPtr.isEqual(s, ms.src_init)) ? '\0' : s.get(-1);
-										if ((matchbracketclass((byte)(previous), p, CharPtr.minus(ep, 1)) != 0) ||
-										    (matchbracketclass((byte)(s.get(0)), p, CharPtr.minus(ep, 1)) == 0))
+										previous = (LuaConf.CharPtr.isEqual(s, ms.src_init)) ? '\0' : s.get(-1);
+										if ((matchbracketclass((byte)(previous), p, LuaConf.CharPtr.minus(ep, 1)) != 0) ||
+										    (matchbracketclass((byte)(s.get(0)), p, LuaConf.CharPtr.minus(ep, 1)) == 0))
 										{
 											return null;
 										}
@@ -600,11 +600,11 @@ namespace kurumi
 										{
 											/* capture results (%0-%9)? */
 											s = match_capture(ms, s, (byte)(p.get(1)));
-											if (CharPtr.isEqual(s, null)) 
+											if (LuaConf.CharPtr.isEqual(s, null)) 
 											{
 												return null;
 											}
-											p = CharPtr.plus(p, 2);
+											p = LuaConf.CharPtr.plus(p, 2);
 											//goto init;  
                                             // else return match(ms, s, p+2)
 											init2 = true;
@@ -616,20 +616,20 @@ namespace kurumi
 										{
 											//------------------dflt start--------------		                        
 											/* it is a pattern item */
-											CharPtr ep = classend(ms, p);  /* points to what is next */
-					                        int m = (CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
+											LuaConf.CharPtr ep = classend(ms, p);  /* points to what is next */
+					                        int m = (LuaConf.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
 											bool init3 = false;
 					                        switch (ep.get(0))
 											{
 												case '?': 
 													{  
 														/* optional */
-														CharPtr res;
-														if ((m != 0) && CharPtr.isNotEqual((res = match(ms, CharPtr.plus(s, 1), CharPtr.plus(ep, 1))), null))
+														LuaConf.CharPtr res;
+														if ((m != 0) && LuaConf.CharPtr.isNotEqual((res = match(ms, LuaConf.CharPtr.plus(s, 1), LuaConf.CharPtr.plus(ep, 1))), null))
 														{
 															return res;
 														}
-														p = CharPtr.plus(ep, 1);
+														p = LuaConf.CharPtr.plus(ep, 1);
 														//goto init;  /* else return match(ms, s, ep+1); */
 														init3 = true;
 														break;
@@ -642,7 +642,7 @@ namespace kurumi
 												case '+': 
 													{  
 														/* 1 or more repetitions */
-														return ((m!=0) ? max_expand(ms, CharPtr.plus(s, 1), p, ep) : null);
+														return ((m!=0) ? max_expand(ms, LuaConf.CharPtr.plus(s, 1), p, ep) : null);
 													}
 												case '-': 
 													{  
@@ -694,27 +694,27 @@ namespace kurumi
 						{
 							if (p.get(1) == '\0')  /* is the `$' the last char in pattern? */
 							{
-								return (CharPtr.isEqual(s, ms.src_end)) ? s : null;  /* check end of string */
+								return (LuaConf.CharPtr.isEqual(s, ms.src_end)) ? s : null;  /* check end of string */
 							}
 							else 
 							{
 								//goto dflt;
 								//------------------dflt start--------------		                        
 								/* it is a pattern item */
-								CharPtr ep = classend(ms, p);  /* points to what is next */
-		                        int m = (CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
+								LuaConf.CharPtr ep = classend(ms, p);  /* points to what is next */
+		                        int m = (LuaConf.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
 								bool init2 = false;
 		                        switch (ep.get(0))
 								{
 									case '?': 
 										{  
 											/* optional */
-											CharPtr res;
-											if ((m != 0) && CharPtr.isNotEqual((res = match(ms, CharPtr.plus(s, 1), CharPtr.plus(ep, 1))), null))
+											LuaConf.CharPtr res;
+											if ((m != 0) && LuaConf.CharPtr.isNotEqual((res = match(ms, LuaConf.CharPtr.plus(s, 1), LuaConf.CharPtr.plus(ep, 1))), null))
 											{
 												return res;
 											}
-											p = CharPtr.plus(ep, 1);
+											p = LuaConf.CharPtr.plus(ep, 1);
 											//goto init;  /* else return match(ms, s, ep+1); */
 											init2 = true;
 											break;
@@ -727,7 +727,7 @@ namespace kurumi
 									case '+': 
 										{  
 											/* 1 or more repetitions */
-											return ((m!=0) ? max_expand(ms, CharPtr.plus(s, 1), p, ep) : null);
+											return ((m!=0) ? max_expand(ms, LuaConf.CharPtr.plus(s, 1), p, ep) : null);
 										}
 									case '-': 
 										{  
@@ -764,20 +764,20 @@ namespace kurumi
 						{
                             //dflt: 
 							// it is a pattern item
-							CharPtr ep = classend(ms, p);  /* points to what is next */
-	                        int m = (CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
+							LuaConf.CharPtr ep = classend(ms, p);  /* points to what is next */
+	                        int m = (LuaConf.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
 							bool init2 = false;
 	                        switch (ep.get(0))
 							{
 								case '?': 
 									{  
 										/* optional */
-										CharPtr res;
-										if ((m != 0) && CharPtr.isNotEqual((res = match(ms, CharPtr.plus(s, 1), CharPtr.plus(ep, 1))), null))
+										LuaConf.CharPtr res;
+										if ((m != 0) && LuaConf.CharPtr.isNotEqual((res = match(ms, LuaConf.CharPtr.plus(s, 1), LuaConf.CharPtr.plus(ep, 1))), null))
 										{
 											return res;
 										}
-										p = CharPtr.plus(ep, 1);
+										p = LuaConf.CharPtr.plus(ep, 1);
 										//goto init;  /* else return match(ms, s, ep+1); */
 										init2 = true;
 										break;
@@ -790,7 +790,7 @@ namespace kurumi
 								case '+': 
 									{  
 										/* 1 or more repetitions */
-										return ((m!=0) ? max_expand(ms, CharPtr.plus(s, 1), p, ep) : null);
+										return ((m!=0) ? max_expand(ms, LuaConf.CharPtr.plus(s, 1), p, ep) : null);
 									}
 								case '-': 
 									{  
@@ -833,8 +833,8 @@ namespace kurumi
 			return null; //FIXME:unreachable
 		}
 
-		private static CharPtr lmemfind(CharPtr s1, int/*uint*/ l1,
-			CharPtr s2, int/*uint*/ l2) 
+		private static LuaConf.CharPtr lmemfind(LuaConf.CharPtr s1, int/*uint*/ l1,
+			LuaConf.CharPtr s2, int/*uint*/ l2) 
 		{
 			if (l2 == 0) 
 			{
@@ -846,20 +846,20 @@ namespace kurumi
 			}
 			else 
 			{
-				CharPtr init;  /* to search for a `*s2' inside `s1' */
+				LuaConf.CharPtr init;  /* to search for a `*s2' inside `s1' */
 				l2--;  /* 1st char will be checked by `memchr' */
 				l1 = l1 - l2;  /* `s2' cannot be found after that */
-				while (l1 > 0 && CharPtr.isNotEqual((init = LuaConf.memchr(s1, s2.get(0), l1)), null))
+				while (l1 > 0 && LuaConf.CharPtr.isNotEqual((init = LuaConf.memchr(s1, s2.get(0), l1)), null))
 				{
 					init = init.next();   /* 1st char is already checked */
-					if (LuaConf.memcmp(init, CharPtr.plus(s2, 1), l2) == 0)
+					if (LuaConf.memcmp(init, LuaConf.CharPtr.plus(s2, 1), l2) == 0)
 					{
-						return CharPtr.minus(init, 1);
+						return LuaConf.CharPtr.minus(init, 1);
 					}
 					else 
 					{  
 						/* correct `l1' and `s1' to try again */
-						l1 -= (/*uint*/int)CharPtr.minus(init, s1);
+						l1 -= (/*uint*/int)LuaConf.CharPtr.minus(init, s1);
 						s1 = init;
 					}
 				}
@@ -867,18 +867,18 @@ namespace kurumi
 			}
 		}
 
-		private static void push_onecapture(MatchState ms, int i, CharPtr s,
-			CharPtr e) 
+		private static void push_onecapture(MatchState ms, int i, LuaConf.CharPtr s,
+			LuaConf.CharPtr e) 
 		{
 			if (i >= ms.level) 
 			{
 				if (i == 0)  /* ms.level == 0, too */
 				{
-					LuaAPI.lua_pushlstring(ms.L, s, /*(uint)*/CharPtr.minus(e, s));  /* add whole match */
+					LuaAPI.lua_pushlstring(ms.L, s, /*(uint)*/LuaConf.CharPtr.minus(e, s));  /* add whole match */
 				}
 				else
 				{
-					LuaAuxLib.luaL_error(ms.L, CharPtr.toCharPtr("invalid capture index"));
+					LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("invalid capture index"));
 				}
 			}
 			else 
@@ -886,11 +886,11 @@ namespace kurumi
                 int/*Int32*//*ptrdiff_t*/ l = ms.capture[i].len;
 				if (l == CAP_UNFINISHED) 
 				{
-					LuaAuxLib.luaL_error(ms.L, CharPtr.toCharPtr("unfinished capture"));
+					LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("unfinished capture"));
 				}
 				if (l == CAP_POSITION)
 				{
-					LuaAPI.lua_pushinteger(ms.L, CharPtr.minus(ms.capture[i].init, ms.src_init) + 1);
+					LuaAPI.lua_pushinteger(ms.L, LuaConf.CharPtr.minus(ms.capture[i].init, ms.src_init) + 1);
 				}
 				else
 				{
@@ -899,11 +899,11 @@ namespace kurumi
 			}
 		}
 
-		private static int push_captures(MatchState ms, CharPtr s, CharPtr e) 
+		private static int push_captures(MatchState ms, LuaConf.CharPtr s, LuaConf.CharPtr e) 
 		{
 			int i;
-			int nlevels = ((ms.level == 0) && (CharPtr.isNotEqual(s, null))) ? 1 : ms.level;
-			LuaAuxLib.luaL_checkstack(ms.L, nlevels, CharPtr.toCharPtr("too many captures"));
+			int nlevels = ((ms.level == 0) && (LuaConf.CharPtr.isNotEqual(s, null))) ? 1 : ms.level;
+			LuaAuxLib.luaL_checkstack(ms.L, nlevels, LuaConf.CharPtr.toCharPtr("too many captures"));
 			for (i = 0; i < nlevels; i++)
 			{
 				push_onecapture(ms, i, s, e);
@@ -915,8 +915,8 @@ namespace kurumi
 		{
 			int[]/*uint*/ l1 = new int[1];
 			int[]/*uint*/ l2 = new int[1];
-			CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l1);
-			CharPtr p = LuaAuxLib.luaL_checklstring(L, 2, /*out*/ l2);
+			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l1);
+			LuaConf.CharPtr p = LuaAuxLib.luaL_checklstring(L, 2, /*out*/ l2);
             int/*Int32*//*ptrdiff_t*/ init = posrelat(LuaAuxLib.luaL_optinteger(L, 3, 1), l1[0]) - 1;
 			if (init < 0) 
 			{
@@ -927,15 +927,15 @@ namespace kurumi
                 init = (int/*Int32*//*ptrdiff_t*/)l1[0];
 			}
 			if ((find != 0) && ((LuaAPI.lua_toboolean(L, 4) != 0) ||  /* explicit request? */
-				CharPtr.isEqual(LuaConf.strpbrk(p, CharPtr.toCharPtr(SPECIALS)), null)))
+				LuaConf.CharPtr.isEqual(LuaConf.strpbrk(p, LuaConf.CharPtr.toCharPtr(SPECIALS)), null)))
 			{  
 				/* or no special characters? */
 				/* do a plain search */
-				CharPtr s2 = lmemfind(CharPtr.plus(s, init), (/*uint*/int)(l1[0] - init), p, (/*uint*/int)(l2[0]));
-				if (CharPtr.isNotEqual(s2, null)) 
+				LuaConf.CharPtr s2 = lmemfind(LuaConf.CharPtr.plus(s, init), (/*uint*/int)(l1[0] - init), p, (/*uint*/int)(l2[0]));
+				if (LuaConf.CharPtr.isNotEqual(s2, null)) 
 				{
-					LuaAPI.lua_pushinteger(L, CharPtr.minus(s2, s) + 1);
-					LuaAPI.lua_pushinteger(L, (int)(CharPtr.minus(s2, s) + l2[0]));
+					LuaAPI.lua_pushinteger(L, LuaConf.CharPtr.minus(s2, s) + 1);
+					LuaAPI.lua_pushinteger(L, (int)(LuaConf.CharPtr.minus(s2, s) + l2[0]));
 					return 2;
 				}
 			}
@@ -948,20 +948,20 @@ namespace kurumi
 					p = p.next();
 					anchor = 1;
 				}
-				CharPtr s1 = CharPtr.plus(s, init);
+				LuaConf.CharPtr s1 = LuaConf.CharPtr.plus(s, init);
 				ms.L = L;
 				ms.src_init = s;
-				ms.src_end = CharPtr.plus(s, l1[0]);
+				ms.src_end = LuaConf.CharPtr.plus(s, l1[0]);
 				do 
 				{
-					CharPtr res;
+					LuaConf.CharPtr res;
 					ms.level = 0;
-					if (CharPtr.isNotEqual((res = match(ms, s1, p)), null)) 
+					if (LuaConf.CharPtr.isNotEqual((res = match(ms, s1, p)), null)) 
 					{
 						if (find != 0) 
 						{
-							LuaAPI.lua_pushinteger(L, CharPtr.minus(s1, s) + 1);  /* start */
-							LuaAPI.lua_pushinteger(L, CharPtr.minus(res, s));   /* end */
+							LuaAPI.lua_pushinteger(L, LuaConf.CharPtr.minus(s1, s) + 1);  /* start */
+							LuaAPI.lua_pushinteger(L, LuaConf.CharPtr.minus(res, s));   /* end */
 							return push_captures(ms, null, null) + 2;
 						}
 						else
@@ -969,7 +969,7 @@ namespace kurumi
 							return push_captures(ms, s1, res);
 						}
 					}
-				} while ((CharPtr.lessEqual((s1 = s1.next()), ms.src_end)) && (anchor == 0));
+				} while ((LuaConf.CharPtr.lessEqual((s1 = s1.next()), ms.src_end)) && (anchor == 0));
 			}
 			LuaAPI.lua_pushnil(L);  /* not found */
 			return 1;
@@ -989,22 +989,22 @@ namespace kurumi
 		{
 			MatchState ms = new MatchState();
 			int[]/*uint*/ ls = new int[1];
-			CharPtr s = LuaAPI.lua_tolstring(L, Lua.lua_upvalueindex(1), /*out*/ ls);
-			CharPtr p = Lua.lua_tostring(L, Lua.lua_upvalueindex(2));
-			CharPtr src;
+			LuaConf.CharPtr s = LuaAPI.lua_tolstring(L, Lua.lua_upvalueindex(1), /*out*/ ls);
+			LuaConf.CharPtr p = Lua.lua_tostring(L, Lua.lua_upvalueindex(2));
+			LuaConf.CharPtr src;
 			ms.L = L;
 			ms.src_init = s;
-			ms.src_end = CharPtr.plus(s, ls[0]);
-			for (src = CharPtr.plus(s, /*(uint)*/LuaAPI.lua_tointeger(L, Lua.lua_upvalueindex(3)));
-                 CharPtr.lessEqual(src, ms.src_end);
+			ms.src_end = LuaConf.CharPtr.plus(s, ls[0]);
+			for (src = LuaConf.CharPtr.plus(s, /*(uint)*/LuaAPI.lua_tointeger(L, Lua.lua_upvalueindex(3)));
+                 LuaConf.CharPtr.lessEqual(src, ms.src_end);
 			     src = src.next()) 
 			{
-				CharPtr e;
+				LuaConf.CharPtr e;
 				ms.level = 0;
-				if (CharPtr.isNotEqual((e = match(ms, src, p)), null)) 
+				if (LuaConf.CharPtr.isNotEqual((e = match(ms, src, p)), null)) 
 				{
-                    int/*Int32*//*lua_Integer*/ newstart = CharPtr.minus(e, s);
-					if (CharPtr.isEqual(e, src)) 
+                    int/*Int32*//*lua_Integer*/ newstart = LuaConf.CharPtr.minus(e, s);
+					if (LuaConf.CharPtr.isEqual(e, src)) 
 					{
 						newstart++;  /* empty match? go at least one position */
 					}
@@ -1028,16 +1028,16 @@ namespace kurumi
 
 		public static int gfind_nodef(lua_State L) 
 		{
-			return LuaAuxLib.luaL_error(L, CharPtr.toCharPtr(LuaConf.LUA_QL("string.gfind") + " was renamed to " +
+			return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("string.gfind") + " was renamed to " +
 				LuaConf.LUA_QL("string.gmatch")));
 		}
 
-		private static void add_s(MatchState ms, luaL_Buffer b, CharPtr s,
-			CharPtr e) 
+		private static void add_s(MatchState ms, luaL_Buffer b, LuaConf.CharPtr s,
+			LuaConf.CharPtr e) 
 		{
 			int[]/*uint*/ l = new int[1];
 			int i;
-			CharPtr news = LuaAPI.lua_tolstring(ms.L, 3, /*out*/ l);
+			LuaConf.CharPtr news = LuaAPI.lua_tolstring(ms.L, 3, /*out*/ l);
 			for (i = 0; i < l[0]; i++)
 			{
 				if (news.get(i) != L_ESC)
@@ -1053,7 +1053,7 @@ namespace kurumi
 					}
 					else if (news.get(i) == '0')
 					{
-						LuaAuxLib.luaL_addlstring(b, s, /*(uint)*/CharPtr.minus(e, s));
+						LuaAuxLib.luaL_addlstring(b, s, /*(uint)*/LuaConf.CharPtr.minus(e, s));
 					}
 					else 
 					{
@@ -1065,8 +1065,8 @@ namespace kurumi
 		}
 
 
-		private static void add_value(MatchState ms, luaL_Buffer b, CharPtr s,
-			CharPtr e) 
+		private static void add_value(MatchState ms, luaL_Buffer b, LuaConf.CharPtr s,
+			LuaConf.CharPtr e) 
 		{
 			lua_State L = ms.L;
 			switch (LuaAPI.lua_type(L, 3))
@@ -1096,11 +1096,11 @@ namespace kurumi
 			{  
 				/* nil or false? */
 				Lua.lua_pop(L, 1);
-				LuaAPI.lua_pushlstring(L, s, /*(uint)*/CharPtr.minus(e, s));  /* keep original text */
+				LuaAPI.lua_pushlstring(L, s, /*(uint)*/LuaConf.CharPtr.minus(e, s));  /* keep original text */
 			}
 			else if (LuaAPI.lua_isstring(L, -1) == 0)
 			{
-				LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("invalid replacement value (a %s)"), LuaAuxLib.luaL_typename(L, -1));
+				LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid replacement value (a %s)"), LuaAuxLib.luaL_typename(L, -1));
 			}
 			LuaAuxLib.luaL_addvalue(b);  /* add result to accumulator */
 		}
@@ -1108,8 +1108,8 @@ namespace kurumi
 		public static int str_gsub(lua_State L) 
 		{
 			int[]/*uint*/ srcl = new int[1];
-			CharPtr src = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ srcl);
-			CharPtr p = LuaAuxLib.luaL_checkstring(L, 2);
+			LuaConf.CharPtr src = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ srcl);
+			LuaConf.CharPtr p = LuaAuxLib.luaL_checkstring(L, 2);
 			int tr = LuaAPI.lua_type(L, 3);
 			int max_s = LuaAuxLib.luaL_optint(L, 4, (int)(srcl[0] + 1));
 			int anchor = 0;
@@ -1127,22 +1127,22 @@ namespace kurumi
 			LuaAuxLib.luaL_buffinit(L, b);
 			ms.L = L;
 			ms.src_init = src;
-			ms.src_end = CharPtr.plus(src, srcl[0]);
+			ms.src_end = LuaConf.CharPtr.plus(src, srcl[0]);
 			while (n < max_s) 
 			{
-				CharPtr e;
+				LuaConf.CharPtr e;
 				ms.level = 0;
 				e = match(ms, src, p);
-				if (CharPtr.isNotEqual(e, null)) 
+				if (LuaConf.CharPtr.isNotEqual(e, null)) 
 				{
 					n++;
 					add_value(ms, b, src, e);
 				}
-				if ((CharPtr.isNotEqual(e, null)) && CharPtr.greaterThan(e, src)) /* non empty match? */
+				if ((LuaConf.CharPtr.isNotEqual(e, null)) && LuaConf.CharPtr.greaterThan(e, src)) /* non empty match? */
 				{
 					src = e;  /* skip it */
 				}
-                else if (CharPtr.lessThan(src, ms.src_end))
+                else if (LuaConf.CharPtr.lessThan(src, ms.src_end))
 				{
 					char c = src.get(0);
 					src = src.next();
@@ -1154,7 +1154,7 @@ namespace kurumi
 				}
 				if (anchor != 0) break;
 			}
-			LuaAuxLib.luaL_addlstring(b, src, /*(uint)*/CharPtr.minus(ms.src_end, src));
+			LuaAuxLib.luaL_addlstring(b, src, /*(uint)*/LuaConf.CharPtr.minus(ms.src_end, src));
 			LuaAuxLib.luaL_pushresult(b);
 			LuaAPI.lua_pushinteger(L, n);  /* number of substitutions */
 			return 2;
@@ -1175,7 +1175,7 @@ namespace kurumi
 		private static void addquoted (lua_State L, luaL_Buffer b, int arg) 
 		{
 			int[]/*uint*/ l = new int[1];
-			CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, /*out*/ l);
+			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, /*out*/ l);
 			LuaAuxLib.luaL_addchar(b, '"');
 			while ((l[0]--) != 0)
 			{
@@ -1191,12 +1191,12 @@ namespace kurumi
 						}
 					case '\r': 
 						{
-							LuaAuxLib.luaL_addlstring(b, CharPtr.toCharPtr("\\r"), 2);
+							LuaAuxLib.luaL_addlstring(b, LuaConf.CharPtr.toCharPtr("\\r"), 2);
 							break;
 						}
 					case '\0': 
 						{
-							LuaAuxLib.luaL_addlstring(b, CharPtr.toCharPtr("\\000"), 4);
+							LuaAuxLib.luaL_addlstring(b, LuaConf.CharPtr.toCharPtr("\\000"), 4);
 							break;
 						}
 					default: 
@@ -1210,16 +1210,16 @@ namespace kurumi
 			LuaAuxLib.luaL_addchar(b, '"');
 		}
 
-		private static CharPtr scanformat(lua_State L, CharPtr strfrmt, CharPtr form) 
+		private static LuaConf.CharPtr scanformat(lua_State L, LuaConf.CharPtr strfrmt, LuaConf.CharPtr form) 
 		{
-			CharPtr p = strfrmt;
-			while (p.get(0) != '\0' && CharPtr.isNotEqual(LuaConf.strchr(CharPtr.toCharPtr(FLAGS), p.get(0)), null)) 
+			LuaConf.CharPtr p = strfrmt;
+			while (p.get(0) != '\0' && LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaConf.CharPtr.toCharPtr(FLAGS), p.get(0)), null)) 
 			{
 				p = p.next();  /* skip flags */
 			}
-			if ((int/*uint*/)(CharPtr.minus(p, strfrmt)) >= (FLAGS.Length + 1))
+			if ((int/*uint*/)(LuaConf.CharPtr.minus(p, strfrmt)) >= (FLAGS.Length + 1))
 			{
-				LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("invalid format (repeated flags)"));
+				LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid format (repeated flags)"));
 			}
 			if (LuaConf.isdigit((byte)(p.get(0)))) 
 			{
@@ -1243,21 +1243,21 @@ namespace kurumi
 			}
 			if (LuaConf.isdigit((byte)(p.get(0))))
 			{
-				LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("invalid format (width or precision too long)"));
+				LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid format (width or precision too long)"));
 			}
 			form.set(0, '%');
 			form = form.next();
-			LuaConf.strncpy(form, strfrmt, CharPtr.minus(p, strfrmt) + 1);
-			form = CharPtr.plus(form, CharPtr.minus(p, strfrmt) + 1);
+			LuaConf.strncpy(form, strfrmt, LuaConf.CharPtr.minus(p, strfrmt) + 1);
+			form = LuaConf.CharPtr.plus(form, LuaConf.CharPtr.minus(p, strfrmt) + 1);
 			form.set(0, '\0');
 			return p;
 		}
 
-		private static void addintlen(CharPtr form) 
+		private static void addintlen(LuaConf.CharPtr form) 
 		{
 			int/*uint*/ l = /*(uint)*/LuaConf.strlen(form);
 			char spec = form.get(l - 1);
-			LuaConf.strcpy(CharPtr.plus(form, l - 1), CharPtr.toCharPtr(LuaConf.LUA_INTFRMLEN));
+			LuaConf.strcpy(LuaConf.CharPtr.plus(form, l - 1), LuaConf.CharPtr.toCharPtr(LuaConf.LUA_INTFRMLEN));
 			form.set(l + (LuaConf.LUA_INTFRMLEN.Length + 1) - 2, spec);
 			form.set(l + (LuaConf.LUA_INTFRMLEN.Length + 1) - 1, '\0');
 		}
@@ -1266,11 +1266,11 @@ namespace kurumi
 		{
 			int arg = 1;
 			int[]/*uint*/ sfl = new int[1];
-			CharPtr strfrmt = LuaAuxLib.luaL_checklstring(L, arg, /*out*/ sfl);
-			CharPtr strfrmt_end = CharPtr.plus(strfrmt, sfl[0]);
+			LuaConf.CharPtr strfrmt = LuaAuxLib.luaL_checklstring(L, arg, /*out*/ sfl);
+			LuaConf.CharPtr strfrmt_end = LuaConf.CharPtr.plus(strfrmt, sfl[0]);
 			luaL_Buffer b = new luaL_Buffer();
 			LuaAuxLib.luaL_buffinit(L, b);
-            while (CharPtr.lessThan(strfrmt, strfrmt_end)) 
+            while (LuaConf.CharPtr.lessThan(strfrmt, strfrmt_end)) 
 			{
 				if (strfrmt.get(0) != L_ESC)
 				{
@@ -1280,14 +1280,14 @@ namespace kurumi
 				else if (strfrmt.get(1) == L_ESC)
 				{
 					LuaAuxLib.luaL_addchar(b, strfrmt.get(0));  /* %% */
-					strfrmt = CharPtr.plus(strfrmt, 2);
+					strfrmt = LuaConf.CharPtr.plus(strfrmt, 2);
 				}
 				else
 				{ 
 					/* format item */
 					strfrmt = strfrmt.next();
-					CharPtr form = CharPtr.toCharPtr(new char[MAX_FORMAT]);  /* to store the format (`%...') */
-					CharPtr buff = CharPtr.toCharPtr(new char[MAX_ITEM]);  /* to store the formatted item */
+					LuaConf.CharPtr form = LuaConf.CharPtr.toCharPtr(new char[MAX_FORMAT]);  /* to store the format (`%...') */
+					LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[MAX_ITEM]);  /* to store the formatted item */
 					arg++;
 					strfrmt = scanformat(L, strfrmt, form);
 					char ch = strfrmt.get(0);
@@ -1332,8 +1332,8 @@ namespace kurumi
 						case 's':
 							{
 								int[]/*uint*/ l = new int[1];
-								CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, /*out*/ l);
-								if (CharPtr.isEqual(LuaConf.strchr(form, '.'), null) && l[0] >= 100)
+								LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, /*out*/ l);
+								if (LuaConf.CharPtr.isEqual(LuaConf.strchr(form, '.'), null) && l[0] >= 100)
 								{
 									/* no precision and string is too long to be formatted;
 									 keep original string */
@@ -1349,7 +1349,7 @@ namespace kurumi
 							}
 						default:
 							{  /* also treat cases `pnLlh' */
-								return LuaAuxLib.luaL_error(L, CharPtr.toCharPtr("invalid option " + LuaConf.LUA_QL("%%%c") + " to " +
+								return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid option " + LuaConf.LUA_QL("%%%c") + " to " +
 									LuaConf.LUA_QL("format")), strfrmt.get(-1));
 							}
 					}
@@ -1361,33 +1361,33 @@ namespace kurumi
 		}
 
 		private readonly static luaL_Reg[] strlib = {
-			new luaL_Reg(CharPtr.toCharPtr("byte"), new LuaStrLib_delegate("str_byte")),
-			new luaL_Reg(CharPtr.toCharPtr("char"), new LuaStrLib_delegate("str_char")),
-			new luaL_Reg(CharPtr.toCharPtr("dump"), new LuaStrLib_delegate("str_dump")),
-			new luaL_Reg(CharPtr.toCharPtr("find"), new LuaStrLib_delegate("str_find")),
-			new luaL_Reg(CharPtr.toCharPtr("format"), new LuaStrLib_delegate("str_format")),
-			new luaL_Reg(CharPtr.toCharPtr("gfind"), new LuaStrLib_delegate("gfind_nodef")),
-			new luaL_Reg(CharPtr.toCharPtr("gmatch"), new LuaStrLib_delegate("gmatch")),
-			new luaL_Reg(CharPtr.toCharPtr("gsub"), new LuaStrLib_delegate("str_gsub")),
-			new luaL_Reg(CharPtr.toCharPtr("len"), new LuaStrLib_delegate("str_len")),
-			new luaL_Reg(CharPtr.toCharPtr("lower"), new LuaStrLib_delegate("str_lower")),
-			new luaL_Reg(CharPtr.toCharPtr("match"), new LuaStrLib_delegate("str_match")),
-			new luaL_Reg(CharPtr.toCharPtr("rep"), new LuaStrLib_delegate("str_rep")),
-			new luaL_Reg(CharPtr.toCharPtr("reverse"), new LuaStrLib_delegate("str_reverse")),
-			new luaL_Reg(CharPtr.toCharPtr("sub"), new LuaStrLib_delegate("str_sub")),
-			new luaL_Reg(CharPtr.toCharPtr("upper"), new LuaStrLib_delegate("str_upper")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("byte"), new LuaStrLib_delegate("str_byte")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("char"), new LuaStrLib_delegate("str_char")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("dump"), new LuaStrLib_delegate("str_dump")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("find"), new LuaStrLib_delegate("str_find")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("format"), new LuaStrLib_delegate("str_format")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("gfind"), new LuaStrLib_delegate("gfind_nodef")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("gmatch"), new LuaStrLib_delegate("gmatch")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("gsub"), new LuaStrLib_delegate("str_gsub")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("len"), new LuaStrLib_delegate("str_len")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("lower"), new LuaStrLib_delegate("str_lower")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("match"), new LuaStrLib_delegate("str_match")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("rep"), new LuaStrLib_delegate("str_rep")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("reverse"), new LuaStrLib_delegate("str_reverse")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("sub"), new LuaStrLib_delegate("str_sub")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr("upper"), new LuaStrLib_delegate("str_upper")),
 			new luaL_Reg(null, null)
 		};
 
 		private static void createmetatable(lua_State L) 
 		{
 			LuaAPI.lua_createtable(L, 0, 1);  /* create metatable for strings */
-			Lua.lua_pushliteral(L, CharPtr.toCharPtr(""));  /* dummy string */
+			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(""));  /* dummy string */
 			LuaAPI.lua_pushvalue(L, -2);
 			LuaAPI.lua_setmetatable(L, -2);  /* set string metatable */
 			Lua.lua_pop(L, 1);  /* pop dummy string */
 			LuaAPI.lua_pushvalue(L, -2);  /* string library... */
-			LuaAPI.lua_setfield(L, -2, CharPtr.toCharPtr("__index"));  /* ...is the __index metamethod */
+			LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("__index"));  /* ...is the __index metamethod */
 			Lua.lua_pop(L, 1);  /* pop metatable */
 		}
 
@@ -1396,10 +1396,10 @@ namespace kurumi
 		 */
 		public static int luaopen_string(lua_State L) 
 		{
-			LuaAuxLib.luaL_register(L, CharPtr.toCharPtr(LuaLib.LUA_STRLIBNAME), strlib);
+			LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_STRLIBNAME), strlib);
 			//#if LUA_COMPAT_GFIND
-			LuaAPI.lua_getfield(L, -1, CharPtr.toCharPtr("gmatch"));
-			LuaAPI.lua_setfield(L, -2, CharPtr.toCharPtr("gfind"));
+			LuaAPI.lua_getfield(L, -1, LuaConf.CharPtr.toCharPtr("gmatch"));
+			LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("gfind"));
 			//#endif
 			createmetatable(L);
 			return 1;

@@ -228,7 +228,7 @@ namespace kurumi
 
 
 
-		public static void luaM_growvector_long(lua_State L, /*ref*/ long[][] v, int nelems, /*ref*/ int[] size, int limit, CharPtr e, ClassType t)
+		public static void luaM_growvector_long(lua_State L, /*ref*/ long[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
 		{
 			if (nelems + 1 > size[0])
 			{
@@ -236,7 +236,7 @@ namespace kurumi
 			}
 		}
 
-        public static void luaM_growvector_Proto(lua_State L, /*ref*/ Proto[][] v, int nelems, /*ref*/ int[] size, int limit, CharPtr e, ClassType t)
+        public static void luaM_growvector_Proto(lua_State L, /*ref*/ Proto[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
 		{
 			if (nelems + 1 > size[0])
 			{
@@ -244,7 +244,7 @@ namespace kurumi
 			}
 		}
 
-        public static void luaM_growvector_TString(lua_State L, /*ref*/ TString[][] v, int nelems, /*ref*/ int[] size, int limit, CharPtr e, ClassType t)
+        public static void luaM_growvector_TString(lua_State L, /*ref*/ TString[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
@@ -252,7 +252,7 @@ namespace kurumi
             }
         }
 
-        public static void luaM_growvector_TValue(lua_State L, /*ref*/ TValue[][] v, int nelems, /*ref*/ int[] size, int limit, CharPtr e, ClassType t)
+        public static void luaM_growvector_TValue(lua_State L, /*ref*/ TValue[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
@@ -260,7 +260,7 @@ namespace kurumi
             }
         }
 
-        public static void luaM_growvector_LocVar(lua_State L, /*ref*/ LocVar[][] v, int nelems, /*ref*/ int[] size, int limit, CharPtr e, ClassType t)
+        public static void luaM_growvector_LocVar(lua_State L, /*ref*/ LocVar[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
@@ -268,7 +268,7 @@ namespace kurumi
             }
         }
 
-        public static void luaM_growvector_int(lua_State L, /*ref*/ int[][] v, int nelems, /*ref*/ int[] size, int limit, CharPtr e, ClassType t)
+        public static void luaM_growvector_int(lua_State L, /*ref*/ int[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
@@ -360,7 +360,7 @@ namespace kurumi
 
 
 		public static long[] luaM_growaux__long(lua_State L, /*ref*/ long[][] block, /*ref*/ int[] size,
-			int limit, CharPtr errormsg, ClassType t)
+			int limit, LuaConf.CharPtr errormsg, ClassType t)
 		{
 			long[] newblock;
 			int newsize;
@@ -387,7 +387,7 @@ namespace kurumi
 		}
 
         public static Proto[] luaM_growaux__Proto(lua_State L, /*ref*/ Proto[][] block, /*ref*/ int[] size,
-                    int limit, CharPtr errormsg, ClassType t)
+                    int limit, LuaConf.CharPtr errormsg, ClassType t)
         {
             Proto[] newblock;
             int newsize;
@@ -414,7 +414,7 @@ namespace kurumi
         }
 
         public static TString[] luaM_growaux__TString(lua_State L, /*ref*/ TString[][] block, /*ref*/ int[] size,
-                            int limit, CharPtr errormsg, ClassType t)
+                            int limit, LuaConf.CharPtr errormsg, ClassType t)
         {
             TString[] newblock;
             int newsize;
@@ -441,7 +441,7 @@ namespace kurumi
         }
 
         public static TValue[] luaM_growaux__TValue(lua_State L, /*ref*/ TValue[][] block, /*ref*/ int[] size,
-                            int limit, CharPtr errormsg, ClassType t)
+                            int limit, LuaConf.CharPtr errormsg, ClassType t)
         {
             TValue[] newblock;
             int newsize;
@@ -468,7 +468,7 @@ namespace kurumi
         }
 
         public static LocVar[] luaM_growaux__LocVar(lua_State L, /*ref*/ LocVar[][] block, /*ref*/ int[] size,
-                              int limit, CharPtr errormsg, ClassType t)
+                              int limit, LuaConf.CharPtr errormsg, ClassType t)
         {
             LocVar[] newblock;
             int newsize;
@@ -495,7 +495,7 @@ namespace kurumi
         }
 
         public static int[] luaM_growaux__int(lua_State L, /*ref*/ int[][] block, /*ref*/ int[] size,
-                              int limit, CharPtr errormsg, ClassType t)
+                              int limit, LuaConf.CharPtr errormsg, ClassType t)
         {
             int[] newblock;
             int newsize;
@@ -525,7 +525,7 @@ namespace kurumi
 
 		public static object luaM_toobig(lua_State L) 
 		{
-			LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("memory allocation error: block too big"));
+			LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("memory allocation error: block too big"));
 			return null;  /* to avoid warnings */
 		}
 

@@ -5,6 +5,6 @@
         /*sz*/
         /*out*/
         /*uint*/
-        CharPtr exec(lua_State L, object ud, int[] sz);
+        LuaConf.CharPtr exec(lua_State L, object ud, int[] sz);
     }
 }

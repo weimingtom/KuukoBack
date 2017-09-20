@@ -40,9 +40,9 @@ namespace kurumi
 			
 		}
 
-		static void error(LoadState S, CharPtr why)
+		static void error(LoadState S, LuaConf.CharPtr why)
 		{
-			LuaObject.luaO_pushfstring(S.L, CharPtr.toCharPtr("%s: %s in precompiled chunk"), S.name, why);
+			LuaObject.luaO_pushfstring(S.L, LuaConf.CharPtr.toCharPtr("%s: %s in precompiled chunk"), S.name, why);
 			LuaDo.luaD_throw(S.L, Lua.LUA_ERRSYNTAX);
 		}
 		//#endif
@@ -50,7 +50,7 @@ namespace kurumi
 		public static object LoadMem(LoadState S, ClassType t)
 		{
             int size = t.GetMarshalSizeOf();
-			CharPtr str = CharPtr.toCharPtr(new char[size]);
+			LuaConf.CharPtr str = LuaConf.CharPtr.toCharPtr(new char[size]);
 			LoadBlock(S, str, size);
 			byte[] bytes = new byte[str.chars.Length];
 			for (int i = 0; i < str.chars.Length; i++)
@@ -87,7 +87,7 @@ namespace kurumi
 			return LoadMem(S, t, n);
 		}
 
-		private static void LoadBlock(LoadState S, CharPtr b, int size)
+		private static void LoadBlock(LoadState S, LuaConf.CharPtr b, int size)
 		{
 			int/*uint*/ r = LuaZIO.luaZ_read(S.Z, b, /*(uint)*/size);
 			IF (r != 0, "unexpected end");
@@ -120,7 +120,7 @@ namespace kurumi
 			}
 			else
 			{
-				CharPtr s = LuaZIO.luaZ_openspace(S.L, S.b, size);
+				LuaConf.CharPtr s = LuaZIO.luaZ_openspace(S.L, S.b, size);
 				LoadBlock(S, s, (int)size);
 				return LuaString.luaS_newlstr(S.L, s, size - 1);/* remove trailing '\0' */
 			}
@@ -174,7 +174,7 @@ namespace kurumi
 						}
 					default:
 						{
-							error(S, CharPtr.toCharPtr("bad constant"));
+							error(S, LuaConf.CharPtr.toCharPtr("bad constant"));
 							break;
 						}
 				}
@@ -230,7 +230,7 @@ namespace kurumi
 			Proto f;
 			if (++S.L.nCcalls > LuaConf.LUAI_MAXCCALLS) 
 			{
-				error(S, CharPtr.toCharPtr("code too deep"));
+				error(S, LuaConf.CharPtr.toCharPtr("code too deep"));
 			}
 			f = LuaFunc.luaF_newproto(S.L);
 			LuaObject.setptvalue2s(S.L, S.L.top, f); 
@@ -260,8 +260,8 @@ namespace kurumi
 
 		private static void LoadHeader(LoadState S)
 		{
-			CharPtr h = CharPtr.toCharPtr(new char[LUAC_HEADERSIZE]);
-			CharPtr s = CharPtr.toCharPtr(new char[LUAC_HEADERSIZE]);
+			LuaConf.CharPtr h = LuaConf.CharPtr.toCharPtr(new char[LUAC_HEADERSIZE]);
+			LuaConf.CharPtr s = LuaConf.CharPtr.toCharPtr(new char[LUAC_HEADERSIZE]);
 			luaU_header(h);
 			LoadBlock(S, s, LUAC_HEADERSIZE);
 			IF(LuaConf.memcmp(h, s, LUAC_HEADERSIZE) != 0, "bad header");
@@ -270,16 +270,16 @@ namespace kurumi
 		/*
 		 ** load precompiled chunk
 		 */
-		public static Proto luaU_undump(lua_State L, ZIO Z, Mbuffer buff, CharPtr name)
+		public static Proto luaU_undump(lua_State L, ZIO Z, Mbuffer buff, LuaConf.CharPtr name)
 		{
 			LoadState S = new LoadState();
 			if (name.get(0) == '@' || name.get(0) == '=')
 			{
-				S.name = CharPtr.plus(name, 1);
+				S.name = LuaConf.CharPtr.plus(name, 1);
 			}
 			else if (name.get(0) == Lua.LUA_SIGNATURE[0])
 			{
-				S.name = CharPtr.toCharPtr("binary string");
+				S.name = LuaConf.CharPtr.toCharPtr("binary string");
 			}
 			else
 			{
@@ -289,17 +289,17 @@ namespace kurumi
 			S.Z = Z;
 			S.b = buff;
 			LoadHeader(S);
-			return LoadFunction(S, LuaString.luaS_newliteral(L, CharPtr.toCharPtr("=?")));
+			return LoadFunction(S, LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("=?")));
 		}
 
 		/*
 		 * make header
 		 */
-		public static void luaU_header(CharPtr h)
+		public static void luaU_header(LuaConf.CharPtr h)
 		{
-			h = new CharPtr(h);
+			h = new LuaConf.CharPtr(h);
 			int x = 1;
-			LuaConf.memcpy(h, CharPtr.toCharPtr(Lua.LUA_SIGNATURE), Lua.LUA_SIGNATURE.Length);
+			LuaConf.memcpy(h, LuaConf.CharPtr.toCharPtr(Lua.LUA_SIGNATURE), Lua.LUA_SIGNATURE.Length);
 			h = h.add(Lua.LUA_SIGNATURE.Length);
 			h.set(0, (char)LUAC_VERSION);
 			h.inc();

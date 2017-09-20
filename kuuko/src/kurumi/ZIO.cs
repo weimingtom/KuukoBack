@@ -8,7 +8,7 @@ namespace kurumi
 	public class ZIO//Zio
 	{
 		public int n;  /*uint*/			/* bytes still unread */
-		public CharPtr p;			/* current position in buffer */
+		public LuaConf.CharPtr p;			/* current position in buffer */
 		public lua_Reader reader;
 		public object data;			/* additional data */
 		public lua_State L;			/* Lua state (for reader) */

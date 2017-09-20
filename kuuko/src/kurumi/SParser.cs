@@ -13,6 +13,6 @@ namespace kurumi
 		/* data to `f_parser' */
 		public ZIO z;
 		public Mbuffer buff = new Mbuffer();  /* buffer to be used by the scanner */
-		public CharPtr name;
+		public LuaConf.CharPtr name;
 	}
 }

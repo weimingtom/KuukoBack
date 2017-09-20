@@ -8,14 +8,14 @@ namespace kurumi
 	public class LuaInit
 	{
 		private readonly static luaL_Reg[] lualibs = {
-			new luaL_Reg(CharPtr.toCharPtr(""), new LuaInit_delegate("LuaBaseLib.luaopen_base")),
-			new luaL_Reg(CharPtr.toCharPtr(LuaLib.LUA_LOADLIBNAME), new LuaInit_delegate("LuaLoadLib.luaopen_package")),
-			new luaL_Reg(CharPtr.toCharPtr(LuaLib.LUA_TABLIBNAME), new LuaInit_delegate("LuaTableLib.luaopen_table")),
-			new luaL_Reg(CharPtr.toCharPtr(LuaLib.LUA_IOLIBNAME), new LuaInit_delegate("LuaIOLib.luaopen_io")),
-			new luaL_Reg(CharPtr.toCharPtr(LuaLib.LUA_OSLIBNAME), new LuaInit_delegate("LuaOSLib.luaopen_os")),
-			new luaL_Reg(CharPtr.toCharPtr(LuaLib.LUA_STRLIBNAME), new LuaInit_delegate("LuaStrLib.luaopen_string")),
-			new luaL_Reg(CharPtr.toCharPtr(LuaLib.LUA_MATHLIBNAME), new LuaInit_delegate("LuaMathLib.luaopen_math")),
-			new luaL_Reg(CharPtr.toCharPtr(LuaLib.LUA_DBLIBNAME), new LuaInit_delegate("LuaDebugLib.luaopen_debug")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr(""), new LuaInit_delegate("LuaBaseLib.luaopen_base")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_LOADLIBNAME), new LuaInit_delegate("LuaLoadLib.luaopen_package")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_TABLIBNAME), new LuaInit_delegate("LuaTableLib.luaopen_table")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_IOLIBNAME), new LuaInit_delegate("LuaIOLib.luaopen_io")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_OSLIBNAME), new LuaInit_delegate("LuaOSLib.luaopen_os")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_STRLIBNAME), new LuaInit_delegate("LuaStrLib.luaopen_string")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_MATHLIBNAME), new LuaInit_delegate("LuaMathLib.luaopen_math")),
+			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_DBLIBNAME), new LuaInit_delegate("LuaDebugLib.luaopen_debug")),
 			new luaL_Reg(null, null)
 		};
 			

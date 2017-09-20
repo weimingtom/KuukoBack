@@ -9,12 +9,12 @@ namespace kurumi
 	{
 		public class capture_
 		{
-			public CharPtr init;
+			public LuaConf.CharPtr init;
             public int/*Int32*//*ptrdiff_t*/ len;
 		}
 		
-		public CharPtr src_init;  /* init of source string */
-		public CharPtr src_end;  /* end (`\0') of source string */
+		public LuaConf.CharPtr src_init;  /* init of source string */
+		public LuaConf.CharPtr src_end;  /* end (`\0') of source string */
 		public lua_State L;
 		public int level;  /* total number of captures (finished or unfinished) */
 

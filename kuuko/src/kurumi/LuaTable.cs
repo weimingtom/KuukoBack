@@ -209,7 +209,7 @@ namespace kurumi
 						n = gnext(n);
 					}
                 } while (Node.isNotEqual(n, null));
-				LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("invalid key to " + LuaConf.LUA_QL("next")));  /* key not found */
+				LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("invalid key to " + LuaConf.LUA_QL("next")));  /* key not found */
 				return 0;  /* to avoid warnings */
 			}
 		}
@@ -373,7 +373,7 @@ namespace kurumi
 				lsize = LuaObject.ceillog2(size);
 				if (lsize > MAXBITS)
 				{
-					LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("table overflow"));
+					LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("table overflow"));
 				}
 				size = LuaObject.twoto(lsize);
 				Node[] nodes = LuaMem.luaM_newvector_Node(L, size, new ClassType(ClassType.TYPE_NODE));
@@ -681,11 +681,11 @@ namespace kurumi
 			{
 				if (LuaObject.ttisnil(key)) 
 				{
-					LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("table index is nil"));
+					LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("table index is nil"));
 				}
 				else if (LuaObject.ttisnumber(key) && LuaConf.luai_numisnan(LuaObject.nvalue(key)))
 				{
-					LuaDebug.luaG_runerror(L, CharPtr.toCharPtr("table index is NaN"));
+					LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("table index is NaN"));
 				}
 				return newkey(L, t, key);
 			}

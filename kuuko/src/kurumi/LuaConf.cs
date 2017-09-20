@@ -1488,7 +1488,6 @@ namespace kurumi
 				return result;
 			}
 		}
-			
 		
 		
 		
