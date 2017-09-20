@@ -1191,7 +1191,7 @@ namespace kurumi
             {
                 return 16;
             }
-            else if (t == typeof(ConsControl))
+            else if (t == typeof(LuaParser.ConsControl))
             {
                 return 40;
             }
