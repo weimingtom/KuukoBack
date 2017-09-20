@@ -334,6 +334,21 @@ namespace kurumi
 		public const int VARARG_ISVARARG = 2;
 		public const int VARARG_NEEDSARG = 4;
 
+		
+		
+		public class CClosure : ClosureType
+		{
+			public lua_CFunction f;
+			public TValue[] upvalue;
+		
+			public CClosure(ClosureHeader header) 
+			: base(header)
+			{
+							
+			}
+		}
+		
+		
 		public static bool iscfunction(TValue o) 
 		{ 
 			return ((ttype(o) == Lua.LUA_TFUNCTION) && (clvalue(o).c.getIsC() != 0)); 

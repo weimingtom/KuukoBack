@@ -7,12 +7,12 @@ namespace kurumi
 {
 	public class Closure : ClosureHeader
 	{	
-		public CClosure c;
+		public LuaObject.CClosure c;
 		public LClosure l;
 		
 		public Closure()
 		{
-			c = new CClosure(this);
+			c = new LuaObject.CClosure(this);
 			l = new LClosure(this);
 		}
 	}

@@ -282,6 +282,18 @@ public class LuaObject {
 	public static final int VARARG_ISVARARG = 2;
 	public static final int VARARG_NEEDSARG = 4;
 
+	
+	public static class CClosure extends ClosureType {
+		public lua_CFunction f;
+		public TValue[] upvalue;
+	
+		public CClosure(ClosureHeader header) 
+		{
+			super(header);
+						
+		}
+	}	
+	
 	public static boolean iscfunction(TValue o) {
 		return ((ttype(o) == Lua.LUA_TFUNCTION) && (clvalue(o).c.getIsC() != 0));
 	}
