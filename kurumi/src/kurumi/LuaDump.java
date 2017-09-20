@@ -10,6 +10,14 @@ package kurumi;
 //using TValue = Lua.TValue;
 
 public class LuaDump {
+    public static class DumpState {
+        public lua_State L;
+        public lua_Writer writer;
+		public Object data;
+        public int strip;
+        public int status;
+    }	
+	
 	public static void DumpMem(Object b, DumpState D, ClassType t) {
 		byte[] bytes = t.ObjToBytes(b);
 		char[] ch = new char[bytes.length];

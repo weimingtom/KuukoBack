@@ -12,6 +12,15 @@ namespace kurumi
 
 	public class LuaDump
 	{
+	    public class DumpState
+	    {
+	        public lua_State L;
+	        public lua_Writer writer;
+	        public object data;
+	        public int strip;
+	        public int status;
+	    }		
+		
 		public static void DumpMem(object b, DumpState D, ClassType t)
 		{
             byte[] bytes = t.ObjToBytes(b);
