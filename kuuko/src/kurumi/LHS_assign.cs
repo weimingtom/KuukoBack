@@ -12,6 +12,6 @@ namespace kurumi
 	public class LHS_assign
 	{
 		public LHS_assign prev;
-		public expdesc v = new expdesc();  /* variable (global, local, upvalue, or indexed) */
+		public LuaParser.expdesc v = new LuaParser.expdesc();  /* variable (global, local, upvalue, or indexed) */
 	}
 }

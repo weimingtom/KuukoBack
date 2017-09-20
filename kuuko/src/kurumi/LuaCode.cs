@@ -43,7 +43,7 @@ namespace kurumi
 		}
 		
 		
-		public static InstructionPtr getcode(FuncState fs, expdesc e)	
+		public static InstructionPtr getcode(FuncState fs, LuaParser.expdesc e)	
 		{
 			return new InstructionPtr(fs.f.code, e.u.s.info);
 		}
@@ -53,17 +53,17 @@ namespace kurumi
 			return LuaCode.luaK_codeABx(fs, o, A, sBx + LuaOpCodes.MAXARG_sBx); 
 		}
 
-		public static void luaK_setmultret(FuncState fs, expdesc e) 
+		public static void luaK_setmultret(FuncState fs, LuaParser.expdesc e) 
 		{ 
 			LuaCode.luaK_setreturns(fs, e, Lua.LUA_MULTRET); 
 		}
 
-		public static bool hasjumps(expdesc e) 
+		public static bool hasjumps(LuaParser.expdesc e) 
 		{ 
 			return e.t != e.f; 
 		}
 
-		private static int isnumeral(expdesc e)
+		private static int isnumeral(LuaParser.expdesc e)
 		{
 			return (e.k == expkind.VKNUM && e.t == NO_JUMP && e.f == NO_JUMP) ? 1 : 0;
 		}
@@ -313,7 +313,7 @@ namespace kurumi
 			}
 		}
 
-		private static void freeexp(FuncState fs, expdesc e)
+		private static void freeexp(FuncState fs, LuaParser.expdesc e)
 		{
 			if (e.k == expkind.VNONRELOC)
 			{
@@ -384,7 +384,7 @@ namespace kurumi
 			return addk(fs, k, v);
 		}
 
-		public static void luaK_setreturns(FuncState fs, expdesc e, int nresults)
+		public static void luaK_setreturns(FuncState fs, LuaParser.expdesc e, int nresults)
 		{
 			if (e.k == expkind.VCALL)
 			{  
@@ -399,7 +399,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaK_setoneret(FuncState fs, expdesc e)
+		public static void luaK_setoneret(FuncState fs, LuaParser.expdesc e)
 		{
 			if (e.k == expkind.VCALL)
 			{  
@@ -414,7 +414,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaK_dischargevars(FuncState fs, expdesc e)
+		public static void luaK_dischargevars(FuncState fs, LuaParser.expdesc e)
 		{
 			switch (e.k) 
 			{
@@ -462,7 +462,7 @@ namespace kurumi
 			return luaK_codeABC(fs, OpCode.OP_LOADBOOL, A, b, jump);
 		}
 
-		private static void discharge2reg(FuncState fs, expdesc e, int reg)
+		private static void discharge2reg(FuncState fs, LuaParser.expdesc e, int reg)
 		{
 			luaK_dischargevars(fs, e);
 			switch (e.k) 
@@ -512,7 +512,7 @@ namespace kurumi
 			e.k = expkind.VNONRELOC;
 		}
 
-		private static void discharge2anyreg(FuncState fs, expdesc e)
+		private static void discharge2anyreg(FuncState fs, LuaParser.expdesc e)
 		{
 			if (e.k != expkind.VNONRELOC)
 			{
@@ -521,7 +521,7 @@ namespace kurumi
 			}
 		}
 
-		private static void exp2reg(FuncState fs, expdesc e, int reg)
+		private static void exp2reg(FuncState fs, LuaParser.expdesc e, int reg)
 		{
 			discharge2reg(fs, e, reg);
 			if (e.k == expkind.VJMP)
@@ -552,7 +552,7 @@ namespace kurumi
 			e.k = expkind.VNONRELOC;
 		}
 
-		public static void luaK_exp2nextreg(FuncState fs, expdesc e)
+		public static void luaK_exp2nextreg(FuncState fs, LuaParser.expdesc e)
 		{
 			luaK_dischargevars(fs, e);
 			freeexp(fs, e);
@@ -560,7 +560,7 @@ namespace kurumi
 			exp2reg(fs, e, fs.freereg - 1);
 		}
 
-		public static int luaK_exp2anyreg(FuncState fs, expdesc e)
+		public static int luaK_exp2anyreg(FuncState fs, LuaParser.expdesc e)
 		{
 			luaK_dischargevars(fs, e);
 			if (e.k == expkind.VNONRELOC) 
@@ -580,7 +580,7 @@ namespace kurumi
 			return e.u.s.info;
 		}
 
-		public static void luaK_exp2val(FuncState fs, expdesc e)
+		public static void luaK_exp2val(FuncState fs, LuaParser.expdesc e)
 		{
 			if (hasjumps(e))
 			{
@@ -592,7 +592,7 @@ namespace kurumi
 			}
 		}
 
-		public static int luaK_exp2RK(FuncState fs, expdesc e)
+		public static int luaK_exp2RK(FuncState fs, LuaParser.expdesc e)
 		{
 			luaK_exp2val(fs, e);
 			switch (e.k) 
@@ -637,7 +637,7 @@ namespace kurumi
 		}
 
 
-		public static void luaK_storevar(FuncState fs, expdesc var, expdesc ex)
+		public static void luaK_storevar(FuncState fs, LuaParser.expdesc var, LuaParser.expdesc ex)
 		{
 			switch (var.k) 
 			{
@@ -675,7 +675,7 @@ namespace kurumi
 		}
 
 
-		public static void luaK_self(FuncState fs, expdesc e, expdesc key)
+		public static void luaK_self(FuncState fs, LuaParser.expdesc e, LuaParser.expdesc key)
 		{
 			int func;
 			luaK_exp2anyreg(fs, e);
@@ -688,7 +688,7 @@ namespace kurumi
 			e.k = expkind.VNONRELOC;
 		}
 
-		private static void invertjump(FuncState fs, expdesc e)
+		private static void invertjump(FuncState fs, LuaParser.expdesc e)
 		{
 			InstructionPtr pc = getjumpcontrol(fs, e.u.s.info);
 			LuaLimits.lua_assert(LuaOpCodes.testTMode(LuaOpCodes.GET_OPCODE(pc.get(0))) != 0 && LuaOpCodes.GET_OPCODE(pc.get(0)) != OpCode.OP_TESTSET &&
@@ -697,7 +697,7 @@ namespace kurumi
 		}
 
 
-		private static int jumponcond(FuncState fs, expdesc e, int cond)
+		private static int jumponcond(FuncState fs, LuaParser.expdesc e, int cond)
 		{
 			if (e.k == expkind.VRELOCABLE) 
 			{
@@ -714,7 +714,7 @@ namespace kurumi
 			return condjump(fs, OpCode.OP_TESTSET, LuaOpCodes.NO_REG, e.u.s.info, cond);
 		}
 
-		public static void luaK_goiftrue(FuncState fs, expdesc e)
+		public static void luaK_goiftrue(FuncState fs, LuaParser.expdesc e)
 		{
 			int pc;  /* pc of last jump */
 			luaK_dischargevars(fs, e);
@@ -752,7 +752,7 @@ namespace kurumi
 			e.t = NO_JUMP;
 		}
 
-		private static void luaK_goiffalse(FuncState fs, expdesc e)
+		private static void luaK_goiffalse(FuncState fs, LuaParser.expdesc e)
 		{
 			int pc;  /* pc of last jump */
 			luaK_dischargevars(fs, e);
@@ -788,7 +788,7 @@ namespace kurumi
 			e.f = NO_JUMP;
 		}
 
-		private static void codenot(FuncState fs, expdesc e)
+		private static void codenot(FuncState fs, LuaParser.expdesc e)
 		{
 			luaK_dischargevars(fs, e);
 			switch (e.k) 
@@ -840,13 +840,13 @@ namespace kurumi
 			removevalues(fs, e.t);
 		}
 
-		public static void luaK_indexed(FuncState fs, expdesc t, expdesc k)
+		public static void luaK_indexed(FuncState fs, LuaParser.expdesc t, LuaParser.expdesc k)
 		{
 			t.u.s.aux = luaK_exp2RK(fs, k);
 			t.k = expkind.VINDEXED;
 		}
 
-		private static int constfolding(OpCode op, expdesc e1, expdesc e2)
+		private static int constfolding(OpCode op, LuaParser.expdesc e1, LuaParser.expdesc e2)
 		{
 			Double/*lua_Number*/ v1, v2, r;
 			if ((isnumeral(e1)==0) || (isnumeral(e2)==0)) 
@@ -919,7 +919,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static void codearith(FuncState fs, OpCode op, expdesc e1, expdesc e2)
+		private static void codearith(FuncState fs, OpCode op, LuaParser.expdesc e1, LuaParser.expdesc e2)
 		{
 			if (constfolding(op, e1, e2) != 0)
 			{
@@ -944,7 +944,7 @@ namespace kurumi
 			}
 		}
 
-		private static void codecomp(FuncState fs, OpCode op, int cond, expdesc e1, expdesc e2)
+		private static void codecomp(FuncState fs, OpCode op, int cond, LuaParser.expdesc e1, LuaParser.expdesc e2)
 		{
 			int o1 = luaK_exp2RK(fs, e1);
 			int o2 = luaK_exp2RK(fs, e2);
@@ -963,9 +963,9 @@ namespace kurumi
 		}
 
 
-		public static void luaK_prefix(FuncState fs, UnOpr op, expdesc e)
+		public static void luaK_prefix(FuncState fs, UnOpr op, LuaParser.expdesc e)
 		{
-			expdesc e2 = new expdesc();
+			LuaParser.expdesc e2 = new LuaParser.expdesc();
 			e2.t = e2.f = NO_JUMP; 
 			e2.k = expkind.VKNUM; 
 			e2.u.nval = 0;
@@ -1000,7 +1000,7 @@ namespace kurumi
 		}
 
 
-		public static void luaK_infix(FuncState fs, BinOpr op, expdesc v)
+		public static void luaK_infix(FuncState fs, BinOpr op, LuaParser.expdesc v)
 		{
 			switch (op) 
 			{
@@ -1041,7 +1041,7 @@ namespace kurumi
 		}
 
 
-		public static void luaK_posfix(FuncState fs, BinOpr op, expdesc e1, expdesc e2)
+		public static void luaK_posfix(FuncState fs, BinOpr op, LuaParser.expdesc e1, LuaParser.expdesc e2)
 		{
 			switch (op) 
 			{

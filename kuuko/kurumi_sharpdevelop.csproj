@@ -56,7 +56,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\kurumi\ClassType.cs" />
     <Compile Include="src\kurumi\DateTimeProxy.cs" />
-    <Compile Include="src\kurumi\expdesc.cs" />
     <Compile Include="src\kurumi\expkind.cs" />
     <Compile Include="src\kurumi\expkindUtil.cs" />
     <Compile Include="src\kurumi\FilePtr.cs" />
