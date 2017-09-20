@@ -27,3 +27,6 @@ CharPtr->LuaConf.CharPtr
 
 Closure->LuaObject.Closure
 20:28 2017-09-20
+
+ClosureHeader->LuaObject.ClosureHeader
+21:02 2017-09-20

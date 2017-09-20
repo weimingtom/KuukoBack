@@ -282,6 +282,17 @@ public class LuaObject {
 	public static final int VARARG_ISVARARG = 2;
 	public static final int VARARG_NEEDSARG = 4;
 
+    /*
+     ** Closures
+     */ 
+	public static class ClosureHeader extends GCObject {
+    	public byte isC; /*Byte*/ /*lu_byte*/
+    	public byte nupvalues; /*Byte*/ /*lu_byte*/
+    	public GCObject gclist;
+    	public Table env;
+    }
+	
+	
 	
 	public static class CClosure extends ClosureType {
 		public lua_CFunction f;

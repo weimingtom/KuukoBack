@@ -10,7 +10,7 @@ package kurumi;
 		public Proto p;
 		public UpVal[] upvals;
 		
-		public LClosure(ClosureHeader header) 
+		public LClosure(LuaObject.ClosureHeader header) 
 		{
 			super(header);
 				

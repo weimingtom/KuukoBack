@@ -10,7 +10,7 @@ namespace kurumi
 		public Proto p;
 		public UpVal[] upvals;
 		
-		public LClosure(ClosureHeader header) : base(header) 
+		public LClosure(LuaObject.ClosureHeader header) : base(header) 
 		{
 				
 		}

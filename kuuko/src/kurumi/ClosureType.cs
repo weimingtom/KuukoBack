@@ -7,15 +7,15 @@ namespace kurumi
 {
 	public class ClosureType
 	{
-		private ClosureHeader header;
+		private LuaObject.ClosureHeader header;
 
         //implicit operator ClosureHeader
-		public static ClosureHeader toClosureHeader(ClosureType ctype) 
+		public static LuaObject.ClosureHeader toClosureHeader(ClosureType ctype) 
 		{
             return ctype.header; 
 		}
 		
-		public ClosureType(ClosureHeader header) 
+		public ClosureType(LuaObject.ClosureHeader header) 
 		{ 
 			this.header = header; 
 		}
