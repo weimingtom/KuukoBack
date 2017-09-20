@@ -2,7 +2,7 @@
 //{
     public class expkindUtil
     {
-        public static int expkindToInt(expkind exp)
+        public static int expkindToInt(LuaParser.expkind exp)
         {
             switch (exp)
             {

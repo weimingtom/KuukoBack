@@ -45,3 +45,6 @@ DumpState->LuaDump.DumpState
 
 expdesc->LuaParser.expdesc
 04:47 2017-09-21
+
+expkind->LuaParser.expkind
+04:58 2017-09-21

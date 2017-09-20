@@ -12,6 +12,28 @@ namespace kurumi
 
 	public class LuaParser
 	{
+		/*
+		 ** Expression descriptor
+		 */
+		public enum expkind
+		{
+			VVOID,	/* no value */
+			VNIL,
+			VTRUE,
+			VFALSE,
+			VK,		/* info = index of constant in `k' */
+			VKNUM,	/* nval = numerical value */
+			VLOCAL,	/* info = local register */
+			VUPVAL,       /* info = index of upvalue in `upvalues' */
+			VGLOBAL,	/* info = index of table; aux = index of global name in `k' */
+			VINDEXED,	/* info = table register; aux = index register (or `k') */
+			VJMP,		/* info = instruction pc */
+			VRELOCABLE,	/* info = instruction pc */
+			VNONRELOC,	/* info = result register */
+			VCALL,	/* info = instruction pc */
+			VVARARG	/* info = instruction pc */
+		}		
+		
 		public class expdesc
 		{
 			public class _u

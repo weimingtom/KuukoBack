@@ -6,39 +6,39 @@ namespace kurumi
 {
     public class expkindUtil
     {
-        public static int expkindToInt(expkind exp)
+        public static int expkindToInt(LuaParser.expkind exp)
         {
             switch (exp)
             {
-                case expkind.VVOID:
+                case LuaParser.expkind.VVOID:
                     return 0;
-		        case expkind.VNIL:
+		        case LuaParser.expkind.VNIL:
                     return 1;
-		        case expkind.VTRUE:
+		        case LuaParser.expkind.VTRUE:
                     return 2;
-		        case expkind.VFALSE:
+		        case LuaParser.expkind.VFALSE:
                     return 3;
-		        case expkind.VK:
+		        case LuaParser.expkind.VK:
                     return 4;		
-		        case expkind.VKNUM:
+		        case LuaParser.expkind.VKNUM:
                     return 5;	
-		        case expkind.VLOCAL:
+		        case LuaParser.expkind.VLOCAL:
                     return 6;	
-		        case expkind.VUPVAL:
+		        case LuaParser.expkind.VUPVAL:
                     return 7;       
-		        case expkind.VGLOBAL:
+		        case LuaParser.expkind.VGLOBAL:
                     return 8;	
-		        case expkind.VINDEXED:
+		        case LuaParser.expkind.VINDEXED:
                     return 9;	
-		        case expkind.VJMP:
+		        case LuaParser.expkind.VJMP:
                     return 10;		
-		        case expkind.VRELOCABLE:
+		        case LuaParser.expkind.VRELOCABLE:
                     return 11;	
-		        case expkind.VNONRELOC:
+		        case LuaParser.expkind.VNONRELOC:
                     return 12;	
-		        case expkind.VCALL:
+		        case LuaParser.expkind.VCALL:
                     return 13;
-                case expkind.VVARARG:
+                case LuaParser.expkind.VVARARG:
                     return 14;	
             }
             throw new Exception("expkindToInt error");

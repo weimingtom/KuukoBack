@@ -65,7 +65,7 @@ public class LuaCode {
 	}
 
 	private static int isnumeral(LuaParser.expdesc e) {
-		return (e.k == expkind.VKNUM && e.t == NO_JUMP && e.f == NO_JUMP) ? 1 : 0;
+		return (e.k == LuaParser.expkind.VKNUM && e.t == NO_JUMP && e.f == NO_JUMP) ? 1 : 0;
 	}
 
 	public static void luaK_nil(FuncState fs, int from, int n) {
@@ -265,7 +265,7 @@ public class LuaCode {
 	}
 
 	private static void freeexp(FuncState fs, LuaParser.expdesc e) {
-		if (e.k == expkind.VNONRELOC) {
+		if (e.k == LuaParser.expkind.VNONRELOC) {
 			freereg(fs, e.u.s.info);
 		}
 	}
@@ -325,11 +325,11 @@ public class LuaCode {
 	}
 
 	public static void luaK_setreturns(FuncState fs, LuaParser.expdesc e, int nresults) {
-		if (e.k == expkind.VCALL) {
+		if (e.k == LuaParser.expkind.VCALL) {
 			// expression is an open function call? 
 			LuaOpCodes.SETARG_C(getcode(fs, e), nresults + 1);
 		}
-		else if (e.k == expkind.VVARARG) {
+		else if (e.k == LuaParser.expkind.VVARARG) {
 			LuaOpCodes.SETARG_B(getcode(fs, e), nresults + 1);
 			LuaOpCodes.SETARG_A(getcode(fs, e), fs.freereg);
 			luaK_reserveregs(fs, 1);
@@ -337,38 +337,38 @@ public class LuaCode {
 	}
 
 	public static void luaK_setoneret(FuncState fs, LuaParser.expdesc e) {
-		if (e.k == expkind.VCALL) {
+		if (e.k == LuaParser.expkind.VCALL) {
 			// expression is an open function call? 
-			e.k = expkind.VNONRELOC;
+			e.k = LuaParser.expkind.VNONRELOC;
 			e.u.s.info = LuaOpCodes.GETARG_A(getcode(fs, e));
 		}
-		else if (e.k == expkind.VVARARG) {
+		else if (e.k == LuaParser.expkind.VVARARG) {
 			LuaOpCodes.SETARG_B(getcode(fs, e), 2);
-			e.k = expkind.VRELOCABLE; // can relocate its simple result 
+			e.k = LuaParser.expkind.VRELOCABLE; // can relocate its simple result 
 		}
 	}
 
 	public static void luaK_dischargevars(FuncState fs, LuaParser.expdesc e) {
 		switch (e.k) {
 			case VLOCAL: {
-					e.k = expkind.VNONRELOC;
+					e.k = LuaParser.expkind.VNONRELOC;
 					break;
 				}
 			case VUPVAL: {
 					e.u.s.info = luaK_codeABC(fs, OpCode.OP_GETUPVAL, 0, e.u.s.info, 0);
-					e.k = expkind.VRELOCABLE;
+					e.k = LuaParser.expkind.VRELOCABLE;
 					break;
 				}
 			case VGLOBAL: {
 					e.u.s.info = luaK_codeABx(fs, OpCode.OP_GETGLOBAL, 0, e.u.s.info);
-					e.k = expkind.VRELOCABLE;
+					e.k = LuaParser.expkind.VRELOCABLE;
 					break;
 				}
 			case VINDEXED: {
 					freereg(fs, e.u.s.aux);
 					freereg(fs, e.u.s.info);
 					e.u.s.info = luaK_codeABC(fs, OpCode.OP_GETTABLE, 0, e.u.s.info, e.u.s.aux);
-					e.k = expkind.VRELOCABLE;
+					e.k = LuaParser.expkind.VRELOCABLE;
 					break;
 				}
 			case VVARARG:
@@ -396,7 +396,7 @@ public class LuaCode {
 				}
 			case VFALSE:
 			case VTRUE: {
-					luaK_codeABC(fs, OpCode.OP_LOADBOOL, reg, (e.k == expkind.VTRUE) ? 1 : 0, 0);
+					luaK_codeABC(fs, OpCode.OP_LOADBOOL, reg, (e.k == LuaParser.expkind.VTRUE) ? 1 : 0, 0);
 					break;
 				}
 			case VK: {
@@ -419,16 +419,16 @@ public class LuaCode {
 					break;
 				}
 			default: {
-					LuaLimits.lua_assert(e.k == expkind.VVOID || e.k == expkind.VJMP);
+					LuaLimits.lua_assert(e.k == LuaParser.expkind.VVOID || e.k == LuaParser.expkind.VJMP);
 					return; // nothing to do... 
 				}
 		}
 		e.u.s.info = reg;
-		e.k = expkind.VNONRELOC;
+		e.k = LuaParser.expkind.VNONRELOC;
 	}
 
 	private static void discharge2anyreg(FuncState fs, LuaParser.expdesc e) {
-		if (e.k != expkind.VNONRELOC) {
+		if (e.k != LuaParser.expkind.VNONRELOC) {
 			luaK_reserveregs(fs, 1);
 			discharge2reg(fs, e, fs.freereg-1);
 		}
@@ -436,7 +436,7 @@ public class LuaCode {
 
 	private static void exp2reg(FuncState fs, LuaParser.expdesc e, int reg) {
 		discharge2reg(fs, e, reg);
-		if (e.k == expkind.VJMP) {
+		if (e.k == LuaParser.expkind.VJMP) {
 			int[] t_ref = new int[1];
 			t_ref[0] = e.t;
 			luaK_concat(fs, t_ref, e.u.s.info); // put this jump in `t' list  - ref
@@ -447,7 +447,7 @@ public class LuaCode {
 			int p_f = NO_JUMP; // position of an eventual LOAD false 
 			int p_t = NO_JUMP; // position of an eventual LOAD true 
 			if (need_value(fs, e.t) != 0 || need_value(fs, e.f) != 0) {
-				int fj = (e.k == expkind.VJMP) ? NO_JUMP : luaK_jump(fs);
+				int fj = (e.k == LuaParser.expkind.VJMP) ? NO_JUMP : luaK_jump(fs);
 				p_f = code_label(fs, reg, 0, 1);
 				p_t = code_label(fs, reg, 1, 0);
 				luaK_patchtohere(fs, fj);
@@ -458,7 +458,7 @@ public class LuaCode {
 		}
 		e.f = e.t = NO_JUMP;
 		e.u.s.info = reg;
-		e.k = expkind.VNONRELOC;
+		e.k = LuaParser.expkind.VNONRELOC;
 	}
 
 	public static void luaK_exp2nextreg(FuncState fs, LuaParser.expdesc e) {
@@ -470,7 +470,7 @@ public class LuaCode {
 
 	public static int luaK_exp2anyreg(FuncState fs, LuaParser.expdesc e) {
 		luaK_dischargevars(fs, e);
-		if (e.k == expkind.VNONRELOC) {
+		if (e.k == LuaParser.expkind.VNONRELOC) {
 			if (!hasjumps(e)) {
 				return e.u.s.info; // exp is already in a register 
 			}
@@ -502,8 +502,8 @@ public class LuaCode {
 			case VNIL: {
 					if (fs.nk <= LuaOpCodes.MAXINDEXRK) {
 						// constant fit in RK operand? 
-						e.u.s.info = (e.k == expkind.VNIL) ? nilK(fs) : (e.k == expkind.VKNUM) ? luaK_numberK(fs, e.u.nval) : boolK(fs, (e.k == expkind.VTRUE) ? 1 : 0);
-						e.k = expkind.VK;
+						e.u.s.info = (e.k == LuaParser.expkind.VNIL) ? nilK(fs) : (e.k == LuaParser.expkind.VKNUM) ? luaK_numberK(fs, e.u.nval) : boolK(fs, (e.k == LuaParser.expkind.VTRUE) ? 1 : 0);
+						e.k = LuaParser.expkind.VK;
 						return LuaOpCodes.RKASK(e.u.s.info);
 					}
 					else {
@@ -567,7 +567,7 @@ public class LuaCode {
 		luaK_codeABC(fs, OpCode.OP_SELF, func, e.u.s.info, luaK_exp2RK(fs, key));
 		freeexp(fs, key);
 		e.u.s.info = func;
-		e.k = expkind.VNONRELOC;
+		e.k = LuaParser.expkind.VNONRELOC;
 	}
 
 	private static void invertjump(FuncState fs, LuaParser.expdesc e) {
@@ -578,7 +578,7 @@ public class LuaCode {
 
 
 	private static int jumponcond(FuncState fs, LuaParser.expdesc e, int cond) {
-		if (e.k == expkind.VRELOCABLE) {
+		if (e.k == LuaParser.expkind.VRELOCABLE) {
 			InstructionPtr ie = getcode(fs, e);
 			if (LuaOpCodes.GET_OPCODE(ie) == OpCode.OP_NOT) {
 				fs.pc--; // remove previous OpCode.OP_NOT 
@@ -658,13 +658,13 @@ public class LuaCode {
 		switch (e.k) {
 			case VNIL:
 			case VFALSE: {
-					e.k = expkind.VTRUE;
+					e.k = LuaParser.expkind.VTRUE;
 					break;
 				}
 			case VK:
 			case VKNUM:
 			case VTRUE: {
-					e.k = expkind.VFALSE;
+					e.k = LuaParser.expkind.VFALSE;
 					break;
 				}
 			case VJMP: {
@@ -676,7 +676,7 @@ public class LuaCode {
 					discharge2anyreg(fs, e);
 					freeexp(fs, e);
 					e.u.s.info = luaK_codeABC(fs, OpCode.OP_NOT, 0, e.u.s.info, 0);
-					e.k = expkind.VRELOCABLE;
+					e.k = LuaParser.expkind.VRELOCABLE;
 					break;
 				}
 			default: {
@@ -700,7 +700,7 @@ public class LuaCode {
 
 	public static void luaK_indexed(FuncState fs, LuaParser.expdesc t, LuaParser.expdesc k) {
 		t.u.s.aux = luaK_exp2RK(fs, k);
-		t.k = expkind.VINDEXED;
+		t.k = LuaParser.expkind.VINDEXED;
 	}
 
 	private static int constfolding(OpCode op, LuaParser.expdesc e1, LuaParser.expdesc e2) {
@@ -777,7 +777,7 @@ public class LuaCode {
 				freeexp(fs, e1);
 			}
 			e1.u.s.info = luaK_codeABC(fs, op, 0, o1, o2);
-			e1.k = expkind.VRELOCABLE;
+			e1.k = LuaParser.expkind.VRELOCABLE;
 		}
 	}
 
@@ -794,14 +794,14 @@ public class LuaCode {
 			cond = 1;
 		}
 		e1.u.s.info = condjump(fs, op, cond, o1, o2);
-		e1.k = expkind.VJMP;
+		e1.k = LuaParser.expkind.VJMP;
 	}
 
 
 	public static void luaK_prefix(FuncState fs, UnOpr op, LuaParser.expdesc e) {
 		LuaParser.expdesc e2 = new LuaParser.expdesc();
 		e2.t = e2.f = NO_JUMP;
-		e2.k = expkind.VKNUM;
+		e2.k = LuaParser.expkind.VKNUM;
 		e2.u.nval = 0;
 		switch (op) {
 			case OPR_MINUS: {
@@ -885,11 +885,11 @@ public class LuaCode {
 				}
 			case OPR_CONCAT: {
 					luaK_exp2val(fs, e2);
-					if (e2.k == expkind.VRELOCABLE && LuaOpCodes.GET_OPCODE(getcode(fs, e2)) == OpCode.OP_CONCAT) {
+					if (e2.k == LuaParser.expkind.VRELOCABLE && LuaOpCodes.GET_OPCODE(getcode(fs, e2)) == OpCode.OP_CONCAT) {
 						LuaLimits.lua_assert(e1.u.s.info == LuaOpCodes.GETARG_B(getcode(fs, e2)) - 1);
 						freeexp(fs, e1);
 						LuaOpCodes.SETARG_B(getcode(fs, e2), e1.u.s.info);
-						e1.k = expkind.VRELOCABLE;
+						e1.k = LuaParser.expkind.VRELOCABLE;
 						e1.u.s.info = e2.u.s.info;
 					}
 					else {

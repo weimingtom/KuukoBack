@@ -65,7 +65,7 @@ namespace kurumi
 
 		private static int isnumeral(LuaParser.expdesc e)
 		{
-			return (e.k == expkind.VKNUM && e.t == NO_JUMP && e.f == NO_JUMP) ? 1 : 0;
+			return (e.k == LuaParser.expkind.VKNUM && e.t == NO_JUMP && e.f == NO_JUMP) ? 1 : 0;
 		}
 
 		public static void luaK_nil(FuncState fs, int from, int n)
@@ -315,7 +315,7 @@ namespace kurumi
 
 		private static void freeexp(FuncState fs, LuaParser.expdesc e)
 		{
-			if (e.k == expkind.VNONRELOC)
+			if (e.k == LuaParser.expkind.VNONRELOC)
 			{
 				freereg(fs, e.u.s.info);
 			}
@@ -386,12 +386,12 @@ namespace kurumi
 
 		public static void luaK_setreturns(FuncState fs, LuaParser.expdesc e, int nresults)
 		{
-			if (e.k == expkind.VCALL)
+			if (e.k == LuaParser.expkind.VCALL)
 			{  
 				/* expression is an open function call? */
 				LuaOpCodes.SETARG_C(getcode(fs, e), nresults + 1);
 			}
-			else if (e.k == expkind.VVARARG)
+			else if (e.k == LuaParser.expkind.VVARARG)
 			{
 				LuaOpCodes.SETARG_B(getcode(fs, e), nresults + 1);
 				LuaOpCodes.SETARG_A(getcode(fs, e), fs.freereg);
@@ -401,16 +401,16 @@ namespace kurumi
 
 		public static void luaK_setoneret(FuncState fs, LuaParser.expdesc e)
 		{
-			if (e.k == expkind.VCALL)
+			if (e.k == LuaParser.expkind.VCALL)
 			{  
 				/* expression is an open function call? */
-				e.k = expkind.VNONRELOC;
+				e.k = LuaParser.expkind.VNONRELOC;
 				e.u.s.info = LuaOpCodes.GETARG_A(getcode(fs, e));
 			}
-			else if (e.k == expkind.VVARARG)
+			else if (e.k == LuaParser.expkind.VVARARG)
 			{
 				LuaOpCodes.SETARG_B(getcode(fs, e), 2);
-				e.k = expkind.VRELOCABLE;  /* can relocate its simple result */
+				e.k = LuaParser.expkind.VRELOCABLE;  /* can relocate its simple result */
 			}
 		}
 
@@ -418,33 +418,33 @@ namespace kurumi
 		{
 			switch (e.k) 
 			{
-				case expkind.VLOCAL:
+				case LuaParser.expkind.VLOCAL:
 					{
-						e.k = expkind.VNONRELOC;
+						e.k = LuaParser.expkind.VNONRELOC;
 						break;
 					}
-				case expkind.VUPVAL:
+				case LuaParser.expkind.VUPVAL:
 					{
 						e.u.s.info = luaK_codeABC(fs, OpCode.OP_GETUPVAL, 0, e.u.s.info, 0);
-						e.k = expkind.VRELOCABLE;
+						e.k = LuaParser.expkind.VRELOCABLE;
 						break;
 					}
-				case expkind.VGLOBAL:
+				case LuaParser.expkind.VGLOBAL:
 					{
 						e.u.s.info = luaK_codeABx(fs, OpCode.OP_GETGLOBAL, 0, e.u.s.info);
-						e.k = expkind.VRELOCABLE;
+						e.k = LuaParser.expkind.VRELOCABLE;
 						break;
 					}
-				case expkind.VINDEXED:
+				case LuaParser.expkind.VINDEXED:
 					{
 						freereg(fs, e.u.s.aux);
 						freereg(fs, e.u.s.info);
 						e.u.s.info = luaK_codeABC(fs, OpCode.OP_GETTABLE, 0, e.u.s.info, e.u.s.aux);
-						e.k = expkind.VRELOCABLE;
+						e.k = LuaParser.expkind.VRELOCABLE;
 						break;
 					}
-				case expkind.VVARARG:
-				case expkind.VCALL:
+				case LuaParser.expkind.VVARARG:
+				case LuaParser.expkind.VCALL:
 					{
 						luaK_setoneret(fs, e);
 						break;
@@ -467,34 +467,34 @@ namespace kurumi
 			luaK_dischargevars(fs, e);
 			switch (e.k) 
 			{
-				case expkind.VNIL: 
+				case LuaParser.expkind.VNIL: 
 					{
 						luaK_nil(fs, reg, 1);
 						break;
 					}
-				case expkind.VFALSE:  
-				case expkind.VTRUE: 
+				case LuaParser.expkind.VFALSE:  
+				case LuaParser.expkind.VTRUE: 
 					{
-						luaK_codeABC(fs, OpCode.OP_LOADBOOL, reg, (e.k == expkind.VTRUE) ? 1 : 0, 0);
+						luaK_codeABC(fs, OpCode.OP_LOADBOOL, reg, (e.k == LuaParser.expkind.VTRUE) ? 1 : 0, 0);
 						break;
 					}
-				case expkind.VK: 
+				case LuaParser.expkind.VK: 
 					{
 						luaK_codeABx(fs, OpCode.OP_LOADK, reg, e.u.s.info);
 						break;
 					}
-				case expkind.VKNUM: 
+				case LuaParser.expkind.VKNUM: 
 					{
 						luaK_codeABx(fs, OpCode.OP_LOADK, reg, luaK_numberK(fs, e.u.nval));
 						break;
 					}
-				case expkind.VRELOCABLE: 
+				case LuaParser.expkind.VRELOCABLE: 
 					{
 						InstructionPtr pc = getcode(fs, e);
 						LuaOpCodes.SETARG_A(pc, reg);
 						break;
 					}
-				case expkind.VNONRELOC: 
+				case LuaParser.expkind.VNONRELOC: 
 					{
 						if (reg != e.u.s.info)
 						{
@@ -504,17 +504,17 @@ namespace kurumi
 					}
 				default: 
 					{
-						LuaLimits.lua_assert(e.k == expkind.VVOID || e.k == expkind.VJMP);
+						LuaLimits.lua_assert(e.k == LuaParser.expkind.VVOID || e.k == LuaParser.expkind.VJMP);
 						return;  /* nothing to do... */
 					}
 			}
 			e.u.s.info = reg;
-			e.k = expkind.VNONRELOC;
+			e.k = LuaParser.expkind.VNONRELOC;
 		}
 
 		private static void discharge2anyreg(FuncState fs, LuaParser.expdesc e)
 		{
-			if (e.k != expkind.VNONRELOC)
+			if (e.k != LuaParser.expkind.VNONRELOC)
 			{
 				luaK_reserveregs(fs, 1);
 				discharge2reg(fs, e, fs.freereg-1);
@@ -524,7 +524,7 @@ namespace kurumi
 		private static void exp2reg(FuncState fs, LuaParser.expdesc e, int reg)
 		{
 			discharge2reg(fs, e, reg);
-			if (e.k == expkind.VJMP)
+			if (e.k == LuaParser.expkind.VJMP)
 			{
 				int[] t_ref = new int[1];
 				t_ref[0] = e.t;
@@ -538,7 +538,7 @@ namespace kurumi
 				int p_t = NO_JUMP;  /* position of an eventual LOAD true */
 				if (need_value(fs, e.t) != 0 || need_value(fs, e.f) != 0) 
 				{
-					int fj = (e.k == expkind.VJMP) ? NO_JUMP : luaK_jump(fs);
+					int fj = (e.k == LuaParser.expkind.VJMP) ? NO_JUMP : luaK_jump(fs);
 					p_f = code_label(fs, reg, 0, 1);
 					p_t = code_label(fs, reg, 1, 0);
 					luaK_patchtohere(fs, fj);
@@ -549,7 +549,7 @@ namespace kurumi
 			}
 			e.f = e.t = NO_JUMP;
 			e.u.s.info = reg;
-			e.k = expkind.VNONRELOC;
+			e.k = LuaParser.expkind.VNONRELOC;
 		}
 
 		public static void luaK_exp2nextreg(FuncState fs, LuaParser.expdesc e)
@@ -563,7 +563,7 @@ namespace kurumi
 		public static int luaK_exp2anyreg(FuncState fs, LuaParser.expdesc e)
 		{
 			luaK_dischargevars(fs, e);
-			if (e.k == expkind.VNONRELOC) 
+			if (e.k == LuaParser.expkind.VNONRELOC) 
 			{
 				if (!hasjumps(e)) 
 				{
@@ -597,18 +597,18 @@ namespace kurumi
 			luaK_exp2val(fs, e);
 			switch (e.k) 
 			{
-				case expkind.VKNUM:
-				case expkind.VTRUE:
-				case expkind.VFALSE:
-				case expkind.VNIL: 
+				case LuaParser.expkind.VKNUM:
+				case LuaParser.expkind.VTRUE:
+				case LuaParser.expkind.VFALSE:
+				case LuaParser.expkind.VNIL: 
 					{
 						if (fs.nk <= LuaOpCodes.MAXINDEXRK)
 						{  
 							/* constant fit in RK operand? */
-							e.u.s.info = (e.k == expkind.VNIL)  ? nilK(fs) :
-								(e.k == expkind.VKNUM) ? luaK_numberK(fs, e.u.nval) :
-								boolK(fs, (e.k == expkind.VTRUE) ? 1 : 0);
-							e.k = expkind.VK;
+							e.u.s.info = (e.k == LuaParser.expkind.VNIL)  ? nilK(fs) :
+								(e.k == LuaParser.expkind.VKNUM) ? luaK_numberK(fs, e.u.nval) :
+								boolK(fs, (e.k == LuaParser.expkind.VTRUE) ? 1 : 0);
+							e.k = LuaParser.expkind.VK;
 							return LuaOpCodes.RKASK(e.u.s.info);
 						}
 						else 
@@ -616,7 +616,7 @@ namespace kurumi
 							break;
 						}
 					}
-				case expkind.VK: 
+				case LuaParser.expkind.VK: 
 					{
 						if (e.u.s.info <= LuaOpCodes.MAXINDEXRK)  /* constant fit in argC? */
 						{
@@ -641,25 +641,25 @@ namespace kurumi
 		{
 			switch (var.k) 
 			{
-				case expkind.VLOCAL:
+				case LuaParser.expkind.VLOCAL:
 					{
 						freeexp(fs, ex);
 						exp2reg(fs, ex, var.u.s.info);
 						return;
 					}
-				case expkind.VUPVAL:
+				case LuaParser.expkind.VUPVAL:
 					{
 						int e = luaK_exp2anyreg(fs, ex);
 						luaK_codeABC(fs, OpCode.OP_SETUPVAL, e, var.u.s.info, 0);
 						break;
 					}
-				case expkind.VGLOBAL:
+				case LuaParser.expkind.VGLOBAL:
 					{
 						int e = luaK_exp2anyreg(fs, ex);
 						luaK_codeABx(fs, OpCode.OP_SETGLOBAL, e, var.u.s.info);
 						break;
 					}
-				case expkind.VINDEXED:
+				case LuaParser.expkind.VINDEXED:
 					{
 						int e = luaK_exp2RK(fs, ex);
 						luaK_codeABC(fs, OpCode.OP_SETTABLE, var.u.s.info, var.u.s.aux, e);
@@ -685,7 +685,7 @@ namespace kurumi
 			luaK_codeABC(fs, OpCode.OP_SELF, func, e.u.s.info, luaK_exp2RK(fs, key));
 			freeexp(fs, key);
 			e.u.s.info = func;
-			e.k = expkind.VNONRELOC;
+			e.k = LuaParser.expkind.VNONRELOC;
 		}
 
 		private static void invertjump(FuncState fs, LuaParser.expdesc e)
@@ -699,7 +699,7 @@ namespace kurumi
 
 		private static int jumponcond(FuncState fs, LuaParser.expdesc e, int cond)
 		{
-			if (e.k == expkind.VRELOCABLE) 
+			if (e.k == LuaParser.expkind.VRELOCABLE) 
 			{
 				InstructionPtr ie = getcode(fs, e);
 				if (LuaOpCodes.GET_OPCODE(ie) == OpCode.OP_NOT)
@@ -720,19 +720,19 @@ namespace kurumi
 			luaK_dischargevars(fs, e);
 			switch (e.k) 
 			{
-				case expkind.VK: 
-				case expkind.VKNUM: 
-				case expkind.VTRUE: 
+				case LuaParser.expkind.VK: 
+				case LuaParser.expkind.VKNUM: 
+				case LuaParser.expkind.VTRUE: 
 					{
 						pc = NO_JUMP;  /* always true; do nothing */
 						break;
 					}
-				case expkind.VFALSE: 
+				case LuaParser.expkind.VFALSE: 
 					{
 						pc = luaK_jump(fs);  /* always jump */
 						break;
 					}
-				case expkind.VJMP: 
+				case LuaParser.expkind.VJMP: 
 					{
 						invertjump(fs, e);
 						pc = e.u.s.info;
@@ -758,18 +758,18 @@ namespace kurumi
 			luaK_dischargevars(fs, e);
 			switch (e.k) 
 			{
-				case expkind.VNIL:
-				case expkind.VFALSE:
+				case LuaParser.expkind.VNIL:
+				case LuaParser.expkind.VFALSE:
 					{
 						pc = LuaCode.NO_JUMP;  /* always false; do nothing */
 						break;
 					}
-				case expkind.VTRUE:
+				case LuaParser.expkind.VTRUE:
 					{
 						pc = luaK_jump(fs);  /* always jump */
 						break;
 					}
-				case expkind.VJMP:
+				case LuaParser.expkind.VJMP:
 					{
 						pc = e.u.s.info;
 						break;
@@ -793,30 +793,30 @@ namespace kurumi
 			luaK_dischargevars(fs, e);
 			switch (e.k) 
 			{
-				case expkind.VNIL: 
-				case expkind.VFALSE: 
+				case LuaParser.expkind.VNIL: 
+				case LuaParser.expkind.VFALSE: 
 					{
-						e.k = expkind.VTRUE;
+						e.k = LuaParser.expkind.VTRUE;
 						break;
 					}
-				case expkind.VK: 
-				case expkind.VKNUM: 
-				case expkind.VTRUE: 
+				case LuaParser.expkind.VK: 
+				case LuaParser.expkind.VKNUM: 
+				case LuaParser.expkind.VTRUE: 
 					{
-						e.k = expkind.VFALSE;
+						e.k = LuaParser.expkind.VFALSE;
 						break;
 					}
-				case expkind.VJMP: {
+				case LuaParser.expkind.VJMP: {
 					invertjump(fs, e);
 					break;
 				}
-				case expkind.VRELOCABLE:
-				case expkind.VNONRELOC: 
+				case LuaParser.expkind.VRELOCABLE:
+				case LuaParser.expkind.VNONRELOC: 
 					{
 						discharge2anyreg(fs, e);
 						freeexp(fs, e);
 						e.u.s.info = luaK_codeABC(fs, OpCode.OP_NOT, 0, e.u.s.info, 0);
-						e.k = expkind.VRELOCABLE;
+						e.k = LuaParser.expkind.VRELOCABLE;
 						break;
 					}
 				default: 
@@ -843,7 +843,7 @@ namespace kurumi
 		public static void luaK_indexed(FuncState fs, LuaParser.expdesc t, LuaParser.expdesc k)
 		{
 			t.u.s.aux = luaK_exp2RK(fs, k);
-			t.k = expkind.VINDEXED;
+			t.k = LuaParser.expkind.VINDEXED;
 		}
 
 		private static int constfolding(OpCode op, LuaParser.expdesc e1, LuaParser.expdesc e2)
@@ -940,7 +940,7 @@ namespace kurumi
 					freeexp(fs, e1);
 				}
 				e1.u.s.info = luaK_codeABC(fs, op, 0, o1, o2);
-				e1.k = expkind.VRELOCABLE;
+				e1.k = LuaParser.expkind.VRELOCABLE;
 			}
 		}
 
@@ -959,7 +959,7 @@ namespace kurumi
 				cond = 1;
 			}
 			e1.u.s.info = condjump(fs, op, cond, o1, o2);
-			e1.k = expkind.VJMP;
+			e1.k = LuaParser.expkind.VJMP;
 		}
 
 
@@ -967,7 +967,7 @@ namespace kurumi
 		{
 			LuaParser.expdesc e2 = new LuaParser.expdesc();
 			e2.t = e2.f = NO_JUMP; 
-			e2.k = expkind.VKNUM; 
+			e2.k = LuaParser.expkind.VKNUM; 
 			e2.u.nval = 0;
 			switch (op) 
 			{
@@ -1070,12 +1070,12 @@ namespace kurumi
 				case BinOpr.OPR_CONCAT: 
 					{
 						luaK_exp2val(fs, e2);
-						if (e2.k == expkind.VRELOCABLE && LuaOpCodes.GET_OPCODE(getcode(fs, e2)) == OpCode.OP_CONCAT)
+						if (e2.k == LuaParser.expkind.VRELOCABLE && LuaOpCodes.GET_OPCODE(getcode(fs, e2)) == OpCode.OP_CONCAT)
 						{
 							LuaLimits.lua_assert(e1.u.s.info == LuaOpCodes.GETARG_B(getcode(fs, e2)) - 1);
 							freeexp(fs, e1);
 							LuaOpCodes.SETARG_B(getcode(fs, e2), e1.u.s.info);
-							e1.k = expkind.VRELOCABLE; e1.u.s.info = e2.u.s.info;
+							e1.k = LuaParser.expkind.VRELOCABLE; e1.u.s.info = e2.u.s.info;
 						}
 						else 
 						{
