@@ -5,7 +5,7 @@
 // 
 package kurumi;
 //{
-	public class LClosure extends ClosureType 
+	public class LClosure extends LuaObject.ClosureType 
 	{	
 		public Proto p;
 		public UpVal[] upvals;

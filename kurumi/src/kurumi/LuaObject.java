@@ -292,6 +292,66 @@ public class LuaObject {
     	public Table env;
     }
 	
+	public static class ClosureType {
+		private LuaObject.ClosureHeader header;
+
+        //implicit operator ClosureHeader
+		public static LuaObject.ClosureHeader toClosureHeader(ClosureType ctype) 
+		{
+            return ctype.header; 
+		}
+		
+		public ClosureType(LuaObject.ClosureHeader header) 
+		{ 
+			this.header = header; 
+		}
+
+        /*Byte*/ /*lu_byte*/
+        public byte getIsC()
+        {
+            return header.isC;
+        }
+
+        /*Byte*/ /*lu_byte*/
+        public void setIsC(byte val) 
+        {
+            header.isC = val;
+        }
+
+        /*Byte*/
+        /*lu_byte*/
+        public byte getNupvalues()
+        {
+            return header.nupvalues;
+        }
+
+        /*Byte*/
+        /*lu_byte*/
+        public void setNupvalues(byte val)
+        {
+            header.nupvalues = val;
+        }
+
+        public GCObject getGclist()
+        {
+            return header.gclist;
+        }
+
+        public void setGclist(GCObject val)
+        {
+            header.gclist = val;
+        }
+
+        public Table getEnv()
+        {
+            return header.env;
+        }
+
+        public void setEnv(Table val)
+        {
+            header.env = val;
+        }
+	}
 	
 	
 	public static class CClosure extends ClosureType {

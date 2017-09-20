@@ -5,7 +5,7 @@
  */
 namespace kurumi
 {
-	public class LClosure : ClosureType
+	public class LClosure : LuaObject.ClosureType
 	{	
 		public Proto p;
 		public UpVal[] upvals;

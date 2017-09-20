@@ -30,3 +30,7 @@ Closure->LuaObject.Closure
 
 ClosureHeader->LuaObject.ClosureHeader
 21:02 2017-09-20
+
+ClosureType->LuaObject.ClosureType
+21:09 2017-09-20
+
