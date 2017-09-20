@@ -1004,6 +1004,16 @@ namespace kurumi
 			return status;
 		}
 
+		/*
+		 ** Execute a protected C call.
+		 */
+		public class CCallS
+		{
+			/* data to `f_Ccall' */
+			public lua_CFunction func;
+			public object ud;
+		}
+		
 		static void f_Ccall(lua_State L, object ud) 
 		{
 			CCallS c = ud as CCallS;

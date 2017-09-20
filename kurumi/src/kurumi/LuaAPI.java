@@ -861,6 +861,15 @@ TValue.dec(top); //ref
 		return status;
 	}
 
+	/*
+	 ** Execute a protected C call.
+	 */
+	public static class CCallS {
+		/* data to `f_Ccall' */
+		public lua_CFunction func;
+		public Object ud;
+	}	
+	
 	private static void f_Ccall(lua_State L, Object ud) {
 		CCallS c = (CCallS)((ud instanceof CCallS) ? ud : null);
 		Closure cl;
