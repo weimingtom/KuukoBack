@@ -58,9 +58,9 @@ namespace kurumi
             return (Node[])luaM_realloc__Node(L, block, new_size, t);
         }
 
-        public static GCObject[] luaM_reallocv_GCObject(lua_State L, GCObject[] block, int new_size, ClassType t)
+        public static LuaState.GCObject[] luaM_reallocv_GCObject(lua_State L, LuaState.GCObject[] block, int new_size, ClassType t)
         {
-            return (GCObject[])luaM_realloc__GCObject(L, block, new_size, t);
+            return (LuaState.GCObject[])luaM_realloc__GCObject(L, block, new_size, t);
         }
 
         //-------------------------------
@@ -139,7 +139,7 @@ namespace kurumi
             luaM_reallocv_CallInfo(L, b, 0, t);
         }
 
-        public static void luaM_freearray_GCObject(lua_State L, GCObject[] b, ClassType t)
+        public static void luaM_freearray_GCObject(lua_State L, LuaState.GCObject[] b, ClassType t)
         {
             luaM_reallocv_GCObject(L, b, 0, t);
         }
@@ -1003,20 +1003,20 @@ namespace kurumi
             return new_block;
         }
 
-        public static object luaM_realloc__GCObject(lua_State L, GCObject[] old_block, int new_size, ClassType t)
+        public static object luaM_realloc__GCObject(lua_State L, LuaState.GCObject[] old_block, int new_size, ClassType t)
         {
             int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
-            GCObject[] new_block = new GCObject[new_size];
+            LuaState.GCObject[] new_block = new LuaState.GCObject[new_size];
             for (int i = 0; i < Math.Min(old_size, new_size); i++)
             {
                 new_block[i] = old_block[i];
             }
             for (int i = old_size; i < new_size; i++)
             {
-                new_block[i] = (GCObject)t.Alloc();// System.Activator.CreateInstance(typeof(T));
+                new_block[i] = (LuaState.GCObject)t.Alloc();// System.Activator.CreateInstance(typeof(T));
             }
             if (CanIndex(t))
             {

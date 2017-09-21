@@ -7,7 +7,7 @@ namespace kurumi
 {
 	public class stringtable
 	{
-		public GCObject[] hash;
+		public LuaState.GCObject[] hash;
 		public long/*UInt32*//*lu_mem*/ nuse;  /* number of elements */
 		public int size;
 	}

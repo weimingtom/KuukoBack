@@ -5,7 +5,7 @@
  */
 namespace kurumi
 {
-	public class NextRef : GCObjectRef
+	public class NextRef : LuaState.GCObjectRef
 	{
 		private LuaObject.GCheader header;
 		
@@ -14,12 +14,12 @@ namespace kurumi
 			this.header = header; 
 		}
 		
-		public void set(GCObject value) 
+		public void set(LuaState.GCObject value) 
 		{ 
 			this.header.next = value; 
 		}
 		
-		public GCObject get() 
+		public LuaState.GCObject get() 
 		{ 
 			return this.header.next; 
 		}

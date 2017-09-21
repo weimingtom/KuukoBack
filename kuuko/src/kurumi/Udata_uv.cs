@@ -5,7 +5,7 @@
  */
 namespace kurumi
 {
-	public class Udata_uv : GCObject
+	public class Udata_uv : LuaState.GCObject
 	{
 		public Table metatable;
 		public Table env;

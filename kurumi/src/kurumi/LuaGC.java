@@ -94,31 +94,31 @@ public class LuaGC {
 	public static final int SFIXEDBIT = 6;
 	public final static int WHITEBITS = bit2mask(WHITE0BIT, WHITE1BIT);
 
-	public static boolean iswhite(GCObject x) {
+	public static boolean iswhite(LuaState.GCObject x) {
 		return test2bits(x.getGch().marked, WHITE0BIT, WHITE1BIT);
 	}
 
-	public static boolean isblack(GCObject x) {
+	public static boolean isblack(LuaState.GCObject x) {
 		return testbit(x.getGch().marked, BLACKBIT);
 	}
 
-	public static boolean isgray(GCObject x) {
+	public static boolean isgray(LuaState.GCObject x) {
 		return (!isblack(x) && !iswhite(x));
 	}
 
-	public static int otherwhite(global_State g) {
+	public static int otherwhite(LuaState.global_State g) {
 		return g.currentwhite ^ WHITEBITS;
 	}
 
-	public static boolean isdead(global_State g, GCObject v) {
+	public static boolean isdead(LuaState.global_State g, LuaState.GCObject v) {
 		return (v.getGch().marked & otherwhite(g) & WHITEBITS) != 0;
 	}
 
-	public static void changewhite(GCObject x) {
+	public static void changewhite(LuaState.GCObject x) {
 		x.getGch().marked ^= (byte)WHITEBITS;
 	}
 
-	public static void gray2black(GCObject x) {
+	public static void gray2black(LuaState.GCObject x) {
 		byte[] marked_ref = new byte[1];
 		LuaObject.GCheader gcheader = x.getGch();
 		marked_ref[0] = gcheader.marked;
@@ -130,7 +130,7 @@ public class LuaGC {
 		return (LuaObject.iscollectable(x) && iswhite(LuaObject.gcvalue(x)));
 	}
 
-	public static byte luaC_white(global_State g) {
+	public static byte luaC_white(LuaState.global_State g) {
 		return (byte)(g.currentwhite & WHITEBITS);
 	}
 
@@ -173,11 +173,11 @@ public class LuaGC {
 
 	public static byte maskmarks = (byte)(~(bitmask(BLACKBIT) | WHITEBITS));
 
-	public static void makewhite(global_State g, GCObject x) {
+	public static void makewhite(LuaState.global_State g, LuaState.GCObject x) {
 		x.getGch().marked = (byte)(x.getGch().marked & maskmarks | luaC_white(g));
 	}
 
-	public static void white2gray(GCObject x) {
+	public static void white2gray(LuaState.GCObject x) {
 		byte[] marked_ref = new byte[1];
 		LuaObject.GCheader gcheader = x.getGch();
 		marked_ref[0] = gcheader.marked;
@@ -185,7 +185,7 @@ public class LuaGC {
 		gcheader.marked = marked_ref[0];
 	}
 
-	public static void black2gray(GCObject x) {
+	public static void black2gray(LuaState.GCObject x) {
 		byte[] marked_ref = new byte[1];
 		LuaObject.GCheader gcheader = x.getGch();
 		marked_ref[0] = gcheader.marked;
@@ -217,20 +217,20 @@ public class LuaGC {
 	public static int KEYWEAK = bitmask(KEYWEAKBIT);
 	public static int VALUEWEAK = bitmask(VALUEWEAKBIT);
 
-	public static void markvalue(global_State g, TValue o) {
+	public static void markvalue(LuaState.global_State g, TValue o) {
 		LuaObject.checkconsistency(o);
 		if (LuaObject.iscollectable(o) && iswhite(LuaObject.gcvalue(o))) {
 			reallymarkobject(g, LuaObject.gcvalue(o));
 		}
 	}
 
-	public static void markobject(global_State g, Object t) {
+	public static void markobject(LuaState.global_State g, Object t) {
 		if (iswhite(LuaState.obj2gco(t))) {
 			reallymarkobject(g, LuaState.obj2gco(t));
 		}
 	}
 
-	public static void setthreshold(global_State g) {
+	public static void setthreshold(LuaState.global_State g) {
 		g.GCthreshold = ((g.estimate / 100) * g.gcpause); //(uint)
 	}
 
@@ -241,7 +241,7 @@ public class LuaGC {
 		}
 	}
 
-	private static void reallymarkobject(global_State g, GCObject o) {
+	private static void reallymarkobject(LuaState.global_State g, LuaState.GCObject o) {
 		LuaLimits.lua_assert(iswhite(o) && !isdead(g, o));
 		white2gray(o);
 		switch (o.getGch().tt) {
@@ -292,8 +292,8 @@ public class LuaGC {
 		}
 	}
 
-	private static void marktmu(global_State g) {
-		GCObject u = g.tmudata;
+	private static void marktmu(LuaState.global_State g) {
+		LuaState.GCObject u = g.tmudata;
 		if (u != null) {
 			do {
 				u = u.getGch().next;
@@ -305,10 +305,10 @@ public class LuaGC {
 
 	// move `dead' udata that need finalization to list `tmudata' 
 	public static int luaC_separateudata(lua_State L, int all) { //uint
-		global_State g = LuaState.G(L);
+		LuaState.global_State g = LuaState.G(L);
 		int deadmem = 0; //uint
-		GCObjectRef p = new NextRef(g.mainthread);
-		GCObject curr;
+		LuaState.GCObjectRef p = new NextRef(g.mainthread);
+		LuaState.GCObject curr;
 		while ((curr = p.get()) != null) {
 			if (!(iswhite(curr) || (all != 0)) || isfinalized(LuaState.gco2u(curr))) {
 				p = new NextRef(curr.getGch()); // don't bother with them 
@@ -336,7 +336,7 @@ public class LuaGC {
 		return deadmem;
 	}
 
-	private static int traversetable(global_State g, Table h) {
+	private static int traversetable(LuaState.global_State g, Table h) {
 		int i;
 		int weakkey = 0;
 		int weakvalue = 0;
@@ -391,7 +391,7 @@ public class LuaGC {
 //		 ** All marks are conditional because a GC may happen while the
 //		 ** prototype is still being created
 //		 
-	private static void traverseproto(global_State g, Proto f) {
+	private static void traverseproto(LuaState.global_State g, Proto f) {
 		int i;
 		if (f.source != null) {
 			stringmark(f.source);
@@ -419,7 +419,7 @@ public class LuaGC {
 		}
 	}
 
-	private static void traverseclosure(global_State g, LuaObject.Closure cl) {
+	private static void traverseclosure(LuaState.global_State g, LuaObject.Closure cl) {
 		markobject(g, cl.c.getEnv());
 		if (cl.c.getIsC() != 0) {
 			int i;
@@ -453,7 +453,7 @@ public class LuaGC {
 		//condhardstacktests(luaD_reallocstack(L, s_used));
 	}
 
-	private static void traversestack(global_State g, lua_State l) {
+	private static void traversestack(LuaState.global_State g, lua_State l) {
 		TValue[] o = new TValue[1]; //StkId
 		o[0] = new TValue();
 		TValue lim; //StkId
@@ -480,8 +480,8 @@ public class LuaGC {
 //		 ** traverse one gray object, turning it to black.
 //		 ** Returns `quantity' traversed.
 //		 
-	private static int propagatemark(global_State g) { //l_mem - Int32
-		GCObject o = g.gray;
+	private static int propagatemark(LuaState.global_State g) { //l_mem - Int32
+		LuaState.GCObject o = g.gray;
 		LuaLimits.lua_assert(isgray(o));
 		gray2black(o);
 		switch (o.getGch().tt) {
@@ -531,7 +531,7 @@ public class LuaGC {
 		}
 	}
 
-	private static int propagateall(global_State g) { //uint
+	private static int propagateall(LuaState.global_State g) { //uint
 		int m = 0; //uint
 		while (g.gray != null) {
 			m += propagatemark(g); //(uint)
@@ -561,7 +561,7 @@ public class LuaGC {
 //        
 //		 ** clear collected entries from weaktables
 //		 
-	private static void cleartable(GCObject l) {
+	private static void cleartable(LuaState.GCObject l) {
 		while (l != null) {
 			Table h = LuaState.gco2h(l);
 			int i = h.sizearray;
@@ -587,7 +587,7 @@ public class LuaGC {
 	}
 
 
-	private static void freeobj(lua_State L, GCObject o) {
+	private static void freeobj(lua_State L, LuaState.GCObject o) {
 		switch (o.getGch().tt) {
 			case LuaObject.LUA_TPROTO: {
 					LuaFunc.luaF_freeproto(L, LuaState.gco2p(o));
@@ -628,13 +628,13 @@ public class LuaGC {
 		}
 	}
 
-	public static void sweepwholelist(lua_State L, GCObjectRef p) {
+	public static void sweepwholelist(lua_State L, LuaState.GCObjectRef p) {
 		sweeplist(L, p, LuaLimits.MAX_LUMEM);
 	}
 
-	private static GCObjectRef sweeplist(lua_State L, GCObjectRef p, long count) { //lu_mem - UInt32
-		GCObject curr;
-		global_State g = LuaState.G(L);
+	private static LuaState.GCObjectRef sweeplist(lua_State L, LuaState.GCObjectRef p, long count) { //lu_mem - UInt32
+		LuaState.GCObject curr;
+		LuaState.global_State g = LuaState.G(L);
 		int deadmask = otherwhite(g);
 		while ((curr = p.get()) != null && count-- > 0) {
 			if (curr.getGch().tt == Lua.LUA_TTHREAD) { // sweep open upvalues of each thread 
@@ -660,7 +660,7 @@ public class LuaGC {
 	}
 
 	private static void checkSizes(lua_State L) {
-		global_State g = LuaState.G(L);
+		LuaState.global_State g = LuaState.G(L);
 		// check size of string hash 
 		if (g.strt.nuse < (long)(g.strt.size / 4) && g.strt.size > LuaLimits.MINSTRTABSIZE * 2) { //lu_int32 - UInt32
 			LuaString.luaS_resize(L, g.strt.size / 2); // table is too big 
@@ -674,8 +674,8 @@ public class LuaGC {
 	}
 
 	private static void GCTM(lua_State L) {
-		global_State g = LuaState.G(L);
-		GCObject o = g.tmudata.getGch().next; // get first element 
+		LuaState.global_State g = LuaState.G(L);
+		LuaState.GCObject o = g.tmudata.getGch().next; // get first element 
 		Udata udata = LuaState.rawgco2u(o);
 		TValue tm;
 		// remove udata from `tmudata' 
@@ -713,7 +713,7 @@ public class LuaGC {
 	}
 
 	public static void luaC_freeall(lua_State L) {
-		global_State g = LuaState.G(L);
+		LuaState.global_State g = LuaState.G(L);
 		int i;
 		g.currentwhite = (byte)(WHITEBITS | bitmask(SFIXEDBIT)); // mask to collect all elements 
 		sweepwholelist(L, new RootGCRef(g));
@@ -722,7 +722,7 @@ public class LuaGC {
 		}
 	}
 
-	private static void markmt(global_State g) {
+	private static void markmt(LuaState.global_State g) {
 		int i;
 		for (i = 0; i < LuaObject.NUM_TAGS; i++) {
 			if (g.mt[i] != null) {
@@ -733,7 +733,7 @@ public class LuaGC {
 
 	// mark root set 
 	private static void markroot(lua_State L) {
-		global_State g = LuaState.G(L);
+		LuaState.global_State g = LuaState.G(L);
 		g.gray = null;
 		g.grayagain = null;
 		g.weak = null;
@@ -745,7 +745,7 @@ public class LuaGC {
 		g.gcstate = GCSpropagate;
 	}
 
-	private static void remarkupvals(global_State g) {
+	private static void remarkupvals(LuaState.global_State g) {
 		UpVal uv;
 		for (uv = g.uvhead.u.l.next; uv != g.uvhead; uv = uv.u.l.next) {
 			LuaLimits.lua_assert(uv.u.l.next.u.l.prev == uv && uv.u.l.prev.u.l.next == uv);
@@ -756,7 +756,7 @@ public class LuaGC {
 	}
 
 	private static void atomic(lua_State L) {
-		global_State g = LuaState.G(L);
+		LuaState.global_State g = LuaState.G(L);
 		int udsize; // total size of userdata to be finalized  - uint
 		// remark occasional upvalues of (maybe) dead threads 
 		remarkupvals(g);
@@ -786,7 +786,7 @@ public class LuaGC {
 	}
 
 	private static int singlestep(lua_State L) { //l_mem - Int32
-		global_State g = LuaState.G(L);
+		LuaState.global_State g = LuaState.G(L);
 		//lua_checkmemory(L);
 		switch (g.gcstate) {
 			case GCSpause: {
@@ -847,7 +847,7 @@ public class LuaGC {
 	}
 
 	public static void luaC_step(lua_State L) {
-		global_State g = LuaState.G(L);
+		LuaState.global_State g = LuaState.G(L);
 		int lim = (int)((GCSTEPSIZE / 100) * g.gcstepmul); //l_mem - Int32 - l_mem - Int32
 		if (lim == 0) {
 			lim = (int)((LuaLimits.MAX_LUMEM - 1) / 2); // no limit  - l_mem - Int32
@@ -875,7 +875,7 @@ public class LuaGC {
 	}
 
 	public static void luaC_fullgc(lua_State L) {
-		global_State g = LuaState.G(L);
+		LuaState.global_State g = LuaState.G(L);
 		if (g.gcstate <= GCSpropagate) {
 			// reset sweep marks to sweep all elements (returning them to white) 
 			g.sweepstrgc = 0;
@@ -899,8 +899,8 @@ public class LuaGC {
 		setthreshold(g);
 	}
 
-	public static void luaC_barrierf(lua_State L, GCObject o, GCObject v) {
-		global_State g = LuaState.G(L);
+	public static void luaC_barrierf(lua_State L, LuaState.GCObject o, LuaState.GCObject v) {
+		LuaState.global_State g = LuaState.G(L);
 		LuaLimits.lua_assert(isblack(o) && iswhite(v) && !isdead(g, v) && !isdead(g, o));
 		LuaLimits.lua_assert(g.gcstate != GCSfinalize && g.gcstate != GCSpause);
 		LuaLimits.lua_assert(LuaObject.ttype(o.getGch()) != Lua.LUA_TTABLE);
@@ -915,8 +915,8 @@ public class LuaGC {
 
 
 	public static void luaC_barrierback(lua_State L, Table t) {
-		global_State g = LuaState.G(L);
-		GCObject o = LuaState.obj2gco(t);
+		LuaState.global_State g = LuaState.G(L);
+		LuaState.GCObject o = LuaState.obj2gco(t);
 		LuaLimits.lua_assert(isblack(o) && !isdead(g, o));
 		LuaLimits.lua_assert(g.gcstate != GCSfinalize && g.gcstate != GCSpause);
 		black2gray(o); // make table gray (again) 
@@ -924,8 +924,8 @@ public class LuaGC {
 		g.grayagain = o;
 	}
 
-	public static void luaC_link(lua_State L, GCObject o, byte tt) { //lu_byte
-		global_State g = LuaState.G(L);
+	public static void luaC_link(lua_State L, LuaState.GCObject o, byte tt) { //lu_byte
+		LuaState.global_State g = LuaState.G(L);
 		o.getGch().next = g.rootgc;
 		g.rootgc = o;
 		o.getGch().marked = luaC_white(g);
@@ -933,8 +933,8 @@ public class LuaGC {
 	}
 
 	public static void luaC_linkupval(lua_State L, UpVal uv) {
-		global_State g = LuaState.G(L);
-		GCObject o = LuaState.obj2gco(uv);
+		LuaState.global_State g = LuaState.G(L);
+		LuaState.GCObject o = LuaState.obj2gco(uv);
 		o.getGch().next = g.rootgc; // link upvalue into `rootgc' list 
 		g.rootgc = o;
 		if (isgray(o)) {

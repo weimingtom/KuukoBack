@@ -8,7 +8,7 @@ package kurumi;
 	/*
 	 ** Upvalues
 	 */
-	public class UpVal extends GCObject 
+	public class UpVal extends LuaState.GCObject 
 	{
 		public static class _u 
 		{			

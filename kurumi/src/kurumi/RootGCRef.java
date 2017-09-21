@@ -5,21 +5,21 @@
  */
 package kurumi;
 //{
-	public class RootGCRef implements GCObjectRef 
+	public class RootGCRef implements LuaState.GCObjectRef 
 	{
-		private global_State g;
+		private LuaState.global_State g;
 		
-		public RootGCRef(global_State g) 
+		public RootGCRef(LuaState.global_State g) 
 		{ 
 			this.g = g; 
 		}
 		
-		public void set(GCObject value) 
+		public void set(LuaState.GCObject value) 
 		{ 
 			this.g.rootgc = value; 
 		}
 		
-		public GCObject get() 
+		public LuaState.GCObject get() 
 		{ 
 			return this.g.rootgc; 
 		}

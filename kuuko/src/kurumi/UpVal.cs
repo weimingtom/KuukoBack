@@ -8,7 +8,7 @@ namespace kurumi
 	/*
 	 ** Upvalues
 	 */
-	public class UpVal : GCObject
+	public class UpVal : LuaState.GCObject
 	{
 		public class _u
 		{			

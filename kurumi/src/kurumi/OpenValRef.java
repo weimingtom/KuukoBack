@@ -5,7 +5,7 @@
  */
 package kurumi;
 //{
-	public class OpenValRef implements GCObjectRef 
+	public class OpenValRef implements LuaState.GCObjectRef 
 	{
 		private lua_State L;
 		
@@ -14,12 +14,12 @@ package kurumi;
 			this.L = L; 
 		}
 		
-		public void set(GCObject value) 
+		public void set(LuaState.GCObject value) 
 		{ 
 			this.L.openupval = value; 
 		}
 		
-		public GCObject get() 
+		public LuaState.GCObject get() 
 		{ 
 			return this.L.openupval; 
 		}

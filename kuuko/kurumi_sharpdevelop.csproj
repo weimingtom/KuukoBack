@@ -58,9 +58,6 @@
     <Compile Include="src\kurumi\DateTimeProxy.cs" />
     <Compile Include="src\kurumi\expkindUtil.cs" />
     <Compile Include="src\kurumi\f_parser_delegate.cs" />
-    <Compile Include="src\kurumi\GCObject.cs" />
-    <Compile Include="src\kurumi\GCObjectRef.cs" />
-    <Compile Include="src\kurumi\global_State.cs" />
     <Compile Include="src\kurumi\InstructionPtr.cs" />
     <Compile Include="src\kurumi\LClosure.cs" />
     <Compile Include="src\kurumi\LexState.cs" />

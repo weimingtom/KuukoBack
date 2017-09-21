@@ -5,7 +5,7 @@
  */
 package kurumi;
 //{
-	public class Udata_uv extends GCObject 
+	public class Udata_uv extends LuaState.GCObject 
 	{
 		public Table metatable;
 		public Table env;

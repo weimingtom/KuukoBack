@@ -38,7 +38,7 @@ public class LuaObject {
      */
     public static class CommonHeader
     {
-    	public GCObject next;
+    	public LuaState.GCObject next;
     	public byte tt; /*Byte*/ /*lu_byte*/
     	public byte marked; /*Byte*/ /*lu_byte*/
     }	
@@ -102,8 +102,8 @@ public class LuaObject {
 		return o.tt;
 	}
 
-	public static GCObject gcvalue(TValue o) {
-		return (GCObject)LuaLimits.check_exp(iscollectable(o), o.value.gc);
+	public static LuaState.GCObject gcvalue(TValue o) {
+		return (LuaState.GCObject)LuaLimits.check_exp(iscollectable(o), o.value.gc);
 	}
 
 	public static Object pvalue(TValue o) {
@@ -157,7 +157,7 @@ public class LuaObject {
 		LuaLimits.lua_assert(!iscollectable(obj) || (ttype(obj) == (obj).value.gc.getGch().tt));
 	}
 
-	public static void checkliveness(global_State g, TValue obj) {
+	public static void checkliveness(LuaState.global_State g, TValue obj) {
 		LuaLimits.lua_assert(!iscollectable(obj) || ((ttype(obj) == obj.value.gc.getGch().tt) && !LuaGC.isdead(g, obj.value.gc)));
 	}
 
@@ -182,19 +182,19 @@ public class LuaObject {
 		obj.tt = Lua.LUA_TBOOLEAN;
 	}
 
-	public static void setsvalue(lua_State L, TValue obj, GCObject x) {
+	public static void setsvalue(lua_State L, TValue obj, LuaState.GCObject x) {
 		obj.value.gc = x;
 		obj.tt = Lua.LUA_TSTRING;
 		checkliveness(LuaState.G(L), obj);
 	}
 
-	public static void setuvalue(lua_State L, TValue obj, GCObject x) {
+	public static void setuvalue(lua_State L, TValue obj, LuaState.GCObject x) {
 		obj.value.gc = x;
 		obj.tt = Lua.LUA_TUSERDATA;
 		checkliveness(LuaState.G(L), obj);
 	}
 
-	public static void setthvalue(lua_State L, TValue obj, GCObject x) {
+	public static void setthvalue(lua_State L, TValue obj, LuaState.GCObject x) {
 		obj.value.gc = x;
 		obj.tt = Lua.LUA_TTHREAD;
 		checkliveness(LuaState.G(L), obj);
@@ -303,10 +303,10 @@ public class LuaObject {
     /*
      ** Closures
      */ 
-	public static class ClosureHeader extends GCObject {
+	public static class ClosureHeader extends LuaState.GCObject {
     	public byte isC; /*Byte*/ /*lu_byte*/
     	public byte nupvalues; /*Byte*/ /*lu_byte*/
-    	public GCObject gclist;
+    	public LuaState.GCObject gclist;
     	public Table env;
     }
 	
@@ -350,12 +350,12 @@ public class LuaObject {
             header.nupvalues = val;
         }
 
-        public GCObject getGclist()
+        public LuaState.GCObject getGclist()
         {
             return header.gclist;
         }
 
-        public void setGclist(GCObject val)
+        public void setGclist(LuaState.GCObject val)
         {
             header.gclist = val;
         }

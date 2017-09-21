@@ -227,7 +227,7 @@ public class ClassType {
 				result = new Integer(0); //FIXME:
 			}
 			else if (type == TYPE_GCOBJECT) {
-				result = new GCObject();
+				result = new LuaState.GCObject();
 			}
 			else if (type == TYPE_CHARPTR) {
 				result = new LuaConf.CharPtr();

@@ -8,7 +8,7 @@ package kurumi;
 //using TValue = Lua.TValue;
 
 public class LuaTM {
-	public static TValue gfasttm(global_State g, Table et, TMS e) {
+	public static TValue gfasttm(LuaState.global_State g, Table et, TMS e) {
 		return (et == null) ? null : ((et.flags & (1 << e.getValue())) != 0) ? null : luaT_gettm(et, e, g.tmname[e.getValue()]);
 	}
 

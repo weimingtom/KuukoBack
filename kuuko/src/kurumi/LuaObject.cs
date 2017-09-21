@@ -40,7 +40,7 @@ namespace kurumi
 	     */
 	    public class CommonHeader
 	    {
-	    	public GCObject next;
+	    	public LuaState.GCObject next;
 	    	public byte tt; /*Byte*/ /*lu_byte*/
 	    	public byte marked; /*Byte*/ /*lu_byte*/
 	    }
@@ -116,9 +116,9 @@ namespace kurumi
 			return o.tt; 
 		}
 		
-		public static GCObject gcvalue(TValue o) 
+		public static LuaState.GCObject gcvalue(TValue o) 
 		{ 
-			return (GCObject)LuaLimits.check_exp(iscollectable(o), o.value.gc); 
+			return (LuaState.GCObject)LuaLimits.check_exp(iscollectable(o), o.value.gc); 
 		}
 		
 		public static object pvalue(TValue o) 
@@ -184,7 +184,7 @@ namespace kurumi
 			LuaLimits.lua_assert(!iscollectable(obj) || (ttype(obj) == (obj).value.gc.getGch().tt));
 		}
 
-		public static void checkliveness(global_State g, TValue obj)
+		public static void checkliveness(LuaState.global_State g, TValue obj)
 		{
 			LuaLimits.lua_assert(!iscollectable(obj) ||
 				((ttype(obj) == obj.value.gc.getGch().tt) && !LuaGC.isdead(g, obj.value.gc)));
@@ -215,21 +215,21 @@ namespace kurumi
 			obj.tt = Lua.LUA_TBOOLEAN;
 		}
 
-		public static void setsvalue(lua_State L, TValue obj, GCObject x) 
+		public static void setsvalue(lua_State L, TValue obj, LuaState.GCObject x) 
 		{
 			obj.value.gc = x;
 			obj.tt = Lua.LUA_TSTRING;
 			checkliveness(LuaState.G(L), obj);
 		}
 
-		public static void setuvalue(lua_State L, TValue obj, GCObject x) 
+		public static void setuvalue(lua_State L, TValue obj, LuaState.GCObject x) 
 		{
             obj.value.gc = x;
 			obj.tt = Lua.LUA_TUSERDATA;
 			checkliveness(LuaState.G(L), obj);
 		}
 
-		public static void setthvalue(lua_State L, TValue obj, GCObject x) 
+		public static void setthvalue(lua_State L, TValue obj, LuaState.GCObject x) 
 		{
 			obj.value.gc = x;
 			obj.tt = Lua.LUA_TTHREAD;
@@ -357,11 +357,11 @@ namespace kurumi
 	    /*
 	     ** Closures
 	     */ 
-	    public class ClosureHeader : GCObject
+	    public class ClosureHeader : LuaState.GCObject
 	    {
 	    	public byte isC; /*Byte*/ /*lu_byte*/
 	    	public byte nupvalues; /*Byte*/ /*lu_byte*/
-	    	public GCObject gclist;
+	    	public LuaState.GCObject gclist;
 	    	public Table env;
 	    }
 		
@@ -406,12 +406,12 @@ namespace kurumi
 	            header.nupvalues = val;
 	        }
 	
-	        public GCObject getGclist()
+	        public LuaState.GCObject getGclist()
 	        {
 	            return header.gclist;
 	        }
 	
-	        public void setGclist(GCObject val)
+	        public void setGclist(LuaState.GCObject val)
 	        {
 	            header.gclist = val;
 	        }

@@ -10,7 +10,7 @@ package kurumi;
 	 */
 	public class LG extends lua_State 
 	{
-		public global_State g = new global_State();
+		public LuaState.global_State g = new LuaState.global_State();
 		
 		public lua_State getL() 
 		{

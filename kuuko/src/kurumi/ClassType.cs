@@ -290,7 +290,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_GCOBJECT)
 	            {
-	                result = new GCObject();
+	                result = new LuaState.GCObject();
 	            }
 	            else if (type == TYPE_CHARPTR)
 	            {
@@ -965,7 +965,7 @@ namespace kurumi
             }
             else if (type == TYPE_GCOBJECTREF)
             {
-                return typeof(GCObjectRef); //FIXME:interface!!!
+                return typeof(LuaState.GCObjectRef); //FIXME:interface!!!
             }
             else if (type == TYPE_TSTRING)
             {
@@ -1009,7 +1009,7 @@ namespace kurumi
             }
             else if (type == TYPE_GCOBJECT)
             {
-                return typeof(GCObject);
+                return typeof(LuaState.GCObject);
             }
             else if (type == TYPE_CHARPTR)
             {
@@ -1071,7 +1071,7 @@ namespace kurumi
             {
                 return 376;
             }
-           	else if (t == typeof(global_State))
+           	else if (t == typeof(LuaState.global_State))
             {
                 return 228;
             }
@@ -1091,11 +1091,11 @@ namespace kurumi
             {
                 return 32;
             }
-            else if (t == typeof(GCObject))
+            else if (t == typeof(LuaState.GCObject))
             {
                 return 120;
             }
-            else if (t == typeof(GCObjectRef))
+            else if (t == typeof(LuaState.GCObjectRef))
             {
                 return 4;
             }

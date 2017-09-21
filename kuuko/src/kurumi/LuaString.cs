@@ -43,7 +43,7 @@ namespace kurumi
 
 		public static void luaS_resize(lua_State L, int newsize) 
 		{
-			GCObject[] newhash;
+			LuaState.GCObject[] newhash;
 			stringtable tb;
 			int i;
 			if (LuaState.G(L).gcstate == LuaGC.GCSsweepstring)
@@ -55,7 +55,7 @@ namespace kurumi
 			// I'm treating newhash as a regular C# array, but I need to allocate a dummy array
 			// so that the garbage collector behaves identical to the C version.
 			//newhash = luaM_newvector<GCObjectRef>(L, newsize);
-			newhash = new GCObject[newsize];
+			newhash = new LuaState.GCObject[newsize];
             LuaMem.AddTotalBytes(L, newsize * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_GCOBJECTREF))); //typeof(GCObjectRef)
 
 			tb = LuaState.G(L).strt;
@@ -67,11 +67,11 @@ namespace kurumi
 			/* rehash */
 			for (i = 0; i < tb.size; i++) 
 			{
-				GCObject p = tb.hash[i];
+				LuaState.GCObject p = tb.hash[i];
 				while (p != null) 
 				{  
 					/* for each node in the list */
-                    GCObject next = p.getGch().next;  /* save next */
+                    LuaState.GCObject next = p.getGch().next;  /* save next */
 					long/*int*//*uint*/ h = LuaState.gco2ts(p).hash;
 					int h1 = (int)LuaConf.lmod(h, newsize);  /* new position */
 					LuaLimits.lua_assert((int)(h % newsize) == LuaConf.lmod(h, newsize));
@@ -121,7 +121,7 @@ namespace kurumi
 
 		public static TString luaS_newlstr(lua_State L, LuaConf.CharPtr str, int/*uint*/ l) 
 		{
-			GCObject o;
+			LuaState.GCObject o;
 			/*FIXME:*/
 			long/*int*//*uint*/ h = /*(uint)*/l & 0xffffffff;  /* seed */
 			int/*uint*/ step = (l >> 5) + 1;  /* if string is too long, don't hash all its chars */

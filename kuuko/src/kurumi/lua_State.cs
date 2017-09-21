@@ -8,12 +8,12 @@ namespace kurumi
 	/*
 	 ** `per thread' state
 	 */
-	public class lua_State : GCObject
+	public class lua_State : LuaState.GCObject
 	{
 		public byte status; /*Byte*/ /*lu_byte*/
 		public TValue/*StkId*/ top;  /* first free slot in the stack */
 		public TValue/*StkId*/ base_;  /* base of current function */
-		public global_State l_G;
+		public LuaState.global_State l_G;
 		public LuaState.CallInfo ci;  /* call info for current function */
 		public InstructionPtr savedpc = new InstructionPtr();  /* `savedpc' of current function */
 		public TValue/*StkId*/ stack_last;  /* last free slot in the stack */
@@ -31,8 +31,8 @@ namespace kurumi
 		public lua_Hook hook;
 		public TValue l_gt = new TValue();  /* table of globals */
 		public TValue env = new TValue();  /* temporary place for environments */
-		public GCObject openupval;  /* list of open upvalues in this stack */
-		public GCObject gclist;
+		public LuaState.GCObject openupval;  /* list of open upvalues in this stack */
+		public LuaState.GCObject gclist;
 		public lua_longjmp errorJmp;  /* current error recover point */
 		public int/*Int32*//*ptrdiff_t*/ errfunc;  /* current error handling function (stack index) */
 	}

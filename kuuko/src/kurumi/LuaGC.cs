@@ -107,37 +107,37 @@ namespace kurumi
 		public const int SFIXEDBIT = 6;
 		public readonly static int WHITEBITS = bit2mask(WHITE0BIT, WHITE1BIT);
 
-		public static bool iswhite(GCObject x) 
+		public static bool iswhite(LuaState.GCObject x) 
 		{ 
 			return test2bits(x.getGch().marked, WHITE0BIT, WHITE1BIT); 
 		}
 		
-		public static bool isblack(GCObject x) 
+		public static bool isblack(LuaState.GCObject x) 
 		{ 
 			return testbit(x.getGch().marked, BLACKBIT); 
 		}
 		
-		public static bool isgray(GCObject x) 
+		public static bool isgray(LuaState.GCObject x) 
 		{ 
 			return (!isblack(x) && !iswhite(x)); 
 		}
 
-		public static int otherwhite(global_State g) 
+		public static int otherwhite(LuaState.global_State g) 
 		{ 
 			return g.currentwhite ^ WHITEBITS; 
 		}
 		
-		public static bool isdead(global_State g, GCObject v) 
+		public static bool isdead(LuaState.global_State g, LuaState.GCObject v) 
 		{ 
 			return (v.getGch().marked & otherwhite(g) & WHITEBITS) != 0; 
 		}
 
-		public static void changewhite(GCObject x) 
+		public static void changewhite(LuaState.GCObject x) 
 		{ 
 			x.getGch().marked ^= (byte)WHITEBITS; 
 		}
 		
-		public static void gray2black(GCObject x) 
+		public static void gray2black(LuaState.GCObject x) 
 		{ 
 			Byte[] marked_ref = new Byte[1];
 			LuaObject.GCheader gcheader = x.getGch();
@@ -151,7 +151,7 @@ namespace kurumi
 			return (LuaObject.iscollectable(x) && iswhite(LuaObject.gcvalue(x))); 
 		}
 
-		public static byte luaC_white(global_State g) 
+		public static byte luaC_white(LuaState.global_State g) 
 		{ 
 			return (byte)(g.currentwhite & WHITEBITS); 
 		}
@@ -205,12 +205,12 @@ namespace kurumi
 
 		public static byte maskmarks = (byte)(~(bitmask(BLACKBIT) | WHITEBITS));
 
-		public static void makewhite(global_State g, GCObject x)
+		public static void makewhite(LuaState.global_State g, LuaState.GCObject x)
 		{
 			x.getGch().marked = (byte)(x.getGch().marked & maskmarks | luaC_white(g));
 		}
 
-		public static void white2gray(GCObject x) 
+		public static void white2gray(LuaState.GCObject x) 
 		{ 
 			Byte[] marked_ref = new Byte[1];
 			LuaObject.GCheader gcheader = x.getGch();
@@ -219,7 +219,7 @@ namespace kurumi
 			gcheader.marked = marked_ref[0];
 		}
 		
-		public static void black2gray(GCObject x) 
+		public static void black2gray(LuaState.GCObject x) 
 		{ 
 			Byte[] marked_ref = new Byte[1];
 			LuaObject.GCheader gcheader = x.getGch();
@@ -255,7 +255,7 @@ namespace kurumi
 		public static int KEYWEAK = bitmask(KEYWEAKBIT);
 		public static int VALUEWEAK = bitmask(VALUEWEAKBIT);
 
-		public static void markvalue(global_State g, TValue o)
+		public static void markvalue(LuaState.global_State g, TValue o)
 		{
 			LuaObject.checkconsistency(o);
 			if (LuaObject.iscollectable(o) && iswhite(LuaObject.gcvalue(o)))
@@ -264,7 +264,7 @@ namespace kurumi
 			}
 		}
 
-		public static void markobject(global_State g, object t)
+		public static void markobject(LuaState.global_State g, object t)
 		{
 			if (iswhite(LuaState.obj2gco(t)))
 			{
@@ -272,7 +272,7 @@ namespace kurumi
 			}
 		}
 
-		public static void setthreshold(global_State g)
+		public static void setthreshold(LuaState.global_State g)
 		{
 			g.GCthreshold = /*(uint)*/((g.estimate / 100) * g.gcpause);
 		}
@@ -286,7 +286,7 @@ namespace kurumi
 			}
 		}
 
-		private static void reallymarkobject(global_State g, GCObject o) 
+		private static void reallymarkobject(LuaState.global_State g, LuaState.GCObject o) 
 		{
 			LuaLimits.lua_assert(iswhite(o) && !isdead(g, o));
 			white2gray(o);
@@ -349,9 +349,9 @@ namespace kurumi
 			}
 		}
 
-		private static void marktmu(global_State g) 
+		private static void marktmu(LuaState.global_State g) 
 		{
-			GCObject u = g.tmudata;
+			LuaState.GCObject u = g.tmudata;
 			if (u != null) 
 			{
 				do 
@@ -366,10 +366,10 @@ namespace kurumi
 		/* move `dead' udata that need finalization to list `tmudata' */
 		public static int/*uint*/ luaC_separateudata(lua_State L, int all) 
 		{
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			int/*uint*/ deadmem = 0;
-			GCObjectRef p = new NextRef(g.mainthread);
-			GCObject curr;
+			LuaState.GCObjectRef p = new NextRef(g.mainthread);
+			LuaState.GCObject curr;
 			while ((curr = p.get()) != null) 
 			{
 				if (!(iswhite(curr) || (all != 0)) || isfinalized(LuaState.gco2u(curr)))
@@ -403,7 +403,7 @@ namespace kurumi
 			return deadmem;
 		}
 
-		private static int traversetable(global_State g, Table h) 
+		private static int traversetable(LuaState.global_State g, Table h) 
 		{
 			int i;
 			int weakkey = 0;
@@ -470,7 +470,7 @@ namespace kurumi
 		 ** All marks are conditional because a GC may happen while the
 		 ** prototype is still being created
 		 */
-		private static void traverseproto(global_State g, Proto f) 
+		private static void traverseproto(LuaState.global_State g, Proto f) 
 		{
 			int i;
 			if (f.source != null) 
@@ -507,7 +507,7 @@ namespace kurumi
 			}
 		}
 
-		private static void traverseclosure(global_State g, LuaObject.Closure cl) 
+		private static void traverseclosure(LuaState.global_State g, LuaObject.Closure cl) 
 		{
 			markobject(g, cl.c.getEnv());
 			if (cl.c.getIsC() != 0) 
@@ -551,7 +551,7 @@ namespace kurumi
 			//condhardstacktests(luaD_reallocstack(L, s_used));
 		}
 
-		private static void traversestack (global_State g, lua_State l) 
+		private static void traversestack (LuaState.global_State g, lua_State l) 
 		{
 			TValue[]/*StkId*/ o = new TValue[1];
 			o[0] = new TValue();
@@ -583,9 +583,9 @@ namespace kurumi
 		 ** traverse one gray object, turning it to black.
 		 ** Returns `quantity' traversed.
 		 */
-		private static int/*Int32*//*l_mem*/ propagatemark(global_State g)
+		private static int/*Int32*//*l_mem*/ propagatemark(LuaState.global_State g)
 		{
-			GCObject o = g.gray;
+			LuaState.GCObject o = g.gray;
 			LuaLimits.lua_assert(isgray(o));
 			gray2black(o);
 			switch (o.getGch().tt) 
@@ -653,7 +653,7 @@ namespace kurumi
 			}
 		}
 
-		private static int/*uint*/ propagateall(global_State g) 
+		private static int/*uint*/ propagateall(LuaState.global_State g) 
 		{
 			int/*uint*/ m = 0;
 			while (g.gray != null) 
@@ -689,7 +689,7 @@ namespace kurumi
 		/*
 		 ** clear collected entries from weaktables
 		 */
-		private static void cleartable(GCObject l) 
+		private static void cleartable(LuaState.GCObject l) 
 		{
 			while (l != null) 
 			{
@@ -724,7 +724,7 @@ namespace kurumi
 		}
 
 
-		private static void freeobj(lua_State L, GCObject o) 
+		private static void freeobj(lua_State L, LuaState.GCObject o) 
 		{
 			switch (o.getGch().tt) 
 			{
@@ -775,15 +775,15 @@ namespace kurumi
 			}
 		}
 
-		public static void sweepwholelist(lua_State L, GCObjectRef p) 
+		public static void sweepwholelist(lua_State L, LuaState.GCObjectRef p) 
 		{ 
 			sweeplist(L, p, LuaLimits.MAX_LUMEM); 
 		}
 
-		private static GCObjectRef sweeplist(lua_State L, GCObjectRef p, long/*UInt32*//*lu_mem*/ count)
+		private static LuaState.GCObjectRef sweeplist(lua_State L, LuaState.GCObjectRef p, long/*UInt32*//*lu_mem*/ count)
 		{
-			GCObject curr;
-			global_State g = LuaState.G(L);
+			LuaState.GCObject curr;
+			LuaState.global_State g = LuaState.G(L);
 			int deadmask = otherwhite(g);
 			while ((curr = p.get()) != null && count-- > 0) 
 			{
@@ -815,7 +815,7 @@ namespace kurumi
 
 		private static void checkSizes(lua_State L) 
 		{
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			/* check size of string hash */
 			if (g.strt.nuse < (long/*UInt32*//*lu_int32*/)(g.strt.size / 4) &&
 			    g.strt.size > LuaLimits.MINSTRTABSIZE * 2)
@@ -833,8 +833,8 @@ namespace kurumi
 
 		private static void GCTM(lua_State L) 
 		{
-			global_State g = LuaState.G(L);
-			GCObject o = g.tmudata.getGch().next;  /* get first element */
+			LuaState.global_State g = LuaState.G(L);
+			LuaState.GCObject o = g.tmudata.getGch().next;  /* get first element */
 			Udata udata = LuaState.rawgco2u(o);
 			TValue tm;
 			/* remove udata from `tmudata' */
@@ -878,7 +878,7 @@ namespace kurumi
 
 		public static void luaC_freeall(lua_State L) 
 		{
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			int i;
 			g.currentwhite = (byte)(WHITEBITS | bitmask(SFIXEDBIT));  /* mask to collect all elements */
 			sweepwholelist(L, new RootGCRef(g));
@@ -888,7 +888,7 @@ namespace kurumi
 			}
 		}
 
-		private static void markmt(global_State g) 
+		private static void markmt(LuaState.global_State g) 
 		{
 			int i;
 			for (i = 0; i < LuaObject.NUM_TAGS; i++)
@@ -903,7 +903,7 @@ namespace kurumi
 		/* mark root set */
 		private static void markroot(lua_State L) 
 		{
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			g.gray = null;
 			g.grayagain = null;
 			g.weak = null;
@@ -915,7 +915,7 @@ namespace kurumi
 			g.gcstate = GCSpropagate;
 		}
 
-		private static void remarkupvals(global_State g) 
+		private static void remarkupvals(LuaState.global_State g) 
 		{
 			UpVal uv;
 			for (uv = g.uvhead.u.l.next; uv != g.uvhead; uv = uv.u.l.next) 
@@ -930,7 +930,7 @@ namespace kurumi
 
 		private static void atomic(lua_State L) 
 		{
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			int/*uint*/ udsize;  /* total size of userdata to be finalized */
 			/* remark occasional upvalues of (maybe) dead threads */
 			remarkupvals(g);
@@ -961,7 +961,7 @@ namespace kurumi
 
 		private static int/*Int32*//*l_mem*/ singlestep(lua_State L)
 		{
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			/*lua_checkmemory(L);*/
 			switch (g.gcstate) 
 			{
@@ -1036,7 +1036,7 @@ namespace kurumi
 		}
 
 		public static void luaC_step (lua_State L) {
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			int/*Int32*//*l_mem*/ lim = (int/*Int32*//*l_mem*/)((GCSTEPSIZE / 100) * g.gcstepmul);
 			if (lim == 0)
 			{
@@ -1072,7 +1072,7 @@ namespace kurumi
 
 		public static void luaC_fullgc(lua_State L) 
 		{
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			if (g.gcstate <= GCSpropagate) 
 			{
 				/* reset sweep marks to sweep all elements (returning them to white) */
@@ -1099,9 +1099,9 @@ namespace kurumi
 			setthreshold(g);
 		}
 
-		public static void luaC_barrierf(lua_State L, GCObject o, GCObject v) 
+		public static void luaC_barrierf(lua_State L, LuaState.GCObject o, LuaState.GCObject v) 
 		{
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			LuaLimits.lua_assert(isblack(o) && iswhite(v) && !isdead(g, v) && !isdead(g, o));
 			LuaLimits.lua_assert(g.gcstate != GCSfinalize && g.gcstate != GCSpause);
 			LuaLimits.lua_assert(LuaObject.ttype(o.getGch()) != Lua.LUA_TTABLE);
@@ -1119,8 +1119,8 @@ namespace kurumi
 
 		public static void luaC_barrierback(lua_State L, Table t)
 		{
-			global_State g = LuaState.G(L);
-			GCObject o = LuaState.obj2gco(t);
+			LuaState.global_State g = LuaState.G(L);
+			LuaState.GCObject o = LuaState.obj2gco(t);
 			LuaLimits.lua_assert(isblack(o) && !isdead(g, o));
 			LuaLimits.lua_assert(g.gcstate != GCSfinalize && g.gcstate != GCSpause);
 			black2gray(o);  /* make table gray (again) */
@@ -1128,9 +1128,9 @@ namespace kurumi
 			g.grayagain = o;
 		}
 
-		public static void luaC_link(lua_State L, GCObject o, Byte/*lu_byte*/ tt)
+		public static void luaC_link(lua_State L, LuaState.GCObject o, Byte/*lu_byte*/ tt)
 		{
-			global_State g = LuaState.G(L);
+			LuaState.global_State g = LuaState.G(L);
 			o.getGch().next = g.rootgc;
 			g.rootgc = o;
 			o.getGch().marked = luaC_white(g);
@@ -1139,8 +1139,8 @@ namespace kurumi
 
 		public static void luaC_linkupval(lua_State L, UpVal uv) 
 		{
-			global_State g = LuaState.G(L);
-			GCObject o = LuaState.obj2gco(uv);
+			LuaState.global_State g = LuaState.G(L);
+			LuaState.GCObject o = LuaState.obj2gco(uv);
 			o.getGch().next = g.rootgc;  /* link upvalue into `rootgc' list */
 			g.rootgc = o;
 			if (isgray(o)) 

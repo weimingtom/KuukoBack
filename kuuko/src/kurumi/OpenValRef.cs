@@ -5,7 +5,7 @@
  */
 namespace kurumi
 {
-	public class OpenValRef : GCObjectRef
+	public class OpenValRef : LuaState.GCObjectRef
 	{
 		private lua_State L;
 		
@@ -14,12 +14,12 @@ namespace kurumi
 			this.L = L; 
 		}
 		
-		public void set(GCObject value) 
+		public void set(LuaState.GCObject value) 
 		{ 
 			this.L.openupval = value; 
 		}
 		
-		public GCObject get() 
+		public LuaState.GCObject get() 
 		{ 
 			return this.L.openupval; 
 		}

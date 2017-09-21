@@ -147,6 +147,40 @@ namespace kurumi
 		{ 
 			return (LuaObject.ttisfunction((ci).func) && f_isLua(ci)); 
 		}
+		
+		/*
+		 ** `global state', shared by all threads of this state
+		 */
+		public class global_State
+		{
+			public stringtable strt = new stringtable(); /* hash table for strings */
+			public lua_Alloc frealloc;  /* function to reallocate memory */
+			public object ud;         /* auxiliary data to `frealloc' */
+			public byte currentwhite;  /*Byte*/ /*lu_byte*/
+			public byte gcstate; /*Byte*/ /*lu_byte*/  /* state of garbage collector */
+			public int sweepstrgc;  /* position of sweep in `strt' */
+			public LuaState.GCObject rootgc;  /* list of all collectable objects */
+			public LuaState.GCObjectRef sweepgc;  /* position of sweep in `rootgc' */
+			public LuaState.GCObject gray;  /* list of gray objects */
+			public LuaState.GCObject grayagain;  /* list of objects to be traversed atomically */
+			public LuaState.GCObject weak;  /* list of weak tables (to be cleared) */
+			public LuaState.GCObject tmudata;  /* last element of list of userdata to be GC */
+			public Mbuffer buff = new Mbuffer();  /* temporary buffer for string concatentation */
+			public long/*UInt32*//*lu_mem*/ GCthreshold;
+			public long/*UInt32*//*lu_mem*/ totalbytes;  /* number of bytes currently allocated */
+			public long/*UInt32*//*lu_mem*/ estimate;  /* an estimate of number of bytes actually in use */
+			public long/*UInt32*//*lu_mem*/ gcdept;  /* how much GC is `behind schedule' */
+			public int gcpause;  /* size of pause between successive GCs */
+			public int gcstepmul;  /* GC `granularity' */
+			public lua_CFunction panic;  /* to be called in unprotected errors */
+			public TValue l_registry = new TValue();
+			public lua_State mainthread;
+			public UpVal uvhead = new UpVal();  /* head of double-linked list of all open upvalues */
+			public Table[] mt = new Table[LuaObject.NUM_TAGS];  /* metatables for basic types */
+			public TString[] tmname = new TString[(int)TMS.TM_N];  /* array with tag-method names */
+		}
+		
+		
 
 		public static global_State G(lua_State L)	
 		{
@@ -158,6 +192,78 @@ namespace kurumi
 			L.l_G = s; 
 		}
 
+		/*
+		 ** Union of all collectable objects (not a union anymore in the C# port)
+		 */
+		public class GCObject : LuaObject.GCheader, LuaObject.ArrayElement
+		{
+			// todo: remove this?
+			//private GCObject[] values = null;
+			//private int index = -1;
+			
+			public void set_index(int index)
+			{
+				//this.index = index;
+			}
+			
+			public void set_array(object array)
+			{
+				//this.values = (GCObject[])array;
+				//ClassType.Assert(this.values != null);
+			}
+	
+	        public LuaObject.GCheader getGch()
+	        {
+	            return (LuaObject.GCheader)this;
+	        }
+	
+	        public TString getTs()
+	        {
+	            return (TString)this;
+	        }
+	
+	        public Udata getU()
+	        {
+	            return (Udata)this;
+	        }
+	
+	        public LuaObject.Closure getCl()
+	        {
+	            return (LuaObject.Closure)this;
+	        }
+	
+	        public Table getH()
+	        {
+	            return (Table)this;
+	        }
+	
+	        public Proto getP()
+	        {
+	            return (Proto)this;
+	        }
+	
+	        public UpVal getUv()
+	        {
+	            return (UpVal)this;
+	        }
+	
+	        public lua_State getTh()
+	        {
+	            return (lua_State)this;
+	        }
+		}		
+		
+		/*
+		 ** this interface and is used for implementing GCObject references,
+		 ** it's used to emulate the behaviour of a C-style GCObject 
+		 */
+		public interface GCObjectRef
+		{
+			void set(LuaState.GCObject value);
+			LuaState.GCObject get();
+		}
+	
+		
 	    public class ArrayRef : GCObjectRef, LuaObject.ArrayElement
 	    {
 	        // ArrayRef is used to reference GCObject objects in an array, the next two members

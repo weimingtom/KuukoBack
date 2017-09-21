@@ -60,8 +60,8 @@ public class LuaFunc {
 	}
 
 	public static UpVal luaF_findupval(lua_State L, TValue level) { //StkId
-		global_State g = LuaState.G(L);
-		GCObjectRef pp = new OpenValRef(L);
+		LuaState.global_State g = LuaState.G(L);
+		LuaState.GCObjectRef pp = new OpenValRef(L);
 		UpVal p;
 		UpVal uv;
 		while (pp.get() != null && TValue.greaterEqual((p = LuaState.ngcotouv(pp.get())).v, level)) {
@@ -104,9 +104,9 @@ public class LuaFunc {
 
 	public static void luaF_close(lua_State L, TValue level) { //StkId
 		UpVal uv;
-		global_State g = LuaState.G(L);
+		LuaState.global_State g = LuaState.G(L);
 		while (L.openupval != null && TValue.greaterEqual((uv = LuaState.ngcotouv(L.openupval)).v, level)) {
-			GCObject o = LuaState.obj2gco(uv);
+			LuaState.GCObject o = LuaState.obj2gco(uv);
 			LuaLimits.lua_assert(!LuaGC.isblack(o) && uv.v != uv.u.value);
 			L.openupval = uv.next; // remove from `open' list 
 			if (LuaGC.isdead(g, o)) {

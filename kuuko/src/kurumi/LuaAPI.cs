@@ -1092,7 +1092,7 @@ namespace kurumi
 		public static int lua_gc(lua_State L, int what, int data)
 		{
 			int res = 0;
-			global_State g;
+			LuaState.global_State g;
 			LuaLimits.lua_lock(L);
 			g = LuaState.G(L);
 			switch (what)

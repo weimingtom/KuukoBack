@@ -10,7 +10,7 @@ package kurumi;
 	 */
 	public class Value /*struct ValueCls*/
 	{
-		public GCObject gc;
+		public LuaState.GCObject gc;
 		public Object p;
 		public double n;  /*Double*/ /*lua_Number*/
 		public int b;

@@ -8,7 +8,7 @@ namespace kurumi
 	/*
 	 ** Function Prototypes
 	 */
-	public class Proto : GCObject
+	public class Proto : LuaState.GCObject
 	{
 		public Proto[] protos = null;
 		public int index = 0;
@@ -28,7 +28,7 @@ namespace kurumi
 		public int sizelocvars;
 		public int linedefined;
 		public int lastlinedefined;
-		public GCObject gclist;
+		public LuaState.GCObject gclist;
 		public byte nups;  /*Byte*/ /*lu_byte*/ /* number of upvalues */
 		public byte numparams;  /*Byte*/ /*lu_byte*/ 
 		public byte is_vararg;  /*Byte*/ /*lu_byte*/

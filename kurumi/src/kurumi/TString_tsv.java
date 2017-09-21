@@ -10,7 +10,7 @@ package kurumi;
 	/*
 	 ** String headers for string table
 	 */
-	public class TString_tsv extends GCObject 
+	public class TString_tsv extends LuaState.GCObject 
 	{
 		public byte reserved;  /*Byte*/ /*lu_byte*/
 		/*FIXME:*/

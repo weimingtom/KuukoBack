@@ -10,7 +10,7 @@ namespace kurumi
 	/*
 	 ** String headers for string table
 	 */
-	public class TString_tsv : GCObject
+	public class TString_tsv : LuaState.GCObject
 	{
 		public byte reserved;  /*Byte*/ /*lu_byte*/
 		/*FIXME:*/

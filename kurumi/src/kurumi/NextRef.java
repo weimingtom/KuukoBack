@@ -5,7 +5,7 @@
  */
 package kurumi;
 //{
-	public class NextRef implements GCObjectRef 
+	public class NextRef implements LuaState.GCObjectRef 
 	{
 		private LuaObject.GCheader header;
 		
@@ -14,12 +14,12 @@ package kurumi;
 			this.header = header; 
 		}
 		
-		public void set(GCObject value) 
+		public void set(LuaState.GCObject value) 
 		{ 
 			this.header.next = value; 
 		}
 		
-		public GCObject get() 
+		public LuaState.GCObject get() 
 		{ 
 			return this.header.next; 
 		}
