@@ -140,7 +140,7 @@ namespace kurumi
 		public static void gray2black(GCObject x) 
 		{ 
 			Byte[] marked_ref = new Byte[1];
-			GCheader gcheader = x.getGch();
+			LuaObject.GCheader gcheader = x.getGch();
 			marked_ref[0] = gcheader.marked;
 			l_setbit(/*ref*/ marked_ref, BLACKBIT); 
 			gcheader.marked = marked_ref[0];
@@ -213,7 +213,7 @@ namespace kurumi
 		public static void white2gray(GCObject x) 
 		{ 
 			Byte[] marked_ref = new Byte[1];
-			GCheader gcheader = x.getGch();
+			LuaObject.GCheader gcheader = x.getGch();
 			marked_ref[0] = gcheader.marked;
 			reset2bits(/*ref*/ marked_ref, WHITE0BIT, WHITE1BIT); 
 			gcheader.marked = marked_ref[0];
@@ -222,7 +222,7 @@ namespace kurumi
 		public static void black2gray(GCObject x) 
 		{ 
 			Byte[] marked_ref = new Byte[1];
-			GCheader gcheader = x.getGch();
+			LuaObject.GCheader gcheader = x.getGch();
 			marked_ref[0] = gcheader.marked;
 			resetbit(/*ref*/ marked_ref, BLACKBIT); 
 			gcheader.marked = marked_ref[0];
@@ -231,7 +231,7 @@ namespace kurumi
 		public static void stringmark(TString s) 
 		{
 			Byte[] marked_ref = new Byte[1];
-			GCheader gcheader = s.getGch();
+			LuaObject.GCheader gcheader = s.getGch();
 			marked_ref[0] = gcheader.marked;
 			reset2bits(/*ref*/ marked_ref, WHITE0BIT, WHITE1BIT);
 			gcheader.marked = marked_ref[0];

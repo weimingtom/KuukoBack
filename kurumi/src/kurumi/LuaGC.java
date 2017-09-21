@@ -120,7 +120,7 @@ public class LuaGC {
 
 	public static void gray2black(GCObject x) {
 		byte[] marked_ref = new byte[1];
-		GCheader gcheader = x.getGch();
+		LuaObject.GCheader gcheader = x.getGch();
 		marked_ref[0] = gcheader.marked;
 		l_setbit(marked_ref, BLACKBIT); //ref
 		gcheader.marked = marked_ref[0];
@@ -179,7 +179,7 @@ public class LuaGC {
 
 	public static void white2gray(GCObject x) {
 		byte[] marked_ref = new byte[1];
-		GCheader gcheader = x.getGch();
+		LuaObject.GCheader gcheader = x.getGch();
 		marked_ref[0] = gcheader.marked;
 		reset2bits(marked_ref, WHITE0BIT, WHITE1BIT); //ref
 		gcheader.marked = marked_ref[0];
@@ -187,7 +187,7 @@ public class LuaGC {
 
 	public static void black2gray(GCObject x) {
 		byte[] marked_ref = new byte[1];
-		GCheader gcheader = x.getGch();
+		LuaObject.GCheader gcheader = x.getGch();
 		marked_ref[0] = gcheader.marked;
 		resetbit(marked_ref, BLACKBIT); //ref
 		gcheader.marked = marked_ref[0];
@@ -195,7 +195,7 @@ public class LuaGC {
 
 	public static void stringmark(TString s) {
 		byte[] marked_ref = new byte[1];
-		GCheader gcheader = s.getGch();
+		LuaObject.GCheader gcheader = s.getGch();
 		marked_ref[0] = gcheader.marked;
 		reset2bits(marked_ref, WHITE0BIT, WHITE1BIT); //ref
 		gcheader.marked = marked_ref[0];

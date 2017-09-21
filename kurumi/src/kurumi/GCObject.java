@@ -8,7 +8,7 @@ package kurumi;
 	/*
 	 ** Union of all collectable objects (not a union anymore in the C# port)
 	 */
-	public class GCObject extends GCheader implements LuaObject.ArrayElement 
+	public class GCObject extends LuaObject.GCheader implements LuaObject.ArrayElement 
 	{
 		// todo: remove this?
 		//private GCObject[] values = null;
@@ -25,9 +25,9 @@ package kurumi;
 			//ClassType.Assert(this.values != null);
 		}
 
-        public GCheader getGch()
+        public LuaObject.GCheader getGch()
         {
-            return (GCheader)this;
+            return (LuaObject.GCheader)this;
         }
 
         public TString getTs()

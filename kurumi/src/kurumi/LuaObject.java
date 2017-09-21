@@ -43,6 +43,13 @@ public class LuaObject {
     	public byte marked; /*Byte*/ /*lu_byte*/
     }	
 	
+	/*
+	 ** Common header in struct form
+	 */
+	public static class GCheader extends LuaObject.CommonHeader {
+		
+	}    
+    
 //        
 //		 ** Tagged Values
 //		 

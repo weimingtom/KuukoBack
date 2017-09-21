@@ -1159,7 +1159,7 @@ namespace kurumi
             {
                 return 572;
             }
-            else if (t == typeof(GCheader))
+            else if (t == typeof(LuaObject.GCheader))
             {
                 return 8;
             }

@@ -7,9 +7,9 @@ namespace kurumi
 {
 	public class NextRef : GCObjectRef
 	{
-		private GCheader header;
+		private LuaObject.GCheader header;
 		
-		public NextRef(GCheader header) 
+		public NextRef(LuaObject.GCheader header) 
 		{ 
 			this.header = header; 
 		}

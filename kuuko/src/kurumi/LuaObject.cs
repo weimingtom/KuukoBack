@@ -46,6 +46,14 @@ namespace kurumi
 	    }
 		
 		/*
+		 ** Common header in struct form
+		 */
+		public class GCheader : LuaObject.CommonHeader
+		{
+			
+		}	    
+	    
+		/*
 		 ** Tagged Values
 		 */
 

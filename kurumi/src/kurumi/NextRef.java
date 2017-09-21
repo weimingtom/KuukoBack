@@ -7,9 +7,9 @@ package kurumi;
 //{
 	public class NextRef implements GCObjectRef 
 	{
-		private GCheader header;
+		private LuaObject.GCheader header;
 		
-		public NextRef(GCheader header) 
+		public NextRef(LuaObject.GCheader header) 
 		{ 
 			this.header = header; 
 		}
