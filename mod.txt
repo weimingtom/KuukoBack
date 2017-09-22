@@ -68,3 +68,6 @@ InstructionPtr->LuaCode.InstructionPtr
 
 LClosure->LuaObject.LClosure
 05:27 2017-09-23
+
+LexState->LuaLex.LexState
+05:34 2017-09-23

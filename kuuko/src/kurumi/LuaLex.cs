@@ -18,6 +18,37 @@ namespace kurumi
 		/* number of reserved words */
 		public const int NUM_RESERVED = (int)RESERVED.TK_WHILE - FIRST_RESERVED + 1;
 
+		
+		
+		
+		
+		
+		
+		public class LexState
+		{
+			public int current;  /* current character (charint) */
+			public int linenumber;  /* input line counter */
+			public int lastline;  /* line of last token `consumed' */
+			public Token t = new Token();  /* current token */
+			public Token lookahead = new Token();  /* look ahead token */
+			public LuaParser.FuncState fs;  /* `FuncState' is private to the parser */
+			public lua_State L;
+			public ZIO z;  /* input stream */
+			public Mbuffer buff;  /* buffer for tokens */
+			public TString source;  /* current source name */
+			public char decpoint;  /* locale decimal point */
+		}		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		public static void next(LexState ls) { ls.current = LuaZIO.zgetc(ls.z); }
 
 		public static bool currIsNewline(LexState ls) { return (ls.current == '\n' || ls.current == '\r'); }

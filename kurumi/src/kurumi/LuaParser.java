@@ -98,7 +98,7 @@ public class LuaParser {
 		public Proto f;  /* current function header */
 		public Table h;  /* table to find (and reuse) elements in `k' */
 		public FuncState prev;  /* enclosing function */
-		public LexState ls;  /* lexical state */
+		public LuaLex.LexState ls;  /* lexical state */
 		public lua_State L;  /* copy of the Lua state */
 		public LuaParser.BlockCnt bl;  /* chain of current blocks */
 		public int pc;  /* next position to code (equivalent to `ncode') */
@@ -147,14 +147,14 @@ public class LuaParser {
     }	
 	
 	
-	private static void anchor_token(LexState ls) {
+	private static void anchor_token(LuaLex.LexState ls) {
 		if (ls.t.token == (int)RESERVED.TK_NAME || ls.t.token == (int)RESERVED.TK_STRING) {
 			TString ts = ls.t.seminfo.ts;
 			LuaLex.luaX_newstring(ls, LuaObject.getstr(ts), ts.getTsv().len);
 		}
 	}
 
-	private static void error_expected(LexState ls, int token) {
+	private static void error_expected(LuaLex.LexState ls, int token) {
 		LuaLex.luaX_syntaxerror(ls, LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr(LuaConf.getLUA_QS() + " expected"), LuaLex.luaX_token2str(ls, token)));
 	}
 
@@ -163,7 +163,7 @@ public class LuaParser {
 		LuaLex.luaX_lexerror(fs.ls, msg, 0);
 	}
 
-	private static int testnext(LexState ls, int c) {
+	private static int testnext(LuaLex.LexState ls, int c) {
 		if (ls.t.token == c) {
 			LuaLex.luaX_next(ls);
 			return 1;
@@ -173,24 +173,24 @@ public class LuaParser {
 		}
 	}
 
-	private static void check(LexState ls, int c) {
+	private static void check(LuaLex.LexState ls, int c) {
 		if (ls.t.token != c) {
 			error_expected(ls, c);
 		}
 	}
 
-	private static void checknext(LexState ls, int c) {
+	private static void checknext(LuaLex.LexState ls, int c) {
 		check(ls, c);
 		LuaLex.luaX_next(ls);
 	}
 
-	public static void check_condition(LexState ls, boolean c, LuaConf.CharPtr msg) {
+	public static void check_condition(LuaLex.LexState ls, boolean c, LuaConf.CharPtr msg) {
 		if (!(c)) {
 			LuaLex.luaX_syntaxerror(ls, msg);
 		}
 	}
 
-	private static void check_match(LexState ls, int what, int who, int where) {
+	private static void check_match(LuaLex.LexState ls, int what, int who, int where) {
 		if (testnext(ls, what) == 0) {
 			if (where == ls.linenumber) {
 				error_expected(ls, what);
@@ -201,7 +201,7 @@ public class LuaParser {
 		}
 	}
 
-	private static TString str_checkname(LexState ls) {
+	private static TString str_checkname(LuaLex.LexState ls) {
 		TString ts;
 		check(ls, (int)RESERVED.TK_NAME);
 		ts = ls.t.seminfo.ts;
@@ -215,15 +215,15 @@ public class LuaParser {
 		e.u.s.info = i;
 	}
 
-	private static void codestring(LexState ls, expdesc e, TString s) {
+	private static void codestring(LuaLex.LexState ls, expdesc e, TString s) {
 		init_exp(e, expkind.VK, LuaCode.luaK_stringK(ls.fs, s));
 	}
 
-	private static void checkname(LexState ls, expdesc e) {
+	private static void checkname(LuaLex.LexState ls, expdesc e) {
 		codestring(ls, e, str_checkname(ls));
 	}
 
-	private static int registerlocalvar(LexState ls, TString varname) {
+	private static int registerlocalvar(LuaLex.LexState ls, TString varname) {
 		FuncState fs = ls.fs;
 		Proto f = fs.f;
 		int oldsize = f.sizelocvars;
@@ -242,17 +242,17 @@ public class LuaParser {
 		return fs.nlocvars++;
 	}
 
-	public static void new_localvarliteral(LexState ls, LuaConf.CharPtr v, int n) {
+	public static void new_localvarliteral(LuaLex.LexState ls, LuaConf.CharPtr v, int n) {
 		new_localvar(ls, LuaLex.luaX_newstring(ls, LuaConf.CharPtr.toCharPtr("" + v), (v.chars.length - 1)), n); //(uint)
 	}
 
-	private static void new_localvar(LexState ls, TString name, int n) {
+	private static void new_localvar(LuaLex.LexState ls, TString name, int n) {
 		FuncState fs = ls.fs;
 		luaY_checklimit(fs, fs.nactvar + n + 1, LuaConf.LUAI_MAXVARS, LuaConf.CharPtr.toCharPtr("local variables"));
 		fs.actvar[fs.nactvar + n] = (int)registerlocalvar(ls, name); //ushort
 	}
 
-	private static void adjustlocalvars(LexState ls, int nvars) {
+	private static void adjustlocalvars(LuaLex.LexState ls, int nvars) {
 		FuncState fs = ls.fs;
 		fs.nactvar = LuaLimits.cast_byte(fs.nactvar + nvars);
 		for (; nvars != 0; nvars--) {
@@ -260,7 +260,7 @@ public class LuaParser {
 		}
 	}
 
-	private static void removevars(LexState ls, int tolevel) {
+	private static void removevars(LuaLex.LexState ls, int tolevel) {
 		FuncState fs = ls.fs;
 		while (fs.nactvar > tolevel) {
 			getlocvar(fs, --fs.nactvar).endpc = fs.pc;
@@ -344,7 +344,7 @@ public class LuaParser {
 		}
 	}
 
-	private static void singlevar(LexState ls, expdesc var) {
+	private static void singlevar(LuaLex.LexState ls, expdesc var) {
 		TString varname = str_checkname(ls);
 		FuncState fs = ls.fs;
 		if (singlevaraux(fs, varname, var, 1) == expkind.VGLOBAL) {
@@ -352,7 +352,7 @@ public class LuaParser {
 		}
 	}
 
-	private static void adjust_assign(LexState ls, int nvars, int nexps, expdesc e) {
+	private static void adjust_assign(LuaLex.LexState ls, int nvars, int nexps, expdesc e) {
 		FuncState fs = ls.fs;
 		int extra = nvars - nexps;
 		if (hasmultret(e.k) != 0) {
@@ -377,13 +377,13 @@ public class LuaParser {
 		}
 	}
 
-	private static void enterlevel(LexState ls) {
+	private static void enterlevel(LuaLex.LexState ls) {
 		if (++ls.L.nCcalls > LuaConf.LUAI_MAXCCALLS) {
 			LuaLex.luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("chunk has too many syntax levels"), 0);
 		}
 	}
 
-	private static void leavelevel(LexState ls) {
+	private static void leavelevel(LuaLex.LexState ls) {
 		ls.L.nCcalls--;
 	}
 
@@ -411,7 +411,7 @@ public class LuaParser {
 		LuaCode.luaK_patchtohere(fs, bl.breaklist);
 	}
 
-	private static void pushclosure(LexState ls, FuncState func, expdesc v) {
+	private static void pushclosure(LuaLex.LexState ls, FuncState func, expdesc v) {
 		FuncState fs = ls.fs;
 		Proto f = fs.f;
 		int oldsize = f.sizep;
@@ -435,7 +435,7 @@ public class LuaParser {
 		}
 	}
 
-	private static void open_func(LexState ls, FuncState fs) {
+	private static void open_func(LuaLex.LexState ls, FuncState fs) {
 		lua_State L = ls.L;
 		Proto f = LuaFunc.luaF_newproto(L);
 		fs.f = f;
@@ -464,7 +464,7 @@ public class LuaParser {
 
 	private static Proto lastfunc;
 
-	private static void close_func(LexState ls) {
+	private static void close_func(LuaLex.LexState ls) {
 		lua_State L = ls.L;
 		FuncState fs = ls.fs;
 		Proto f = fs.f;
@@ -516,7 +516,7 @@ public class LuaParser {
 	}
 
 	public static Proto luaY_parser(lua_State L, ZIO z, Mbuffer buff, LuaConf.CharPtr name) {
-		LexState lexstate = new LexState();
+		LuaLex.LexState lexstate = new LuaLex.LexState();
 		FuncState funcstate = new FuncState();
 		lexstate.buff = buff;
 		LuaLex.luaX_setinput(L, lexstate, z, LuaString.luaS_new(L, name));
@@ -536,7 +536,7 @@ public class LuaParser {
 	// GRAMMAR RULES 
 	//============================================================
 
-	private static void field(LexState ls, expdesc v) {
+	private static void field(LuaLex.LexState ls, expdesc v) {
 		// field . ['.' | ':'] NAME 
 		FuncState fs = ls.fs;
 		expdesc key = new expdesc();
@@ -546,7 +546,7 @@ public class LuaParser {
 		LuaCode.luaK_indexed(fs, v, key);
 	}
 
-	private static void yindex(LexState ls, expdesc v) {
+	private static void yindex(LuaLex.LexState ls, expdesc v) {
 		// index . '[' expr ']' 
 		LuaLex.luaX_next(ls); // skip the '[' 
 		expr(ls, v);
@@ -567,7 +567,7 @@ public class LuaParser {
         public int tostore;  /* number of array elements pending to be stored */
     }
     
-	private static void recfield(LexState ls, ConsControl cc) {
+	private static void recfield(LuaLex.LexState ls, ConsControl cc) {
 		// recfield . (NAME | `['exp1`]') = exp1 
 		FuncState fs = ls.fs;
 		int reg = ls.fs.freereg;
@@ -618,14 +618,14 @@ public class LuaParser {
 	}
 
 
-	private static void listfield(LexState ls, ConsControl cc) {
+	private static void listfield(LuaLex.LexState ls, ConsControl cc) {
 		expr(ls, cc.v);
 		luaY_checklimit(ls.fs, cc.na, LuaLimits.MAX_INT, LuaConf.CharPtr.toCharPtr("items in a constructor"));
 		cc.na++;
 		cc.tostore++;
 	}
 
-	private static void constructor(LexState ls, expdesc t) {
+	private static void constructor(LuaLex.LexState ls, expdesc t) {
 		// constructor . ?? 
 		FuncState fs = ls.fs;
 		int line = ls.linenumber;
@@ -676,7 +676,7 @@ public class LuaParser {
 
 	// }====================================================================== 
 
-	private static void parlist(LexState ls) {
+	private static void parlist(LuaLex.LexState ls) {
 		// parlist . [ param { `,' param } ] 
 		FuncState fs = ls.fs;
 		Proto f = fs.f;
@@ -715,7 +715,7 @@ public class LuaParser {
 		LuaCode.luaK_reserveregs(fs, fs.nactvar); // reserve register for parameters 
 	}
 
-	private static void body(LexState ls, expdesc e, int needself, int line) {
+	private static void body(LuaLex.LexState ls, expdesc e, int needself, int line) {
 		// body .  `(' parlist `)' chunk END 
 		FuncState new_fs = new FuncState();
 		open_func(ls, new_fs);
@@ -734,7 +734,7 @@ public class LuaParser {
 		pushclosure(ls, new_fs, e);
 	}
 
-	private static int explist1(LexState ls, expdesc v) {
+	private static int explist1(LuaLex.LexState ls, expdesc v) {
 		// explist1 . expr { `,' expr } 
 		int n = 1; // at least one expression 
 		expr(ls, v);
@@ -746,7 +746,7 @@ public class LuaParser {
 		return n;
 	}
 
-	private static void funcargs(LexState ls, expdesc f) {
+	private static void funcargs(LuaLex.LexState ls, expdesc f) {
 		FuncState fs = ls.fs;
 		expdesc args = new expdesc();
 		int base_, nparams;
@@ -807,7 +807,7 @@ public class LuaParser {
 //		 ** =======================================================================
 //		 
 
-	private static void prefixexp(LexState ls, expdesc v) {
+	private static void prefixexp(LuaLex.LexState ls, expdesc v) {
 		// prefixexp . NAME | '(' expr ')' 
 		switch (ls.t.token) {
 			case '(': {
@@ -829,7 +829,7 @@ public class LuaParser {
 		}
 	}
 
-	private static void primaryexp(LexState ls, expdesc v) {
+	private static void primaryexp(LuaLex.LexState ls, expdesc v) {
 //             primaryexp .
 //				prefixexp { `.' NAME | `[' exp `]' | `:' NAME funcargs | funcargs } 
 		FuncState fs = ls.fs;
@@ -873,7 +873,7 @@ public class LuaParser {
 		}
 	}
 
-	private static void simpleexp(LexState ls, expdesc v) {
+	private static void simpleexp(LuaLex.LexState ls, expdesc v) {
 //             simpleexp . NUMBER | STRING | NIL | true | false | ... |
 //						  constructor | FUNCTION body | primaryexp 
 		switch (ls.t.token) {
@@ -1008,7 +1008,7 @@ public class LuaParser {
 //		 ** subexpr . (simpleexp | unop subexpr) { binop subexpr }
 //		 ** where `binop' is any binary operator with a priority higher than `limit'
 //		 
-	private static LuaCode.BinOpr subexpr(LexState ls, expdesc v, int limit) { //uint
+	private static LuaCode.BinOpr subexpr(LuaLex.LexState ls, expdesc v, int limit) { //uint
 		LuaCode.BinOpr op; // = new BinOpr();
 		UnOpr uop; // = new UnOpr();
 		enterlevel(ls);
@@ -1037,7 +1037,7 @@ public class LuaParser {
 		return op; // return first untreated operator 
 	}
 
-	private static void expr(LexState ls, expdesc v) {
+	private static void expr(LuaLex.LexState ls, expdesc v) {
 		subexpr(ls, v, 0);
 	}
 
@@ -1064,7 +1064,7 @@ public class LuaParser {
 		}
 	}
 
-	private static void block(LexState ls) {
+	private static void block(LuaLex.LexState ls) {
 		// block . chunk 
 		FuncState fs = ls.fs;
 		BlockCnt bl = new BlockCnt();
@@ -1080,7 +1080,7 @@ public class LuaParser {
 //		 ** local value in a safe place and use this safe copy in the previous
 //		 ** assignment.
 //		 
-	private static void check_conflict(LexState ls, LHS_assign lh, expdesc v) {
+	private static void check_conflict(LuaLex.LexState ls, LHS_assign lh, expdesc v) {
 		FuncState fs = ls.fs;
 		int extra = fs.freereg; // eventual position to save local variable 
 		int conflict = 0;
@@ -1105,7 +1105,7 @@ public class LuaParser {
 	}
 
 
-	private static void assignment(LexState ls, LHS_assign lh, int nvars) {
+	private static void assignment(LuaLex.LexState ls, LHS_assign lh, int nvars) {
 		expdesc e = new expdesc();
 		check_condition(ls, expkindUtil.expkindToInt(expkind.VLOCAL) <= expkindUtil.expkindToInt(lh.v.k) && expkindUtil.expkindToInt(lh.v.k) <= expkindUtil.expkindToInt(expkind.VINDEXED), LuaConf.CharPtr.toCharPtr("syntax error"));
 		if (testnext(ls, ',') != 0) {
@@ -1140,7 +1140,7 @@ public class LuaParser {
 		LuaCode.luaK_storevar(ls.fs, lh.v, e);
 	}
 
-	private static int cond(LexState ls) {
+	private static int cond(LuaLex.LexState ls) {
 		// cond . exp 
 		expdesc v = new expdesc();
 		expr(ls, v); // read condition 
@@ -1151,7 +1151,7 @@ public class LuaParser {
 		return v.f;
 	}
 
-	private static void breakstat(LexState ls) {
+	private static void breakstat(LuaLex.LexState ls) {
 		FuncState fs = ls.fs;
 		BlockCnt bl = fs.bl;
 		int upval = 0;
@@ -1171,7 +1171,7 @@ public class LuaParser {
 		bl.breaklist = breaklist_ref[0];
 	}
 
-	private static void whilestat(LexState ls, int line) {
+	private static void whilestat(LuaLex.LexState ls, int line) {
 		// whilestat . WHILE cond DO block END 
 		FuncState fs = ls.fs;
 		int whileinit;
@@ -1189,7 +1189,7 @@ public class LuaParser {
 		LuaCode.luaK_patchtohere(fs, condexit); // false conditions finish the loop 
 	}
 
-	private static void repeatstat(LexState ls, int line) {
+	private static void repeatstat(LuaLex.LexState ls, int line) {
 		// repeatstat . REPEAT block UNTIL cond 
 		int condexit;
 		FuncState fs = ls.fs;
@@ -1216,7 +1216,7 @@ public class LuaParser {
 		leaveblock(fs); // finish loop 
 	}
 
-	private static int exp1(LexState ls) {
+	private static int exp1(LuaLex.LexState ls) {
 		expdesc e = new expdesc();
 		int k;
 		expr(ls, e);
@@ -1225,7 +1225,7 @@ public class LuaParser {
 		return k;
 	}
 
-	private static void forbody(LexState ls, int base_, int line, int nvars, int isnum) {
+	private static void forbody(LuaLex.LexState ls, int base_, int line, int nvars, int isnum) {
 		// forbody . DO block 
 		BlockCnt bl = new BlockCnt();
 		FuncState fs = ls.fs;
@@ -1244,7 +1244,7 @@ public class LuaParser {
 		LuaCode.luaK_patchlist(fs, ((isnum != 0) ? endfor : LuaCode.luaK_jump(fs)), prep + 1);
 	}
 
-	private static void fornum(LexState ls, TString varname, int line) {
+	private static void fornum(LuaLex.LexState ls, TString varname, int line) {
 		// fornum . NAME = exp1,exp1[,exp1] forbody 
 		FuncState fs = ls.fs;
 		int base_ = fs.freereg;
@@ -1267,7 +1267,7 @@ public class LuaParser {
 		forbody(ls, base_, line, 1, 1);
 	}
 
-	private static void forlist(LexState ls, TString indexname) {
+	private static void forlist(LuaLex.LexState ls, TString indexname) {
 		// forlist . NAME {,NAME} IN explist1 forbody 
 		FuncState fs = ls.fs;
 		expdesc e = new expdesc();
@@ -1290,7 +1290,7 @@ public class LuaParser {
 		forbody(ls, base_, line, nvars - 3, 0);
 	}
 
-	private static void forstat(LexState ls, int line) {
+	private static void forstat(LuaLex.LexState ls, int line) {
 		// forstat . FOR (fornum | forlist) END 
 		FuncState fs = ls.fs;
 		TString varname;
@@ -1317,7 +1317,7 @@ public class LuaParser {
 		leaveblock(fs); // loop scope (`break' jumps to this point) 
 	}
 
-	private static int test_then_block(LexState ls) {
+	private static int test_then_block(LuaLex.LexState ls) {
 		// test_then_block . [IF | ELSEIF] cond THEN block 
 		int condexit;
 		LuaLex.luaX_next(ls); // skip IF or ELSEIF 
@@ -1327,7 +1327,7 @@ public class LuaParser {
 		return condexit;
 	}
 
-	private static void ifstat(LexState ls, int line) {
+	private static void ifstat(LuaLex.LexState ls, int line) {
 		// ifstat . IF cond THEN block {ELSEIF cond THEN block} [ELSE block] END 
 		FuncState fs = ls.fs;
 		int flist;
@@ -1352,7 +1352,7 @@ public class LuaParser {
 		check_match(ls, (int)RESERVED.TK_END, (int)RESERVED.TK_IF, line);
 	}
 
-	private static void localfunc(LexState ls) {
+	private static void localfunc(LuaLex.LexState ls) {
 		expdesc v = new expdesc(), b = new expdesc();
 		FuncState fs = ls.fs;
 		new_localvar(ls, str_checkname(ls), 0);
@@ -1365,7 +1365,7 @@ public class LuaParser {
 		getlocvar(fs, fs.nactvar - 1).startpc = fs.pc;
 	}
 
-	private static void localstat(LexState ls) {
+	private static void localstat(LuaLex.LexState ls) {
 		// stat . LOCAL NAME {`,' NAME} [`=' explist1] 
 		int nvars = 0;
 		int nexps;
@@ -1384,7 +1384,7 @@ public class LuaParser {
 		adjustlocalvars(ls, nvars);
 	}
 
-	private static int funcname(LexState ls, expdesc v) {
+	private static int funcname(LuaLex.LexState ls, expdesc v) {
 		// funcname . NAME {field} [`:' NAME] 
 		int needself = 0;
 		singlevar(ls, v);
@@ -1398,7 +1398,7 @@ public class LuaParser {
 		return needself;
 	}
 
-	private static void funcstat(LexState ls, int line) {
+	private static void funcstat(LuaLex.LexState ls, int line) {
 		// funcstat . FUNCTION funcname body 
 		int needself;
 		expdesc v = new expdesc(), b = new expdesc();
@@ -1409,7 +1409,7 @@ public class LuaParser {
 		LuaCode.luaK_fixline(ls.fs, line); // definition `happens' in the first line 
 	}
 
-	private static void exprstat(LexState ls) {
+	private static void exprstat(LuaLex.LexState ls) {
 		// stat . func | assignment 
 		FuncState fs = ls.fs;
 		LHS_assign v = new LHS_assign();
@@ -1424,7 +1424,7 @@ public class LuaParser {
 		}
 	}
 
-	private static void retstat(LexState ls) {
+	private static void retstat(LuaLex.LexState ls) {
 		// stat . RETURN explist 
 		FuncState fs = ls.fs;
 		expdesc e = new expdesc();
@@ -1459,7 +1459,7 @@ public class LuaParser {
 		LuaCode.luaK_ret(fs, first, nret);
 	}
 
-	private static int statement(LexState ls) {
+	private static int statement(LuaLex.LexState ls) {
 		int line = ls.linenumber; // may be needed for error messages 
 		switch (ls.t.token) {
 			case (int)RESERVED.TK_IF: {
@@ -1522,7 +1522,7 @@ public class LuaParser {
 		}
 	}
 
-	private static void chunk(LexState ls) {
+	private static void chunk(LuaLex.LexState ls) {
 		// chunk . { stat [`;'] } 
 		int islast = 0;
 		enterlevel(ls);

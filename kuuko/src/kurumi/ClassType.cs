@@ -1151,7 +1151,7 @@ namespace kurumi
             {
                 return 16;
             }
-            else if (t == typeof(LexState))
+            else if (t == typeof(LuaLex.LexState))
             {
                 return 52;
             }
