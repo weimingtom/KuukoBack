@@ -84,7 +84,7 @@ public class LuaOpCodes {
 		return (OpCode)OpCodeUtil.longToOpCode((i >> POS_OP) & MASK1(SIZE_OP, 0));
 	}
 
-	public static OpCode GET_OPCODE(InstructionPtr i) {
+	public static OpCode GET_OPCODE(LuaCode.InstructionPtr i) {
 		return GET_OPCODE(i.get(0));
 	}
 
@@ -96,7 +96,7 @@ public class LuaOpCodes {
 		i[0] = (long)(i[0] & MASK0(SIZE_OP, POS_OP)) | (((long)opcode.getValue() << POS_OP) & MASK1(SIZE_OP, POS_OP)); //uint - Instruction - UInt32
 	}
 
-	public static void SET_OPCODE(InstructionPtr i, OpCode opcode) {
+	public static void SET_OPCODE(LuaCode.InstructionPtr i, OpCode opcode) {
 		long[] c_ref = new long[1];
 		c_ref[0] = i.codes[i.pc];
 		SET_OPCODE(c_ref, opcode); //ref
@@ -107,11 +107,11 @@ public class LuaOpCodes {
 		return (int)((i >> POS_A) & MASK1(SIZE_A, 0));
 	}
 
-	public static int GETARG_A(InstructionPtr i) {
+	public static int GETARG_A(LuaCode.InstructionPtr i) {
 		return GETARG_A(i.get(0));
 	}
 
-	public static void SETARG_A(InstructionPtr i, int u) {
+	public static void SETARG_A(LuaCode.InstructionPtr i, int u) {
 		i.set(0, (long)((i.get(0) & MASK0(SIZE_A, POS_A)) | ((u << POS_A) & MASK1(SIZE_A, POS_A)))); //Instruction - UInt32
 	}
 
@@ -119,11 +119,11 @@ public class LuaOpCodes {
 		return (int)((i >> POS_B) & MASK1(SIZE_B, 0));
 	}
 
-	public static int GETARG_B(InstructionPtr i) {
+	public static int GETARG_B(LuaCode.InstructionPtr i) {
 		return GETARG_B(i.get(0));
 	}
 
-	public static void SETARG_B(InstructionPtr i, int b) {
+	public static void SETARG_B(LuaCode.InstructionPtr i, int b) {
 		i.set(0, (long)((i.get(0) & MASK0(SIZE_B, POS_B)) | ((b << POS_B) & MASK1(SIZE_B, POS_B)))); //Instruction - UInt32
 	}
 
@@ -131,11 +131,11 @@ public class LuaOpCodes {
 		return (int)((i>>POS_C) & MASK1(SIZE_C, 0));
 	}
 
-	public static int GETARG_C(InstructionPtr i) {
+	public static int GETARG_C(LuaCode.InstructionPtr i) {
 		return GETARG_C(i.get(0));
 	}
 
-	public static void SETARG_C(InstructionPtr i, int b) {
+	public static void SETARG_C(LuaCode.InstructionPtr i, int b) {
 		i.set(0, (long)((i.get(0) & MASK0(SIZE_C, POS_C)) | ((b << POS_C) & MASK1(SIZE_C, POS_C)))); //Instruction - UInt32
 	}
 
@@ -143,11 +143,11 @@ public class LuaOpCodes {
 		return (int)((i>>POS_Bx) & MASK1(SIZE_Bx, 0));
 	}
 
-	public static int GETARG_Bx(InstructionPtr i) {
+	public static int GETARG_Bx(LuaCode.InstructionPtr i) {
 		return GETARG_Bx(i.get(0));
 	}
 
-	public static void SETARG_Bx(InstructionPtr i, int b) {
+	public static void SETARG_Bx(LuaCode.InstructionPtr i, int b) {
 		i.set(0, (long)((i.get(0) & MASK0(SIZE_Bx, POS_Bx)) | ((b << POS_Bx) & MASK1(SIZE_Bx, POS_Bx)))); //Instruction - UInt32
 	}
 
@@ -155,11 +155,11 @@ public class LuaOpCodes {
 		return (GETARG_Bx(i) - MAXARG_sBx);
 	}
 
-	public static int GETARG_sBx(InstructionPtr i) {
+	public static int GETARG_sBx(LuaCode.InstructionPtr i) {
 		return GETARG_sBx(i.get(0));
 	}
 
-	public static void SETARG_sBx(InstructionPtr i, int b) {
+	public static void SETARG_sBx(LuaCode.InstructionPtr i, int b) {
 		SETARG_Bx(i, b + MAXARG_sBx);
 	}
 

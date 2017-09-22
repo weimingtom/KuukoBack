@@ -765,8 +765,8 @@ namespace kurumi
 			while ((testnext(ls, ',')!=0) || (testnext(ls, ';')!=0));
 			check_match(ls, '}', '{', line);
 			lastlistfield(fs, cc);
-			LuaOpCodes.SETARG_B(new InstructionPtr(fs.f.code, pc), LuaObject.luaO_int2fb((int/*uint*/)cc.na)); /* set initial array size */
-			LuaOpCodes.SETARG_C(new InstructionPtr(fs.f.code, pc), LuaObject.luaO_int2fb((int/*uint*/)cc.nh));  /* set initial table size */
+			LuaOpCodes.SETARG_B(new LuaCode.InstructionPtr(fs.f.code, pc), LuaObject.luaO_int2fb((int/*uint*/)cc.na)); /* set initial array size */
+			LuaOpCodes.SETARG_C(new LuaCode.InstructionPtr(fs.f.code, pc), LuaObject.luaO_int2fb((int/*uint*/)cc.nh));  /* set initial table size */
 		}
 
 		/* }====================================================================== */

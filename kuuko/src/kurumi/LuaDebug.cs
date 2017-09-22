@@ -13,7 +13,7 @@ namespace kurumi
 
 	public class LuaDebug
 	{
-		public static int pcRel(InstructionPtr pc, Proto p)
+		public static int pcRel(LuaCode.InstructionPtr pc, Proto p)
 		{
 			ClassType.Assert(pc.codes == p.code);
 			return pc.pc - 1;
@@ -37,7 +37,7 @@ namespace kurumi
 			}
 			if (ci == L.ci)
 			{
-				ci.savedpc = InstructionPtr.Assign(L.savedpc);
+				ci.savedpc = LuaCode.InstructionPtr.Assign(L.savedpc);
 			}
 			return pcRel(ci.savedpc, LuaState.ci_func(ci).l.p);
 		}

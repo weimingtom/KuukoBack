@@ -69,11 +69,11 @@ namespace kurumi
 		}
 
 
-		private static void traceexec(lua_State L, InstructionPtr pc) 
+		private static void traceexec(lua_State L, LuaCode.InstructionPtr pc) 
 		{
 			Byte/*lu_byte*/ mask = L.hookmask;
-			InstructionPtr oldpc = InstructionPtr.Assign(L.savedpc);
-			L.savedpc = InstructionPtr.Assign(pc);
+			LuaCode.InstructionPtr oldpc = LuaCode.InstructionPtr.Assign(L.savedpc);
+			L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 			if (((mask & Lua.LUA_MASKCOUNT) != 0) && (L.hookcount == 0))
 			{
 				LuaDebug.resethookcount(L);
@@ -86,7 +86,7 @@ namespace kurumi
 				int newline = LuaDebug.getline(p, npc);
 				/* call linehook when enter a new function, when jump back (loop),
 			   or when enter a new line */
-                if (npc == 0 || InstructionPtr.lessEqual(pc, oldpc) || newline != LuaDebug.getline(p, LuaDebug.pcRel(oldpc, p)))
+                if (npc == 0 || LuaCode.InstructionPtr.lessEqual(pc, oldpc) || newline != LuaDebug.getline(p, LuaDebug.pcRel(oldpc, p)))
 				{
 					LuaDo.luaD_callhook(L, Lua.LUA_HOOKLINE, newline);
 				}
@@ -555,7 +555,7 @@ namespace kurumi
 			return k[LuaOpCodes.GETARG_Bx(i)]; 
 		}
 
-		public static void dojump(lua_State L, InstructionPtr pc, int i) 
+		public static void dojump(lua_State L, LuaCode.InstructionPtr pc, int i) 
 		{ 
 			pc.pc += i; 
 			LuaLimits.luai_threadyield(L);
@@ -563,7 +563,7 @@ namespace kurumi
 
 		//#define Protect(x)	{ L.savedpc = pc; {x;}; base = L.base_; }
 
-		public static void arith_op(lua_State L, op_delegate op, TMS tm, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, TValue[] k, TValue/*StkId*/ ra, InstructionPtr pc)
+		public static void arith_op(lua_State L, op_delegate op, TMS tm, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, TValue[] k, TValue/*StkId*/ ra, LuaCode.InstructionPtr pc)
 		{
 			TValue rb = RKB(L, base_, i, k);
 			TValue rc = RKC(L, base_, i, k);
@@ -575,7 +575,7 @@ namespace kurumi
 			else
 			{
 				//Protect(
-				L.savedpc = InstructionPtr.Assign(pc);
+				L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 				Arith(L, ra, rb, rc, tm);
 				base_ = L.base_;
 				//);
@@ -669,23 +669,23 @@ namespace kurumi
 			LClosure cl;
 			TValue/*StkId*/ base_;
 			TValue[] k;
-			/*const*/ InstructionPtr pc;
+			/*const*/ LuaCode.InstructionPtr pc;
 			//reentry:  /* entry point */
 			while (true)
 			{
 				bool reentry = false;
 				
 				LuaLimits.lua_assert(LuaState.isLua(L.ci));
-				pc = InstructionPtr.Assign(L.savedpc);
+				pc = LuaCode.InstructionPtr.Assign(L.savedpc);
 				cl = LuaObject.clvalue(L.ci.func).l;
 				base_ = L.base_;
 				k = cl.p.k;
 				/* main loop of interpreter */
 				for (;;) 
 				{
-					InstructionPtr[] pc_ref = new InstructionPtr[1];
+					LuaCode.InstructionPtr[] pc_ref = new LuaCode.InstructionPtr[1];
 					pc_ref[0] = pc;
-					InstructionPtr ret = InstructionPtr.inc(/*ref*/ pc_ref);
+					LuaCode.InstructionPtr ret = LuaCode.InstructionPtr.inc(/*ref*/ pc_ref);
 					pc = pc_ref[0];
 					/*const*/ long/*UInt32*//*Instruction*/ i = ret.get(0);
 					TValue/*StkId*/ ra;
@@ -696,7 +696,7 @@ namespace kurumi
 						if (L.status == Lua.LUA_YIELD)
 						{  
 							/* did hook yield? */
-							L.savedpc = new InstructionPtr(pc.codes, pc.pc - 1);
+							L.savedpc = new LuaCode.InstructionPtr(pc.codes, pc.pc - 1);
 							return;
 						}
 						base_ = L.base_;
@@ -727,9 +727,9 @@ namespace kurumi
 								LuaObject.setbvalue(ra, LuaOpCodes.GETARG_B(i));
 								if (LuaOpCodes.GETARG_C(i) != 0) 
 								{
-									InstructionPtr[] pc_ref2 = new InstructionPtr[1];
+									LuaCode.InstructionPtr[] pc_ref2 = new LuaCode.InstructionPtr[1];
 									pc_ref2[0] = pc;
-									InstructionPtr.inc(/*ref*/ pc_ref2);  /* skip next instruction (if C) */
+									LuaCode.InstructionPtr.inc(/*ref*/ pc_ref2);  /* skip next instruction (if C) */
 									pc = pc_ref2[0];
 								}
 								continue;
@@ -760,21 +760,21 @@ namespace kurumi
 								LuaObject.sethvalue(L, g, cl.getEnv());
 								LuaLimits.lua_assert(LuaObject.ttisstring(rb));
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								luaV_gettable(L, g, rb, ra);
 								base_ = L.base_;
 								//);
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
 						case OpCode.OP_GETTABLE: 
 							{
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								luaV_gettable(L, RB(L, base_, i), RKC(L, base_, i, k), ra);
 								base_ = L.base_;
 								//);
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
 						case OpCode.OP_SETGLOBAL: 
@@ -783,11 +783,11 @@ namespace kurumi
 								LuaObject.sethvalue(L, g, cl.getEnv());
 								LuaLimits.lua_assert(LuaObject.ttisstring(KBx(L, i, k)));
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								luaV_settable(L, g, KBx(L, i, k), ra);
 								base_ = L.base_;
 								//);
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
 						case OpCode.OP_SETUPVAL: 
@@ -800,11 +800,11 @@ namespace kurumi
 						case OpCode.OP_SETTABLE: 
 							{
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								luaV_settable(L, ra, RKB(L, base_, i, k), RKC(L, base_, i, k));
 								base_ = L.base_;
 								//);
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
 						case OpCode.OP_NEWTABLE: 
@@ -813,11 +813,11 @@ namespace kurumi
 								int c = LuaOpCodes.GETARG_C(i);
 								LuaObject.sethvalue(L, ra, LuaTable.luaH_new(L, LuaObject.luaO_fb2int(b), LuaObject.luaO_fb2int(c)));
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								LuaGC.luaC_checkGC(L);
 								base_ = L.base_;
 								//);
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
 						case OpCode.OP_SELF: 
@@ -825,11 +825,11 @@ namespace kurumi
 								/*StkId*/TValue rb = RB(L, base_, i);
 								LuaObject.setobjs2s(L, TValue.plus(ra, 1), rb);
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								luaV_gettable(L, rb, RKC(L, base_, i, k), ra);
 								base_ = L.base_;
 								//);
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
 						case OpCode.OP_ADD: 
@@ -873,11 +873,11 @@ namespace kurumi
 								else 
 								{
 									//Protect(
-									L.savedpc = InstructionPtr.Assign(pc);
+									L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 									Arith(L, ra, rb, rb, TMS.TM_UNM);
 									base_ = L.base_;
 									//);
-									L.savedpc = InstructionPtr.Assign(pc);
+									L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								}
 								continue;
 							}
@@ -906,7 +906,7 @@ namespace kurumi
 										{  
 											/* try metamethod */
 											//Protect(
-											L.savedpc = InstructionPtr.Assign(pc);
+											L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 											if (call_binTM(L, rb, LuaObject.luaO_nilobject, ra, TMS.TM_LEN) == 0)
 											{
 												LuaDebug.luaG_typeerror(L, rb, LuaConf.CharPtr.toCharPtr("get length of"));
@@ -923,7 +923,7 @@ namespace kurumi
 								int b = LuaOpCodes.GETARG_B(i);
 								int c = LuaOpCodes.GETARG_C(i);
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								luaV_concat(L, c - b + 1, c); LuaGC.luaC_checkGC(L);
 								base_ = L.base_;
 								//);
@@ -940,46 +940,46 @@ namespace kurumi
 								TValue rb = RKB(L, base_, i, k);
 								TValue rc = RKC(L, base_, i, k);
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								if (equalobj(L, rb, rc) == LuaOpCodes.GETARG_A(i))
 									dojump(L, pc, LuaOpCodes.GETARG_sBx(pc.get(0)));
 								base_ = L.base_;
 								//);
-								InstructionPtr[] pc_ref2 = new InstructionPtr[1];
+								LuaCode.InstructionPtr[] pc_ref2 = new LuaCode.InstructionPtr[1];
 								pc_ref2[0] = pc;
-								InstructionPtr.inc(/*ref*/ pc_ref2);
+								LuaCode.InstructionPtr.inc(/*ref*/ pc_ref2);
 								pc = pc_ref2[0];
 								continue;
 							}
 						case OpCode.OP_LT: 
 							{
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								if (luaV_lessthan(L, RKB(L, base_, i, k), RKC(L, base_, i, k)) == LuaOpCodes.GETARG_A(i))
 								{
 									dojump(L, pc, LuaOpCodes.GETARG_sBx(pc.get(0)));
 								}
 								base_ = L.base_;
 								//);
-								InstructionPtr[] pc_ref3 = new InstructionPtr[1];
+								LuaCode.InstructionPtr[] pc_ref3 = new LuaCode.InstructionPtr[1];
 								pc_ref3[0] = pc;
-								InstructionPtr.inc(/*ref*/ pc_ref3);
+								LuaCode.InstructionPtr.inc(/*ref*/ pc_ref3);
 								pc = pc_ref3[0];
 								continue;
 							}
 						case OpCode.OP_LE: 
 							{
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								if (lessequal(L, RKB(L, base_, i, k), RKC(L, base_, i, k)) == LuaOpCodes.GETARG_A(i))
 								{
 									dojump(L, pc, LuaOpCodes.GETARG_sBx(pc.get(0)));
 								}
 								base_ = L.base_;
 								//);
-								InstructionPtr[] pc_ref4 = new InstructionPtr[1];
+								LuaCode.InstructionPtr[] pc_ref4 = new LuaCode.InstructionPtr[1];
 								pc_ref4[0] = pc;
-								InstructionPtr.inc(/*ref*/ pc_ref4);
+								LuaCode.InstructionPtr.inc(/*ref*/ pc_ref4);
 								pc = pc_ref4[0];
 								continue;
 							}
@@ -989,9 +989,9 @@ namespace kurumi
 								{
 									dojump(L, pc, LuaOpCodes.GETARG_sBx(pc.get(0)));
 								}
-								InstructionPtr[] pc_ref5 = new InstructionPtr[1];
+								LuaCode.InstructionPtr[] pc_ref5 = new LuaCode.InstructionPtr[1];
 								pc_ref5[0] = pc;
-								InstructionPtr.inc(/*ref*/ pc_ref5);
+								LuaCode.InstructionPtr.inc(/*ref*/ pc_ref5);
 								pc = pc_ref5[0];
 								continue;
 							}
@@ -1003,9 +1003,9 @@ namespace kurumi
 									LuaObject.setobjs2s(L, ra, rb);
 									dojump(L, pc, LuaOpCodes.GETARG_sBx(pc.get(0)));
 								}
-								InstructionPtr[] pc_ref6 = new InstructionPtr[1];
+								LuaCode.InstructionPtr[] pc_ref6 = new LuaCode.InstructionPtr[1];
 								pc_ref6[0] = pc;
-								InstructionPtr.inc(/*ref*/ pc_ref6);
+								LuaCode.InstructionPtr.inc(/*ref*/ pc_ref6);
 								pc = pc_ref6[0];
 								continue;
 							}
@@ -1017,7 +1017,7 @@ namespace kurumi
 								{
 									L.top = TValue.plus(ra, b);  /* else previous instruction set top */
 								}
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								bool reentry3 = false;
 								switch (LuaDo.luaD_precall(L, ra, nresults))
 								{
@@ -1060,7 +1060,7 @@ namespace kurumi
 								{
 									L.top = TValue.plus(ra, b);  /* else previous instruction set top */
 								}
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								LuaLimits.lua_assert(LuaOpCodes.GETARG_C(i) - 1 == Lua.LUA_MULTRET);
 								bool reentry4 = false;
 								switch (LuaDo.luaD_precall(L, ra, Lua.LUA_MULTRET))
@@ -1083,7 +1083,7 @@ namespace kurumi
 											}
 											ci.top = L.top = TValue.plus(func, aux);  /* correct top */
 											LuaLimits.lua_assert(L.top == TValue.plus(L.base_, LuaObject.clvalue(func).l.p.maxstacksize));
-											ci.savedpc = InstructionPtr.Assign(L.savedpc);
+											ci.savedpc = LuaCode.InstructionPtr.Assign(L.savedpc);
 											ci.tailcalls++;  /* one more call lost */
 											LuaState.CallInfo[] ci_ref3 = new LuaState.CallInfo[1];
 											ci_ref3[0] = L.ci;
@@ -1125,7 +1125,7 @@ namespace kurumi
 								{
 									LuaFunc.luaF_close(L, base_);
 								}
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								b = LuaDo.luaD_poscall(L, ra);
 								if (--nexeccalls == 0)  /* was previous function running `here'? */
 								{
@@ -1164,7 +1164,7 @@ namespace kurumi
 								TValue init = ra;
 								TValue plimit = TValue.plus(ra, 1);
 								TValue pstep = TValue.plus(ra, 2);
-								L.savedpc = InstructionPtr.Assign(pc);  /* next steps may throw errors */
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);  /* next steps may throw errors */
 								int retxxx;
 								TValue[] init_ref = new TValue[1];
 								init_ref[0] = init;
@@ -1208,7 +1208,7 @@ namespace kurumi
 								LuaObject.setobjs2s(L, cb, ra);
 								L.top = TValue.plus(cb, 3);  /* func. + 2 args (state and index) */
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								LuaDo.luaD_call(L, cb, LuaOpCodes.GETARG_C(i));
 								base_ = L.base_;
 								//);
@@ -1220,9 +1220,9 @@ namespace kurumi
 									LuaObject.setobjs2s(L, TValue.minus(cb, 1), cb);  /* save control variable */
 									dojump(L, pc, LuaOpCodes.GETARG_sBx(pc.get(0)));  /* jump back */
 								}
-								InstructionPtr[] pc_ref3 = new InstructionPtr[1];
+								LuaCode.InstructionPtr[] pc_ref3 = new LuaCode.InstructionPtr[1];
 								pc_ref3[0] = pc;
-								InstructionPtr.inc(/*ref*/ pc_ref3);
+								LuaCode.InstructionPtr.inc(/*ref*/ pc_ref3);
 								pc = pc_ref3[0];
 								continue;
 							}
@@ -1240,9 +1240,9 @@ namespace kurumi
 								if (c == 0)
 								{
 									c = LuaLimits.cast_int_instruction(pc.get(0));
-									InstructionPtr[] pc_ref5 = new InstructionPtr[1];
+									LuaCode.InstructionPtr[] pc_ref5 = new LuaCode.InstructionPtr[1];
 									pc_ref5[0] = pc;
-									InstructionPtr.inc(/*ref*/ pc_ref5);
+									LuaCode.InstructionPtr.inc(/*ref*/ pc_ref5);
 									pc = pc_ref5[0];
 								}
 								runtime_check(L, LuaObject.ttistable(ra));
@@ -1287,14 +1287,14 @@ namespace kurumi
 									}
 									
 									j++; 
-									InstructionPtr[] pc_ref4 = new InstructionPtr[1];
+									LuaCode.InstructionPtr[] pc_ref4 = new LuaCode.InstructionPtr[1];
 									pc_ref4[0] = pc;
-									InstructionPtr.inc(/*ref*/ pc_ref4);
+									LuaCode.InstructionPtr.inc(/*ref*/ pc_ref4);
 									pc = pc_ref4[0];
 								}
 								LuaObject.setclvalue(L, ra, ncl);
 								//Protect(
-								L.savedpc = InstructionPtr.Assign(pc);
+								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								LuaGC.luaC_checkGC(L);
 								base_ = L.base_;
 								//);
@@ -1309,7 +1309,7 @@ namespace kurumi
 								if (b == Lua.LUA_MULTRET)
 								{
 									//Protect(
-									L.savedpc = InstructionPtr.Assign(pc);
+									L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 									LuaDo.luaD_checkstack(L, n);
 									base_ = L.base_;
 									//);

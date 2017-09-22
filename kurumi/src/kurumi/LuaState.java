@@ -42,7 +42,7 @@ public class LuaState {
         public TValue base_;  /*StkId*/ /* base for this function */
         public TValue func;  /*StkId*/ /* function index in the stack */
         public TValue top;  /*StkId*/ /* top for this function */
-        public InstructionPtr savedpc;
+        public LuaCode.InstructionPtr savedpc;
         public int nresults;  /* expected number of results from this function */
         public int tailcalls;  /* number of tail calls lost under this entry */
         
@@ -423,7 +423,7 @@ public class LuaState {
 		L.status = 0;
 		L.base_ci = null;
 		L.ci = null;
-		L.savedpc = new InstructionPtr();
+		L.savedpc = new LuaCode.InstructionPtr();
 		L.errfunc = 0;
 		LuaObject.setnilvalue(gt(L));
 	}

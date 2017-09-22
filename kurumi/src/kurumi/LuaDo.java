@@ -337,7 +337,7 @@ TValue.inc(top_ref); //ref
 		}
 		funcr = savestack(L, func);
 		cl = LuaObject.clvalue(func).l;
-		L.ci.savedpc = InstructionPtr.Assign(L.savedpc);
+		L.ci.savedpc = LuaCode.InstructionPtr.Assign(L.savedpc);
 		if (cl.getIsC() == 0) {
 			// Lua function? prepare its call 
 			LuaState.CallInfo ci;
@@ -365,7 +365,7 @@ TValue.inc(top_ref); //ref
 			L.base_ = ci.base_ = base_;
 			ci.top = TValue.plus(L.base_, p.maxstacksize);
 			LuaLimits.lua_assert(TValue.lessEqual(ci.top, L.stack_last));
-			L.savedpc = new InstructionPtr(p.code, 0); // starting point 
+			L.savedpc = new LuaCode.InstructionPtr(p.code, 0); // starting point 
 			ci.tailcalls = 0;
 			ci.nresults = nresults;
 			for (st[0] = L.top; TValue.lessThan(st[0], ci.top); TValue.inc(st)) { //ref - StkId
@@ -373,13 +373,13 @@ TValue.inc(top_ref); //ref
 			}
 			L.top = ci.top;
 			if ((L.hookmask & Lua.LUA_MASKCALL) != 0) {
-				InstructionPtr[] savedpc_ref = new InstructionPtr[1];
+				LuaCode.InstructionPtr[] savedpc_ref = new LuaCode.InstructionPtr[1];
 				savedpc_ref[0] = L.savedpc;
-				InstructionPtr.inc(savedpc_ref); // hooks assume 'pc' is already incremented  - ref
+				LuaCode.InstructionPtr.inc(savedpc_ref); // hooks assume 'pc' is already incremented  - ref
 				L.savedpc = savedpc_ref[0];
 				luaD_callhook(L, Lua.LUA_HOOKCALL, -1);
 				savedpc_ref[0] = L.savedpc;
-				InstructionPtr.dec(savedpc_ref); // correct 'pc'  - ref
+				LuaCode.InstructionPtr.dec(savedpc_ref); // correct 'pc'  - ref
 				L.savedpc = savedpc_ref[0];
 			}
 			return PCRLUA;
@@ -438,7 +438,7 @@ TValue.inc(top_ref); //ref
 		res = ci.func; // res == final position of 1st result 
 		wanted = ci.nresults;
 		L.base_ = LuaState.CallInfo.minus(ci, 1).base_; // restore base 
-		L.savedpc = InstructionPtr.Assign(LuaState.CallInfo.minus(ci, 1).savedpc); // restore savedpc 
+		L.savedpc = LuaCode.InstructionPtr.Assign(LuaState.CallInfo.minus(ci, 1).savedpc); // restore savedpc 
 		// move results to correct place 
 		for (i = wanted; i != 0 && TValue.lessThan(firstResult, L.top); i--) {
 			LuaObject.setobjs2s(L, res, firstResult);
@@ -576,7 +576,7 @@ TValue.inc(top_ref); //ref
 			L.nCcalls = oldnCcalls;
 			L.ci = restoreci(L, old_ci);
 			L.base_ = L.ci.base_;
-			L.savedpc = InstructionPtr.Assign(L.ci.savedpc);
+			L.savedpc = LuaCode.InstructionPtr.Assign(L.ci.savedpc);
 			L.allowhook = old_allowhooks;
 			restore_stack_limit(L);
 		}

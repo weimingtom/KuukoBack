@@ -15,7 +15,7 @@ package kurumi;
 		public TValue/*StkId*/ base_;  /* base of current function */
 		public LuaState.global_State l_G;
 		public LuaState.CallInfo ci;  /* call info for current function */
-		public InstructionPtr savedpc = new InstructionPtr();  /* `savedpc' of current function */
+		public LuaCode.InstructionPtr savedpc = new LuaCode.InstructionPtr();  /* `savedpc' of current function */
 		public TValue/*StkId*/ stack_last;  /* last free slot in the stack */
 		public TValue[]/*StkId[]*/ stack;  /* stack base */
 		public LuaState.CallInfo end_ci;  /* points after end of ci array*/
