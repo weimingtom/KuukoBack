@@ -666,7 +666,7 @@ namespace kurumi
 
 		public static void luaV_execute(lua_State L, int nexeccalls) 
 		{
-			LClosure cl;
+			LuaObject.LClosure cl;
 			TValue/*StkId*/ base_;
 			TValue[] k;
 			/*const*/ LuaCode.InstructionPtr pc;

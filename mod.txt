@@ -65,3 +65,6 @@ global_State->LuaState.global_State
 
 InstructionPtr->LuaCode.InstructionPtr
 20:52 2017-09-22
+
+LClosure->LuaObject.LClosure
+05:27 2017-09-23

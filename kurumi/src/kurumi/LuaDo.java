@@ -330,7 +330,7 @@ TValue.inc(top_ref); //ref
 
 
 	public static int luaD_precall(lua_State L, TValue func, int nresults) { //StkId
-		LClosure cl;
+		LuaObject.LClosure cl;
 		int funcr; //ptrdiff_t - Int32
 		if (!LuaObject.ttisfunction(func)) { // `func' is not a function? 
 		func = tryfuncTM(L, func); // check the `function' tag method 

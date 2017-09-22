@@ -441,8 +441,16 @@ namespace kurumi
 			}
 		}
 		
-		
-		
+		public class LClosure : LuaObject.ClosureType
+		{	
+			public Proto p;
+			public UpVal[] upvals;
+			
+			public LClosure(LuaObject.ClosureHeader header) : base(header) 
+			{
+					
+			}
+		}		
 		
 		public class Closure : ClosureHeader
 		{	

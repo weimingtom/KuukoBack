@@ -957,7 +957,7 @@ namespace kurumi
             }
             else if (type == TYPE_LCLOSURE)
             {
-                return typeof(LClosure);
+                return typeof(LuaObject.LClosure);
             }
             else if (type == TYPE_TABLE)
             {
@@ -1183,7 +1183,7 @@ namespace kurumi
             {
                 return 40;
             }
-            else if (t == typeof(LClosure))
+            else if (t == typeof(LuaObject.LClosure))
             {
                 return 24;
             }

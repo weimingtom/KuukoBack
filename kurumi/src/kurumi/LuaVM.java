@@ -543,7 +543,7 @@ TValue.dec(top); //ref
 	}
 
 	public static void luaV_execute(lua_State L, int nexeccalls) {
-		LClosure cl;
+		LuaObject.LClosure cl;
 		TValue base_; //StkId
 		TValue[] k;
 		//const

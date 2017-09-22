@@ -383,7 +383,7 @@ namespace kurumi
 
 		public static int luaD_precall(lua_State L, TValue/*StkId*/ func, int nresults)
 		{
-			LClosure cl;
+			LuaObject.LClosure cl;
 			int/*Int32*//*ptrdiff_t*/ funcr;
 			if (!LuaObject.ttisfunction(func)) /* `func' is not a function? */
 			func = tryfuncTM(L, func);  /* check the `function' tag method */

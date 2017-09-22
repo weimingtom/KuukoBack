@@ -383,7 +383,16 @@ public class LuaObject {
 		}
 	}	
 	
-	
+	public static class LClosure extends LuaObject.ClosureType {	
+		public Proto p;
+		public UpVal[] upvals;
+		
+		public LClosure(LuaObject.ClosureHeader header) 
+		{
+			super(header);
+				
+		}
+	}
 	
 	public static class Closure extends ClosureHeader {	
 		public LuaObject.CClosure c;
