@@ -441,7 +441,7 @@ namespace kurumi
 	    
 		public class CClosure : ClosureType
 		{
-			public lua_CFunction f;
+			public Lua.lua_CFunction f;
 			public TValue[] upvalue;
 		
 			public CClosure(ClosureHeader header) 

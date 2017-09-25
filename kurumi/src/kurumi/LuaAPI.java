@@ -126,8 +126,8 @@ TValue.inc(top); //ref
 		to.nCcalls = from.nCcalls;
 	}
 
-	public static lua_CFunction lua_atpanic(lua_State L, lua_CFunction panicf) {
-		lua_CFunction old;
+	public static Lua.lua_CFunction lua_atpanic(lua_State L, Lua.lua_CFunction panicf) {
+		Lua.lua_CFunction old;
 		LuaLimits.lua_lock(L);
 		old = LuaState.G(L).panic;
 		LuaState.G(L).panic = panicf;
@@ -387,7 +387,7 @@ TValue.dec(top); //ref
 		}
 	}
 
-	public static lua_CFunction lua_tocfunction(lua_State L, int idx) {
+	public static Lua.lua_CFunction lua_tocfunction(lua_State L, int idx) {
 		TValue o = index2adr(L, idx); //StkId
 		return (!LuaObject.iscfunction(o)) ? null : LuaObject.clvalue(o).c.f;
 	}
@@ -502,7 +502,7 @@ TValue.dec(top); //ref
 		return ret;
 	}
 
-	public static void lua_pushcclosure(lua_State L, lua_CFunction fn, int n) {
+	public static void lua_pushcclosure(lua_State L, Lua.lua_CFunction fn, int n) {
 		LuaObject.Closure cl;
 		LuaLimits.lua_lock(L);
 		LuaGC.luaC_checkGC(L);
@@ -866,7 +866,7 @@ TValue.dec(top); //ref
 	 */
 	public static class CCallS {
 		/* data to `f_Ccall' */
-		public lua_CFunction func;
+		public Lua.lua_CFunction func;
 		public Object ud;
 	}	
 	
@@ -888,7 +888,7 @@ TValue.dec(top); //ref
 		}
 	}
 
-	public static int lua_cpcall(lua_State L, lua_CFunction func, Object ud) {
+	public static int lua_cpcall(lua_State L, Lua.lua_CFunction func, Object ud) {
 		CCallS c = new CCallS();
 		int status;
 		LuaLimits.lua_lock(L);

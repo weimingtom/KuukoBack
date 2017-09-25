@@ -242,7 +242,7 @@ public class LuacProgram {
 		return LuaConf.EXIT_SUCCESS;
 	}
 
-	public static class pmain_delegate implements lua_CFunction {
+	public static class pmain_delegate implements Lua.lua_CFunction {
 		public final int exec(lua_State L) {
 			return pmain(L);
 		}

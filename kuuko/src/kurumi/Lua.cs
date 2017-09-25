@@ -43,7 +43,10 @@ namespace kurumi
 		public const int LUA_ERRMEM	= 4;
 		public const int LUA_ERRERR	= 5;
 
-		
+	    public interface lua_CFunction
+	    {
+	        int exec(lua_State L);
+	    }
 		
 		
 		

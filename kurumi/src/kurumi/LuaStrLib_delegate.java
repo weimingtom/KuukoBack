@@ -1,6 +1,6 @@
 ﻿package kurumi;
 //{
-	public class LuaStrLib_delegate implements lua_CFunction 
+	public class LuaStrLib_delegate implements Lua.lua_CFunction 
 	{
 		private String name;
 		

@@ -12,9 +12,9 @@ namespace kurumi
 	public class luaL_Reg
 	{
 		public LuaConf.CharPtr name;
-		public lua_CFunction func;
+		public Lua.lua_CFunction func;
 		
-		public luaL_Reg(LuaConf.CharPtr name, lua_CFunction func)
+		public luaL_Reg(LuaConf.CharPtr name, Lua.lua_CFunction func)
 		{
 			this.name = name;
 			this.func = func;

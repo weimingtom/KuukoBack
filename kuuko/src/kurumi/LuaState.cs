@@ -172,7 +172,7 @@ namespace kurumi
 			public long/*UInt32*//*lu_mem*/ gcdept;  /* how much GC is `behind schedule' */
 			public int gcpause;  /* size of pause between successive GCs */
 			public int gcstepmul;  /* GC `granularity' */
-			public lua_CFunction panic;  /* to be called in unprotected errors */
+			public Lua.lua_CFunction panic;  /* to be called in unprotected errors */
 			public TValue l_registry = new TValue();
 			public lua_State mainthread;
 			public UpVal uvhead = new UpVal();  /* head of double-linked list of all open upvalues */

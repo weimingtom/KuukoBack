@@ -158,9 +158,9 @@ namespace kurumi
 			to.nCcalls = from.nCcalls;
 		}
 
-		public static lua_CFunction lua_atpanic(lua_State L, lua_CFunction panicf)
+		public static Lua.lua_CFunction lua_atpanic(lua_State L, Lua.lua_CFunction panicf)
 		{
-			lua_CFunction old;
+			Lua.lua_CFunction old;
 			LuaLimits.lua_lock(L);
 			old = LuaState.G(L).panic;
 			LuaState.G(L).panic = panicf;
@@ -457,7 +457,7 @@ namespace kurumi
 			}
 		}
 
-		public static lua_CFunction lua_tocfunction(lua_State L, int idx) 
+		public static Lua.lua_CFunction lua_tocfunction(lua_State L, int idx) 
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			return (!LuaObject.iscfunction(o)) ? null : LuaObject.clvalue(o).c.f;
@@ -596,7 +596,7 @@ namespace kurumi
 			return ret;
 		}
 
-		public static void lua_pushcclosure(lua_State L, lua_CFunction fn, int n)
+		public static void lua_pushcclosure(lua_State L, Lua.lua_CFunction fn, int n)
 		{
 			LuaObject.Closure cl;
 			LuaLimits.lua_lock(L);
@@ -1010,7 +1010,7 @@ namespace kurumi
 		public class CCallS
 		{
 			/* data to `f_Ccall' */
-			public lua_CFunction func;
+			public Lua.lua_CFunction func;
 			public object ud;
 		}
 		
@@ -1035,7 +1035,7 @@ namespace kurumi
 			}
 		}
 		
-		public static int lua_cpcall(lua_State L, lua_CFunction func, object ud) 
+		public static int lua_cpcall(lua_State L, Lua.lua_CFunction func, object ud) 
 		{
 			CCallS c = new CCallS();
 			int status;

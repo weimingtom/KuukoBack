@@ -92,3 +92,6 @@ LocVar->LuaObject.LocVar
 
 lua_Alloc->Lua.lua_Alloc
 15:06 2017/9/25
+
+lua_CFunction->Lua.lua_CFunction
+15:22 2017/9/25

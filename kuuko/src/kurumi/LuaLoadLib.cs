@@ -267,7 +267,7 @@ namespace kurumi
 			return null;
 		}
 
-		public static lua_CFunction ll_sym(lua_State L, object lib, LuaConf.CharPtr sym)
+		public static Lua.lua_CFunction ll_sym(lua_State L, object lib, LuaConf.CharPtr sym)
 		{
 			//(void)lib; (void)sym;  /* to avoid warnings */
 			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(DLMSG));
@@ -331,7 +331,7 @@ namespace kurumi
 			}
 			else
 			{
-				lua_CFunction f = ll_sym(L, reg, sym);
+				Lua.lua_CFunction f = ll_sym(L, reg, sym);
 				if (f == null)
 				{
 					return ERRFUNC;  /* unable to find function */
@@ -728,7 +728,7 @@ namespace kurumi
 			new luaL_Reg(null, null)
 		};
 
-		public readonly static lua_CFunction[] loaders = {
+		public readonly static Lua.lua_CFunction[] loaders = {
 			new LuaLoadLib_delegate("loader_preload"),
 			new LuaLoadLib_delegate("loader_Lua"),
 			new LuaLoadLib_delegate("loader_C"),
@@ -736,7 +736,7 @@ namespace kurumi
 			null
 		};
 		
-		public class LuaLoadLib_delegate : lua_CFunction
+		public class LuaLoadLib_delegate : Lua.lua_CFunction
 		{
 			private string name;
 			

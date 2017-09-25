@@ -18,7 +18,7 @@ public class LuaInit {
 		new luaL_Reg(null, null) 
 	};
 
-	public static class LuaInit_delegate implements lua_CFunction {
+	public static class LuaInit_delegate implements Lua.lua_CFunction {
 		private String name;
 
 		public LuaInit_delegate(String name) {

@@ -385,7 +385,7 @@ namespace kurumi
 			return 1;
 		}
 		
-		public class LuaTableLib_delegate : lua_CFunction
+		public class LuaTableLib_delegate : Lua.lua_CFunction
 		{
 			private string name;
 			

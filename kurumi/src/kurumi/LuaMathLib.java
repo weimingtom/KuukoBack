@@ -241,7 +241,7 @@ public class LuaMathLib {
 		new luaL_Reg(null, null) 
 	};
 
-	public static class LuaMathLib_delegate implements lua_CFunction {
+	public static class LuaMathLib_delegate implements Lua.lua_CFunction {
 		private String name;
 
 		public LuaMathLib_delegate(String name) {

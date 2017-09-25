@@ -493,7 +493,7 @@ public class LuaBaseLib {
 		new luaL_Reg(null, null) 
 	};
 
-	public static class LuaBaseLib_delegate implements lua_CFunction {
+	public static class LuaBaseLib_delegate implements Lua.lua_CFunction {
 		private String name;
 
 		public LuaBaseLib_delegate(String name) {
@@ -760,7 +760,7 @@ public class LuaBaseLib {
 
 	// }====================================================== 
 
-	private static void auxopen(lua_State L, LuaConf.CharPtr name, lua_CFunction f, lua_CFunction u) {
+	private static void auxopen(lua_State L, LuaConf.CharPtr name, Lua.lua_CFunction f, Lua.lua_CFunction u) {
 		Lua.lua_pushcfunction(L, u);
 		LuaAPI.lua_pushcclosure(L, f, 1);
 		LuaAPI.lua_setfield(L, -2, name);

@@ -941,7 +941,7 @@ namespace kurumi
 		}
 		
 		
-		public class LuaAuxLib_delegate : lua_CFunction
+		public class LuaAuxLib_delegate : Lua.lua_CFunction
 		{
 			private string name;
 			

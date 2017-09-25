@@ -40,7 +40,10 @@ public class Lua {
 	public static final int LUA_ERRMEM = 4;
 	public static final int LUA_ERRERR = 5;
 
-	
+    public static interface lua_CFunction
+    {
+        int exec(lua_State L);
+    }
 	
 	
 	

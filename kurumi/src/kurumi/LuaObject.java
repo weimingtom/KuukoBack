@@ -383,7 +383,7 @@ public class LuaObject {
 	
 	
 	public static class CClosure extends ClosureType {
-		public lua_CFunction f;
+		public Lua.lua_CFunction f;
 		public TValue[] upvalue;
 	
 		public CClosure(ClosureHeader header) 

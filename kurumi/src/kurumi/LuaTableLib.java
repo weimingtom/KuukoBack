@@ -325,7 +325,7 @@ public class LuaTableLib {
 		return 1;
 	}
 
-	public static class LuaTableLib_delegate implements lua_CFunction {
+	public static class LuaTableLib_delegate implements Lua.lua_CFunction {
 		private String name;
 
 		public LuaTableLib_delegate(String name) {

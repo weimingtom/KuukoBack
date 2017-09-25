@@ -236,7 +236,7 @@ public class LuaOSLib {
 		new luaL_Reg(null, null) 
 	};
 
-	public static class LuaOSLib_delegate implements lua_CFunction {
+	public static class LuaOSLib_delegate implements Lua.lua_CFunction {
 		private String name;
 
 		public LuaOSLib_delegate(String name) {

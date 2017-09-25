@@ -611,7 +611,7 @@ namespace kurumi
 			new luaL_Reg(null, null)
 		};
 		
-		public class LuaIOLib_delegate : lua_CFunction
+		public class LuaIOLib_delegate : Lua.lua_CFunction
 		{
 			private string name;
 			
@@ -742,7 +742,7 @@ namespace kurumi
 			LuaAPI.lua_setfield(L, -3, fname);
 		}
 
-		private static void newfenv(lua_State L, lua_CFunction cls) 
+		private static void newfenv(lua_State L, Lua.lua_CFunction cls) 
 		{
 			LuaAPI.lua_createtable(L, 0, 1);
 			Lua.lua_pushcfunction(L, cls);

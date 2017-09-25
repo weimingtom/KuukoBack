@@ -270,7 +270,7 @@ namespace kurumi
 			new luaL_Reg(null, null)
 		};
 
-		public class LuaOSLib_delegate : lua_CFunction
+		public class LuaOSLib_delegate : Lua.lua_CFunction
 		{
 			private string name;
 			

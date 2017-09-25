@@ -19,7 +19,7 @@ namespace kurumi
 			new luaL_Reg(null, null)
 		};
 			
-		public class LuaInit_delegate : lua_CFunction
+		public class LuaInit_delegate : Lua.lua_CFunction
 		{
 			private string name;
 			

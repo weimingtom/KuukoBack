@@ -803,7 +803,7 @@ public class LuaAuxLib {
 	}
 
 
-	public static class LuaAuxLib_delegate implements lua_CFunction {
+	public static class LuaAuxLib_delegate implements Lua.lua_CFunction {
 		private String name;
 
 		public LuaAuxLib_delegate(String name) {

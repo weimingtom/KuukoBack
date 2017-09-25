@@ -582,7 +582,7 @@ namespace kurumi
 			new luaL_Reg(null, null)
 		};
 
-		public class LuaBaseLib_delegate : lua_CFunction
+		public class LuaBaseLib_delegate : Lua.lua_CFunction
 		{
 			private string name;
 			
@@ -922,7 +922,7 @@ namespace kurumi
 		
 		/* }====================================================== */
 
-		private static void auxopen(lua_State L, LuaConf.CharPtr name, lua_CFunction f, lua_CFunction u) 
+		private static void auxopen(lua_State L, LuaConf.CharPtr name, Lua.lua_CFunction f, Lua.lua_CFunction u) 
 		{
 			Lua.lua_pushcfunction(L, u);
 			LuaAPI.lua_pushcclosure(L, f, 1);

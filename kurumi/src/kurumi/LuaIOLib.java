@@ -517,7 +517,7 @@ public class LuaIOLib {
 		new luaL_Reg(null, null) 
 	};
 
-	public static class LuaIOLib_delegate implements lua_CFunction {
+	public static class LuaIOLib_delegate implements Lua.lua_CFunction {
 		private String name;
 
 		public LuaIOLib_delegate(String name) {
@@ -618,7 +618,7 @@ public class LuaIOLib {
 		LuaAPI.lua_setfield(L, -3, fname);
 	}
 
-	private static void newfenv(lua_State L, lua_CFunction cls) {
+	private static void newfenv(lua_State L, Lua.lua_CFunction cls) {
 		LuaAPI.lua_createtable(L, 0, 1);
 		Lua.lua_pushcfunction(L, cls);
 		LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("__close"));

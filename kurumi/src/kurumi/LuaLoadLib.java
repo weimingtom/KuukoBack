@@ -262,7 +262,7 @@ public class LuaLoadLib {
 		return null;
 	}
 
-	public static lua_CFunction ll_sym(lua_State L, Object lib, LuaConf.CharPtr sym) {
+	public static Lua.lua_CFunction ll_sym(lua_State L, Object lib, LuaConf.CharPtr sym) {
 		//(void)lib; (void)sym;  /* to avoid warnings */
 		Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(DLMSG));
 		return null;
@@ -316,7 +316,7 @@ public class LuaLoadLib {
 			return ERRLIB; // unable to load library 
 		}
 		else {
-			lua_CFunction f = ll_sym(L, reg, sym);
+			Lua.lua_CFunction f = ll_sym(L, reg, sym);
 			if (f == null) {
 				return ERRFUNC; // unable to find function 
 			}
@@ -652,9 +652,9 @@ public class LuaLoadLib {
 		new luaL_Reg(null, null) 
 	};
 
-	public final static lua_CFunction[] loaders = { new LuaLoadLib_delegate("loader_preload"), new LuaLoadLib_delegate("loader_Lua"), new LuaLoadLib_delegate("loader_C"), new LuaLoadLib_delegate("loader_Croot"), null };
+	public final static Lua.lua_CFunction[] loaders = { new LuaLoadLib_delegate("loader_preload"), new LuaLoadLib_delegate("loader_Lua"), new LuaLoadLib_delegate("loader_C"), new LuaLoadLib_delegate("loader_Croot"), null };
 
-	public static class LuaLoadLib_delegate implements lua_CFunction {
+	public static class LuaLoadLib_delegate implements Lua.lua_CFunction {
 		private String name;
 
 		public LuaLoadLib_delegate(String name) {

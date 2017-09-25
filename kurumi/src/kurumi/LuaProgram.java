@@ -422,13 +422,13 @@ public class LuaProgram {
 		return 0;
 	}
 
-	public static class pmain_delegate implements lua_CFunction {
+	public static class pmain_delegate implements Lua.lua_CFunction {
 		public final int exec(lua_State L) {
 			return pmain(L);
 		}
 	}
 
-	public static class traceback_delegate implements lua_CFunction {
+	public static class traceback_delegate implements Lua.lua_CFunction {
 		public final int exec(lua_State L) {
 			return traceback(L);
 		}

@@ -303,7 +303,7 @@ namespace kurumi
 			return LuaConf.EXIT_SUCCESS;
 		}
 		
-		public class pmain_delegate : lua_CFunction
+		public class pmain_delegate : Lua.lua_CFunction
 		{
 			public int exec(lua_State L)
 			{

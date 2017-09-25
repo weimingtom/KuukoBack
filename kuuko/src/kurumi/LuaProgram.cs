@@ -524,7 +524,7 @@ namespace kurumi
 			return 0;
 		}
 
-		public class pmain_delegate : lua_CFunction
+		public class pmain_delegate : Lua.lua_CFunction
 		{
 			public int exec(lua_State L)
 			{
@@ -532,7 +532,7 @@ namespace kurumi
 			}
 		}
 		
-		public class traceback_delegate : lua_CFunction
+		public class traceback_delegate : Lua.lua_CFunction
 		{
 			public int exec(lua_State L)
 			{
