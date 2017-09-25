@@ -20,7 +20,7 @@ namespace kurumi
 
 		static LuaConf.CharPtr progname = LuaConf.CharPtr.toCharPtr(LuaConf.LUA_PROGNAME);
 
-		static void lstop(lua_State L, lua_Debug ar)
+		static void lstop(lua_State L, Lua.lua_Debug ar)
 		{
 			LuaDebug.lua_sethook(L, null, 0, 0);
 			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("interrupted!"));
@@ -28,7 +28,7 @@ namespace kurumi
 		
 		public class lstop_delegate : lua_Hook
 		{
-			public void exec(lua_State L, lua_Debug ar)
+			public void exec(lua_State L, Lua.lua_Debug ar)
 			{
 				lstop(L, ar);
 			}

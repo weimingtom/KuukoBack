@@ -88,7 +88,7 @@ namespace kurumi
 			return L.basehookcount;
 		}
 
-		public static int lua_getstack (lua_State L, int level, lua_Debug ar) 
+		public static int lua_getstack (lua_State L, int level, Lua.lua_Debug ar) 
 		{
 			int status;
 			LuaState.CallInfo[] ci = new LuaState.CallInfo[1];
@@ -150,7 +150,7 @@ namespace kurumi
 			}
 		}
 
-		public static LuaConf.CharPtr lua_getlocal(lua_State L, lua_Debug ar, int n) 
+		public static LuaConf.CharPtr lua_getlocal(lua_State L, Lua.lua_Debug ar, int n) 
 		{
 			LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 			LuaConf.CharPtr name = findlocal(L, ci, n);
@@ -163,7 +163,7 @@ namespace kurumi
 			return name;
 		}
 
-		public static LuaConf.CharPtr lua_setlocal(lua_State L, lua_Debug ar, int n) 
+		public static LuaConf.CharPtr lua_setlocal(lua_State L, Lua.lua_Debug ar, int n) 
 		{
 			LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 			LuaConf.CharPtr name = findlocal(L, ci, n);
@@ -180,7 +180,7 @@ namespace kurumi
 			return name;
 		}
 
-		private static void funcinfo (lua_Debug ar, LuaObject.Closure cl) 
+		private static void funcinfo (Lua.lua_Debug ar, LuaObject.Closure cl) 
 		{
 			if (cl.c.getIsC() != 0) 
 			{
@@ -199,7 +199,7 @@ namespace kurumi
 			LuaObject.luaO_chunkid(ar.short_src, ar.source, LuaConf.LUA_IDSIZE);
 		}
 
-		private static void info_tailcall(lua_Debug ar) 
+		private static void info_tailcall(Lua.lua_Debug ar) 
 		{
 			ar.name = ar.namewhat = LuaConf.CharPtr.toCharPtr("");
 			ar.what = LuaConf.CharPtr.toCharPtr("tail");
@@ -229,7 +229,7 @@ namespace kurumi
 			LuaDo.incr_top(L);
 		}
 
-		private static int auxgetinfo (lua_State L, LuaConf.CharPtr what, lua_Debug ar,
+		private static int auxgetinfo (lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar,
 			LuaObject.Closure f, LuaState.CallInfo ci) 
 		{
 			int status = 1;
@@ -285,7 +285,7 @@ namespace kurumi
 			return status;
 		}
 
-		public static int lua_getinfo(lua_State L, LuaConf.CharPtr what, lua_Debug ar) 
+		public static int lua_getinfo(lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar) 
 		{
 			int status;
 			LuaObject.Closure f = null;

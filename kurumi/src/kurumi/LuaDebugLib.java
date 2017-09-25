@@ -75,7 +75,7 @@ public class LuaDebugLib {
 	}
 
 	private static int db_getinfo(lua_State L) {
-		lua_Debug ar = new lua_Debug();
+		Lua.lua_Debug ar = new Lua.lua_Debug();
 		int[] arg = new int[1];
 		lua_State L1 = getthread(L, arg); //out
 		LuaConf.CharPtr options = LuaAuxLib.luaL_optstring(L, arg[0] + 2, LuaConf.CharPtr.toCharPtr("flnSu"));
@@ -127,7 +127,7 @@ public class LuaDebugLib {
 	private static int db_getlocal(lua_State L) {
 		int[] arg = new int[1];
 		lua_State L1 = getthread(L, arg); //out
-		lua_Debug ar = new lua_Debug();
+		Lua.lua_Debug ar = new Lua.lua_Debug();
 		LuaConf.CharPtr name;
 		if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0) { // out of range? 
 			return LuaAuxLib.luaL_argerror(L, arg[0] + 1, LuaConf.CharPtr.toCharPtr("level out of range"));
@@ -148,7 +148,7 @@ public class LuaDebugLib {
 	private static int db_setlocal(lua_State L) {
 		int[] arg = new int[1];
 		lua_State L1 = getthread(L, arg); //out
-		lua_Debug ar = new lua_Debug();
+		Lua.lua_Debug ar = new Lua.lua_Debug();
 		if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0) { // out of range? 
 			return LuaAuxLib.luaL_argerror(L, arg[0] + 1, LuaConf.CharPtr.toCharPtr("level out of range"));
 		}
@@ -189,7 +189,7 @@ public class LuaDebugLib {
 
 	private static final String[] hooknames = { "call", "return", "line", "count", "tail return" };
 
-	private static void hookf(lua_State L, lua_Debug ar) {
+	private static void hookf(lua_State L, Lua.lua_Debug ar) {
 		LuaAPI.lua_pushlightuserdata(L, KEY_HOOK);
 		LuaAPI.lua_rawget(L, Lua.LUA_REGISTRYINDEX);
 		LuaAPI.lua_pushlightuserdata(L, L);
@@ -208,7 +208,7 @@ public class LuaDebugLib {
 	}
 
 	public static class hookf_delegate implements lua_Hook {
-		public final void exec(lua_State L, lua_Debug ar) {
+		public final void exec(lua_State L, Lua.lua_Debug ar) {
 			hookf(L, ar);
 		}
 	}
@@ -327,7 +327,7 @@ public class LuaDebugLib {
 		boolean firstpart = true; // still before eventual `...' 
 		int[] arg = new int[1];
 		lua_State L1 = getthread(L, arg); //out
-		lua_Debug ar = new lua_Debug();
+		Lua.lua_Debug ar = new Lua.lua_Debug();
 		if (LuaAPI.lua_isnumber(L, arg[0] + 2) != 0) {
 			level = (int)LuaAPI.lua_tointeger(L, arg[0] + 2);
 			Lua.lua_pop(L, 1);

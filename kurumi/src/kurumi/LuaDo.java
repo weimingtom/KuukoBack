@@ -219,7 +219,7 @@ TValue.inc(top); //ref
 		if ((hook!=null) && (L.allowhook!=0)) {
 			int top = savestack(L, L.top); //ptrdiff_t - Int32
 			int ci_top = savestack(L, L.ci.top); //ptrdiff_t - Int32
-			lua_Debug ar = new lua_Debug();
+			Lua.lua_Debug ar = new Lua.lua_Debug();
 			ar.event_ = event_;
 			ar.currentline = line;
 			if (event_ == Lua.LUA_HOOKTAILRET) {

@@ -98,3 +98,6 @@ lua_CFunction->Lua.lua_CFunction
 
 f_parser_delegate->LuaDo.f_parser_delegate
 15:24 2017/9/25
+
+lua_Debug->Lua.lua_Debug
+15:27 2017/9/25

@@ -598,7 +598,7 @@ namespace kurumi
 
 		private static void setfenv(lua_State L)
 		{
-			lua_Debug ar = new lua_Debug();
+			Lua.lua_Debug ar = new Lua.lua_Debug();
 			if (LuaDebug.lua_getstack(L, 1, ar) == 0 ||
 			    LuaDebug.lua_getinfo(L, LuaConf.CharPtr.toCharPtr("f"), ar) == 0 ||  /* get calling function */
 			    LuaAPI.lua_iscfunction(L, -1))

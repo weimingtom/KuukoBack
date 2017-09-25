@@ -112,7 +112,7 @@ public class LuaBaseLib {
 			LuaAPI.lua_pushvalue(L, 1);
 		}
 		else {
-			lua_Debug ar = new lua_Debug();
+			Lua.lua_Debug ar = new Lua.lua_Debug();
 			int level = (opt != 0) ? LuaAuxLib.luaL_optint(L, 1, 1) : LuaAuxLib.luaL_checkint(L, 1);
 			LuaAuxLib.luaL_argcheck(L, level >= 0, 1, "level must be non-negative");
 			if (LuaDebug.lua_getstack(L, level, ar) == 0) {
@@ -638,7 +638,7 @@ public class LuaBaseLib {
 					return CO_SUS;
 				}
 			case 0: {
-					lua_Debug ar = new lua_Debug();
+					Lua.lua_Debug ar = new Lua.lua_Debug();
 					if (LuaDebug.lua_getstack(co, 0, ar) > 0) { // does it have frames? 
 						return CO_NOR; // it is running 
 					}

@@ -157,7 +157,7 @@ public class LuaAuxLib {
 //		 ** =======================================================
 //		 
 	public static int luaL_argerror(lua_State L, int narg, LuaConf.CharPtr extramsg) {
-		lua_Debug ar = new lua_Debug();
+		Lua.lua_Debug ar = new Lua.lua_Debug();
 		if (LuaDebug.lua_getstack(L, 0, ar) == 0) { // no stack frame? 
 			return luaL_error(L, LuaConf.CharPtr.toCharPtr("bad argument #%d (%s)"), narg, extramsg);
 		}
@@ -184,7 +184,7 @@ public class LuaAuxLib {
 	}
 
 	public static void luaL_where(lua_State L, int level) {
-		lua_Debug ar = new lua_Debug();
+		Lua.lua_Debug ar = new Lua.lua_Debug();
 		if (LuaDebug.lua_getstack(L, level, ar) != 0) {
 			// check function at level 
 			LuaDebug.lua_getinfo(L, LuaConf.CharPtr.toCharPtr("Sl"), ar); // get info about it 

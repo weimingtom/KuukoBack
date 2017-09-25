@@ -94,7 +94,7 @@ namespace kurumi
 
 		private static int db_getinfo(lua_State L) 
 		{
-			lua_Debug ar = new lua_Debug();
+			Lua.lua_Debug ar = new Lua.lua_Debug();
 			int[] arg = new int[1];
 			lua_State L1 = getthread(L, /*out*/ arg);
 			LuaConf.CharPtr options = LuaAuxLib.luaL_optstring(L, arg[0] + 2, LuaConf.CharPtr.toCharPtr("flnSu"));
@@ -158,7 +158,7 @@ namespace kurumi
 		{
 			int[] arg = new int[1];
 			lua_State L1 = getthread(L, /*out*/ arg);
-			lua_Debug ar = new lua_Debug();
+			Lua.lua_Debug ar = new Lua.lua_Debug();
 			LuaConf.CharPtr name;
 			if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0)  /* out of range? */
 			{
@@ -183,7 +183,7 @@ namespace kurumi
 		{
 			int[] arg = new int[1];
 			lua_State L1 = getthread(L, /*out*/ arg);
-			lua_Debug ar = new lua_Debug();
+			Lua.lua_Debug ar = new Lua.lua_Debug();
 			if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0)  /* out of range? */
 			{
 				return LuaAuxLib.luaL_argerror(L, arg[0] + 1, LuaConf.CharPtr.toCharPtr("level out of range"));
@@ -234,7 +234,7 @@ namespace kurumi
 			"tail return"
 		};
 
-		private static void hookf(lua_State L, lua_Debug ar) 
+		private static void hookf(lua_State L, Lua.lua_Debug ar) 
 		{
 			LuaAPI.lua_pushlightuserdata(L, KEY_HOOK);
 			LuaAPI.lua_rawget(L, Lua.LUA_REGISTRYINDEX);
@@ -258,7 +258,7 @@ namespace kurumi
 
 		public class hookf_delegate : lua_Hook
 		{
-			public void exec(lua_State L, lua_Debug ar)
+			public void exec(lua_State L, Lua.lua_Debug ar)
 			{
 				hookf(L, ar);
 			}
@@ -402,7 +402,7 @@ namespace kurumi
 			bool firstpart = true;  /* still before eventual `...' */
 			int[] arg = new int[1];
 			lua_State L1 = getthread(L, /*out*/ arg);
-			lua_Debug ar = new lua_Debug();
+			Lua.lua_Debug ar = new Lua.lua_Debug();
 			if (LuaAPI.lua_isnumber(L, arg[0] + 2) != 0)
 			{
 				level = (int)LuaAPI.lua_tointeger(L, arg[0] + 2);

@@ -215,6 +215,33 @@ public class Lua {
 	public static final int LUA_MASKLINE = (1 << LUA_HOOKLINE);
 	public static final int LUA_MASKCOUNT = (1 << LUA_HOOKCOUNT);
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static class lua_Debug
+	{
+		public int event_;
+		public LuaConf.CharPtr name;	/* (n) */
+		public LuaConf.CharPtr namewhat;	/* (n) `global', `local', `field', `method' */
+		public LuaConf.CharPtr what;	/* (S) `Lua', `C', `main', `tail' */
+		public LuaConf.CharPtr source;	/* (S) */
+		public int currentline;	/* (l) */
+		public int nups;		/* (u) number of upvalues */
+		public int linedefined;	/* (S) */
+		public int lastlinedefined;	/* (S) */
+		public LuaConf.CharPtr short_src = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUA_IDSIZE]); /* (S) */
+		/* private part */
+		public int i_ci;  /* active function */
+	}
+	
+	
 	// }====================================================================== 
 
 //        *****************************************************************************

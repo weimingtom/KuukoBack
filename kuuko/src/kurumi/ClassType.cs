@@ -1123,7 +1123,7 @@ namespace kurumi
             {
                 return 120;
             }
-            else if (t == typeof(lua_Debug))
+            else if (t == typeof(Lua.lua_Debug))
             {
                 return 100;
             }

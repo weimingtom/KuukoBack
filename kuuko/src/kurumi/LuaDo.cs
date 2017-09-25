@@ -262,7 +262,7 @@ namespace kurumi
 			{
 				int/*Int32*//*ptrdiff_t*/ top = savestack(L, L.top);
 				int/*Int32*//*ptrdiff_t*/ ci_top = savestack(L, L.ci.top);
-				lua_Debug ar = new lua_Debug();
+				Lua.lua_Debug ar = new Lua.lua_Debug();
 				ar.event_ = event_;
 				ar.currentline = line;
 				if (event_ == Lua.LUA_HOOKTAILRET)

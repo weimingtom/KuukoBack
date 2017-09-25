@@ -18,13 +18,13 @@ public class LuaProgram {
 
 	private static LuaConf.CharPtr progname = LuaConf.CharPtr.toCharPtr(LuaConf.LUA_PROGNAME);
 
-	private static void lstop(lua_State L, lua_Debug ar) {
+	private static void lstop(lua_State L, Lua.lua_Debug ar) {
 		LuaDebug.lua_sethook(L, null, 0, 0);
 		LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("interrupted!"));
 	}
 
 	public static class lstop_delegate implements lua_Hook {
-		public final void exec(lua_State L, lua_Debug ar) {
+		public final void exec(lua_State L, Lua.lua_Debug ar) {
 			lstop(L, ar);
 		}
 	}
