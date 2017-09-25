@@ -77,3 +77,9 @@ LG->LuaState.LG
 
 LHS_assign->LuaParser.LHS_assign
 8:55 2017/9/25
+
+LoadF->LuaAuxLib.LoadF
+10:59 2017/9/25
+
+LoadS->LuaAuxLib.LoadS
+11:03 2017/9/25

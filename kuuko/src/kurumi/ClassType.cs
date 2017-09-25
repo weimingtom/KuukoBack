@@ -1131,11 +1131,11 @@ namespace kurumi
             {
                 return 8;
             }
-            else if (t == typeof(LoadF))
+            else if (t == typeof(LuaAuxLib.LoadF))
             {
                 return 520;
             }
-            else if (t == typeof(LoadS))
+            else if (t == typeof(LuaAuxLib.LoadS))
             {
                 return 8;
             }

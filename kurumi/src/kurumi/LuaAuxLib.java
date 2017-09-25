@@ -666,7 +666,13 @@ public class LuaAuxLib {
 //		 ** {======================================================
 //		 ** Load functions
 //		 ** =======================================================
-//		 
+//
+	public static class LoadF {
+		public int extraline;
+		public StreamProxy f;
+		public LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUAL_BUFFERSIZE]);
+	}	
+	
 	public static LuaConf.CharPtr getF(lua_State L, Object ud, int[] size) { //uint - out
 		size[0] = 0;
 		LoadF lf = (LoadF)ud;
@@ -745,6 +751,11 @@ public class LuaAuxLib {
 		return status;
 	}
 
+	public static class LoadS {
+		public LuaConf.CharPtr s;
+		public int/*uint*/ size;
+	}	
+	
 	private static LuaConf.CharPtr getS(lua_State L, Object ud, int[] size) { //uint - out
 		LoadS ls = (LoadS)ud;
 		//(void)L;

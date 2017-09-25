@@ -780,6 +780,13 @@ namespace kurumi
 		 ** Load functions
 		 ** =======================================================
 		 */
+		public class LoadF
+		{
+			public int extraline;
+			public StreamProxy f;
+			public LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUAL_BUFFERSIZE]);
+		}
+		
 		public static LuaConf.CharPtr getF(lua_State L, object ud, /*out*/ int[]/*uint*/ size)
 		{
 			size[0] = 0;
@@ -874,6 +881,12 @@ namespace kurumi
 			return status;
 		}
 
+		public class LoadS
+		{
+			public LuaConf.CharPtr s;
+			public int/*uint*/ size;
+		}		
+		
 		static LuaConf.CharPtr getS(lua_State L, object ud, /*out*/ int[]/*uint*/ size)
 		{
 			LoadS ls = (LoadS)ud;
