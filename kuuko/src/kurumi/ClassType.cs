@@ -219,7 +219,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_LG)
 	            {
-	                result = new LG();
+	                result = new LuaState.LG();
 	            }
 	            else if (type == TYPE_FILEPTR)
 	            {
@@ -941,7 +941,7 @@ namespace kurumi
             }
             else if (type == TYPE_LG)
             {
-                return typeof(LG);
+                return typeof(LuaState.LG);
             }
             else if (type == TYPE_FILEPTR)
             {
@@ -1067,7 +1067,7 @@ namespace kurumi
         private int GetUnmanagedSize_csharp()
         {
         	Type t = this.GetOriginalType_csharp();
-            if (t == typeof(LG))
+            if (t == typeof(LuaState.LG))
             {
                 return 376;
             }

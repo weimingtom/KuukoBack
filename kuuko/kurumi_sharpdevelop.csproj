@@ -58,7 +58,6 @@
     <Compile Include="src\kurumi\DateTimeProxy.cs" />
     <Compile Include="src\kurumi\expkindUtil.cs" />
     <Compile Include="src\kurumi\f_parser_delegate.cs" />
-    <Compile Include="src\kurumi\LG.cs" />
     <Compile Include="src\kurumi\LHS_assign.cs" />
     <Compile Include="src\kurumi\LoadF.cs" />
     <Compile Include="src\kurumi\LoadS.cs" />

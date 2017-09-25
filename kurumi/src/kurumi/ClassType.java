@@ -173,7 +173,7 @@ public class ClassType {
 				result = new Long(0); //FIXME:
 			}
 			else if (type == TYPE_LG) {
-				result = new LG();
+				result = new LuaState.LG();
 			}
 			else if (type == TYPE_FILEPTR) {
 				result = new LuaIOLib.FilePtr();

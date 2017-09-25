@@ -390,6 +390,19 @@ namespace kurumi
 			return (lua_State)l;
 		}
 
+		/*
+		 ** Main thread combines a thread state and the global state
+		 */
+		public class LG : lua_State
+		{
+			public LuaState.global_State g = new LuaState.global_State();
+			
+			public lua_State getL() 
+			{
+			    return this; 
+			}
+		}
+		
 		private static void stack_init(lua_State L1, lua_State L) 
 		{
 			/* initialize CallInfo array */
