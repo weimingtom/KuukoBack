@@ -101,7 +101,6 @@
     <Compile Include="src\kurumi\LuaUndump.cs" />
     <Compile Include="src\kurumi\LuaVM.cs" />
     <Compile Include="src\kurumi\LuaZIO.cs" />
-    <Compile Include="src\kurumi\lua_Alloc.cs" />
     <Compile Include="src\kurumi\lua_CFunction.cs" />
     <Compile Include="src\kurumi\lua_Debug.cs" />
     <Compile Include="src\kurumi\lua_Hook.cs" />

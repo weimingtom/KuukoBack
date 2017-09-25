@@ -917,7 +917,7 @@ namespace kurumi
 			return t.Alloc();
 		}
 		
-		public class l_alloc_delegate : lua_Alloc
+		public class l_alloc_delegate : Lua.lua_Alloc
 		{
 			public object exec(ClassType t)
 			{

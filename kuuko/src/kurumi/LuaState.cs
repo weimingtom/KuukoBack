@@ -154,7 +154,7 @@ namespace kurumi
 		public class global_State
 		{
 			public stringtable strt = new stringtable(); /* hash table for strings */
-			public lua_Alloc frealloc;  /* function to reallocate memory */
+			public Lua.lua_Alloc frealloc;  /* function to reallocate memory */
 			public object ud;         /* auxiliary data to `frealloc' */
 			public byte currentwhite;  /*Byte*/ /*lu_byte*/
 			public byte gcstate; /*Byte*/ /*lu_byte*/  /* state of garbage collector */
@@ -521,7 +521,7 @@ namespace kurumi
 			//luaM_freemem(L, fromstate(L1));
 		}
 
-		public static lua_State lua_newstate(lua_Alloc f, object ud) 
+		public static lua_State lua_newstate(Lua.lua_Alloc f, object ud) 
 		{
 			int i;
 			lua_State L;

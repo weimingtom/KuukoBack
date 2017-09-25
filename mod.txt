@@ -89,3 +89,6 @@ LoadState->LuaUndump.LoadState
 
 LocVar->LuaObject.LocVar
 11:11 2017/9/25
+
+lua_Alloc->Lua.lua_Alloc
+15:06 2017/9/25

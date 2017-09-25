@@ -782,7 +782,7 @@ public class LuaAuxLib {
 		return t.Alloc();
 	}
 
-	public static class l_alloc_delegate implements lua_Alloc {
+	public static class l_alloc_delegate implements Lua.lua_Alloc {
 		public final Object exec(ClassType t) {
 			return l_alloc(t);
 		}

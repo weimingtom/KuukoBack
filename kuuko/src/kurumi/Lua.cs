@@ -43,6 +43,21 @@ namespace kurumi
 		public const int LUA_ERRMEM	= 4;
 		public const int LUA_ERRERR	= 5;
 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	    public interface lua_Alloc
+	    {
+	        object exec(ClassType t);
+	    }		
+		
 		/*
 		 ** basic types
 		 */

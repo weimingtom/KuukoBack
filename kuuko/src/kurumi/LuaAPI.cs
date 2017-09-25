@@ -1223,9 +1223,9 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static lua_Alloc lua_getallocf(lua_State L, /*ref*/ object[] ud)
+		public static Lua.lua_Alloc lua_getallocf(lua_State L, /*ref*/ object[] ud)
 		{
-			lua_Alloc f;
+			Lua.lua_Alloc f;
 			LuaLimits.lua_lock(L);
 			if (ud[0] != null)
 			{
@@ -1236,7 +1236,7 @@ namespace kurumi
 			return f;
 		}
 
-		public static void lua_setallocf(lua_State L, lua_Alloc f, object ud)
+		public static void lua_setallocf(lua_State L, Lua.lua_Alloc f, object ud)
 		{
 			LuaLimits.lua_lock(L);
 			LuaState.G(L).ud = ud;

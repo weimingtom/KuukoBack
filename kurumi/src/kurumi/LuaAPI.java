@@ -1048,8 +1048,8 @@ TValue.dec(top); // remove key  - ref
 		LuaLimits.lua_unlock(L);
 	}
 
-	public static lua_Alloc lua_getallocf(lua_State L, Object[] ud) { //ref
-		lua_Alloc f;
+	public static Lua.lua_Alloc lua_getallocf(lua_State L, Object[] ud) { //ref
+		Lua.lua_Alloc f;
 		LuaLimits.lua_lock(L);
 		if (ud[0] != null) {
 			ud[0] = LuaState.G(L).ud;
@@ -1059,7 +1059,7 @@ TValue.dec(top); // remove key  - ref
 		return f;
 	}
 
-	public static void lua_setallocf(lua_State L, lua_Alloc f, Object ud) {
+	public static void lua_setallocf(lua_State L, Lua.lua_Alloc f, Object ud) {
 		LuaLimits.lua_lock(L);
 		LuaState.G(L).ud = ud;
 		LuaState.G(L).frealloc = f;

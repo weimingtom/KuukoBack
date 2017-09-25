@@ -142,7 +142,7 @@ public class LuaState {
 	 */
 	public static class global_State {
 		public stringtable strt = new stringtable(); /* hash table for strings */
-		public lua_Alloc frealloc;  /* function to reallocate memory */
+		public Lua.lua_Alloc frealloc;  /* function to reallocate memory */
 		public Object ud;         /* auxiliary data to `frealloc' */
 		public byte currentwhite;  /*Byte*/ /*lu_byte*/
 		public byte gcstate; /*Byte*/ /*lu_byte*/  /* state of garbage collector */
@@ -479,7 +479,7 @@ public class LuaState {
 		//luaM_freemem(L, fromstate(L1));
 	}
 
-	public static lua_State lua_newstate(lua_Alloc f, Object ud) {
+	public static lua_State lua_newstate(Lua.lua_Alloc f, Object ud) {
 		int i;
 		lua_State L;
 		global_State g;
