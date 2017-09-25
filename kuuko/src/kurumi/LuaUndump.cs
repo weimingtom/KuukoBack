@@ -24,6 +24,14 @@ namespace kurumi
 		/* size of header of binary files */
 		public const int LUAC_HEADERSIZE = 12;
 
+		public class LoadState
+		{
+			public lua_State L;
+			public ZIO Z;
+			public Mbuffer b;
+			public LuaConf.CharPtr name;
+		}		
+		
 		//#ifdef LUAC_TRUST_BINARIES
 		//#define IF(c,s)
 		//#define error(S,s)

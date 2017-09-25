@@ -83,3 +83,6 @@ LoadF->LuaAuxLib.LoadF
 
 LoadS->LuaAuxLib.LoadS
 11:03 2017/9/25
+
+LoadState->LuaUndump.LoadState
+11:07 2017/9/25

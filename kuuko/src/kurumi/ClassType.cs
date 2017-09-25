@@ -1219,7 +1219,7 @@ namespace kurumi
             {
                 return 12;
             }
-            else if (t == typeof(LoadState))
+            else if (t == typeof(LuaUndump.LoadState))
             {
                 return 16;
             }

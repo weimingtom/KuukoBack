@@ -22,6 +22,13 @@ public class LuaUndump {
 	// size of header of binary files 
 	public static final int LUAC_HEADERSIZE = 12;
 
+	public static class LoadState {
+		public lua_State L;
+		public ZIO Z;
+		public Mbuffer b;
+		public LuaConf.CharPtr name;
+	}	
+	
 	///#ifdef LUAC_TRUST_BINARIES
 	///#define IF(c,s)
 	///#define error(S,s)
