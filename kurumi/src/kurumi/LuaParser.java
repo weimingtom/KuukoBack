@@ -125,7 +125,7 @@ public class LuaParser {
 		return ((k) == expkind.VCALL || (k) == expkind.VVARARG) ? 1 : 0;
 	}
 
-	public static LocVar getlocvar(FuncState fs, int i) {
+	public static LuaObject.LocVar getlocvar(FuncState fs, int i) {
 		return fs.f.locvars[fs.actvar[i]];
 	}
 
@@ -227,7 +227,7 @@ public class LuaParser {
 		FuncState fs = ls.fs;
 		Proto f = fs.f;
 		int oldsize = f.sizelocvars;
-		LocVar[][] locvars_ref = new LocVar[1][];
+		LuaObject.LocVar[][] locvars_ref = new LuaObject.LocVar[1][];
 		locvars_ref[0] = f.locvars;
 		int[] sizelocvars_ref = new int[1];
 		sizelocvars_ref[0] = f.sizelocvars;
@@ -495,7 +495,7 @@ public class LuaParser {
 			f.p[i].protos = f.p;
 			f.p[i].index = i;
 		}
-		LocVar[][] locvars_ref = new LocVar[1][];
+		LuaObject.LocVar[][] locvars_ref = new LuaObject.LocVar[1][];
 		locvars_ref[0] = f.locvars;
 		LuaMem.luaM_reallocvector_LocVar(L, locvars_ref, f.sizelocvars, fs.nlocvars, new ClassType(ClassType.TYPE_LOCVAR)); //, LocVar - ref
 		f.locvars = locvars_ref[0];

@@ -17,7 +17,7 @@ package kurumi;
 		public long[]/*UInt32[]*//*Instruction[]*/ code;
 		public /*new*/ Proto[] p;  /* functions defined inside the function */
 		public int[] lineinfo;  /* map from opcodes to source lines */
-		public LocVar[] locvars;  /* information about local variables */
+		public LuaObject.LocVar[] locvars;  /* information about local variables */
 		public TString[] upvalues;  /* upvalue names */
 		public TString source;
 		public int sizeupvalues;

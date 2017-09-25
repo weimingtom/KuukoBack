@@ -215,7 +215,7 @@ public class ClassType {
 				result = new Proto();
 			}
 			else if (type == TYPE_LOCVAR) {
-				result = new LocVar();
+				result = new LuaObject.LocVar();
 			}
 			else if (type == TYPE_CLOSURE) {
 				result = new LuaObject.Closure();

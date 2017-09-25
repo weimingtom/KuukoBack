@@ -353,6 +353,16 @@ namespace kurumi
 		public const int VARARG_ISVARARG = 2;
 		public const int VARARG_NEEDSARG = 4;
 
+		public class LocVar
+		{
+			public TString varname;
+			public int startpc;  /* first point where variable is active */
+			public int endpc;    /* first point where variable is dead */
+		}
+		
+		
+		
+		
 		
 	    /*
 	     ** Closures

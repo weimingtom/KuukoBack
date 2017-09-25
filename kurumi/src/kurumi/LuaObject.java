@@ -300,6 +300,16 @@ public class LuaObject {
 	public static final int VARARG_ISVARARG = 2;
 	public static final int VARARG_NEEDSARG = 4;
 
+	public static class LocVar {
+		public TString varname;
+		public int startpc;  /* first point where variable is active */
+		public int endpc;    /* first point where variable is dead */
+	}
+	
+	
+	
+	
+	
     /*
      ** Closures
      */ 

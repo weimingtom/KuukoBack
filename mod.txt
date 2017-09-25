@@ -86,3 +86,6 @@ LoadS->LuaAuxLib.LoadS
 
 LoadState->LuaUndump.LoadState
 11:07 2017/9/25
+
+LocVar->LuaObject.LocVar
+11:11 2017/9/25

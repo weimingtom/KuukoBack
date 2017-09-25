@@ -274,7 +274,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_LOCVAR)
 	            {
-	                result = new LocVar();
+	                result = new LuaObject.LocVar();
 	            }
 	            else if (type == TYPE_CLOSURE)
 	            {
@@ -993,7 +993,7 @@ namespace kurumi
             }
             else if (type == TYPE_LOCVAR)
             {
-                return typeof(LocVar);
+                return typeof(LuaObject.LocVar);
             }
             else if (type == TYPE_CLOSURE)
             {
@@ -1048,7 +1048,7 @@ namespace kurumi
             {
                 return false;
             }*/
-            if (t == typeof(LocVar))
+            if (t == typeof(LuaObject.LocVar))
             {
                 return false;
             }
@@ -1171,7 +1171,7 @@ namespace kurumi
             {
                 return 16;
             }
-            else if (t == typeof(LocVar))
+            else if (t == typeof(LuaObject.LocVar))
             {
                 return 12;
             }

@@ -48,9 +48,9 @@ namespace kurumi
             return (Proto[])luaM_realloc__Proto(L, block, new_size, t);
         }
 
-        public static LocVar[] luaM_reallocv_LocVar(lua_State L, LocVar[] block, int new_size, ClassType t)
+        public static LuaObject.LocVar[] luaM_reallocv_LocVar(lua_State L, LuaObject.LocVar[] block, int new_size, ClassType t)
         {
-            return (LocVar[])luaM_realloc__LocVar(L, block, new_size, t);
+            return (LuaObject.LocVar[])luaM_realloc__LocVar(L, block, new_size, t);
         }
 
         public static Node[] luaM_reallocv_Node(lua_State L, Node[] block, int new_size, ClassType t)
@@ -119,7 +119,7 @@ namespace kurumi
             luaM_reallocv_int(L, b, 0, t);
         }
 
-        public static void luaM_freearray_LocVar(lua_State L, LocVar[] b, ClassType t)
+        public static void luaM_freearray_LocVar(lua_State L, LuaObject.LocVar[] b, ClassType t)
         {
             luaM_reallocv_LocVar(L, b, 0, t);
         }
@@ -190,7 +190,7 @@ namespace kurumi
             return luaM_reallocv_TString(L, null, n, t);
 		}
 
-        public static LocVar[] luaM_newvector_LocVar(lua_State L, int n, ClassType t)
+        public static LuaObject.LocVar[] luaM_newvector_LocVar(lua_State L, int n, ClassType t)
         {
             return luaM_reallocv_LocVar(L, null, n, t);
         }
@@ -260,11 +260,11 @@ namespace kurumi
             }
         }
 
-        public static void luaM_growvector_LocVar(lua_State L, /*ref*/ LocVar[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
+        public static void luaM_growvector_LocVar(lua_State L, /*ref*/ LuaObject.LocVar[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
-                v[0] = (LocVar[])luaM_growaux__LocVar(L, /*ref*/ v, /*ref*/ size, limit, e, t);
+                v[0] = (LuaObject.LocVar[])luaM_growaux__LocVar(L, /*ref*/ v, /*ref*/ size, limit, e, t);
             }
         }
 
@@ -329,7 +329,7 @@ namespace kurumi
             return v[0];
         }
 
-        public static LocVar[] luaM_reallocvector_LocVar(lua_State L, /*ref*/ LocVar[][] v, int oldn, int n, ClassType t)
+        public static LuaObject.LocVar[] luaM_reallocvector_LocVar(lua_State L, /*ref*/ LuaObject.LocVar[][] v, int oldn, int n, ClassType t)
         {
             ClassType.Assert((v[0] == null && oldn == 0) || (v[0].Length == oldn));
             v[0] = luaM_reallocv_LocVar(L, v[0], n, t);
@@ -467,10 +467,10 @@ namespace kurumi
             return newblock;
         }
 
-        public static LocVar[] luaM_growaux__LocVar(lua_State L, /*ref*/ LocVar[][] block, /*ref*/ int[] size,
+        public static LuaObject.LocVar[] luaM_growaux__LocVar(lua_State L, /*ref*/ LuaObject.LocVar[][] block, /*ref*/ int[] size,
                               int limit, LuaConf.CharPtr errormsg, ClassType t)
         {
-            LocVar[] newblock;
+            LuaObject.LocVar[] newblock;
             int newsize;
             if (size[0] >= limit / 2)
             {
@@ -943,20 +943,20 @@ namespace kurumi
             return new_block;
         }
 
-        public static object luaM_realloc__LocVar(lua_State L, LocVar[] old_block, int new_size, ClassType t)
+        public static object luaM_realloc__LocVar(lua_State L, LuaObject.LocVar[] old_block, int new_size, ClassType t)
         {
             int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
-            LocVar[] new_block = new LocVar[new_size];
+            LuaObject.LocVar[] new_block = new LuaObject.LocVar[new_size];
             for (int i = 0; i < Math.Min(old_size, new_size); i++)
             {
                 new_block[i] = old_block[i];
             }
             for (int i = old_size; i < new_size; i++)
             {
-                new_block[i] = (LocVar)t.Alloc();// System.Activator.CreateInstance(typeof(T));
+                new_block[i] = (LuaObject.LocVar)t.Alloc();// System.Activator.CreateInstance(typeof(T));
             }
             if (CanIndex(t))
             {
