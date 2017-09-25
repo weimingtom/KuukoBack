@@ -107,3 +107,6 @@ lua_Hook->Lua.lua_Hook
 
 lua_longjmp->LuaDo.lua_longjmp
 15:42 2017/9/25
+
+lua_Reader->Lua.lua_Reader
+15:49 2017/9/25

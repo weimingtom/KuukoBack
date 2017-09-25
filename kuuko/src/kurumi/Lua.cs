@@ -48,7 +48,13 @@ namespace kurumi
 	        int exec(lua_State L);
 	    }
 		
-		
+	    public interface lua_Reader
+	    {
+	        /*sz*/
+	        /*out*/
+	        /*uint*/
+	        LuaConf.CharPtr exec(lua_State L, object ud, int[] sz);
+	    }
 		
 		
 		

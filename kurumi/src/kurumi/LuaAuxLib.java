@@ -820,13 +820,13 @@ public class LuaAuxLib {
 		}
 	}
 
-	public static class getF_delegate implements lua_Reader {
+	public static class getF_delegate implements Lua.lua_Reader {
 		public final LuaConf.CharPtr exec(lua_State L, Object ud, int[] sz) { //uint - out
 			return getF(L, ud, sz); //out
 		}
 	}
 
-	public static class getS_delegate implements lua_Reader {
+	public static class getS_delegate implements Lua.lua_Reader {
 		public final LuaConf.CharPtr exec(lua_State L, Object ud, int[] sz) { //uint - out
 			return getS(L, ud, sz); //out
 		}

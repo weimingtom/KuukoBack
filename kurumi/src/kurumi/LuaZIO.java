@@ -90,7 +90,7 @@ public class LuaZIO {
 		return char2int(z.p.get(0));
 	}
 
-	public static void luaZ_init(lua_State L, ZIO z, lua_Reader reader, Object data) {
+	public static void luaZ_init(lua_State L, ZIO z, Lua.lua_Reader reader, Object data) {
 		z.L = L;
 		z.reader = reader;
 		z.data = data;

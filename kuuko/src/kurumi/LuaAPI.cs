@@ -1047,7 +1047,7 @@ namespace kurumi
 			return status;
 		}
 
-		public static int lua_load(lua_State L, lua_Reader reader, object data, LuaConf.CharPtr chunkname) 
+		public static int lua_load(lua_State L, Lua.lua_Reader reader, object data, LuaConf.CharPtr chunkname) 
 		{
 			ZIO z = new ZIO();
 			int status;

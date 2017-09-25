@@ -899,7 +899,7 @@ TValue.dec(top); //ref
 		return status;
 	}
 
-	public static int lua_load(lua_State L, lua_Reader reader, Object data, LuaConf.CharPtr chunkname) {
+	public static int lua_load(lua_State L, Lua.lua_Reader reader, Object data, LuaConf.CharPtr chunkname) {
 		ZIO z = new ZIO();
 		int status;
 		LuaLimits.lua_lock(L);

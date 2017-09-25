@@ -45,7 +45,13 @@ public class Lua {
         int exec(lua_State L);
     }
 	
-	
+    public static interface lua_Reader
+    {
+        /*sz*/
+        /*out*/
+        /*uint*/
+    	LuaConf.CharPtr exec(lua_State L, Object ud, int[] sz);
+    }
 	
 	
 	

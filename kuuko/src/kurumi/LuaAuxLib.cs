@@ -963,7 +963,7 @@ namespace kurumi
 			}
 		}
 		
-		public class getF_delegate : lua_Reader
+		public class getF_delegate : Lua.lua_Reader
 		{
 			public LuaConf.CharPtr exec(lua_State L, object ud, /*out*/ int[]/*uint*/ sz)
 			{
@@ -971,7 +971,7 @@ namespace kurumi
 			}
 		}
 		
-		public class getS_delegate : lua_Reader
+		public class getS_delegate : Lua.lua_Reader
 		{
 			public LuaConf.CharPtr exec(lua_State L, object ud, /*out*/ int[]/*uint*/ sz)
 			{

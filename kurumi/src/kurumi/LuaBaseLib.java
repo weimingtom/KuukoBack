@@ -316,7 +316,7 @@ public class LuaBaseLib {
 		return null; // to avoid warnings 
 	}
 
-	public static class generic_reader_delegate implements lua_Reader {
+	public static class generic_reader_delegate implements Lua.lua_Reader {
 		public final LuaConf.CharPtr exec(lua_State L, Object ud, int[] sz) { //uint - out
 			return generic_reader(L, ud, sz); //out
 		}

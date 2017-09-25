@@ -374,7 +374,7 @@ namespace kurumi
 			return null;  /* to avoid warnings */
 		}
 
-		public class generic_reader_delegate : lua_Reader
+		public class generic_reader_delegate : Lua.lua_Reader
 		{
 			public LuaConf.CharPtr exec(lua_State L, object ud, /*out*/ int[]/*uint*/ sz)
 			{
