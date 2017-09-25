@@ -1195,7 +1195,7 @@ namespace kurumi
             {
                 return 40;
             }
-            else if (t == typeof(LHS_assign))
+            else if (t == typeof(LuaParser.LHS_assign))
             {
                 return 32;
             }

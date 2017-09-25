@@ -1074,6 +1074,15 @@ public class LuaParser {
 		leaveblock(fs);
 	}
 
+	/*
+	 ** structure to chain all variables in the left-hand side of an
+	 ** assignment
+	 */
+	public static class LHS_assign {
+		public LHS_assign prev;
+		public LuaParser.expdesc v = new LuaParser.expdesc();  /* variable (global, local, upvalue, or indexed) */
+	}
+	
 //        
 //		 ** check whether, in an assignment to a local variable, the local variable
 //		 ** is needed in a previous assignment (to a table). If so, save original
