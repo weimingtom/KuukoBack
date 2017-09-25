@@ -10,9 +10,9 @@ namespace kurumi
 	public class LuaException : Exception
 	{
 		public lua_State L;
-		public lua_longjmp c;
+		public LuaDo.lua_longjmp c;
 	
-		public LuaException(lua_State L, lua_longjmp c) 
+		public LuaException(lua_State L, LuaDo.lua_longjmp c) 
 		{ 
 			this.L = L; 
 			this.c = c;

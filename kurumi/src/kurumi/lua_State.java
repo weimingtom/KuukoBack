@@ -33,7 +33,7 @@ package kurumi;
 		public TValue env = new TValue();  /* temporary place for environments */
 		public LuaState.GCObject openupval;  /* list of open upvalues in this stack */
 		public LuaState.GCObject gclist;
-		public lua_longjmp errorJmp;  /* current error recover point */
+		public LuaDo.lua_longjmp errorJmp;  /* current error recover point */
 		public int/*Int32*//*ptrdiff_t*/ errfunc;  /* current error handling function (stack index) */
 	}
 //}

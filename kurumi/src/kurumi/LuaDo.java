@@ -56,6 +56,22 @@ TValue.inc(top); //ref
 	public static final int PCRC = 1; // did a call to a C function 
 	public static final int PCRYIELD = 2; // C funtion yielded 
 
+	
+	
+	
+	/*
+	 ** {======================================================
+	 ** Error-recovery functions
+	 ** =======================================================
+	 */
+	/* chain list of long jump buffers */
+	public static class lua_longjmp
+	{
+		public lua_longjmp previous;
+		public luai_jmpbuf b;
+		public volatile int status;  /* error code */
+	}
+	
 	public static void luaD_seterrorobj(lua_State L, int errcode, TValue oldtop) { //StkId
 		switch (errcode) {
 			case Lua.LUA_ERRMEM: {

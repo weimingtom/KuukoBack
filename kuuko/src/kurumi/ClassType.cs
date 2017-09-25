@@ -1139,7 +1139,7 @@ namespace kurumi
             {
                 return 8;
             }
-            else if (t == typeof(lua_longjmp))
+            else if (t == typeof(LuaDo.lua_longjmp))
             {
                 return 72;
             }

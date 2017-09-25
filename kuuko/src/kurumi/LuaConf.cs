@@ -763,14 +763,14 @@ namespace kurumi
 		 */
 		//#if defined(__cplusplus)
 		// C++ exceptions
-		public static void LUAI_THROW(lua_State L, lua_longjmp c)	
+		public static void LUAI_THROW(lua_State L, LuaDo.lua_longjmp c)	
 		{
 			throw new LuaException(L, c);
 		}
 		
 		//#define LUAI_TRY(L,c,a)	try { a } catch(...) \
 		//    { if ((c).status == 0) (c).status = -1; }
-		public static void LUAI_TRY(lua_State L, lua_longjmp c, object a) 
+		public static void LUAI_TRY(lua_State L, LuaDo.lua_longjmp c, object a) 
 		{
 			if (c.status == 0) c.status = -1;
 		}
