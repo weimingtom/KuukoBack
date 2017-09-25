@@ -611,6 +611,18 @@ TValue.inc(top_ref); //ref
 		LuaZIO.luaZ_freebuffer(L, p.buff);
 		return status;
 	}
+	
+	public static class f_parser_delegate implements Pfunc {
+		public f_parser_delegate()
+		{
+			
+		}
+		
+		public void exec(lua_State L, Object ud)
+		{
+			LuaDo.f_parser(L, ud);
+		}
+	}
 }
 // type of protected functions, to be ran by `runprotected' 
 //public delegate void Pfunc(lua_State L, object ud);
