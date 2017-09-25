@@ -256,7 +256,7 @@ namespace kurumi
 			}
 		}
 
-		public class hookf_delegate : lua_Hook
+		public class hookf_delegate : Lua.lua_Hook
 		{
 			public void exec(lua_State L, Lua.lua_Debug ar)
 			{
@@ -323,7 +323,7 @@ namespace kurumi
 		{
 			int[] arg = new int[1];
 			int mask, count;
-			lua_Hook func;
+			Lua.lua_Hook func;
 			lua_State L1 = getthread(L, /*out*/ arg);
 			if (Lua.lua_isnoneornil(L, arg[0] + 1)) 
 			{
@@ -355,7 +355,7 @@ namespace kurumi
 			lua_State L1 = getthread(L, /*out*/ arg);
 			LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[5]);
 			int mask = LuaDebug.lua_gethookmask(L1);
-			lua_Hook hook = LuaDebug.lua_gethook(L1);
+			Lua.lua_Hook hook = LuaDebug.lua_gethook(L1);
 			if (hook != null && (hook is hookf_delegate))  /* external hook? */
 			{
 				Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("external hook"));

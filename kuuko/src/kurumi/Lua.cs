@@ -238,11 +238,13 @@ namespace kurumi
 		public const int LUA_MASKLINE = (1 << LUA_HOOKLINE);
 		public const int LUA_MASKCOUNT = (1 << LUA_HOOKCOUNT);
 
-		
-		
-		
-		
-		
+	    /* Functions to be called by the debuger in specific events */
+	    //public delegate void lua_Hook(lua_State L, lua_Debug ar);
+	    public interface lua_Hook
+	    {
+	        void exec(lua_State L, Lua.lua_Debug ar);
+	    }
+				
 		public class lua_Debug
 		{
 			public int event_;

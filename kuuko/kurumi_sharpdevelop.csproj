@@ -100,7 +100,6 @@
     <Compile Include="src\kurumi\LuaUndump.cs" />
     <Compile Include="src\kurumi\LuaVM.cs" />
     <Compile Include="src\kurumi\LuaZIO.cs" />
-    <Compile Include="src\kurumi\lua_Hook.cs" />
     <Compile Include="src\kurumi\lua_longjmp.cs" />
     <Compile Include="src\kurumi\lua_Reader.cs" />
     <Compile Include="src\kurumi\lua_State.cs" />

@@ -23,7 +23,7 @@ public class LuaProgram {
 		LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("interrupted!"));
 	}
 
-	public static class lstop_delegate implements lua_Hook {
+	public static class lstop_delegate implements Lua.lua_Hook {
 		public final void exec(lua_State L, Lua.lua_Debug ar) {
 			lstop(L, ar);
 		}

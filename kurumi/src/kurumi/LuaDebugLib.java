@@ -207,7 +207,7 @@ public class LuaDebugLib {
 		}
 	}
 
-	public static class hookf_delegate implements lua_Hook {
+	public static class hookf_delegate implements Lua.lua_Hook {
 		public final void exec(lua_State L, Lua.lua_Debug ar) {
 			hookf(L, ar);
 		}
@@ -260,7 +260,7 @@ public class LuaDebugLib {
 	private static int db_sethook(lua_State L) {
 		int[] arg = new int[1];
 		int mask, count;
-		lua_Hook func;
+		Lua.lua_Hook func;
 		lua_State L1 = getthread(L, arg); //out
 		if (Lua.lua_isnoneornil(L, arg[0] + 1)) {
 			LuaAPI.lua_settop(L, arg[0] + 1);
@@ -289,7 +289,7 @@ public class LuaDebugLib {
 		lua_State L1 = getthread(L, arg); //out
 		LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[5]);
 		int mask = LuaDebug.lua_gethookmask(L1);
-		lua_Hook hook = LuaDebug.lua_gethook(L1);
+		Lua.lua_Hook hook = LuaDebug.lua_gethook(L1);
 		if (hook != null && (hook instanceof hookf_delegate)) { // external hook? 
 			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("external hook"));
 		}

@@ -101,3 +101,6 @@ f_parser_delegate->LuaDo.f_parser_delegate
 
 lua_Debug->Lua.lua_Debug
 15:27 2017/9/25
+
+lua_Hook->Lua.lua_Hook
+15:38 2017/9/25

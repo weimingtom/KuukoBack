@@ -26,7 +26,7 @@ namespace kurumi
 			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("interrupted!"));
 		}
 		
-		public class lstop_delegate : lua_Hook
+		public class lstop_delegate : Lua.lua_Hook
 		{
 			public void exec(lua_State L, Lua.lua_Debug ar)
 			{

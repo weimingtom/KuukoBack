@@ -257,7 +257,7 @@ namespace kurumi
 
 		public static void luaD_callhook (lua_State L, int event_, int line) 
 		{
-			lua_Hook hook = L.hook;
+			Lua.lua_Hook hook = L.hook;
 			if ((hook!=null) && (L.allowhook!=0)) 
 			{
 				int/*Int32*//*ptrdiff_t*/ top = savestack(L, L.top);

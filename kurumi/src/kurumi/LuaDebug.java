@@ -47,7 +47,7 @@ public class LuaDebug {
 //        
 //		 ** this function can be called asynchronous (e.g. during a signal)
 //		 
-	public static int lua_sethook(lua_State L, lua_Hook func, int mask, int count) {
+	public static int lua_sethook(lua_State L, Lua.lua_Hook func, int mask, int count) {
 		if (func == null || mask == 0) {
 			// turn off hooks? 
 			mask = 0;
@@ -60,7 +60,7 @@ public class LuaDebug {
 		return 1;
 	}
 
-	public static lua_Hook lua_gethook(lua_State L) {
+	public static Lua.lua_Hook lua_gethook(lua_State L) {
 		return L.hook;
 	}
 

@@ -28,7 +28,7 @@ namespace kurumi
 		public byte allowhook; /*Byte*/ /*lu_byte*/
 		public int basehookcount;
 		public int hookcount;
-		public lua_Hook hook;
+		public Lua.lua_Hook hook;
 		public TValue l_gt = new TValue();  /* table of globals */
 		public TValue env = new TValue();  /* temporary place for environments */
 		public LuaState.GCObject openupval;  /* list of open upvalues in this stack */

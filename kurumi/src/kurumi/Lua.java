@@ -215,15 +215,12 @@ public class Lua {
 	public static final int LUA_MASKLINE = (1 << LUA_HOOKLINE);
 	public static final int LUA_MASKCOUNT = (1 << LUA_HOOKCOUNT);
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    /* Functions to be called by the debuger in specific events */
+    //public delegate void lua_Hook(lua_State L, lua_Debug ar);
+    public static interface lua_Hook
+    {
+        void exec(lua_State L, Lua.lua_Debug ar);
+    }
 	
 	public static class lua_Debug
 	{

@@ -215,7 +215,7 @@ TValue.inc(top); //ref
 	}
 
 	public static void luaD_callhook(lua_State L, int event_, int line) {
-		lua_Hook hook = L.hook;
+		Lua.lua_Hook hook = L.hook;
 		if ((hook!=null) && (L.allowhook!=0)) {
 			int top = savestack(L, L.top); //ptrdiff_t - Int32
 			int ci_top = savestack(L, L.ci.top); //ptrdiff_t - Int32
