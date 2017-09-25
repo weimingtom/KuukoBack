@@ -160,7 +160,7 @@ public class LuacProgram {
 		return ((LuaConf.fwrite(p, (int)size, 1, (StreamProxy)u) != 1) && (size != 0)) ? 1 : 0;
 	}
 
-	public static class writer_delegate implements lua_Writer {
+	public static class writer_delegate implements Lua.lua_Writer {
 		public final int exec(lua_State L, LuaConf.CharPtr p, int sz, Object ud) { //uint
 			//FIXME:StreamProxy/*object*/ u
 			return writer(L, p, sz, ud);

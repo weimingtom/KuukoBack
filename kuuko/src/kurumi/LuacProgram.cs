@@ -204,7 +204,7 @@ namespace kurumi
 			return ((LuaConf.fwrite(p, (int)size, 1, (StreamProxy)u) != 1) && (size != 0)) ? 1 : 0;
 		}
 		
-		public class writer_delegate : lua_Writer
+		public class writer_delegate : Lua.lua_Writer
 		{
 			public int exec(lua_State L, LuaConf.CharPtr p, int/*uint*/ sz, object ud)
 			{

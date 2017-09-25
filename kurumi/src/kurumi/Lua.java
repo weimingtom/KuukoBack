@@ -53,11 +53,13 @@ public class Lua {
     	LuaConf.CharPtr exec(lua_State L, Object ud, int[] sz);
     }
 	
-	
-	
-	
-	
-	
+    // functions that read/write blocks when loading/dumping Lua chunks
+	//public delegate int lua_Writer(lua_State L, CharPtr p, int//uint// sz, object ud);
+	public static interface lua_Writer
+    {
+        //uint sz
+		int exec(lua_State L, LuaConf.CharPtr p, int sz, Object ud);
+    }
 	
     public static interface lua_Alloc
     {

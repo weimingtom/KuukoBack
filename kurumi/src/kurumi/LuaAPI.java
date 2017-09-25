@@ -912,7 +912,7 @@ TValue.dec(top); //ref
 		return status;
 	}
 
-	public static int lua_dump(lua_State L, lua_Writer writer, Object data) {
+	public static int lua_dump(lua_State L, Lua.lua_Writer writer, Object data) {
 		int status;
 		TValue o;
 		LuaLimits.lua_lock(L);

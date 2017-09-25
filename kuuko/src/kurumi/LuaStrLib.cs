@@ -180,7 +180,7 @@ namespace kurumi
 			return 0;
 		}
 		
-		public class writer_delegate : lua_Writer
+		public class writer_delegate : Lua.lua_Writer
 		{
 			public int exec(lua_State L, LuaConf.CharPtr p, int/*uint*/ sz, object ud)
 			{

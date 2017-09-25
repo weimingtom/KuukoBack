@@ -110,3 +110,6 @@ lua_longjmp->LuaDo.lua_longjmp
 
 lua_Reader->Lua.lua_Reader
 15:49 2017/9/25
+
+lua_Writer->Lua.lua_Writer
+15:54 2017/9/25

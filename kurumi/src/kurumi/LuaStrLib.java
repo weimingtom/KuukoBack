@@ -152,7 +152,7 @@ public class LuaStrLib {
 		return 0;
 	}
 
-	public static class writer_delegate implements lua_Writer {
+	public static class writer_delegate implements Lua.lua_Writer {
 		public final int exec(lua_State L, LuaConf.CharPtr p, int sz, Object ud) { //uint
 			return writer(L, p, sz, ud, new ClassType(ClassType.TYPE_CHARPTR));
 		}
