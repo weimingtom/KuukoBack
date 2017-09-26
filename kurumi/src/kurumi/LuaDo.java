@@ -64,6 +64,13 @@ TValue.inc(top); //ref
 	 ** Error-recovery functions
 	 ** =======================================================
 	 */
+	public static interface luai_jmpbuf
+	{
+		/*Int32*/
+		/*lua_Integer*/
+		void exec(int b);
+	}  
+	
 	/* chain list of long jump buffers */
 	public static class lua_longjmp
 	{

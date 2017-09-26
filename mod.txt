@@ -119,3 +119,7 @@ lua_State->LuaState.lua_State
 
 LuaException->LuaConf.LuaException
 14:45 2017/9/26
+
+luai_jmpbuf->LuaDo.luai_jmpbuf
+14:53 2017/9/26
+

@@ -76,6 +76,13 @@ namespace kurumi
 		 ** Error-recovery functions
 		 ** =======================================================
 		 */
+		public interface luai_jmpbuf
+		{
+			/*Int32*/
+			/*lua_Integer*/
+			void exec(int b);
+		}  		
+		
 		/* chain list of long jump buffers */
 		public class lua_longjmp
 		{

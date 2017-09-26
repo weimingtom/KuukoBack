@@ -72,7 +72,6 @@
     <Compile Include="src\kurumi\LuaGC.cs" />
     <Compile Include="src\kurumi\LuaInit.cs" />
     <Compile Include="src\kurumi\LuaIOLib.cs" />
-    <Compile Include="src\kurumi\luai_jmpbuf.cs" />
     <Compile Include="src\kurumi\LuaLex.cs" />
     <Compile Include="src\kurumi\LuaLib.cs" />
     <Compile Include="src\kurumi\LuaLimits.cs" />
