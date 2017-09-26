@@ -152,7 +152,7 @@ TValue.inc(top); //ref
 			try {
 				f.exec(L, ud);
 			}
-			catch (LuaException e) {
+			catch (LuaConf.LuaException e) {
 				if (lj.status == 0) {
 					lj.status = -1;
 				}

@@ -708,7 +708,16 @@ public class LuaConf {
 //		 
 	///#define LUAI_USER_ALIGNMENT_T	union { double u; void *s; long l; }
 
-
+	public static class LuaException extends RuntimeException {
+		public LuaState.lua_State L;
+		public LuaDo.lua_longjmp c;
+	
+		public LuaException(LuaState.lua_State L, LuaDo.lua_longjmp c) 
+		{ 
+			this.L = L; 
+			this.c = c;
+		}
+	}
 
 //        
 //		@@ LUAI_THROW/LUAI_TRY define how Lua does exception handling.

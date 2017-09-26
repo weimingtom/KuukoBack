@@ -184,7 +184,7 @@ namespace kurumi
 				{
 					f.exec(L, ud);
 				}
-				catch (LuaException e)
+				catch (LuaConf.LuaException e)
 				{
 					if (lj.status == 0) 
 					{

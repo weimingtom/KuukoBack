@@ -68,7 +68,6 @@
     <Compile Include="src\kurumi\LuaDebugLib.cs" />
     <Compile Include="src\kurumi\LuaDo.cs" />
     <Compile Include="src\kurumi\LuaDump.cs" />
-    <Compile Include="src\kurumi\LuaException.cs" />
     <Compile Include="src\kurumi\LuaFunc.cs" />
     <Compile Include="src\kurumi\LuaGC.cs" />
     <Compile Include="src\kurumi\LuaInit.cs" />
