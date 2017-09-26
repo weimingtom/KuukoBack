@@ -88,10 +88,25 @@ public class LuaAuxLib {
 		LuaAPI.lua_getfield(L, Lua.LUA_REGISTRYINDEX, n);
 	}
 
+    public static interface luaL_opt_delegate
+    {
+        /*Double*/
+        /*lua_Number*/
+        double exec(LuaState.lua_State L, int narg);
+    }	
+	
 	public static double luaL_opt(LuaState.lua_State L, luaL_opt_delegate f, int n, double d) { //lua_Number - lua_Number - Double
 		return Lua.lua_isnoneornil(L, (n != 0) ? d : f.exec(L, n)) ? 1 : 0;
 	}
 
+	
+    public static interface luaL_opt_delegate_integer
+    {
+        /*Int32*/
+        /*lua_Integer*/
+        int exec(LuaState.lua_State L, int narg);
+    }
+    
 	public static int luaL_opt_integer(LuaState.lua_State L, luaL_opt_delegate_integer f, int n, double d) { //lua_Number - lua_Integer - Int32
 		return (int)(Lua.lua_isnoneornil(L, n) ? d : f.exec(L, (n))); //lua_Integer - Int32
 	}

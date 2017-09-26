@@ -99,11 +99,27 @@ namespace kurumi
 			LuaAPI.lua_getfield(L, Lua.LUA_REGISTRYINDEX, n); 
 		}
 
+		
+	    public interface luaL_opt_delegate
+	    {
+	        /*Double*/
+	        /*lua_Number*/
+	        double exec(LuaState.lua_State L, int narg);
+	    }	
+	    
 		public static double/*Double*//*lua_Number*/ luaL_opt(LuaState.lua_State L, luaL_opt_delegate f, int n, Double/*lua_Number*/ d)
 		{
 			return Lua.lua_isnoneornil(L, (n != 0) ? d : f.exec(L, n)) ? 1 : 0;
 		}
 
+		
+	    public interface luaL_opt_delegate_integer
+	    {
+	        /*Int32*/
+	        /*lua_Integer*/
+	        int exec(LuaState.lua_State L, int narg);
+	    }
+    
 		public static int/*Int32*//*lua_Integer*/ luaL_opt_integer(LuaState.lua_State L, luaL_opt_delegate_integer f, int n, Double/*lua_Number*/ d)
 		{
 			return (int/*Int32*//*lua_Integer*/)(Lua.lua_isnoneornil(L, n) ? d : f.exec(L, (n)));

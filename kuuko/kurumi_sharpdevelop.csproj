@@ -76,8 +76,6 @@
     <Compile Include="src\kurumi\LuaLib.cs" />
     <Compile Include="src\kurumi\LuaLimits.cs" />
     <Compile Include="src\kurumi\LuaLoadLib.cs" />
-    <Compile Include="src\kurumi\luaL_opt_delegate.cs" />
-    <Compile Include="src\kurumi\luaL_opt_delegate_integer.cs" />
     <Compile Include="src\kurumi\luaL_Reg.cs" />
     <Compile Include="src\kurumi\LuaMathLib.cs" />
     <Compile Include="src\kurumi\LuaMem.cs" />

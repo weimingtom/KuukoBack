@@ -126,3 +126,7 @@ luai_jmpbuf->LuaDo.luai_jmpbuf
 luaL_Buffer->LuaAuxLib.luaL_Buffer
 14:55 2017/9/26
 
+luaL_opt_delegate->LuaAuxLib.luaL_opt_delegate
+luaL_opt_delegate_integer->LuaAuxLib.luaL_opt_delegate_integer
+15:05 2017/9/26
+
