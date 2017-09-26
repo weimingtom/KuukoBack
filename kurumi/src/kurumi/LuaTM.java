@@ -12,7 +12,7 @@ public class LuaTM {
 		return (et == null) ? null : ((et.flags & (1 << e.getValue())) != 0) ? null : luaT_gettm(et, e, g.tmname[e.getValue()]);
 	}
 
-	public static TValue fasttm(lua_State l, Table et, TMS e) {
+	public static TValue fasttm(LuaState.lua_State l, Table et, TMS e) {
 		return gfasttm(LuaState.G(l), et, e);
 	}
 
@@ -50,7 +50,7 @@ public class LuaTM {
 		LuaConf.CharPtr.toCharPtr("__call") 
 	};
 
-	public static void luaT_init(lua_State L) {
+	public static void luaT_init(LuaState.lua_State L) {
 		int i;
 		for (i = 0; i < TMS.TM_N.getValue(); i++) {
 			LuaState.G(L).tmname[i] = LuaString.luaS_new(L, luaT_eventname[i]);
@@ -76,7 +76,7 @@ public class LuaTM {
 		}
 	}
 
-	public static TValue luaT_gettmbyobj(lua_State L, TValue o, TMS event_) {
+	public static TValue luaT_gettmbyobj(LuaState.lua_State L, TValue o, TMS event_) {
 		Table mt;
 		switch (LuaObject.ttype(o)) {
 			case Lua.LUA_TTABLE: {

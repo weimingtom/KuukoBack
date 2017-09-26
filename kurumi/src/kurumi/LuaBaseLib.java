@@ -15,7 +15,7 @@ public class LuaBaseLib {
 //		 ** model but changing `fputs' to put the strings at a proper place
 //		 ** (a console window or a log file, for instance).
 //		 
-	private static int luaB_print(lua_State L) {
+	private static int luaB_print(LuaState.lua_State L) {
 		int n = LuaAPI.lua_gettop(L); // number of arguments 
 		int i;
 		Lua.lua_getglobal(L, LuaConf.CharPtr.toCharPtr("tostring"));
@@ -40,7 +40,7 @@ public class LuaBaseLib {
 		return 0;
 	}
 
-	private static int luaB_tonumber(lua_State L) {
+	private static int luaB_tonumber(LuaState.lua_State L) {
 		int base_ = LuaAuxLib.luaL_optint(L, 2, 10);
 		if (base_ == 10) {
 			// standard conversion 
@@ -73,7 +73,7 @@ public class LuaBaseLib {
 		return 1;
 	}
 
-	private static int luaB_error(lua_State L) {
+	private static int luaB_error(LuaState.lua_State L) {
 		int level = LuaAuxLib.luaL_optint(L, 2, 1);
 		LuaAPI.lua_settop(L, 1);
 		if ((LuaAPI.lua_isstring(L, 1) != 0) && (level > 0)) {
@@ -85,7 +85,7 @@ public class LuaBaseLib {
 		return LuaAPI.lua_error(L);
 	}
 
-	private static int luaB_getmetatable(lua_State L) {
+	private static int luaB_getmetatable(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checkany(L, 1);
 		if (LuaAPI.lua_getmetatable(L, 1) == 0) {
 			LuaAPI.lua_pushnil(L);
@@ -95,7 +95,7 @@ public class LuaBaseLib {
 		return 1; // returns either __metatable field (if present) or metatable 
 	}
 
-	private static int luaB_setmetatable(lua_State L) {
+	private static int luaB_setmetatable(LuaState.lua_State L) {
 		int t = LuaAPI.lua_type(L, 2);
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		LuaAuxLib.luaL_argcheck(L, t == Lua.LUA_TNIL || t == Lua.LUA_TTABLE, 2, "nil or table expected");
@@ -107,7 +107,7 @@ public class LuaBaseLib {
 		return 1;
 	}
 
-	private static void getfunc(lua_State L, int opt) {
+	private static void getfunc(LuaState.lua_State L, int opt) {
 		if (Lua.lua_isfunction(L, 1)) {
 			LuaAPI.lua_pushvalue(L, 1);
 		}
@@ -125,7 +125,7 @@ public class LuaBaseLib {
 		}
 	}
 
-	private static int luaB_getfenv(lua_State L) {
+	private static int luaB_getfenv(LuaState.lua_State L) {
 		getfunc(L, 1);
 		if (LuaAPI.lua_iscfunction(L, -1)) { // is a C function? 
 			LuaAPI.lua_pushvalue(L, Lua.LUA_GLOBALSINDEX); // return the thread's global env. 
@@ -136,7 +136,7 @@ public class LuaBaseLib {
 		return 1;
 	}
 
-	private static int luaB_setfenv(lua_State L) {
+	private static int luaB_setfenv(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 2, Lua.LUA_TTABLE);
 		getfunc(L, 0);
 		LuaAPI.lua_pushvalue(L, 2);
@@ -153,14 +153,14 @@ public class LuaBaseLib {
 		return 1;
 	}
 
-	private static int luaB_rawequal(lua_State L) {
+	private static int luaB_rawequal(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checkany(L, 1);
 		LuaAuxLib.luaL_checkany(L, 2);
 		LuaAPI.lua_pushboolean(L, LuaAPI.lua_rawequal(L, 1, 2));
 		return 1;
 	}
 
-	private static int luaB_rawget(lua_State L) {
+	private static int luaB_rawget(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		LuaAuxLib.luaL_checkany(L, 2);
 		LuaAPI.lua_settop(L, 2);
@@ -168,7 +168,7 @@ public class LuaBaseLib {
 		return 1;
 	}
 
-	private static int luaB_rawset(lua_State L) {
+	private static int luaB_rawset(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		LuaAuxLib.luaL_checkany(L, 2);
 		LuaAuxLib.luaL_checkany(L, 3);
@@ -177,7 +177,7 @@ public class LuaBaseLib {
 		return 1;
 	}
 
-	private static int luaB_gcinfo(lua_State L) {
+	private static int luaB_gcinfo(LuaState.lua_State L) {
 		LuaAPI.lua_pushinteger(L, Lua.lua_getgccount(L));
 		return 1;
 	}
@@ -203,7 +203,7 @@ public class LuaBaseLib {
 		Lua.LUA_GCSETSTEPMUL 
 	};
 
-	private static int luaB_collectgarbage(lua_State L) {
+	private static int luaB_collectgarbage(LuaState.lua_State L) {
 		int o = LuaAuxLib.luaL_checkoption(L, 1, LuaConf.CharPtr.toCharPtr("collect"), opts);
 		int ex = LuaAuxLib.luaL_optint(L, 2, 0);
 		int res = LuaAPI.lua_gc(L, optsnum[o], ex);
@@ -224,13 +224,13 @@ public class LuaBaseLib {
 		}
 	}
 
-	private static int luaB_type(lua_State L) {
+	private static int luaB_type(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checkany(L, 1);
 		LuaAPI.lua_pushstring(L, LuaAuxLib.luaL_typename(L, 1));
 		return 1;
 	}
 
-	private static int luaB_next(lua_State L) {
+	private static int luaB_next(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		LuaAPI.lua_settop(L, 2); // create a 2nd argument if there isn't one 
 		if (LuaAPI.lua_next(L, 1) != 0) {
@@ -242,7 +242,7 @@ public class LuaBaseLib {
 		}
 	}
 
-	private static int luaB_pairs(lua_State L) {
+	private static int luaB_pairs(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		LuaAPI.lua_pushvalue(L, Lua.lua_upvalueindex(1)); // return generator, 
 		LuaAPI.lua_pushvalue(L, 1); // state, 
@@ -250,7 +250,7 @@ public class LuaBaseLib {
 		return 3;
 	}
 
-	private static int ipairsaux(lua_State L) {
+	private static int ipairsaux(LuaState.lua_State L) {
 		int i = LuaAuxLib.luaL_checkint(L, 2);
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		i++; // next value 
@@ -259,7 +259,7 @@ public class LuaBaseLib {
 		return (Lua.lua_isnil(L, -1)) ? 0 : 2;
 	}
 
-	private static int luaB_ipairs(lua_State L) {
+	private static int luaB_ipairs(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		LuaAPI.lua_pushvalue(L, Lua.lua_upvalueindex(1)); // return generator, 
 		LuaAPI.lua_pushvalue(L, 1); // state, 
@@ -267,7 +267,7 @@ public class LuaBaseLib {
 		return 3;
 	}
 
-	private static int load_aux(lua_State L, int status) {
+	private static int load_aux(LuaState.lua_State L, int status) {
 		if (status == 0) { // OK? 
 			return 1;
 		}
@@ -278,14 +278,14 @@ public class LuaBaseLib {
 		}
 	}
 
-	private static int luaB_loadstring(lua_State L) {
+	private static int luaB_loadstring(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		LuaConf.CharPtr chunkname = LuaAuxLib.luaL_optstring(L, 2, s);
 		return load_aux(L, LuaAuxLib.luaL_loadbuffer(L, s, l[0], chunkname));
 	}
 
-	private static int luaB_loadfile(lua_State L) {
+	private static int luaB_loadfile(LuaState.lua_State L) {
 		LuaConf.CharPtr fname = LuaAuxLib.luaL_optstring(L, 1, null);
 		return load_aux(L, LuaAuxLib.luaL_loadfile(L, fname));
 	}
@@ -296,7 +296,7 @@ public class LuaBaseLib {
 //		 ** stack top. Instead, it keeps its resulting string in a
 //		 ** reserved slot inside the stack.
 //		 
-	private static LuaConf.CharPtr generic_reader(lua_State L, Object ud, int[] size) { //uint - out
+	private static LuaConf.CharPtr generic_reader(LuaState.lua_State L, Object ud, int[] size) { //uint - out
 		//(void)ud;  /* to avoid warnings */
 		LuaAuxLib.luaL_checkstack(L, 2, LuaConf.CharPtr.toCharPtr("too many nested functions"));
 		LuaAPI.lua_pushvalue(L, 1); // get function 
@@ -317,13 +317,13 @@ public class LuaBaseLib {
 	}
 
 	public static class generic_reader_delegate implements Lua.lua_Reader {
-		public final LuaConf.CharPtr exec(lua_State L, Object ud, int[] sz) { //uint - out
+		public final LuaConf.CharPtr exec(LuaState.lua_State L, Object ud, int[] sz) { //uint - out
 			return generic_reader(L, ud, sz); //out
 		}
 	}
 
 
-	private static int luaB_load(lua_State L) {
+	private static int luaB_load(LuaState.lua_State L) {
 		int status;
 		LuaConf.CharPtr cname = LuaAuxLib.luaL_optstring(L, 2, LuaConf.CharPtr.toCharPtr("=(load)"));
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TFUNCTION);
@@ -332,7 +332,7 @@ public class LuaBaseLib {
 		return load_aux(L, status);
 	}
 
-	private static int luaB_dofile(lua_State L) {
+	private static int luaB_dofile(LuaState.lua_State L) {
 		LuaConf.CharPtr fname = LuaAuxLib.luaL_optstring(L, 1, null);
 		int n = LuaAPI.lua_gettop(L);
 		if (LuaAuxLib.luaL_loadfile(L, fname) != 0) {
@@ -342,7 +342,7 @@ public class LuaBaseLib {
 		return LuaAPI.lua_gettop(L) - n;
 	}
 
-	private static int luaB_assert(lua_State L) {
+	private static int luaB_assert(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checkany(L, 1);
 		if (LuaAPI.lua_toboolean(L, 1) == 0) {
 			return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("%s"), LuaAuxLib.luaL_optstring(L, 2, LuaConf.CharPtr.toCharPtr("assertion failed!")));
@@ -350,7 +350,7 @@ public class LuaBaseLib {
 		return LuaAPI.lua_gettop(L);
 	}
 
-	private static int luaB_unpack(lua_State L) {
+	private static int luaB_unpack(LuaState.lua_State L) {
 		int i, e, n;
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		i = LuaAuxLib.luaL_optint(L, 2, 1);
@@ -369,7 +369,7 @@ public class LuaBaseLib {
 		return n;
 	}
 
-	private static int luaB_select(lua_State L) {
+	private static int luaB_select(LuaState.lua_State L) {
 		int n = LuaAPI.lua_gettop(L);
 		if (LuaAPI.lua_type(L, 1) == Lua.LUA_TSTRING && Lua.lua_tostring(L, 1).get(0) == '#') {
 			LuaAPI.lua_pushinteger(L, n - 1);
@@ -388,7 +388,7 @@ public class LuaBaseLib {
 		}
 	}
 
-	private static int luaB_pcall(lua_State L) {
+	private static int luaB_pcall(LuaState.lua_State L) {
 		int status;
 		LuaAuxLib.luaL_checkany(L, 1);
 		status = LuaAPI.lua_pcall(L, LuaAPI.lua_gettop(L) - 1, Lua.LUA_MULTRET, 0);
@@ -397,7 +397,7 @@ public class LuaBaseLib {
 		return LuaAPI.lua_gettop(L); // return status + all results 
 	}
 
-	private static int luaB_xpcall(lua_State L) {
+	private static int luaB_xpcall(LuaState.lua_State L) {
 		int status;
 		LuaAuxLib.luaL_checkany(L, 2);
 		LuaAPI.lua_settop(L, 2);
@@ -408,7 +408,7 @@ public class LuaBaseLib {
 		return LuaAPI.lua_gettop(L); // return status + all results 
 	}
 
-	private static int luaB_tostring(lua_State L) {
+	private static int luaB_tostring(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checkany(L, 1);
 		if (LuaAuxLib.luaL_callmeta(L, 1, LuaConf.CharPtr.toCharPtr("__tostring")) != 0) { // is there a metafield? 
 			return 1; // use its value 
@@ -438,7 +438,7 @@ public class LuaBaseLib {
 		return 1;
 	}
 
-	private static int luaB_newproxy(lua_State L) {
+	private static int luaB_newproxy(LuaState.lua_State L) {
 		LuaAPI.lua_settop(L, 1);
 		LuaAPI.lua_newuserdata(L, 0); // create proxy 
 		if (LuaAPI.lua_toboolean(L, 1) == 0) {
@@ -500,7 +500,7 @@ public class LuaBaseLib {
 			this.name = name;
 		}
 
-		public final int exec(lua_State L) {
+		public final int exec(LuaState.lua_State L) {
 			if ((new String("luaB_assert")).equals(name)) {
 				return luaB_assert(L);
 			}
@@ -629,7 +629,7 @@ public class LuaBaseLib {
 
 	private static final String[] statnames = { "running", "suspended", "normal", "dead" };
 
-	private static int costatus(lua_State L, lua_State co) {
+	private static int costatus(LuaState.lua_State L, LuaState.lua_State co) {
 		if (L == co) {
 			return CO_RUN;
 		}
@@ -655,14 +655,14 @@ public class LuaBaseLib {
 		}
 	}
 
-	private static int luaB_costatus(lua_State L) {
-		lua_State co = LuaAPI.lua_tothread(L, 1);
+	private static int luaB_costatus(LuaState.lua_State L) {
+		LuaState.lua_State co = LuaAPI.lua_tothread(L, 1);
 		LuaAuxLib.luaL_argcheck(L, co != null, 1, "coroutine expected");
 		LuaAPI.lua_pushstring(L, LuaConf.CharPtr.toCharPtr(statnames[costatus(L, co)]));
 		return 1;
 	}
 
-	private static int auxresume(lua_State L, lua_State co, int narg) {
+	private static int auxresume(LuaState.lua_State L, LuaState.lua_State co, int narg) {
 		int status = costatus(L, co);
 		if (LuaAPI.lua_checkstack(co, narg) == 0) {
 			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("too many arguments to resume"));
@@ -688,8 +688,8 @@ public class LuaBaseLib {
 		}
 	}
 
-	private static int luaB_coresume(lua_State L) {
-		lua_State co = LuaAPI.lua_tothread(L, 1);
+	private static int luaB_coresume(LuaState.lua_State L) {
+		LuaState.lua_State co = LuaAPI.lua_tothread(L, 1);
 		int r;
 		LuaAuxLib.luaL_argcheck(L, co != null, 1, "coroutine expected");
 		r = auxresume(L, co, LuaAPI.lua_gettop(L) - 1);
@@ -705,8 +705,8 @@ public class LuaBaseLib {
 		}
 	}
 
-	private static int luaB_auxwrap(lua_State L) {
-		lua_State co = LuaAPI.lua_tothread(L, Lua.lua_upvalueindex(1));
+	private static int luaB_auxwrap(LuaState.lua_State L) {
+		LuaState.lua_State co = LuaAPI.lua_tothread(L, Lua.lua_upvalueindex(1));
 		int r = auxresume(L, co, LuaAPI.lua_gettop(L));
 		if (r < 0) {
 			if (LuaAPI.lua_isstring(L, -1) != 0) {
@@ -720,8 +720,8 @@ public class LuaBaseLib {
 		return r;
 	}
 
-	private static int luaB_cocreate(lua_State L) {
-		lua_State NL = LuaAPI.lua_newthread(L);
+	private static int luaB_cocreate(LuaState.lua_State L) {
+		LuaState.lua_State NL = LuaAPI.lua_newthread(L);
 		LuaAuxLib.luaL_argcheck(L, Lua.lua_isfunction(L, 1) && !LuaAPI.lua_iscfunction(L, 1), 1, "Lua function expected");
 		LuaAPI.lua_pushvalue(L, 1); // move function to top 
 		LuaAPI.lua_xmove(L, NL, 1); // move function from L to NL 
@@ -729,17 +729,17 @@ public class LuaBaseLib {
 	}
 
 
-	private static int luaB_cowrap(lua_State L) {
+	private static int luaB_cowrap(LuaState.lua_State L) {
 		luaB_cocreate(L);
 		LuaAPI.lua_pushcclosure(L, new LuaBaseLib_delegate("luaB_auxwrap"), 1);
 		return 1;
 	}
 
-	private static int luaB_yield(lua_State L) {
+	private static int luaB_yield(LuaState.lua_State L) {
 		return LuaDo.lua_yield(L, LuaAPI.lua_gettop(L));
 	}
 
-	private static int luaB_corunning(lua_State L) {
+	private static int luaB_corunning(LuaState.lua_State L) {
 		if (LuaAPI.lua_pushthread(L) != 0) {
 			LuaAPI.lua_pushnil(L); // main thread is not a coroutine 
 		}
@@ -760,13 +760,13 @@ public class LuaBaseLib {
 
 	// }====================================================== 
 
-	private static void auxopen(lua_State L, LuaConf.CharPtr name, Lua.lua_CFunction f, Lua.lua_CFunction u) {
+	private static void auxopen(LuaState.lua_State L, LuaConf.CharPtr name, Lua.lua_CFunction f, Lua.lua_CFunction u) {
 		Lua.lua_pushcfunction(L, u);
 		LuaAPI.lua_pushcclosure(L, f, 1);
 		LuaAPI.lua_setfield(L, -2, name);
 	}
 
-	private static void base_open(lua_State L) {
+	private static void base_open(LuaState.lua_State L) {
 		// set global _G 
 		LuaAPI.lua_pushvalue(L, Lua.LUA_GLOBALSINDEX);
 		Lua.lua_setglobal(L, LuaConf.CharPtr.toCharPtr("_G"));
@@ -787,7 +787,7 @@ public class LuaBaseLib {
 		Lua.lua_setglobal(L, LuaConf.CharPtr.toCharPtr("newproxy")); // set global `newproxy' 
 	}
 
-	public static int luaopen_base(lua_State L) {
+	public static int luaopen_base(LuaState.lua_State L) {
 		base_open(L);
 		LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_COLIBNAME), co_funcs);
 		return 2;

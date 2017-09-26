@@ -11,7 +11,7 @@ package kurumi;
 		public LuaConf.CharPtr p;			/* current position in buffer */
 		public Lua.lua_Reader reader;
 		public Object data;			/* additional data */
-		public lua_State L;			/* Lua state (for reader) */
+		public LuaState.lua_State L;			/* Lua state (for reader) */
 		
 		//public class ZIO : Zio { };
 	}

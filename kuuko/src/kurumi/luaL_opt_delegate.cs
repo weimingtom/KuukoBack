@@ -4,6 +4,6 @@
     {
         /*Double*/
         /*lua_Number*/
-        double exec(lua_State L, int narg);
+        double exec(LuaState.lua_State L, int narg);
     }
 }

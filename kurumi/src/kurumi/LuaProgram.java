@@ -14,17 +14,17 @@ public class LuaProgram {
 	///#include "lauxlib.h"
 	///#include "lualib.h"
 
-	private static lua_State globalL = null;
+	private static LuaState.lua_State globalL = null;
 
 	private static LuaConf.CharPtr progname = LuaConf.CharPtr.toCharPtr(LuaConf.LUA_PROGNAME);
 
-	private static void lstop(lua_State L, Lua.lua_Debug ar) {
+	private static void lstop(LuaState.lua_State L, Lua.lua_Debug ar) {
 		LuaDebug.lua_sethook(L, null, 0, 0);
 		LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("interrupted!"));
 	}
 
 	public static class lstop_delegate implements Lua.lua_Hook {
-		public final void exec(lua_State L, Lua.lua_Debug ar) {
+		public final void exec(LuaState.lua_State L, Lua.lua_Debug ar) {
 			lstop(L, ar);
 		}
 	}
@@ -48,7 +48,7 @@ public class LuaProgram {
 		LuaConf.fflush(LuaConf.stderr);
 	}
 
-	private static int report(lua_State L, int status) {
+	private static int report(LuaState.lua_State L, int status) {
 		if ((status != 0) && !Lua.lua_isnil(L, -1)) {
 			LuaConf.CharPtr msg = Lua.lua_tostring(L, -1);
 			if (LuaConf.CharPtr.isEqual(msg, null)) {
@@ -60,7 +60,7 @@ public class LuaProgram {
 		return status;
 	}
 
-	private static int traceback(lua_State L) {
+	private static int traceback(LuaState.lua_State L) {
 		if (LuaAPI.lua_isstring(L, 1) == 0) { // 'message' not a string? 
 			return 1; // keep it intact 
 		}
@@ -80,7 +80,7 @@ public class LuaProgram {
 		return 1;
 	}
 
-	private static int docall(lua_State L, int narg, int clear) {
+	private static int docall(LuaState.lua_State L, int narg, int clear) {
 		int status;
 		int base_ = LuaAPI.lua_gettop(L) - narg; // function index 
 		Lua.lua_pushcfunction(L, new traceback_delegate()); // push traceback function 
@@ -100,7 +100,7 @@ public class LuaProgram {
 		l_message(null, LuaConf.CharPtr.toCharPtr(Lua.LUA_RELEASE + "  " + Lua.LUA_COPYRIGHT));
 	}
 
-	private static int getargs(lua_State L, String[] argv, int n) {
+	private static int getargs(LuaState.lua_State L, String[] argv, int n) {
 		int narg;
 		int i;
 		int argc = argv.length; // count total number of arguments 
@@ -117,23 +117,23 @@ public class LuaProgram {
 		return narg;
 	}
 
-	private static int dofile(lua_State L, LuaConf.CharPtr name) {
+	private static int dofile(LuaState.lua_State L, LuaConf.CharPtr name) {
 		int status = (LuaAuxLib.luaL_loadfile(L, name) != 0) || (docall(L, 0, 1) != 0) ? 1 : 0;
 		return report(L, status);
 	}
 
-	private static int dostring(lua_State L, LuaConf.CharPtr s, LuaConf.CharPtr name) {
+	private static int dostring(LuaState.lua_State L, LuaConf.CharPtr s, LuaConf.CharPtr name) {
 		int status = (LuaAuxLib.luaL_loadbuffer(L, s, LuaConf.strlen(s), name) != 0) || (docall(L, 0, 1) != 0) ? 1 : 0; //(uint)
 		return report(L, status);
 	}
 
-	private static int dolibrary(lua_State L, LuaConf.CharPtr name) {
+	private static int dolibrary(LuaState.lua_State L, LuaConf.CharPtr name) {
 		Lua.lua_getglobal(L, LuaConf.CharPtr.toCharPtr("require"));
 		LuaAPI.lua_pushstring(L, name);
 		return report(L, docall(L, 1, 1));
 	}
 
-	private static LuaConf.CharPtr get_prompt(lua_State L, int firstline) {
+	private static LuaConf.CharPtr get_prompt(LuaState.lua_State L, int firstline) {
 		LuaConf.CharPtr p;
 		LuaAPI.lua_getfield(L, Lua.LUA_GLOBALSINDEX, (firstline != 0) ? LuaConf.CharPtr.toCharPtr("_PROMPT") : LuaConf.CharPtr.toCharPtr("_PROMPT2"));
 		p = Lua.lua_tostring(L, -1);
@@ -144,7 +144,7 @@ public class LuaProgram {
 		return p;
 	}
 
-	private static int incomplete(lua_State L, int status) {
+	private static int incomplete(LuaState.lua_State L, int status) {
 		if (status == Lua.LUA_ERRSYNTAX) {
 			int[] lmsg = new int[1]; //uint
 			LuaConf.CharPtr msg = LuaAPI.lua_tolstring(L, -1, lmsg); //out
@@ -157,7 +157,7 @@ public class LuaProgram {
 		return 0; // else... 
 	}
 
-	private static int pushline(lua_State L, int firstline) {
+	private static int pushline(LuaState.lua_State L, int firstline) {
 		LuaConf.CharPtr buffer = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUA_MAXINPUT]);
 		LuaConf.CharPtr b = new LuaConf.CharPtr(buffer);
 		int l;
@@ -179,7 +179,7 @@ public class LuaProgram {
 		return 1;
 	}
 
-	private static int loadline(lua_State L) {
+	private static int loadline(LuaState.lua_State L) {
 		int status;
 		LuaAPI.lua_settop(L, 0);
 		if (pushline(L, 1) == 0) {
@@ -203,7 +203,7 @@ public class LuaProgram {
 		return status;
 	}
 
-	private static void dotty(lua_State L) {
+	private static void dotty(LuaState.lua_State L) {
 		int status;
 		LuaConf.CharPtr oldprogname = progname;
 		progname = null;
@@ -227,7 +227,7 @@ public class LuaProgram {
 		progname = oldprogname;
 	}
 
-	private static int handle_script(lua_State L, String[] argv, int n) {
+	private static int handle_script(LuaState.lua_State L, String[] argv, int n) {
 		int status;
 		LuaConf.CharPtr fname;
 		int narg = getargs(L, argv, n); // collect arguments 
@@ -313,7 +313,7 @@ public class LuaProgram {
 		return 0;
 	}
 
-	private static int runargs(lua_State L, String[] argv, int n) {
+	private static int runargs(LuaState.lua_State L, String[] argv, int n) {
 		int i;
 		for (i = 1; i < n; i++) {
 			if (argv[i] == null) {
@@ -353,7 +353,7 @@ public class LuaProgram {
 		return 0;
 	}
 
-	private static int handle_luainit(lua_State L) {
+	private static int handle_luainit(LuaState.lua_State L) {
 		LuaConf.CharPtr init = LuaConf.getenv(LuaConf.CharPtr.toCharPtr(LuaConf.LUA_INIT));
 		if (LuaConf.CharPtr.isEqual(init, null)) {
 			return 0; // status OK 
@@ -366,7 +366,7 @@ public class LuaProgram {
 		}
 	}
 
-	private static int pmain(lua_State L) {
+	private static int pmain(LuaState.lua_State L) {
 		Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
 		String[] argv = s.argv;
 		int script;
@@ -423,13 +423,13 @@ public class LuaProgram {
 	}
 
 	public static class pmain_delegate implements Lua.lua_CFunction {
-		public final int exec(lua_State L) {
+		public final int exec(LuaState.lua_State L) {
 			return pmain(L);
 		}
 	}
 
 	public static class traceback_delegate implements Lua.lua_CFunction {
-		public final int exec(lua_State L) {
+		public final int exec(LuaState.lua_State L) {
 			return traceback(L);
 		}
 	}
@@ -448,7 +448,7 @@ public class LuaProgram {
 
 		int status;
 		Smain s = new Smain();
-		lua_State L = Lua.lua_open(); // create state 
+		LuaState.lua_State L = Lua.lua_open(); // create state 
 		if (L == null) {
 			l_message(LuaConf.CharPtr.toCharPtr(args[0]), LuaConf.CharPtr.toCharPtr("cannot create state: not enough memory"));
 			return LuaConf.EXIT_FAILURE;

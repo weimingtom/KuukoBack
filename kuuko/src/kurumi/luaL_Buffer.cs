@@ -13,7 +13,7 @@ namespace kurumi
 	{
 		public int p; /* current position in buffer */
 		public int lvl; /* number of strings in the stack (level) */
-		public lua_State L;
+		public LuaState.lua_State L;
 		public LuaConf.CharPtr buffer = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUAL_BUFFERSIZE]);
 	}
 }

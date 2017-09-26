@@ -4,6 +4,6 @@
     {
         /*Int32*/
         /*lua_Integer*/
-        int exec(lua_State L, int narg);
+        int exec(LuaState.lua_State L, int narg);
     }
 }

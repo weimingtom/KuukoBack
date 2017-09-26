@@ -45,7 +45,7 @@ namespace kurumi
 
 	    public interface lua_CFunction
 	    {
-	        int exec(lua_State L);
+	        int exec(LuaState.lua_State L);
 	    }
 		
 	    public interface lua_Reader
@@ -53,7 +53,7 @@ namespace kurumi
 	        /*sz*/
 	        /*out*/
 	        /*uint*/
-	        LuaConf.CharPtr exec(lua_State L, object ud, int[] sz);
+	        LuaConf.CharPtr exec(LuaState.lua_State L, object ud, int[] sz);
 	    }
 		
 	    // functions that read/write blocks when loading/dumping Lua chunks
@@ -61,7 +61,7 @@ namespace kurumi
 		public interface lua_Writer
 	    {
 	        //uint sz
-	        int exec(lua_State L, LuaConf.CharPtr p, int sz, object ud);
+	        int exec(LuaState.lua_State L, LuaConf.CharPtr p, int sz, object ud);
 	    }
 		
 	    public interface lua_Alloc
@@ -110,109 +110,109 @@ namespace kurumi
 		 ** some useful macros
 		 ** ===============================================================
 		 */
-		public static void lua_pop(lua_State L, int n)
+		public static void lua_pop(LuaState.lua_State L, int n)
 		{
 			LuaAPI.lua_settop(L, -(n) - 1);
 		}
 
-		public static void lua_newtable(lua_State L)
+		public static void lua_newtable(LuaState.lua_State L)
 		{
 			LuaAPI.lua_createtable(L, 0, 0);
 		}
 
-		public static void lua_register(lua_State L, LuaConf.CharPtr n, lua_CFunction f)
+		public static void lua_register(LuaState.lua_State L, LuaConf.CharPtr n, lua_CFunction f)
 		{
 			lua_pushcfunction(L, f);
 			lua_setglobal(L, n);
 		}
 
-		public static void lua_pushcfunction(lua_State L, lua_CFunction f)
+		public static void lua_pushcfunction(LuaState.lua_State L, lua_CFunction f)
 		{
 			LuaAPI.lua_pushcclosure(L, f, 0);
 		}
 
-		public static int/*uint*/ lua_strlen(lua_State L, int i)
+		public static int/*uint*/ lua_strlen(LuaState.lua_State L, int i)
 		{
 			return LuaAPI.lua_objlen(L, i);
 		}
 
-		public static bool lua_isfunction(lua_State L, int n)
+		public static bool lua_isfunction(LuaState.lua_State L, int n)
 		{
 			return LuaAPI.lua_type(L, n) == LUA_TFUNCTION;
 		}
 
-		public static bool lua_istable(lua_State L, int n)
+		public static bool lua_istable(LuaState.lua_State L, int n)
 		{
 			return LuaAPI.lua_type(L, n) == LUA_TTABLE;
 		}
 
-		public static bool lua_islightuserdata(lua_State L, int n)
+		public static bool lua_islightuserdata(LuaState.lua_State L, int n)
 		{
 			return LuaAPI.lua_type(L, n) == LUA_TLIGHTUSERDATA;
 		}
 
-		public static bool lua_isnil(lua_State L, int n)
+		public static bool lua_isnil(LuaState.lua_State L, int n)
 		{
 			return LuaAPI.lua_type(L, n) == LUA_TNIL;
 		}
 
-		public static bool lua_isboolean(lua_State L, int n)
+		public static bool lua_isboolean(LuaState.lua_State L, int n)
 		{
 			return LuaAPI.lua_type(L, n) == LUA_TBOOLEAN;
 		}
 
-		public static bool lua_isthread(lua_State L, int n)
+		public static bool lua_isthread(LuaState.lua_State L, int n)
 		{
 			return LuaAPI.lua_type(L, n) == LUA_TTHREAD;
 		}
 
-		public static bool lua_isnone(lua_State L, int n)
+		public static bool lua_isnone(LuaState.lua_State L, int n)
 		{
 			return LuaAPI.lua_type(L, n) == LUA_TNONE;
 		}
 
-		public static bool lua_isnoneornil(lua_State L, Double/*lua_Number*/ n)
+		public static bool lua_isnoneornil(LuaState.lua_State L, Double/*lua_Number*/ n)
 		{
 			return LuaAPI.lua_type(L, (int)n) <= 0;
 		}
 
-		public static void lua_pushliteral(lua_State L, LuaConf.CharPtr s)
+		public static void lua_pushliteral(LuaState.lua_State L, LuaConf.CharPtr s)
 		{
 			//TODO: Implement use using lua_pushlstring instead of lua_pushstring
 			//lua_pushlstring(L, "" s, (sizeof(s)/GetUnmanagedSize(typeof(char)))-1)
 			LuaAPI.lua_pushstring(L, s);
 		}
 
-		public static void lua_setglobal(lua_State L, LuaConf.CharPtr s)
+		public static void lua_setglobal(LuaState.lua_State L, LuaConf.CharPtr s)
 		{
 			LuaAPI.lua_setfield(L, LUA_GLOBALSINDEX, s);
 		}
 
-		public static void lua_getglobal(lua_State L, LuaConf.CharPtr s)
+		public static void lua_getglobal(LuaState.lua_State L, LuaConf.CharPtr s)
 		{
 			LuaAPI.lua_getfield(L, LUA_GLOBALSINDEX, s);
 		}
 
-		public static LuaConf.CharPtr lua_tostring(lua_State L, int i)
+		public static LuaConf.CharPtr lua_tostring(LuaState.lua_State L, int i)
 		{
 			int[]/*uint*/ blah = new int[1];
 			return LuaAPI.lua_tolstring(L, i, /*out*/ blah);
 		}
 
 		////#define lua_open()	luaL_newstate()
-		public static lua_State lua_open()
+		public static LuaState.lua_State lua_open()
 		{
 			return LuaAuxLib.luaL_newstate();
 		}
 
 		////#define lua_getregistry(L)	lua_pushvalue(L, LUA_REGISTRYINDEX)
-		public static void lua_getregistry(lua_State L)
+		public static void lua_getregistry(LuaState.lua_State L)
 		{
 			LuaAPI.lua_pushvalue(L, LUA_REGISTRYINDEX);
 		}
 
 		////#define lua_getgccount(L)	lua_gc(L, LUA_GCCOUNT, 0)
-		public static int lua_getgccount(lua_State L)
+		public static int lua_getgccount(LuaState.lua_State L)
 		{
 			return LuaAPI.lua_gc(L, LUA_GCCOUNT, 0);
 		}
@@ -250,7 +250,7 @@ namespace kurumi
 	    //public delegate void lua_Hook(lua_State L, lua_Debug ar);
 	    public interface lua_Hook
 	    {
-	        void exec(lua_State L, Lua.lua_Debug ar);
+	        void exec(LuaState.lua_State L, Lua.lua_Debug ar);
 	    }
 				
 		public class lua_Debug

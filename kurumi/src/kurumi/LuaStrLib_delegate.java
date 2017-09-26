@@ -9,7 +9,7 @@
 			this.name = name;
 		}
 		
-		public int exec(lua_State L)
+		public int exec(LuaState.lua_State L)
 		{
 			if ("str_byte".equals(name)) 
 			{

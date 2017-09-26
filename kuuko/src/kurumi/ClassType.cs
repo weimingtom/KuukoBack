@@ -262,7 +262,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_LUA_STATE)
 	            {
-	                result = new lua_State();
+	                result = new LuaState.lua_State();
 	            }
 	            else if (type == TYPE_CALLINFO)
 	            {
@@ -981,7 +981,7 @@ namespace kurumi
             }
             else if (type == TYPE_LUA_STATE)
             {
-                return typeof(lua_State);
+                return typeof(LuaState.lua_State);
             }
             else if (type == TYPE_CALLINFO)
             {
@@ -1119,7 +1119,7 @@ namespace kurumi
             {
                 return 524;
             }
-            else if (t == typeof(lua_State))
+            else if (t == typeof(LuaState.lua_State))
             {
                 return 120;
             }

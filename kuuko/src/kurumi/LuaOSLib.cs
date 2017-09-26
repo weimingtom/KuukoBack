@@ -14,7 +14,7 @@ namespace kurumi
 
 	public class LuaOSLib
 	{
-		private static int os_pushresult(lua_State L, int i, LuaConf.CharPtr filename) 
+		private static int os_pushresult(LuaState.lua_State L, int i, LuaConf.CharPtr filename) 
 		{
 			int en = LuaConf.errno();  /* calls to Lua API may change this value */
 			if (i != 0) 
@@ -31,14 +31,14 @@ namespace kurumi
 			}
 		}
 
-		private static int os_execute(lua_State L) 
+		private static int os_execute(LuaState.lua_State L) 
 		{
 			LuaConf.CharPtr strCmdLine = LuaConf.CharPtr.toCharPtr("" + LuaAuxLib.luaL_optstring(L, 1, null));
 			LuaAPI.lua_pushinteger(L, ClassType.processExec(strCmdLine.ToString()));
 			return 1;
 		}
 
-		private static int os_remove(lua_State L) 
+		private static int os_remove(LuaState.lua_State L) 
 		{
 			LuaConf.CharPtr filename = LuaAuxLib.luaL_checkstring(L, 1);
 			int result = 1;
@@ -53,7 +53,7 @@ namespace kurumi
 			return os_pushresult(L, result, filename);
 		}
 
-		private static int os_rename(lua_State L) 
+		private static int os_rename(LuaState.lua_State L) 
 		{
 			LuaConf.CharPtr fromname = LuaAuxLib.luaL_checkstring(L, 1);
 			LuaConf.CharPtr toname = LuaAuxLib.luaL_checkstring(L, 2);
@@ -70,20 +70,20 @@ namespace kurumi
 			return os_pushresult(L, result, fromname);
 		}
 
-		private static int os_tmpname(lua_State L) 
+		private static int os_tmpname(LuaState.lua_State L) 
 		{
 			LuaAPI.lua_pushstring(L, LuaConf.CharPtr.toCharPtr(StreamProxy.GetTempFileName()));
 			return 1;
 		}
 
 
-		private static int os_getenv(lua_State L) 
+		private static int os_getenv(LuaState.lua_State L) 
 		{
 			LuaAPI.lua_pushstring(L, LuaConf.getenv(LuaAuxLib.luaL_checkstring(L, 1)));  /* if null push nil */
 			return 1;
 		}
 
-		private static int os_clock(lua_State L) 
+		private static int os_clock(LuaState.lua_State L) 
 		{
             LuaAPI.lua_pushnumber(L, DateTimeProxy.getClock());
 			return 1;
@@ -96,13 +96,13 @@ namespace kurumi
 		 **   wday=%w+1, yday=%j, isdst=? }
 		 ** =======================================================
 		 */
-		private static void setfield(lua_State L, LuaConf.CharPtr key, int value) 
+		private static void setfield(LuaState.lua_State L, LuaConf.CharPtr key, int value) 
 		{
 			LuaAPI.lua_pushinteger(L, value);
 			LuaAPI.lua_setfield(L, -2, key);
 		}
 
-		private static void setboolfield(lua_State L, LuaConf.CharPtr key, int value) 
+		private static void setboolfield(LuaState.lua_State L, LuaConf.CharPtr key, int value) 
 		{
 			if (value < 0)  /* undefined? */
 			{
@@ -112,7 +112,7 @@ namespace kurumi
 			LuaAPI.lua_setfield(L, -2, key);
 		}
 
-		private static int getboolfield(lua_State L, LuaConf.CharPtr key) 
+		private static int getboolfield(LuaState.lua_State L, LuaConf.CharPtr key) 
 		{
 			int res;
 			LuaAPI.lua_getfield(L, -1, key);
@@ -121,7 +121,7 @@ namespace kurumi
 			return res;
 		}
 
-		private static int getfield(lua_State L, LuaConf.CharPtr key, int d) 
+		private static int getfield(LuaState.lua_State L, LuaConf.CharPtr key, int d) 
 		{
 			int res;
 			LuaAPI.lua_getfield(L, -1, key);
@@ -141,7 +141,7 @@ namespace kurumi
 			return res;
 		}
 
-		private static int os_date(lua_State L) 
+		private static int os_date(LuaState.lua_State L) 
 		{
 			LuaConf.CharPtr s = LuaAuxLib.luaL_optstring(L, 1, LuaConf.CharPtr.toCharPtr("%c"));
 			DateTimeProxy stm = new DateTimeProxy();
@@ -199,7 +199,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static int os_time(lua_State L) 
+		private static int os_time(LuaState.lua_State L) 
 		{
 			DateTimeProxy t = new DateTimeProxy();
 			if (Lua.lua_isnoneornil(L, 1))  /* called without args? */
@@ -223,7 +223,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static int os_difftime(lua_State L) 
+		private static int os_difftime(LuaState.lua_State L) 
 		{
 			long ticks = (long)LuaAuxLib.luaL_checknumber(L, 1) - (long)LuaAuxLib.luaL_optnumber(L, 2, 0);
             LuaAPI.lua_pushnumber(L, ticks / 10000000); //FIXME: ticks / TimeSpan.TicksPerSecond
@@ -233,7 +233,7 @@ namespace kurumi
 		/* }====================================================== */
 
 		// locale not supported yet
-		private static int os_setlocale(lua_State L)
+		private static int os_setlocale(LuaState.lua_State L)
 		{
 			/*
 		  static string[] cat = {LC_ALL, LC_COLLATE, LC_CTYPE, LC_MONETARY,
@@ -249,7 +249,7 @@ namespace kurumi
 			return (l.ToString().Equals("C")) ? 1 : 0;
 		}
 
-		private static int os_exit(lua_State L) 
+		private static int os_exit(LuaState.lua_State L) 
 		{
 			Environment.Exit(LuaConf.EXIT_SUCCESS);
 			return 0;
@@ -279,7 +279,7 @@ namespace kurumi
 				this.name = name;
 			}
 			
-			public int exec(lua_State L)
+			public int exec(LuaState.lua_State L)
 			{
 				if ("os_clock".Equals(name))
 				{
@@ -335,7 +335,7 @@ namespace kurumi
 		
 		/* }====================================================== */
 
-		public static int luaopen_os (lua_State L) 
+		public static int luaopen_os (LuaState.lua_State L) 
 		{
 			LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_OSLIBNAME), syslib);
 			return 1;

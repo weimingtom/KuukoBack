@@ -206,7 +206,7 @@ public class ClassType {
 				result = new Udata();
 			}
 			else if (type == TYPE_LUA_STATE) {
-				result = new lua_State();
+				result = new LuaState.lua_State();
 			}
 			else if (type == TYPE_CALLINFO) {
 				result = new LuaState.CallInfo();

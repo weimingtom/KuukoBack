@@ -7,9 +7,9 @@ namespace kurumi
 {
 	public class OpenValRef : LuaState.GCObjectRef
 	{
-		private lua_State L;
+		private LuaState.lua_State L;
 		
-		public OpenValRef(lua_State L) 
+		public OpenValRef(LuaState.lua_State L) 
 		{ 
 			this.L = L; 
 		}

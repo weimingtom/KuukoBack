@@ -25,7 +25,7 @@ public class LuaInit {
 			this.name = name;
 		}
 
-		public final int exec(lua_State L) {
+		public final int exec(LuaState.lua_State L) {
 			if ((new String("LuaBaseLib.luaopen_base")).equals(name)) {
 				return LuaBaseLib.luaopen_base(L);
 			}
@@ -57,7 +57,7 @@ public class LuaInit {
 	}
 
 
-	public static void luaL_openlibs(lua_State L) {
+	public static void luaL_openlibs(LuaState.lua_State L) {
 		for (int i = 0; i < lualibs.length - 1; i++) {
 			luaL_Reg lib = lualibs[i];
 			Lua.lua_pushcfunction(L, lib.func);

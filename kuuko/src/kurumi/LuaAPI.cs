@@ -21,17 +21,17 @@ namespace kurumi
 			"$Authors: " + Lua.LUA_AUTHORS + " $\n" +
 			"$URL: www.lua.org $\n";
 
-		public static void api_checknelems(lua_State L, int n)
+		public static void api_checknelems(LuaState.lua_State L, int n)
 		{
 			LuaLimits.api_check(L, n <= TValue.minus(L.top, L.base_));
 		}
 
-		public static void api_checkvalidindex(lua_State L, TValue/*StkId*/ i)
+		public static void api_checkvalidindex(LuaState.lua_State L, TValue/*StkId*/ i)
 		{
 			LuaLimits.api_check(L, i != LuaObject.luaO_nilobject);
 		}
 
-		public static void api_incr_top(lua_State L)
+		public static void api_incr_top(LuaState.lua_State L)
 		{
 			LuaLimits.api_check(L, TValue.lessThan(L.top, L.ci.top));
 			TValue[] top = new TValue[1];
@@ -40,7 +40,7 @@ namespace kurumi
 			L.top = top[0];
 		}
 
-		static TValue index2adr(lua_State L, int idx)
+		static TValue index2adr(LuaState.lua_State L, int idx)
 		{
 			if (idx > 0)
 			{
@@ -91,7 +91,7 @@ namespace kurumi
 			}
 		}
 
-		private static Table getcurrenv(lua_State L)
+		private static Table getcurrenv(LuaState.lua_State L)
 		{
 			if (L.ci == L.base_ci[0])  /* no enclosing function? */
 			{
@@ -104,13 +104,13 @@ namespace kurumi
 			}
 		}
 
-		public static void luaA_pushobject(lua_State L, TValue o)
+		public static void luaA_pushobject(LuaState.lua_State L, TValue o)
 		{
 			LuaObject.setobj2s(L, L.top, o);
 			api_incr_top(L);
 		}
 
-		public static int lua_checkstack(lua_State L, int size)
+		public static int lua_checkstack(LuaState.lua_State L, int size)
 		{
 			int res = 1;
 			LuaLimits.lua_lock(L);
@@ -130,7 +130,7 @@ namespace kurumi
 			return res;
 		}
 
-		public static void lua_xmove(lua_State from, lua_State to, int n)
+		public static void lua_xmove(LuaState.lua_State from, LuaState.lua_State to, int n)
 		{
 			int i;
             if (from == to)
@@ -153,12 +153,12 @@ namespace kurumi
 			LuaLimits.lua_unlock(to);
 		}
 
-		public static void lua_setlevel(lua_State from, lua_State to)
+		public static void lua_setlevel(LuaState.lua_State from, LuaState.lua_State to)
 		{
 			to.nCcalls = from.nCcalls;
 		}
 
-		public static Lua.lua_CFunction lua_atpanic(lua_State L, Lua.lua_CFunction panicf)
+		public static Lua.lua_CFunction lua_atpanic(LuaState.lua_State L, Lua.lua_CFunction panicf)
 		{
 			Lua.lua_CFunction old;
 			LuaLimits.lua_lock(L);
@@ -168,9 +168,9 @@ namespace kurumi
 			return old;
 		}
 
-		public static lua_State lua_newthread(lua_State L)
+		public static LuaState.lua_State lua_newthread(LuaState.lua_State L)
 		{
-			lua_State L1;
+			LuaState.lua_State L1;
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
 			L1 = LuaState.luaE_newthread(L);
@@ -184,12 +184,12 @@ namespace kurumi
 		/*
 		 ** basic stack manipulation
 		 */
-		public static int lua_gettop(lua_State L)
+		public static int lua_gettop(LuaState.lua_State L)
 		{
 			return LuaLimits.cast_int(TValue.minus(L.top, L.base_));
 		}
 
-		public static void lua_settop(lua_State L, int idx)
+		public static void lua_settop(LuaState.lua_State L, int idx)
 		{
 			LuaLimits.lua_lock(L);
 			if (idx >= 0)
@@ -212,7 +212,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_remove(lua_State L, int idx)
+		public static void lua_remove(LuaState.lua_State L, int idx)
 		{
 			TValue/*StkId*/ p;
 			LuaLimits.lua_lock(L);
@@ -229,7 +229,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_insert(lua_State L, int idx)
+		public static void lua_insert(LuaState.lua_State L, int idx)
 		{
 			TValue/*StkId*/ p;
 			TValue[]/*StkId*/ q = new TValue[1];
@@ -245,7 +245,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_replace(lua_State L, int idx)
+		public static void lua_replace(LuaState.lua_State L, int idx)
 		{
 			TValue/*StkId*/ o;
 			LuaLimits.lua_lock(L);
@@ -279,7 +279,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_pushvalue(lua_State L, int idx)
+		public static void lua_pushvalue(LuaState.lua_State L, int idx)
 		{
 			LuaLimits.lua_lock(L);
 			LuaObject.setobj2s(L, L.top, index2adr(L, idx));
@@ -290,25 +290,25 @@ namespace kurumi
 		/*
 		 ** access functions (stack . C)
 		 */
-		public static int lua_type(lua_State L, int idx)
+		public static int lua_type(LuaState.lua_State L, int idx)
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			return (o == LuaObject.luaO_nilobject) ? Lua.LUA_TNONE : LuaObject.ttype(o);
 		}
 
-		public static LuaConf.CharPtr lua_typename(lua_State L, int t)
+		public static LuaConf.CharPtr lua_typename(LuaState.lua_State L, int t)
 		{
 			//UNUSED(L);
 			return (t == Lua.LUA_TNONE) ? LuaConf.CharPtr.toCharPtr("no value") : LuaTM.luaT_typenames[t];
 		}
 
-		public static bool lua_iscfunction(lua_State L, int idx)
+		public static bool lua_iscfunction(LuaState.lua_State L, int idx)
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			return LuaObject.iscfunction(o);
 		}
 
-		public static int lua_isnumber(lua_State L, int idx)
+		public static int lua_isnumber(LuaState.lua_State L, int idx)
 		{
 			TValue n = new TValue();
 			TValue o = index2adr(L, idx);
@@ -319,19 +319,19 @@ namespace kurumi
 			return ret;
 		}
 
-		public static int lua_isstring(lua_State L, int idx) 
+		public static int lua_isstring(LuaState.lua_State L, int idx) 
 		{
 			int t = lua_type(L, idx);
 			return (t == Lua.LUA_TSTRING || t == Lua.LUA_TNUMBER) ? 1 : 0;
 		}
 
-		public static int lua_isuserdata(lua_State L, int idx) 
+		public static int lua_isuserdata(LuaState.lua_State L, int idx) 
 		{
 			TValue o = index2adr(L, idx);
 			return (LuaObject.ttisuserdata(o) || LuaObject.ttislightuserdata(o)) ? 1 : 0;
 		}
 
-		public static int lua_rawequal(lua_State L, int index1, int index2) 
+		public static int lua_rawequal(LuaState.lua_State L, int index1, int index2) 
 		{
 			TValue/*StkId*/ o1 = index2adr(L, index1);
 			TValue/*StkId*/ o2 = index2adr(L, index2);
@@ -339,7 +339,7 @@ namespace kurumi
 				: LuaObject.luaO_rawequalObj(o1, o2);
 		}
 
-		public static int lua_equal(lua_State L, int index1, int index2) 
+		public static int lua_equal(LuaState.lua_State L, int index1, int index2) 
 		{
 			TValue/*StkId*/ o1, o2;
 			int i;
@@ -351,7 +351,7 @@ namespace kurumi
 			return i;
 		}
 
-		public static int lua_lessthan(lua_State L, int index1, int index2) 
+		public static int lua_lessthan(LuaState.lua_State L, int index1, int index2) 
 		{
 			TValue/*StkId*/ o1, o2;
 			int i;
@@ -364,7 +364,7 @@ namespace kurumi
 			return i;
 		}
 
-		public static Double/*lua_Number*/ lua_tonumber(lua_State L, int idx) 
+		public static Double/*lua_Number*/ lua_tonumber(LuaState.lua_State L, int idx) 
 		{
 			TValue n = new TValue();
 			TValue o = index2adr(L, idx);
@@ -382,7 +382,7 @@ namespace kurumi
 			}
 		}
 
-		public static int/*Int32*//*lua_Integer*/ lua_tointeger(lua_State L, int idx) 
+		public static int/*Int32*//*lua_Integer*/ lua_tointeger(LuaState.lua_State L, int idx) 
 		{
 			TValue n = new TValue();
 			TValue o = index2adr(L, idx);
@@ -403,13 +403,13 @@ namespace kurumi
 			}
 		}
 
-		public static int lua_toboolean(lua_State L, int idx) 
+		public static int lua_toboolean(LuaState.lua_State L, int idx) 
 		{
 			TValue o = index2adr(L, idx);
 			return (LuaObject.l_isfalse(o) == 0) ? 1 : 0;
 		}
 
-		public static LuaConf.CharPtr lua_tolstring(lua_State L, int idx, /*out*/ int[]/*uint*/ len)
+		public static LuaConf.CharPtr lua_tolstring(LuaState.lua_State L, int idx, /*out*/ int[]/*uint*/ len)
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			if (!LuaObject.ttisstring(o))
@@ -429,7 +429,7 @@ namespace kurumi
 			return LuaObject.svalue(o);
 		}
 
-		public static int/*uint*/ lua_objlen (lua_State L, int idx) 
+		public static int/*uint*/ lua_objlen (LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			switch (LuaObject.ttype(o))
@@ -457,13 +457,13 @@ namespace kurumi
 			}
 		}
 
-		public static Lua.lua_CFunction lua_tocfunction(lua_State L, int idx) 
+		public static Lua.lua_CFunction lua_tocfunction(LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			return (!LuaObject.iscfunction(o)) ? null : LuaObject.clvalue(o).c.f;
 		}
 
-		public static object lua_touserdata(lua_State L, int idx) 
+		public static object lua_touserdata(LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			switch (LuaObject.ttype(o))
@@ -483,13 +483,13 @@ namespace kurumi
 			}
 		}
 
-		public static lua_State lua_tothread(lua_State L, int idx) 
+		public static LuaState.lua_State lua_tothread(LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			return (!LuaObject.ttisthread(o)) ? null : LuaObject.thvalue(o);
 		}
 
-		public static object lua_topointer(lua_State L, int idx) 
+		public static object lua_topointer(LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ o = index2adr(L, idx);
 			switch (LuaObject.ttype(o))
@@ -521,7 +521,7 @@ namespace kurumi
 		/*
 		 ** push functions (C . stack)
 		 */
-		public static void lua_pushnil(lua_State L) 
+		public static void lua_pushnil(LuaState.lua_State L) 
 		{
 			LuaLimits.lua_lock(L);
 			LuaObject.setnilvalue(L.top);
@@ -529,7 +529,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_pushnumber(lua_State L, double/*Double*//*lua_Number*/ n) 
+		public static void lua_pushnumber(LuaState.lua_State L, double/*Double*//*lua_Number*/ n) 
 		{
 			LuaLimits.lua_lock(L);
 			LuaObject.setnvalue(L.top, n);
@@ -537,7 +537,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_pushinteger(lua_State L, int/*Int32*//*lua_Integer*/ n) 
+		public static void lua_pushinteger(LuaState.lua_State L, int/*Int32*//*lua_Integer*/ n) 
 		{
 			LuaLimits.lua_lock(L);
 			LuaObject.setnvalue(L.top, LuaLimits.cast_num(n));
@@ -545,7 +545,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_pushlstring (lua_State L, LuaConf.CharPtr s, int/*uint*/ len) 
+		public static void lua_pushlstring (LuaState.lua_State L, LuaConf.CharPtr s, int/*uint*/ len) 
 		{
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
@@ -554,7 +554,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_pushstring(lua_State L, LuaConf.CharPtr s) 
+		public static void lua_pushstring(LuaState.lua_State L, LuaConf.CharPtr s) 
 		{
 			if (LuaConf.CharPtr.isEqual(s, null))
 			{
@@ -566,7 +566,7 @@ namespace kurumi
 			}
 		}
 
-		public static LuaConf.CharPtr lua_pushvfstring(lua_State L, LuaConf.CharPtr fmt, object[] argp) 
+		public static LuaConf.CharPtr lua_pushvfstring(LuaState.lua_State L, LuaConf.CharPtr fmt, object[] argp) 
 		{
 			LuaConf.CharPtr ret;
 			LuaLimits.lua_lock(L);
@@ -576,7 +576,7 @@ namespace kurumi
 			return ret;
 		}
 
-		public static LuaConf.CharPtr lua_pushfstring(lua_State L, LuaConf.CharPtr fmt)
+		public static LuaConf.CharPtr lua_pushfstring(LuaState.lua_State L, LuaConf.CharPtr fmt)
 		{
 			LuaConf.CharPtr ret;
 			LuaLimits.lua_lock(L);
@@ -586,7 +586,7 @@ namespace kurumi
 			return ret;
 		}
 
-		public static LuaConf.CharPtr lua_pushfstring(lua_State L, LuaConf.CharPtr fmt, params object[] p)
+		public static LuaConf.CharPtr lua_pushfstring(LuaState.lua_State L, LuaConf.CharPtr fmt, params object[] p)
 		{
 			LuaConf.CharPtr ret;
 			LuaLimits.lua_lock(L);
@@ -596,7 +596,7 @@ namespace kurumi
 			return ret;
 		}
 
-		public static void lua_pushcclosure(lua_State L, Lua.lua_CFunction fn, int n)
+		public static void lua_pushcclosure(LuaState.lua_State L, Lua.lua_CFunction fn, int n)
 		{
 			LuaObject.Closure cl;
 			LuaLimits.lua_lock(L);
@@ -616,7 +616,7 @@ namespace kurumi
 		}
 
 
-		public static void lua_pushboolean(lua_State L, int b) 
+		public static void lua_pushboolean(LuaState.lua_State L, int b) 
 		{
 			LuaLimits.lua_lock(L);
 			LuaObject.setbvalue(L.top, (b != 0) ? 1 : 0);  /* ensure that true is 1 */
@@ -624,7 +624,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_pushlightuserdata(lua_State L, object p) 
+		public static void lua_pushlightuserdata(LuaState.lua_State L, object p) 
 		{
 			LuaLimits.lua_lock(L);
 			LuaObject.setpvalue(L.top, p);
@@ -632,7 +632,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static int lua_pushthread (lua_State L) 
+		public static int lua_pushthread (LuaState.lua_State L) 
 		{
 			LuaLimits.lua_lock(L);
 			LuaObject.setthvalue(L, L.top, L);
@@ -644,7 +644,7 @@ namespace kurumi
 		/*
 		 ** get functions (Lua . stack)
 		 */
-		public static void lua_gettable (lua_State L, int idx) 
+		public static void lua_gettable (LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ t;
 			LuaLimits.lua_lock(L);
@@ -654,7 +654,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_getfield(lua_State L, int idx, LuaConf.CharPtr k)
+		public static void lua_getfield(LuaState.lua_State L, int idx, LuaConf.CharPtr k)
 		{
 			TValue/*StkId*/ t;
 			TValue key = new TValue();
@@ -667,7 +667,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_rawget(lua_State L, int idx) 
+		public static void lua_rawget(LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ t;
 			LuaLimits.lua_lock(L);
@@ -677,7 +677,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_rawgeti(lua_State L, int idx, int n) 
+		public static void lua_rawgeti(LuaState.lua_State L, int idx, int n) 
 		{
 			TValue/*StkId*/ o;
 			LuaLimits.lua_lock(L);
@@ -688,7 +688,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_createtable(lua_State L, int narray, int nrec) 
+		public static void lua_createtable(LuaState.lua_State L, int narray, int nrec) 
 		{
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
@@ -697,7 +697,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static int lua_getmetatable(lua_State L, int objindex) 
+		public static int lua_getmetatable(LuaState.lua_State L, int objindex) 
 		{
 			TValue obj;
 			Table mt = null;
@@ -736,7 +736,7 @@ namespace kurumi
 			return res;
 		}
 
-		public static void lua_getfenv(lua_State L, int idx) 
+		public static void lua_getfenv(LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ o;
 			LuaLimits.lua_lock(L);
@@ -773,7 +773,7 @@ namespace kurumi
 		/*
 		 ** set functions (stack . Lua)
 		 */
-		public static void lua_settable(lua_State L, int idx) 
+		public static void lua_settable(LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ t;
 			LuaLimits.lua_lock(L);
@@ -785,7 +785,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_setfield(lua_State L, int idx, LuaConf.CharPtr k) 
+		public static void lua_setfield(LuaState.lua_State L, int idx, LuaConf.CharPtr k) 
 		{
 			TValue/*StkId*/ t;
 			TValue key = new TValue();
@@ -802,7 +802,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_rawset(lua_State L, int idx) 
+		public static void lua_rawset(LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ t;
 			LuaLimits.lua_lock(L);
@@ -815,7 +815,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static void lua_rawseti(lua_State L, int idx, int n) 
+		public static void lua_rawseti(LuaState.lua_State L, int idx, int n) 
 		{
 			TValue/*StkId*/ o;
 			LuaLimits.lua_lock(L);
@@ -831,7 +831,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static int lua_setmetatable(lua_State L, int objindex) 
+		public static int lua_setmetatable(LuaState.lua_State L, int objindex) 
 		{
 			TValue obj;
 			Table mt;
@@ -882,7 +882,7 @@ namespace kurumi
 			return 1;
 		}
 
-		public static int lua_setfenv(lua_State L, int idx) 
+		public static int lua_setfenv(LuaState.lua_State L, int idx) 
 		{
 			TValue/*StkId*/ o;
 			int res = 1;
@@ -929,7 +929,7 @@ namespace kurumi
 		/*
 		 ** `load' and `call' functions (run Lua code)
 		 */
-		public static void adjustresults(lua_State L, int nres) 
+		public static void adjustresults(LuaState.lua_State L, int nres) 
 		{
 			if (nres == Lua.LUA_MULTRET && TValue.greaterEqual(L.top, L.ci.top))
 			{
@@ -937,12 +937,12 @@ namespace kurumi
 			}
 		}
 
-		public static void checkresults(lua_State L, int na, int nr) 
+		public static void checkresults(LuaState.lua_State L, int na, int nr) 
 		{
 			LuaLimits.api_check(L, (nr) == Lua.LUA_MULTRET || (TValue.minus(L.ci.top, L.top) >= (nr) - (na)));
 		}
 		
-		public static void lua_call(lua_State L, int nargs, int nresults) 
+		public static void lua_call(LuaState.lua_State L, int nargs, int nresults) 
 		{
 			TValue/*StkId*/ func;
 			LuaLimits.lua_lock(L);
@@ -964,7 +964,7 @@ namespace kurumi
 			public int nresults;
 		}		
 		
-		static void f_call(lua_State L, object ud) 
+		static void f_call(LuaState.lua_State L, object ud) 
 		{
 			CallS c = ud as CallS;
 			LuaDo.luaD_call(L, c.func, c.nresults);
@@ -972,13 +972,13 @@ namespace kurumi
 
 		public class f_call_delegate : Pfunc
 		{
-			public void exec(lua_State L, object ud)
+			public void exec(LuaState.lua_State L, object ud)
 			{
 				f_call(L, ud);
 			}
 		}       
 		
-		public static int lua_pcall(lua_State L, int nargs, int nresults, int errfunc) 
+		public static int lua_pcall(LuaState.lua_State L, int nargs, int nresults, int errfunc) 
 		{
 			CallS c = new CallS();
 			int status;
@@ -1014,7 +1014,7 @@ namespace kurumi
 			public object ud;
 		}
 		
-		static void f_Ccall(lua_State L, object ud) 
+		static void f_Ccall(LuaState.lua_State L, object ud) 
 		{
 			CCallS c = ud as CCallS;
 			LuaObject.Closure cl;
@@ -1029,13 +1029,13 @@ namespace kurumi
 
 		public class f_Ccall_delegate : Pfunc
 		{
-			public void exec(lua_State L, object ud)
+			public void exec(LuaState.lua_State L, object ud)
 			{
 				f_Ccall(L, ud);
 			}
 		}
 		
-		public static int lua_cpcall(lua_State L, Lua.lua_CFunction func, object ud) 
+		public static int lua_cpcall(LuaState.lua_State L, Lua.lua_CFunction func, object ud) 
 		{
 			CCallS c = new CCallS();
 			int status;
@@ -1047,7 +1047,7 @@ namespace kurumi
 			return status;
 		}
 
-		public static int lua_load(lua_State L, Lua.lua_Reader reader, object data, LuaConf.CharPtr chunkname) 
+		public static int lua_load(LuaState.lua_State L, Lua.lua_Reader reader, object data, LuaConf.CharPtr chunkname) 
 		{
 			ZIO z = new ZIO();
 			int status;
@@ -1062,7 +1062,7 @@ namespace kurumi
 			return status;
 		}
 
-		public static int lua_dump(lua_State L, Lua.lua_Writer writer, object data) 
+		public static int lua_dump(LuaState.lua_State L, Lua.lua_Writer writer, object data) 
 		{
 			int status;
 			TValue o;
@@ -1081,7 +1081,7 @@ namespace kurumi
 			return status;
 		}
 
-		public static int lua_status(lua_State L)
+		public static int lua_status(LuaState.lua_State L)
 		{
 			return L.status;
 		}
@@ -1089,7 +1089,7 @@ namespace kurumi
 		/*
 		 ** Garbage-collection function
 		 */
-		public static int lua_gc(lua_State L, int what, int data)
+		public static int lua_gc(LuaState.lua_State L, int what, int data)
 		{
 			int res = 0;
 			LuaState.global_State g;
@@ -1171,7 +1171,7 @@ namespace kurumi
 		/*
 		 ** miscellaneous functions
 		 */
-		public static int lua_error(lua_State L)
+		public static int lua_error(LuaState.lua_State L)
 		{
 			LuaLimits.lua_lock(L);
 			api_checknelems(L, 1);
@@ -1180,7 +1180,7 @@ namespace kurumi
 			return 0;  /* to avoid warnings */
 		}
 
-		public static int lua_next(lua_State L, int idx)
+		public static int lua_next(LuaState.lua_State L, int idx)
 		{
 			TValue/*StkId*/ t;
 			int more;
@@ -1203,7 +1203,7 @@ namespace kurumi
 			return more;
 		}
 
-		public static void lua_concat(lua_State L, int n)
+		public static void lua_concat(LuaState.lua_State L, int n)
 		{
 			LuaLimits.lua_lock(L);
 			api_checknelems(L, n);
@@ -1223,7 +1223,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static Lua.lua_Alloc lua_getallocf(lua_State L, /*ref*/ object[] ud)
+		public static Lua.lua_Alloc lua_getallocf(LuaState.lua_State L, /*ref*/ object[] ud)
 		{
 			Lua.lua_Alloc f;
 			LuaLimits.lua_lock(L);
@@ -1236,7 +1236,7 @@ namespace kurumi
 			return f;
 		}
 
-		public static void lua_setallocf(lua_State L, Lua.lua_Alloc f, object ud)
+		public static void lua_setallocf(LuaState.lua_State L, Lua.lua_Alloc f, object ud)
 		{
 			LuaLimits.lua_lock(L);
 			LuaState.G(L).ud = ud;
@@ -1244,7 +1244,7 @@ namespace kurumi
 			LuaLimits.lua_unlock(L);
 		}
 
-		public static object lua_newuserdata(lua_State L, int/*uint*/ size)
+		public static object lua_newuserdata(LuaState.lua_State L, int/*uint*/ size)
 		{
 			Udata u;
 			LuaLimits.lua_lock(L);
@@ -1256,7 +1256,7 @@ namespace kurumi
 			return u.user_data;
 		}
 
-		public static object lua_newuserdata(lua_State L, ClassType t)
+		public static object lua_newuserdata(LuaState.lua_State L, ClassType t)
 		{
 			Udata u;
 			LuaLimits.lua_lock(L);
@@ -1297,7 +1297,7 @@ namespace kurumi
 			}
 		}
 
-		public static LuaConf.CharPtr lua_getupvalue(lua_State L, int funcindex, int n)
+		public static LuaConf.CharPtr lua_getupvalue(LuaState.lua_State L, int funcindex, int n)
 		{
 			LuaConf.CharPtr name;
 			TValue val = new TValue();
@@ -1315,7 +1315,7 @@ namespace kurumi
 			return name;
 		}
 
-		public static LuaConf.CharPtr lua_setupvalue(lua_State L, int funcindex, int n)
+		public static LuaConf.CharPtr lua_setupvalue(LuaState.lua_State L, int funcindex, int n)
 		{
 			LuaConf.CharPtr name;
 			TValue val = new TValue();

@@ -15,7 +15,7 @@ package kurumi;
 		
 		public LuaConf.CharPtr src_init;  /* init of source string */
 		public LuaConf.CharPtr src_end;  /* end (`\0') of source string */
-		public lua_State L;
+		public LuaState.lua_State L;
 		public int level;  /* total number of captures (finished or unfinished) */
 
 		public capture_[] capture = new capture_[LuaConf.LUA_MAXCAPTURES];

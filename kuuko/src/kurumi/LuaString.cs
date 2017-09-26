@@ -21,12 +21,12 @@ namespace kurumi
 			return (int)u.len; 
 		}
 
-		public static TString luaS_new(lua_State L, LuaConf.CharPtr s) 
+		public static TString luaS_new(LuaState.lua_State L, LuaConf.CharPtr s) 
 		{ 
 			return luaS_newlstr(L, s, /*(uint)*/LuaConf.strlen(s)); 
 		}
 		
-		public static TString luaS_newliteral(lua_State L, LuaConf.CharPtr s) 
+		public static TString luaS_newliteral(LuaState.lua_State L, LuaConf.CharPtr s) 
 		{ 
 			return luaS_newlstr(L, s, /*(uint)*/LuaConf.strlen(s)); 
 		}
@@ -41,7 +41,7 @@ namespace kurumi
 			s.getTsv().marked = marked;
 		}
 
-		public static void luaS_resize(lua_State L, int newsize) 
+		public static void luaS_resize(LuaState.lua_State L, int newsize) 
 		{
 			LuaState.GCObject[] newhash;
 			stringtable tb;
@@ -89,7 +89,7 @@ namespace kurumi
 			tb.hash = newhash;
 		}
 
-		public static TString newlstr(lua_State L, LuaConf.CharPtr str, int/*uint*/ l, long/*int*//*uint*/ h) 
+		public static TString newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int/*uint*/ l, long/*int*//*uint*/ h) 
 		{
 			TString ts;
 			stringtable tb;
@@ -119,7 +119,7 @@ namespace kurumi
 			return ts;
 		}
 
-		public static TString luaS_newlstr(lua_State L, LuaConf.CharPtr str, int/*uint*/ l) 
+		public static TString luaS_newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int/*uint*/ l) 
 		{
 			LuaState.GCObject o;
 			/*FIXME:*/
@@ -152,7 +152,7 @@ namespace kurumi
 			return res;
 		}
 
-		public static Udata luaS_newudata(lua_State L, int/*uint*/ s, Table e)
+		public static Udata luaS_newudata(LuaState.lua_State L, int/*uint*/ s, Table e)
 		{
 			Udata u = new Udata();
 			u.uv.marked = LuaGC.luaC_white(LuaState.G(L));  /* is not finalized */
@@ -167,7 +167,7 @@ namespace kurumi
 			return u;
 		}
 
-        public static Udata luaS_newudata(lua_State L, ClassType t, Table e)
+        public static Udata luaS_newudata(LuaState.lua_State L, ClassType t, Table e)
 		{
 			Udata u = new Udata();
 			u.uv.marked = LuaGC.luaC_white(LuaState.G(L));  /* is not finalized */

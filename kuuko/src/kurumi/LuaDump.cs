@@ -14,7 +14,7 @@ namespace kurumi
 	{
 	    public class DumpState
 	    {
-	        public lua_State L;
+	        public LuaState.lua_State L;
 	        public Lua.lua_Writer writer;
 	        public object data;
 	        public int strip;
@@ -203,7 +203,7 @@ namespace kurumi
 		/*
 		 ** dump Lua function as precompiled chunk
 		 */
-		public static int luaU_dump (lua_State L, Proto f, Lua.lua_Writer w, object data, int strip)
+		public static int luaU_dump (LuaState.lua_State L, Proto f, Lua.lua_Writer w, object data, int strip)
 		{
 			DumpState D = new DumpState();
 			D.L = L;

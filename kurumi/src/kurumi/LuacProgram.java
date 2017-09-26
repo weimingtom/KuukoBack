@@ -119,11 +119,11 @@ public class LuacProgram {
 		return i;
 	}
 
-	private static Proto toproto(lua_State L, int i) {
+	private static Proto toproto(LuaState.lua_State L, int i) {
 		return LuaObject.clvalue(TValue.plus(L.top, i)).l.p;
 	}
 
-	private static Proto combine(lua_State L, int n) {
+	private static Proto combine(LuaState.lua_State L, int n) {
 		if (n == 1) {
 			return toproto(L, -1);
 		}
@@ -155,19 +155,19 @@ public class LuacProgram {
 	}
 
 	//FIXME:StreamProxy/*object*/ u
-	private static int writer(lua_State L, LuaConf.CharPtr p, int size, Object u) { //uint
+	private static int writer(LuaState.lua_State L, LuaConf.CharPtr p, int size, Object u) { //uint
 		//UNUSED(L);
 		return ((LuaConf.fwrite(p, (int)size, 1, (StreamProxy)u) != 1) && (size != 0)) ? 1 : 0;
 	}
 
 	public static class writer_delegate implements Lua.lua_Writer {
-		public final int exec(lua_State L, LuaConf.CharPtr p, int sz, Object ud) { //uint
+		public final int exec(LuaState.lua_State L, LuaConf.CharPtr p, int sz, Object ud) { //uint
 			//FIXME:StreamProxy/*object*/ u
 			return writer(L, p, sz, ud);
 		}
 	}
 
-	private static int pmain(lua_State L) {
+	private static int pmain(LuaState.lua_State L) {
 		Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
 		int argc = s.argc;
 		String[] argv = s.argv;
@@ -215,7 +215,7 @@ public class LuacProgram {
 		}
 		args = newargs;
 
-		lua_State L;
+		LuaState.lua_State L;
 		Smain s = new Smain();
 		int argc = args.length;
 		int i = doargs(argc, args);
@@ -243,7 +243,7 @@ public class LuacProgram {
 	}
 
 	public static class pmain_delegate implements Lua.lua_CFunction {
-		public final int exec(lua_State L) {
+		public final int exec(LuaState.lua_State L) {
 			return pmain(L);
 		}
 	}

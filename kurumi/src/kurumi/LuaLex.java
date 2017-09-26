@@ -27,7 +27,7 @@ public class LuaLex {
 		public Token t = new Token();  /* current token */
 		public Token lookahead = new Token();  /* look ahead token */
 		public LuaParser.FuncState fs;  /* `FuncState' is private to the parser */
-		public lua_State L;
+		public LuaState.lua_State L;
 		public ZIO z;  /* input stream */
 		public Mbuffer buff;  /* buffer for tokens */
 		public TString source;  /* current source name */
@@ -70,7 +70,7 @@ public class LuaLex {
 		b.buffer.set(b.n++, (char)c);
 	}
 
-	public static void luaX_init(lua_State L) {
+	public static void luaX_init(LuaState.lua_State L) {
 		int i;
 		for (i = 0; i < NUM_RESERVED; i++) {
 			TString ts = LuaString.luaS_new(L, LuaConf.CharPtr.toCharPtr(luaX_tokens[i]));
@@ -121,7 +121,7 @@ public class LuaLex {
 	}
 
 	public static TString luaX_newstring(LexState ls, LuaConf.CharPtr str, int l) { //uint
-		lua_State L = ls.L;
+		LuaState.lua_State L = ls.L;
 		TString ts = LuaString.luaS_newlstr(L, str, l);
 		TValue o = LuaTable.luaH_setstr(L, ls.fs.h, ts); // entry for `str' 
 		if (LuaObject.ttisnil(o)) {
@@ -142,7 +142,7 @@ public class LuaLex {
 		}
 	}
 
-	public static void luaX_setinput(lua_State L, LexState ls, ZIO z, TString source) {
+	public static void luaX_setinput(LuaState.lua_State L, LexState ls, ZIO z, TString source) {
 		ls.decpoint = '.';
 		ls.L = L;
 		ls.lookahead.token = (int)RESERVED.TK_EOS; // no look-ahead token 

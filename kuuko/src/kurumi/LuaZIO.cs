@@ -28,7 +28,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaZ_initbuffer(lua_State L, Mbuffer buff)
+		public static void luaZ_initbuffer(LuaState.lua_State L, Mbuffer buff)
 		{
 			buff.buffer = null;
 		}
@@ -53,7 +53,7 @@ namespace kurumi
 			buff.n = 0;
 		}
 
-		public static void luaZ_resizebuffer(lua_State L, Mbuffer buff, int size)
+		public static void luaZ_resizebuffer(LuaState.lua_State L, Mbuffer buff, int size)
 		{
 			if (LuaConf.CharPtr.isEqual(buff.buffer, null))
 			{
@@ -66,7 +66,7 @@ namespace kurumi
 			buff.buffsize = /*(uint)*/buff.buffer.chars.Length;
 		}
 
-		public static void luaZ_freebuffer(lua_State L, Mbuffer buff) 
+		public static void luaZ_freebuffer(LuaState.lua_State L, Mbuffer buff) 
 		{
 			luaZ_resizebuffer(L, buff, 0);
 		}
@@ -76,7 +76,7 @@ namespace kurumi
 		public static int luaZ_fill(ZIO z) 
 		{
 			int[]/*uint*/ size = new int[1];
-			lua_State L = z.L;
+			LuaState.lua_State L = z.L;
 			LuaConf.CharPtr buff;
 			LuaLimits.lua_unlock(L);
 			buff = z.reader.exec(L, z.data, /*out*/ size);
@@ -109,7 +109,7 @@ namespace kurumi
 			return char2int(z.p.get(0));
 		}
 
-		public static void luaZ_init(lua_State L, ZIO z, Lua.lua_Reader reader, object data)
+		public static void luaZ_init(LuaState.lua_State L, ZIO z, Lua.lua_Reader reader, object data)
 		{
 			z.L = L;
 			z.reader = reader;
@@ -140,7 +140,7 @@ namespace kurumi
 		}
 
 		/* ------------------------------------------------------------------------ */
-		public static LuaConf.CharPtr luaZ_openspace (lua_State L, Mbuffer buff, int/*uint*/ n) 
+		public static LuaConf.CharPtr luaZ_openspace (LuaState.lua_State L, Mbuffer buff, int/*uint*/ n) 
 		{
 			if (n > buff.buffsize) 
 			{

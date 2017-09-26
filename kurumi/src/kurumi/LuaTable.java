@@ -153,7 +153,7 @@ public class LuaTable {
 //		 ** elements in the array part, then elements in the hash part. The
 //		 ** beginning of a traversal is signalled by -1.
 //		 
-	private static int findindex(lua_State L, Table t, TValue key) { //StkId
+	private static int findindex(LuaState.lua_State L, Table t, TValue key) { //StkId
 		int i;
 		if (LuaObject.ttisnil(key)) {
 			return -1; // first iteration 
@@ -181,7 +181,7 @@ public class LuaTable {
 		}
 	}
 
-	public static int luaH_next(lua_State L, Table t, TValue key) { //StkId
+	public static int luaH_next(LuaState.lua_State L, Table t, TValue key) { //StkId
 		int i = findindex(L, t, key); // find original element 
 		for (i++; i < t.sizearray; i++) {
 			// try first array part 
@@ -289,7 +289,7 @@ public class LuaTable {
 		return totaluse;
 	}
 
-	private static void setarrayvector(lua_State L, Table t, int size) {
+	private static void setarrayvector(LuaState.lua_State L, Table t, int size) {
 		int i;
 		TValue[][] array_ref = new TValue[1][];
 		array_ref[0] = t.array;
@@ -301,7 +301,7 @@ public class LuaTable {
 		t.sizearray = size;
 	}
 
-	private static void setnodevector(lua_State L, Table t, int size) {
+	private static void setnodevector(LuaState.lua_State L, Table t, int size) {
 		int lsize;
 		if (size == 0) {
 			// no elements to hash part? 
@@ -328,7 +328,7 @@ public class LuaTable {
 		t.lastfree = size; // all positions are free 
 	}
 
-	private static void resize(lua_State L, Table t, int nasize, int nhsize) {
+	private static void resize(LuaState.lua_State L, Table t, int nasize, int nhsize) {
 		int i;
 		int oldasize = t.sizearray;
 		int oldhsize = t.lsizenode;
@@ -365,12 +365,12 @@ public class LuaTable {
 		}
 	}
 
-	public static void luaH_resizearray(lua_State L, Table t, int nasize) {
+	public static void luaH_resizearray(LuaState.lua_State L, Table t, int nasize) {
 		int nsize = (Node.isEqual(t.node[0], dummynode)) ? 0 : LuaObject.sizenode(t);
 		resize(L, t, nasize, nsize);
 	}
 
-	private static void rehash(lua_State L, Table t, TValue ek) {
+	private static void rehash(LuaState.lua_State L, Table t, TValue ek) {
 		int[] nasize = new int[1];
 		int na;
 		int[] nums = new int[MAXBITS + 1]; // nums[i] = number of keys between 2^(i-1) and 2^i 
@@ -395,7 +395,7 @@ public class LuaTable {
 //		 ** }=============================================================
 //		 
 
-	public static Table luaH_new(lua_State L, int narray, int nhash) {
+	public static Table luaH_new(LuaState.lua_State L, int narray, int nhash) {
 		Table t = LuaMem.luaM_new_Table(L, new ClassType(ClassType.TYPE_TABLE));
 		LuaGC.luaC_link(L, LuaState.obj2gco(t), (byte)Lua.LUA_TTABLE);
 		t.metatable = null;
@@ -410,7 +410,7 @@ public class LuaTable {
 		return t;
 	}
 
-	public static void luaH_free(lua_State L, Table t) {
+	public static void luaH_free(LuaState.lua_State L, Table t) {
 		if (Node.isNotEqual(t.node[0], dummynode)) {
 			LuaMem.luaM_freearray_Node(L, t.node, new ClassType(ClassType.TYPE_NODE));
 		}
@@ -434,7 +434,7 @@ public class LuaTable {
 //		 ** put new key in its main position; otherwise (colliding node is in its main
 //		 ** position), new key goes to an empty position.
 //		 
-	private static TValue newkey(lua_State L, Table t, TValue key) {
+	private static TValue newkey(LuaState.lua_State L, Table t, TValue key) {
 		Node mp = mainposition(t, key);
 		if (!LuaObject.ttisnil(gval(mp)) || Node.isEqual(mp, dummynode)) {
 			Node othern;
@@ -561,7 +561,7 @@ public class LuaTable {
 		}
 	}
 
-	public static TValue luaH_set(lua_State L, Table t, TValue key) {
+	public static TValue luaH_set(LuaState.lua_State L, Table t, TValue key) {
 		TValue p = luaH_get(t, key);
 		t.flags = 0;
 		if (p != LuaObject.luaO_nilobject) {
@@ -578,7 +578,7 @@ public class LuaTable {
 		}
 	}
 
-	public static TValue luaH_setnum(lua_State L, Table t, int key) {
+	public static TValue luaH_setnum(LuaState.lua_State L, Table t, int key) {
 		TValue p = luaH_getnum(t, key);
 		if (p != LuaObject.luaO_nilobject) {
 			return (TValue)p;
@@ -590,7 +590,7 @@ public class LuaTable {
 		}
 	}
 
-	public static TValue luaH_setstr(lua_State L, Table t, TString key) {
+	public static TValue luaH_setstr(LuaState.lua_State L, Table t, TString key) {
 		TValue p = luaH_getstr(t, key);
 		if (p != LuaObject.luaO_nilobject) {
 			return (TValue)p;

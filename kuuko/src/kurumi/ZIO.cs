@@ -11,7 +11,7 @@ namespace kurumi
 		public LuaConf.CharPtr p;			/* current position in buffer */
 		public Lua.lua_Reader reader;
 		public object data;			/* additional data */
-		public lua_State L;			/* Lua state (for reader) */
+		public LuaState.lua_State L;			/* Lua state (for reader) */
 		
 		//public class ZIO : Zio { };
 	}

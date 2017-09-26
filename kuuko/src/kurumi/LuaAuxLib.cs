@@ -20,8 +20,8 @@ namespace kurumi
 //		public static int luaL_getn(lua_State L, int t);
 //		public static void luaL_setn(lua_State L, int t, int n);
 		//#else
-		public static int luaL_getn(lua_State L, int i) {return (int)LuaAPI.lua_objlen(L, i);}
-		public static void luaL_setn(lua_State L, int i, int j) {} /* no op! */
+		public static int luaL_getn(LuaState.lua_State L, int i) {return (int)LuaAPI.lua_objlen(L, i);}
+		public static void luaL_setn(LuaState.lua_State L, int i, int j) {} /* no op! */
 		//#endif
 
 		//#if LUA_COMPAT_OPENLIB
@@ -36,7 +36,7 @@ namespace kurumi
 		 ** some useful macros
 		 ** ===============================================================
 		 */
-		public static void luaL_argcheck(lua_State L, bool cond, int numarg, string extramsg) 
+		public static void luaL_argcheck(LuaState.lua_State L, bool cond, int numarg, string extramsg) 
 		{
 			if (!cond)
 			{
@@ -44,46 +44,46 @@ namespace kurumi
 			}
 		}
 		
-		public static LuaConf.CharPtr luaL_checkstring(lua_State L, int n) 
+		public static LuaConf.CharPtr luaL_checkstring(LuaState.lua_State L, int n) 
 		{
 			return luaL_checklstring(L, n); 
 		}
 		
-		public static LuaConf.CharPtr luaL_optstring(lua_State L, int n, LuaConf.CharPtr d)
+		public static LuaConf.CharPtr luaL_optstring(LuaState.lua_State L, int n, LuaConf.CharPtr d)
 		{
 			int[]/*uint*/ len = new int[1];
 			return luaL_optlstring(L, n, d, /*out*/ len);
 		}
 		
-		public static int luaL_checkint(lua_State L, int n)	
+		public static int luaL_checkint(LuaState.lua_State L, int n)	
 		{
 			return /*(int)*/luaL_checkinteger(L, n);
 		}
 		
 		public class luaL_checkint_delegate : luaL_opt_delegate_integer
 		{
-			public int/*Int32*//*lua_Integer*/ exec(lua_State L, int narg)
+			public int/*Int32*//*lua_Integer*/ exec(LuaState.lua_State L, int narg)
 			{
 				return luaL_checkint(L, narg);
 			}
 		}
 			
-		public static int luaL_optint(lua_State L, int n, int/*Int32*//*lua_Integer*/ d) 
+		public static int luaL_optint(LuaState.lua_State L, int n, int/*Int32*//*lua_Integer*/ d) 
 		{
 			return /*(int)*/luaL_optinteger(L, n, d); 
 		}
 		
-		public static long luaL_checklong(lua_State L, int n)	
+		public static long luaL_checklong(LuaState.lua_State L, int n)	
 		{
 			return luaL_checkinteger(L, n);
 		}
 		
-		public static long luaL_optlong(lua_State L, int n, int/*Int32*//*lua_Integer*/ d) 
+		public static long luaL_optlong(LuaState.lua_State L, int n, int/*Int32*//*lua_Integer*/ d) 
 		{ 
 			return luaL_optinteger(L, n, d); 
 		}
 
-		public static LuaConf.CharPtr luaL_typename(lua_State L, int i) 
+		public static LuaConf.CharPtr luaL_typename(LuaState.lua_State L, int i) 
 		{ 
 			return LuaAPI.lua_typename(L, LuaAPI.lua_type(L, i)); 
 		}
@@ -94,17 +94,17 @@ namespace kurumi
 		//#define luaL_dostring(L, s) \
 		//    (luaL_loadstring(L, s) || lua_pcall(L, 0, LUA_MULTRET, 0))
 
-		public static void luaL_getmetatable(lua_State L, LuaConf.CharPtr n) 
+		public static void luaL_getmetatable(LuaState.lua_State L, LuaConf.CharPtr n) 
 		{ 
 			LuaAPI.lua_getfield(L, Lua.LUA_REGISTRYINDEX, n); 
 		}
 
-		public static double/*Double*//*lua_Number*/ luaL_opt(lua_State L, luaL_opt_delegate f, int n, Double/*lua_Number*/ d)
+		public static double/*Double*//*lua_Number*/ luaL_opt(LuaState.lua_State L, luaL_opt_delegate f, int n, Double/*lua_Number*/ d)
 		{
 			return Lua.lua_isnoneornil(L, (n != 0) ? d : f.exec(L, n)) ? 1 : 0;
 		}
 
-		public static int/*Int32*//*lua_Integer*/ luaL_opt_integer(lua_State L, luaL_opt_delegate_integer f, int n, Double/*lua_Number*/ d)
+		public static int/*Int32*//*lua_Integer*/ luaL_opt_integer(LuaState.lua_State L, luaL_opt_delegate_integer f, int n, Double/*lua_Number*/ d)
 		{
 			return (int/*Int32*//*lua_Integer*/)(Lua.lua_isnoneornil(L, n) ? d : f.exec(L, (n)));
 		}
@@ -163,7 +163,7 @@ namespace kurumi
 		public const int FREELIST_REF = 0;	/* free list of references */
 
 		/* convert a stack index to positive */
-		public static int abs_index(lua_State L, int i)
+		public static int abs_index(LuaState.lua_State L, int i)
 		{
 			return ((i) > 0 || (i) <= Lua.LUA_REGISTRYINDEX ? (i) : LuaAPI.lua_gettop(L) + (i) + 1);
 		}
@@ -174,7 +174,7 @@ namespace kurumi
 		 ** Error-report functions
 		 ** =======================================================
 		 */
-		public static int luaL_argerror(lua_State L, int narg, LuaConf.CharPtr extramsg) 
+		public static int luaL_argerror(LuaState.lua_State L, int narg, LuaConf.CharPtr extramsg) 
 		{
 			Lua.lua_Debug ar = new Lua.lua_Debug();
 			if (LuaDebug.lua_getstack(L, 0, ar) == 0)  /* no stack frame? */
@@ -199,19 +199,19 @@ namespace kurumi
 				narg, ar.name, extramsg);
 		}
 
-		public static int luaL_typerror(lua_State L, int narg, LuaConf.CharPtr tname) 
+		public static int luaL_typerror(LuaState.lua_State L, int narg, LuaConf.CharPtr tname) 
 		{
 			LuaConf.CharPtr msg = LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("%s expected, got %s"),
 				tname, luaL_typename(L, narg));
 			return luaL_argerror(L, narg, msg);
 		}
 
-		private static void tag_error(lua_State L, int narg, int tag) 
+		private static void tag_error(LuaState.lua_State L, int narg, int tag) 
 		{
 			luaL_typerror(L, narg, LuaAPI.lua_typename(L, tag));
 		}
 
-		public static void luaL_where(lua_State L, int level) 
+		public static void luaL_where(LuaState.lua_State L, int level) 
 		{
 			Lua.lua_Debug ar = new Lua.lua_Debug();
 			if (LuaDebug.lua_getstack(L, level, ar) != 0) 
@@ -228,7 +228,7 @@ namespace kurumi
 			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(""));  /* else, no information available... */
 		}
 
-		public static int luaL_error(lua_State L, LuaConf.CharPtr fmt, params object[] p)
+		public static int luaL_error(LuaState.lua_State L, LuaConf.CharPtr fmt, params object[] p)
 		{
 			luaL_where(L, 1);
 			LuaAPI.lua_pushvfstring(L, fmt, p);
@@ -238,7 +238,7 @@ namespace kurumi
 
 		/* }====================================================== */
 
-		public static int luaL_checkoption(lua_State L, int narg, LuaConf.CharPtr def, LuaConf.CharPtr [] lst) 
+		public static int luaL_checkoption(LuaState.lua_State L, int narg, LuaConf.CharPtr def, LuaConf.CharPtr [] lst) 
 		{
 			LuaConf.CharPtr name = (LuaConf.CharPtr.isNotEqual(def, null)) ? luaL_optstring(L, narg, def) :
 				luaL_checkstring(L, narg);
@@ -253,7 +253,7 @@ namespace kurumi
 			return luaL_argerror(L, narg, LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("invalid option " + LuaConf.getLUA_QS()), name));
 		}
 
-		public static int luaL_newmetatable(lua_State L, LuaConf.CharPtr tname) 
+		public static int luaL_newmetatable(LuaState.lua_State L, LuaConf.CharPtr tname) 
 		{
 			LuaAPI.lua_getfield(L, Lua.LUA_REGISTRYINDEX, tname);  /* get registry.name */
 			if (!Lua.lua_isnil(L, -1))  /* name already in use? */
@@ -267,7 +267,7 @@ namespace kurumi
 			return 1;
 		}
 
-		public static object luaL_checkudata(lua_State L, int ud, LuaConf.CharPtr tname) 
+		public static object luaL_checkudata(LuaState.lua_State L, int ud, LuaConf.CharPtr tname) 
 		{
 			object p = LuaAPI.lua_touserdata(L, ud);
 			if (p != null) 
@@ -289,7 +289,7 @@ namespace kurumi
 			return null;  /* to avoid warnings */
 		}
 
-		public static void luaL_checkstack(lua_State L, int space, LuaConf.CharPtr mes) 
+		public static void luaL_checkstack(LuaState.lua_State L, int space, LuaConf.CharPtr mes) 
 		{
 			if (LuaAPI.lua_checkstack(L, space) == 0)
 			{
@@ -297,7 +297,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaL_checktype(lua_State L, int narg, int t) 
+		public static void luaL_checktype(LuaState.lua_State L, int narg, int t) 
 		{
 			if (LuaAPI.lua_type(L, narg) != t)
 			{
@@ -306,7 +306,7 @@ namespace kurumi
 		}
 
 
-		public static void luaL_checkany(lua_State L, int narg) 
+		public static void luaL_checkany(LuaState.lua_State L, int narg) 
 		{
 			if (LuaAPI.lua_type(L, narg) == Lua.LUA_TNONE)
 			{
@@ -314,13 +314,13 @@ namespace kurumi
 			}
 		}
 
-		public static LuaConf.CharPtr luaL_checklstring(lua_State L, int narg)
+		public static LuaConf.CharPtr luaL_checklstring(LuaState.lua_State L, int narg)
 		{
 			int[]/*uint*/ len = new int[1];
 			return luaL_checklstring(L, narg, /*out*/ len);
 		}
 		
-		public static LuaConf.CharPtr luaL_checklstring(lua_State L, int narg, /*out*/ int[]/*uint*/ len)
+		public static LuaConf.CharPtr luaL_checklstring(LuaState.lua_State L, int narg, /*out*/ int[]/*uint*/ len)
 		{
 			LuaConf.CharPtr s = LuaAPI.lua_tolstring(L, narg, /*out*/ len);
 			if (LuaConf.CharPtr.isEqual(s, null)) 
@@ -330,13 +330,13 @@ namespace kurumi
 			return s;
 		}
 
-		public static LuaConf.CharPtr luaL_optlstring(lua_State L, int narg, LuaConf.CharPtr def)
+		public static LuaConf.CharPtr luaL_optlstring(LuaState.lua_State L, int narg, LuaConf.CharPtr def)
 		{
 			int[]/*uint*/ len = new int[1];
 			return luaL_optlstring(L, narg, def, /*out*/ len);
 		}
 		
-		public static LuaConf.CharPtr luaL_optlstring(lua_State L, int narg, LuaConf.CharPtr def, /*out*/ int[]/*uint*/ len)
+		public static LuaConf.CharPtr luaL_optlstring(LuaState.lua_State L, int narg, LuaConf.CharPtr def, /*out*/ int[]/*uint*/ len)
 		{
 			if (Lua.lua_isnoneornil(L, narg))
 			{
@@ -349,7 +349,7 @@ namespace kurumi
 			}
 		}
 
-		public static double/*Double*//*lua_Number*/ luaL_checknumber(lua_State L, int narg)
+		public static double/*Double*//*lua_Number*/ luaL_checknumber(LuaState.lua_State L, int narg)
 		{
 			double/*Double*//*lua_Number*/ d = LuaAPI.lua_tonumber(L, narg);
 			if ((d == 0) && (LuaAPI.lua_isnumber(L, narg) == 0))  /* avoid extra test when d is not 0 */
@@ -361,18 +361,18 @@ namespace kurumi
 
 		public class luaL_checknumber_delegate : luaL_opt_delegate
 		{
-			public double/*Double*//*lua_Number*/ exec(lua_State L, int narg) 
+			public double/*Double*//*lua_Number*/ exec(LuaState.lua_State L, int narg) 
 			{
 				return luaL_checknumber(L, narg);
 			}
 		}
 		
-		public static double/*Double*//*lua_Number*/ luaL_optnumber(lua_State L, int narg, Double/*lua_Number*/ def)
+		public static double/*Double*//*lua_Number*/ luaL_optnumber(LuaState.lua_State L, int narg, Double/*lua_Number*/ def)
 		{
 			return luaL_opt(L, new luaL_checknumber_delegate(), narg, def);
 		}
 
-		public static int/*Int32*//*lua_Integer*/ luaL_checkinteger(lua_State L, int narg)
+		public static int/*Int32*//*lua_Integer*/ luaL_checkinteger(LuaState.lua_State L, int narg)
 		{
 			int/*Int32*//*lua_Integer*/ d = LuaAPI.lua_tointeger(L, narg);
 			if (d == 0 && LuaAPI.lua_isnumber(L, narg) == 0)  /* avoid extra test when d is not 0 */
@@ -382,18 +382,18 @@ namespace kurumi
 		
 		public class luaL_checkinteger_delegate : luaL_opt_delegate_integer
 		{
-			public int/*Int32*//*lua_Integer*/ exec(lua_State L, int narg)
+			public int/*Int32*//*lua_Integer*/ exec(LuaState.lua_State L, int narg)
 			{
 				return luaL_checkinteger(L, narg);
 			}
 		}
 
-		public static int/*Int32*//*lua_Integer*/ luaL_optinteger(lua_State L, int narg, int/*Int32*//*lua_Integer*/ def)
+		public static int/*Int32*//*lua_Integer*/ luaL_optinteger(LuaState.lua_State L, int narg, int/*Int32*//*lua_Integer*/ def)
 		{
 			return luaL_opt_integer(L, new luaL_checkinteger_delegate(), narg, def);
 		}
 
-		public static int luaL_getmetafield(lua_State L, int obj, LuaConf.CharPtr event_) 
+		public static int luaL_getmetafield(LuaState.lua_State L, int obj, LuaConf.CharPtr event_) 
 		{
 			if (LuaAPI.lua_getmetatable(L, obj) == 0)  /* no metatable? */
 			{
@@ -413,7 +413,7 @@ namespace kurumi
 			}
 		}
 
-		public static int luaL_callmeta (lua_State L, int obj, LuaConf.CharPtr event_) 
+		public static int luaL_callmeta (LuaState.lua_State L, int obj, LuaConf.CharPtr event_) 
 		{
 			obj = abs_index(L, obj);
 			if (luaL_getmetafield(L, obj, event_)==0)  /* no metafield? */
@@ -425,7 +425,7 @@ namespace kurumi
 			return 1;
 		}
 
-		public static void luaL_register(lua_State L, LuaConf.CharPtr libname, luaL_Reg[] l) 
+		public static void luaL_register(LuaState.lua_State L, LuaConf.CharPtr libname, luaL_Reg[] l) 
 		{
 			luaI_openlib(L, libname, l, 0);
 		}
@@ -442,7 +442,7 @@ namespace kurumi
 			return size;
 		}
 
-		public static void luaI_openlib (lua_State L, LuaConf.CharPtr libname, luaL_Reg[] l, int nup) 
+		public static void luaI_openlib (LuaState.lua_State L, LuaConf.CharPtr libname, luaL_Reg[] l, int nup) 
 		{
 			if (LuaConf.CharPtr.isNotEqual(libname, null)) 
 			{
@@ -558,7 +558,7 @@ namespace kurumi
 
 		/* }====================================================== */
 
-		public static LuaConf.CharPtr luaL_gsub(lua_State L, LuaConf.CharPtr s, LuaConf.CharPtr p, LuaConf.CharPtr r) 
+		public static LuaConf.CharPtr luaL_gsub(LuaState.lua_State L, LuaConf.CharPtr s, LuaConf.CharPtr p, LuaConf.CharPtr r) 
 		{
 			LuaConf.CharPtr wild;
 			int/*uint*/ l = /*(uint)*/LuaConf.strlen(p);
@@ -575,7 +575,7 @@ namespace kurumi
 			return Lua.lua_tostring(L, -1);
 		}
 
-		public static LuaConf.CharPtr luaL_findtable(lua_State L, int idx, LuaConf.CharPtr fname, int szhint) 
+		public static LuaConf.CharPtr luaL_findtable(LuaState.lua_State L, int idx, LuaConf.CharPtr fname, int szhint) 
 		{
 			LuaConf.CharPtr e;
 			LuaAPI.lua_pushvalue(L, idx);
@@ -646,7 +646,7 @@ namespace kurumi
 		{	
 			if (B.lvl > 1) 
 			{
-				lua_State L = B.L;
+				LuaState.lua_State L = B.L;
 				int toget = 1;  /* number of levels to concat */
 				int/*uint*/ toplen = Lua.lua_strlen(L, -1);
 				do 
@@ -700,7 +700,7 @@ namespace kurumi
 
 		public static void luaL_addvalue(luaL_Buffer B) 
 		{
-			lua_State L = B.L;
+			LuaState.lua_State L = B.L;
 			int[]/*uint*/ vl = new int[1];
 			LuaConf.CharPtr s = LuaAPI.lua_tolstring(L, -1, /*out*/ vl);
 			if (vl[0] <= bufffree(B))
@@ -726,7 +726,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaL_buffinit(lua_State L, luaL_Buffer B)
+		public static void luaL_buffinit(LuaState.lua_State L, luaL_Buffer B)
 		{
 			B.L = L;
 			B.p = /*B.buffer*/ 0;
@@ -735,7 +735,7 @@ namespace kurumi
 
 		/* }====================================================== */
 
-		public static int luaL_ref(lua_State L, int t)
+		public static int luaL_ref(LuaState.lua_State L, int t)
 		{
 			int ref_;
 			t = abs_index(L, t);
@@ -763,7 +763,7 @@ namespace kurumi
 			return ref_;
 		}
 
-		public static void luaL_unref (lua_State L, int t, int ref_)
+		public static void luaL_unref (LuaState.lua_State L, int t, int ref_)
 		{
 			if (ref_ >= 0)
 			{
@@ -787,7 +787,7 @@ namespace kurumi
 			public LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUAL_BUFFERSIZE]);
 		}
 		
-		public static LuaConf.CharPtr getF(lua_State L, object ud, /*out*/ int[]/*uint*/ size)
+		public static LuaConf.CharPtr getF(LuaState.lua_State L, object ud, /*out*/ int[]/*uint*/ size)
 		{
 			size[0] = 0;
 			LoadF lf = (LoadF)ud;
@@ -806,7 +806,7 @@ namespace kurumi
 			return (size[0] > 0) ? new LuaConf.CharPtr(lf.buff) : null;
 		}
 
-		private static int errfile(lua_State L, LuaConf.CharPtr what, int fnameindex) 
+		private static int errfile(LuaState.lua_State L, LuaConf.CharPtr what, int fnameindex) 
 		{
 			LuaConf.CharPtr serr = LuaConf.strerror(LuaConf.errno());
 			LuaConf.CharPtr filename = LuaConf.CharPtr.plus(Lua.lua_tostring(L, fnameindex), 1);
@@ -815,7 +815,7 @@ namespace kurumi
 			return LUA_ERRFILE;
 		}
 
-		public static int luaL_loadfile(lua_State L, LuaConf.CharPtr filename) 
+		public static int luaL_loadfile(LuaState.lua_State L, LuaConf.CharPtr filename) 
 		{
 			LoadF lf = new LoadF();
 			int status, readstatus;
@@ -887,7 +887,7 @@ namespace kurumi
 			public int/*uint*/ size;
 		}		
 		
-		static LuaConf.CharPtr getS(lua_State L, object ud, /*out*/ int[]/*uint*/ size)
+		static LuaConf.CharPtr getS(LuaState.lua_State L, object ud, /*out*/ int[]/*uint*/ size)
 		{
 			LoadS ls = (LoadS)ud;
 			//(void)L;
@@ -897,7 +897,7 @@ namespace kurumi
 			return ls.s;
 		}
 
-		public static int luaL_loadbuffer(lua_State L, LuaConf.CharPtr buff, int/*uint*/ size, LuaConf.CharPtr name) 
+		public static int luaL_loadbuffer(LuaState.lua_State L, LuaConf.CharPtr buff, int/*uint*/ size, LuaConf.CharPtr name) 
 		{
 			LoadS ls = new LoadS();
 			ls.s = new LuaConf.CharPtr(buff);
@@ -905,7 +905,7 @@ namespace kurumi
 			return LuaAPI.lua_load(L, new getS_delegate(), ls, name);
 		}
 
-		public static int luaL_loadstring(lua_State L, LuaConf.CharPtr s) 
+		public static int luaL_loadstring(LuaState.lua_State L, LuaConf.CharPtr s) 
 		{
 			return luaL_loadbuffer(L, s, /*(uint)*/LuaConf.strlen(s), s);
 		}
@@ -925,7 +925,7 @@ namespace kurumi
 			}
 		}
 
-		private static int panic(lua_State L) 
+		private static int panic(LuaState.lua_State L) 
 		{
 			//(void)L;  /* to avoid warnings */
 			LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("PANIC: unprotected error in call to Lua API (%s)\n"),
@@ -933,9 +933,9 @@ namespace kurumi
 			return 0;
 		}
 
-		public static lua_State luaL_newstate()
+		public static LuaState.lua_State luaL_newstate()
 		{
-			lua_State L = LuaState.lua_newstate(new l_alloc_delegate(), null);
+			LuaState.lua_State L = LuaState.lua_newstate(new l_alloc_delegate(), null);
 			if (L != null) LuaAPI.lua_atpanic(L, new LuaAuxLib_delegate("panic"));
 			return L;
 		}
@@ -950,7 +950,7 @@ namespace kurumi
 				this.name = name;
 			}
 			
-			public int exec(lua_State L)
+			public int exec(LuaState.lua_State L)
 			{
 				if ("panic".Equals(name))
 				{
@@ -965,7 +965,7 @@ namespace kurumi
 		
 		public class getF_delegate : Lua.lua_Reader
 		{
-			public LuaConf.CharPtr exec(lua_State L, object ud, /*out*/ int[]/*uint*/ sz)
+			public LuaConf.CharPtr exec(LuaState.lua_State L, object ud, /*out*/ int[]/*uint*/ sz)
 			{
 				return getF(L, ud, /*out*/ sz);
 			}
@@ -973,7 +973,7 @@ namespace kurumi
 		
 		public class getS_delegate : Lua.lua_Reader
 		{
-			public LuaConf.CharPtr exec(lua_State L, object ud, /*out*/ int[]/*uint*/ sz)
+			public LuaConf.CharPtr exec(LuaState.lua_State L, object ud, /*out*/ int[]/*uint*/ sz)
 			{
 				return getS(L, ud, /*out*/ sz);
 			}

@@ -12,77 +12,77 @@ public class LuaMathLib {
 	public static final double PI = 3.14159265358979323846;
 	public static final double RADIANS_PER_DEGREE = PI / 180.0;
 
-	private static int math_abs(lua_State L) {
+	private static int math_abs(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.abs(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_sin(lua_State L) {
+	private static int math_sin(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.sin(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_sinh(lua_State L) {
+	private static int math_sinh(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.sinh(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_cos(lua_State L) {
+	private static int math_cos(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.cos(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_cosh(lua_State L) {
+	private static int math_cosh(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.cosh(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_tan(lua_State L) {
+	private static int math_tan(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.tan(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_tanh(lua_State L) {
+	private static int math_tanh(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.tanh(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_asin(lua_State L) {
+	private static int math_asin(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.asin(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_acos(lua_State L) {
+	private static int math_acos(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.acos(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_atan(lua_State L) {
+	private static int math_atan(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.atan(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_atan2(lua_State L) {
+	private static int math_atan2(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.atan2(LuaAuxLib.luaL_checknumber(L, 1), LuaAuxLib.luaL_checknumber(L, 2)));
 		return 1;
 	}
 
-	private static int math_ceil(lua_State L) {
+	private static int math_ceil(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.ceil(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_floor(lua_State L) {
+	private static int math_floor(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.floor(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_fmod(lua_State L) {
+	private static int math_fmod(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, LuaConf.fmod(LuaAuxLib.luaL_checknumber(L, 1), LuaAuxLib.luaL_checknumber(L, 2)));
 		return 1;
 	}
 
-	private static int math_modf(lua_State L) {
+	private static int math_modf(LuaState.lua_State L) {
 		double[] ip = new double[1];
 		double fp = LuaConf.modf(LuaAuxLib.luaL_checknumber(L, 1), ip); //out
 		LuaAPI.lua_pushnumber(L, ip[0]);
@@ -90,54 +90,54 @@ public class LuaMathLib {
 		return 2;
 	}
 
-	private static int math_sqrt(lua_State L) {
+	private static int math_sqrt(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.sqrt(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_pow(lua_State L) {
+	private static int math_pow(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.pow(LuaAuxLib.luaL_checknumber(L, 1), LuaAuxLib.luaL_checknumber(L, 2)));
 		return 1;
 	}
 
-	private static int math_log(lua_State L) {
+	private static int math_log(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.log(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_log10(lua_State L) {
+	private static int math_log10(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.log10(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_exp(lua_State L) {
+	private static int math_exp(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, Math.exp(LuaAuxLib.luaL_checknumber(L, 1)));
 		return 1;
 	}
 
-	private static int math_deg(lua_State L) {
+	private static int math_deg(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, LuaAuxLib.luaL_checknumber(L, 1) / RADIANS_PER_DEGREE);
 		return 1;
 	}
 
-	private static int math_rad(lua_State L) {
+	private static int math_rad(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, LuaAuxLib.luaL_checknumber(L, 1) * RADIANS_PER_DEGREE);
 		return 1;
 	}
 
-	private static int math_frexp(lua_State L) {
+	private static int math_frexp(LuaState.lua_State L) {
 		int[] e = new int[1];
 		LuaAPI.lua_pushnumber(L, LuaConf.frexp(LuaAuxLib.luaL_checknumber(L, 1), e)); //out
 		LuaAPI.lua_pushinteger(L, e[0]);
 		return 2;
 	}
 
-	private static int math_ldexp(lua_State L) {
+	private static int math_ldexp(LuaState.lua_State L) {
 		LuaAPI.lua_pushnumber(L, LuaConf.ldexp(LuaAuxLib.luaL_checknumber(L, 1), LuaAuxLib.luaL_checkint(L, 2)));
 		return 1;
 	}
 
-	private static int math_min(lua_State L) {
+	private static int math_min(LuaState.lua_State L) {
 		int n = LuaAPI.lua_gettop(L); // number of arguments 
 		double dmin = LuaAuxLib.luaL_checknumber(L, 1); //lua_Number
 		int i;
@@ -152,7 +152,7 @@ public class LuaMathLib {
 	}
 
 
-	private static int math_max(lua_State L) {
+	private static int math_max(LuaState.lua_State L) {
 		int n = LuaAPI.lua_gettop(L); // number of arguments 
 		double dmax = LuaAuxLib.luaL_checknumber(L, 1); //lua_Number
 		int i;
@@ -168,7 +168,7 @@ public class LuaMathLib {
 
 	private static java.util.Random rng = new java.util.Random();
 
-	private static int math_random(lua_State L) {
+	private static int math_random(LuaState.lua_State L) {
 //             the `%' avoids the (rare) case of r==1, and is needed also because on
 //			 some systems (SunOS!) `rand()' may return a value larger than RAND_MAX 
 		//lua_Number r = (lua_Number)(rng.Next()%RAND_MAX) / (lua_Number)RAND_MAX;
@@ -203,7 +203,7 @@ public class LuaMathLib {
 	}
 
 
-	private static int math_randomseed(lua_State L) {
+	private static int math_randomseed(LuaState.lua_State L) {
 		//srand(luaL_checkint(L, 1));
 		rng = new java.util.Random(LuaAuxLib.luaL_checkint(L, 1));
 		return 0;
@@ -248,7 +248,7 @@ public class LuaMathLib {
 			this.name = name;
 		}
 
-		public final int exec(lua_State L) {
+		public final int exec(LuaState.lua_State L) {
 			if ((new String("math_abs")).equals(name)) {
 				return math_abs(L);
 			}
@@ -343,7 +343,7 @@ public class LuaMathLib {
 //        
 //		 ** Open math library
 //		 
-	public static int luaopen_math(lua_State L) {
+	public static int luaopen_math(LuaState.lua_State L) {
 		LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_MATHLIBNAME), mathlib);
 		LuaAPI.lua_pushnumber(L, PI);
 		LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("pi"));

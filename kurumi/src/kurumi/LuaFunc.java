@@ -18,7 +18,7 @@ public class LuaFunc {
 		return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LCLOSURE)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * (n - 1); //typeof(LClosure)//typeof(TValue)
 	}
 
-	public static LuaObject.Closure luaF_newCclosure(lua_State L, int nelems, Table e) {
+	public static LuaObject.Closure luaF_newCclosure(LuaState.lua_State L, int nelems, Table e) {
 		//Closure c = (Closure)luaM_malloc(L, sizeCclosure(nelems));
 		LuaObject.Closure c = LuaMem.luaM_new_Closure(L, new ClassType(ClassType.TYPE_CLOSURE));
 		LuaMem.AddTotalBytes(L, sizeCclosure(nelems));
@@ -33,7 +33,7 @@ public class LuaFunc {
 		return c;
 	}
 
-	public static LuaObject.Closure luaF_newLclosure(lua_State L, int nelems, Table e) {
+	public static LuaObject.Closure luaF_newLclosure(LuaState.lua_State L, int nelems, Table e) {
 		//Closure c = (Closure)luaM_malloc(L, sizeLclosure(nelems));
 		LuaObject.Closure c = LuaMem.luaM_new_Closure(L, new ClassType(ClassType.TYPE_CLOSURE));
 		LuaMem.AddTotalBytes(L, sizeLclosure(nelems));
@@ -51,7 +51,7 @@ public class LuaFunc {
 		return c;
 	}
 
-	public static UpVal luaF_newupval(lua_State L) {
+	public static UpVal luaF_newupval(LuaState.lua_State L) {
 		UpVal uv = LuaMem.luaM_new_UpVal(L, new ClassType(ClassType.TYPE_UPVAL));
 		LuaGC.luaC_link(L, LuaState.obj2gco(uv), (byte)LuaObject.LUA_TUPVAL);
 		uv.v = uv.u.value;
@@ -59,7 +59,7 @@ public class LuaFunc {
 		return uv;
 	}
 
-	public static UpVal luaF_findupval(lua_State L, TValue level) { //StkId
+	public static UpVal luaF_findupval(LuaState.lua_State L, TValue level) { //StkId
 		LuaState.global_State g = LuaState.G(L);
 		LuaState.GCObjectRef pp = new OpenValRef(L);
 		UpVal p;
@@ -95,14 +95,14 @@ public class LuaFunc {
 		uv.u.l.prev.u.l.next = uv.u.l.next;
 	}
 
-	public static void luaF_freeupval(lua_State L, UpVal uv) {
+	public static void luaF_freeupval(LuaState.lua_State L, UpVal uv) {
 		if (uv.v != uv.u.value) { // is it open? 
 			unlinkupval(uv); // remove from open list 
 		}
 		LuaMem.luaM_free_UpVal(L, uv, new ClassType(ClassType.TYPE_UPVAL)); // free upvalue 
 	}
 
-	public static void luaF_close(lua_State L, TValue level) { //StkId
+	public static void luaF_close(LuaState.lua_State L, TValue level) { //StkId
 		UpVal uv;
 		LuaState.global_State g = LuaState.G(L);
 		while (L.openupval != null && TValue.greaterEqual((uv = LuaState.ngcotouv(L.openupval)).v, level)) {
@@ -121,7 +121,7 @@ public class LuaFunc {
 		}
 	}
 
-	public static Proto luaF_newproto(lua_State L) {
+	public static Proto luaF_newproto(LuaState.lua_State L) {
 		Proto f = LuaMem.luaM_new_Proto(L, new ClassType(ClassType.TYPE_PROTO));
 		LuaGC.luaC_link(L, LuaState.obj2gco(f), (byte)LuaObject.LUA_TPROTO);
 		f.k = null;
@@ -146,7 +146,7 @@ public class LuaFunc {
 		return f;
 	}
 
-	public static void luaF_freeproto(lua_State L, Proto f) {
+	public static void luaF_freeproto(LuaState.lua_State L, Proto f) {
 		//UInt32
 		//Instruction
 		LuaMem.luaM_freearray_long(L, f.code, new ClassType(ClassType.TYPE_LONG));
@@ -160,7 +160,7 @@ public class LuaFunc {
 	}
 
 	// we have a gc, so nothing to do
-	public static void luaF_freeclosure(lua_State L, LuaObject.Closure c) {
+	public static void luaF_freeclosure(LuaState.lua_State L, LuaObject.Closure c) {
 		int size = (c.c.getIsC() != 0) ? sizeCclosure(c.c.getNupvalues()) : sizeLclosure(c.l.getNupvalues());
 		//luaM_freemem(L, c, size);
 		LuaMem.SubtractTotalBytes(L, size);

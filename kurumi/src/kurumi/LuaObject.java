@@ -142,8 +142,8 @@ public class LuaObject {
 		return ((Integer)LuaLimits.check_exp(ttisboolean(o), o.value.b)).intValue();
 	}
 
-	public static lua_State thvalue(TValue o) {
-		return (lua_State)LuaLimits.check_exp(ttisthread(o), o.value.gc.getTh());
+	public static LuaState.lua_State thvalue(TValue o) {
+		return (LuaState.lua_State)LuaLimits.check_exp(ttisthread(o), o.value.gc.getTh());
 	}
 
 	public static int l_isfalse(TValue o) {
@@ -182,43 +182,43 @@ public class LuaObject {
 		obj.tt = Lua.LUA_TBOOLEAN;
 	}
 
-	public static void setsvalue(lua_State L, TValue obj, LuaState.GCObject x) {
+	public static void setsvalue(LuaState.lua_State L, TValue obj, LuaState.GCObject x) {
 		obj.value.gc = x;
 		obj.tt = Lua.LUA_TSTRING;
 		checkliveness(LuaState.G(L), obj);
 	}
 
-	public static void setuvalue(lua_State L, TValue obj, LuaState.GCObject x) {
+	public static void setuvalue(LuaState.lua_State L, TValue obj, LuaState.GCObject x) {
 		obj.value.gc = x;
 		obj.tt = Lua.LUA_TUSERDATA;
 		checkliveness(LuaState.G(L), obj);
 	}
 
-	public static void setthvalue(lua_State L, TValue obj, LuaState.GCObject x) {
+	public static void setthvalue(LuaState.lua_State L, TValue obj, LuaState.GCObject x) {
 		obj.value.gc = x;
 		obj.tt = Lua.LUA_TTHREAD;
 		checkliveness(LuaState.G(L), obj);
 	}
 
-	public static void setclvalue(lua_State L, TValue obj, Closure x) {
+	public static void setclvalue(LuaState.lua_State L, TValue obj, Closure x) {
 		obj.value.gc = x;
 		obj.tt = Lua.LUA_TFUNCTION;
 		checkliveness(LuaState.G(L), obj);
 	}
 
-	public static void sethvalue(lua_State L, TValue obj, Table x) {
+	public static void sethvalue(LuaState.lua_State L, TValue obj, Table x) {
 		obj.value.gc = x;
 		obj.tt = Lua.LUA_TTABLE;
 		checkliveness(LuaState.G(L), obj);
 	}
 
-	public static void setptvalue(lua_State L, TValue obj, Proto x) {
+	public static void setptvalue(LuaState.lua_State L, TValue obj, Proto x) {
 		obj.value.gc = x;
 		obj.tt = LUA_TPROTO;
 		checkliveness(LuaState.G(L), obj);
 	}
 
-	public static void setobj(lua_State L, TValue obj1, TValue obj2) {
+	public static void setobj(LuaState.lua_State L, TValue obj1, TValue obj2) {
 		obj1.value.copyFrom(obj2.value);
 		obj1.tt = obj2.tt;
 		checkliveness(LuaState.G(L), obj1);
@@ -231,51 +231,51 @@ public class LuaObject {
 
 	// from stack to (same) stack 
 	///#define setobjs2s	setobj
-	public static void setobjs2s(lua_State L, TValue obj, TValue x) {
+	public static void setobjs2s(LuaState.lua_State L, TValue obj, TValue x) {
 		setobj(L, obj, x);
 	}
 	//to stack (not from same stack)
 
 	///#define setobj2s	setobj
-	public static void setobj2s(lua_State L, TValue obj, TValue x) {
+	public static void setobj2s(LuaState.lua_State L, TValue obj, TValue x) {
 		setobj(L, obj, x);
 	}
 
 	///#define setsvalue2s	setsvalue
-	public static void setsvalue2s(lua_State L, TValue obj, TString x) {
+	public static void setsvalue2s(LuaState.lua_State L, TValue obj, TString x) {
 		setsvalue(L, obj, x);
 	}
 
 	///#define sethvalue2s	sethvalue
-	public static void sethvalue2s(lua_State L, TValue obj, Table x) {
+	public static void sethvalue2s(LuaState.lua_State L, TValue obj, Table x) {
 		sethvalue(L, obj, x);
 	}
 
 	///#define setptvalue2s	setptvalue
-	public static void setptvalue2s(lua_State L, TValue obj, Proto x) {
+	public static void setptvalue2s(LuaState.lua_State L, TValue obj, Proto x) {
 		setptvalue(L, obj, x);
 	}
 
 	// from table to same table 
 	///#define setobjt2t	setobj
-	public static void setobjt2t(lua_State L, TValue obj, TValue x) {
+	public static void setobjt2t(LuaState.lua_State L, TValue obj, TValue x) {
 		setobj(L, obj, x);
 	}
 
 	// to table 
 	///#define setobj2t	setobj
-	public static void setobj2t(lua_State L, TValue obj, TValue x) {
+	public static void setobj2t(LuaState.lua_State L, TValue obj, TValue x) {
 		setobj(L, obj, x);
 	}
 
 	// to new object 
 	///#define setobj2n	setobj
-	public static void setobj2n(lua_State L, TValue obj, TValue x) {
+	public static void setobj2n(LuaState.lua_State L, TValue obj, TValue x) {
 		setobj(L, obj, x);
 	}
 
 	///#define setsvalue2n	setsvalue
-	public static void setsvalue2n(lua_State L, TValue obj, TString x) {
+	public static void setsvalue2n(LuaState.lua_State L, TValue obj, TString x) {
 		setsvalue(L, obj, x);
 	}
 
@@ -533,13 +533,13 @@ public class LuaObject {
 		return 1;
 	}
 
-	private static void pushstr(lua_State L, LuaConf.CharPtr str) {
+	private static void pushstr(LuaState.lua_State L, LuaConf.CharPtr str) {
 		setsvalue2s(L, L.top, LuaString.luaS_new(L, str));
 		LuaDo.incr_top(L);
 	}
 
 	// this function handles only `%d', `%c', %f, %p, and `%s' formats 
-	public static LuaConf.CharPtr luaO_pushvfstring(lua_State L, LuaConf.CharPtr fmt, Object... argp) {
+	public static LuaConf.CharPtr luaO_pushvfstring(LuaState.lua_State L, LuaConf.CharPtr fmt, Object... argp) {
 		int parm_index = 0;
 		int n = 1;
 		pushstr(L, LuaConf.CharPtr.toCharPtr(""));
@@ -609,7 +609,7 @@ public class LuaObject {
 		return svalue(TValue.minus(L.top, 1));
 	}
 
-	public static LuaConf.CharPtr luaO_pushfstring(lua_State L, LuaConf.CharPtr fmt, Object... args) {
+	public static LuaConf.CharPtr luaO_pushfstring(LuaState.lua_State L, LuaConf.CharPtr fmt, Object... args) {
 		return luaO_pushvfstring(L, fmt, args);
 	}
 

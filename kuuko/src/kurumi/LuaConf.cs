@@ -290,19 +290,19 @@ namespace kurumi
 		//	  add_history(lua_tostring(L, idx));  /* add it to history */
 		//#define lua_freeline(L,b)	((void)L, free(b))
 		//#else
-		public static bool lua_readline(lua_State L, CharPtr b, CharPtr p)
+		public static bool lua_readline(LuaState.lua_State L, CharPtr b, CharPtr p)
 		{
 			fputs(p, stdout);
 			fflush(stdout);	/* show prompt */
 			return (CharPtr.isNotEqual(fgets(b, stdin), null));  /* get line */
 		}
 		
-		public static void lua_saveline(lua_State L, int idx)
+		public static void lua_saveline(LuaState.lua_State L, int idx)
 		{
 			
 		}
 		
-		public static void lua_freeline(lua_State L, CharPtr b)	
+		public static void lua_freeline(LuaState.lua_State L, CharPtr b)	
 		{
 			
 		}
@@ -401,12 +401,12 @@ namespace kurumi
 //			ClassType.Assert(o != 0);
 //		}
 		//#else
-		public static void luai_apicheck(lua_State L, bool o)	
+		public static void luai_apicheck(LuaState.lua_State L, bool o)	
 		{
 			
 		}
 		
-		public static void luai_apicheck(lua_State L, int o) 
+		public static void luai_apicheck(LuaState.lua_State L, int o) 
 		{
 						
 		}
@@ -763,14 +763,14 @@ namespace kurumi
 		 */
 		//#if defined(__cplusplus)
 		// C++ exceptions
-		public static void LUAI_THROW(lua_State L, LuaDo.lua_longjmp c)	
+		public static void LUAI_THROW(LuaState.lua_State L, LuaDo.lua_longjmp c)	
 		{
 			throw new LuaException(L, c);
 		}
 		
 		//#define LUAI_TRY(L,c,a)	try { a } catch(...) \
 		//    { if ((c).status == 0) (c).status = -1; }
-		public static void LUAI_TRY(lua_State L, LuaDo.lua_longjmp c, object a) 
+		public static void LUAI_TRY(LuaState.lua_State L, LuaDo.lua_longjmp c, object a) 
 		{
 			if (c.status == 0) c.status = -1;
 		}
@@ -845,13 +845,13 @@ namespace kurumi
 
 		//#else
 
-		public static StreamProxy lua_popen(lua_State L, CharPtr c, CharPtr m) 
+		public static StreamProxy lua_popen(LuaState.lua_State L, CharPtr c, CharPtr m) 
 		{ 
 			LuaAuxLib.luaL_error(L, CharPtr.toCharPtr(LUA_QL("popen") + " not supported")); 
 			return null; 
 		}
 		
-		public static int lua_pclose(lua_State L, StreamProxy file) 
+		public static int lua_pclose(LuaState.lua_State L, StreamProxy file) 
 		{ 
 			return 0; 
 		}
@@ -894,27 +894,27 @@ namespace kurumi
 		 ** CHANGE them if you defined LUAI_EXTRASPACE and need to do something
 		 ** extra when a thread is created/deleted/resumed/yielded.
 		 */
-		public static void luai_userstateopen(lua_State L)					
+		public static void luai_userstateopen(LuaState.lua_State L)					
 		{
 			
 		}
-		public static void luai_userstateclose(lua_State L)					
+		public static void luai_userstateclose(LuaState.lua_State L)					
 		{
 			
 		}
-		public static void luai_userstatethread(lua_State L, lua_State L1)	
+		public static void luai_userstatethread(LuaState.lua_State L, LuaState.lua_State L1)	
 		{
 			
 		}
-		public static void luai_userstatefree(lua_State L)					
+		public static void luai_userstatefree(LuaState.lua_State L)					
 		{
 			
 		}
-		public static void luai_userstateresume(lua_State L,int n)			
+		public static void luai_userstateresume(LuaState.lua_State L,int n)			
 		{
 			
 		}
-		public static void luai_userstateyield(lua_State L,int n)			
+		public static void luai_userstateyield(LuaState.lua_State L,int n)			
 		{
 			
 		}

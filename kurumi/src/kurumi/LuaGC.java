@@ -134,7 +134,7 @@ public class LuaGC {
 		return (byte)(g.currentwhite & WHITEBITS);
 	}
 
-	public static void luaC_checkGC(lua_State L) {
+	public static void luaC_checkGC(LuaState.lua_State L) {
 		//condhardstacktests(luaD_reallocstack(L, L.stacksize - EXTRA_STACK - 1));
 		//luaD_reallocstack(L, L.stacksize - EXTRA_STACK - 1);
 		if (LuaState.G(L).totalbytes >= LuaState.G(L).GCthreshold) {
@@ -142,25 +142,25 @@ public class LuaGC {
 		}
 	}
 
-	public static void luaC_barrier(lua_State L, Object p, TValue v) {
+	public static void luaC_barrier(LuaState.lua_State L, Object p, TValue v) {
 		if (valiswhite(v) && isblack(LuaState.obj2gco(p))) {
 			luaC_barrierf(L, LuaState.obj2gco(p), LuaObject.gcvalue(v));
 		}
 	}
 
-	public static void luaC_barriert(lua_State L, Table t, TValue v) {
+	public static void luaC_barriert(LuaState.lua_State L, Table t, TValue v) {
 		if (valiswhite(v) && isblack(LuaState.obj2gco(t))) {
 			luaC_barrierback(L, t);
 		}
 	}
 
-	public static void luaC_objbarrier(lua_State L, Object p, Object o) {
+	public static void luaC_objbarrier(LuaState.lua_State L, Object p, Object o) {
 		if (iswhite(LuaState.obj2gco(o)) && isblack(LuaState.obj2gco(p))) {
 			luaC_barrierf(L, LuaState.obj2gco(p), LuaState.obj2gco(o));
 		}
 	}
 
-	public static void luaC_objbarriert(lua_State L, Table t, Object o) {
+	public static void luaC_objbarriert(LuaState.lua_State L, Table t, Object o) {
 		if (iswhite(LuaState.obj2gco(o)) && isblack(LuaState.obj2gco(t))) {
 			luaC_barrierback(L, t);
 		}
@@ -304,7 +304,7 @@ public class LuaGC {
 	}
 
 	// move `dead' udata that need finalization to list `tmudata' 
-	public static int luaC_separateudata(lua_State L, int all) { //uint
+	public static int luaC_separateudata(LuaState.lua_State L, int all) { //uint
 		LuaState.global_State g = LuaState.G(L);
 		int deadmem = 0; //uint
 		LuaState.GCObjectRef p = new NextRef(g.mainthread);
@@ -437,7 +437,7 @@ public class LuaGC {
 		}
 	}
 
-	private static void checkstacksizes(lua_State L, TValue max) { //StkId
+	private static void checkstacksizes(LuaState.lua_State L, TValue max) { //StkId
 		int ci_used = LuaLimits.cast_int(LuaState.CallInfo.minus(L.ci, L.base_ci[0])); // number of `ci' in use 
 		int s_used = LuaLimits.cast_int(TValue.minus(max, L.stack)); // part of stack in use 
 		if (L.size_ci > LuaConf.LUAI_MAXCALLS) { // handling overflow? 
@@ -453,7 +453,7 @@ public class LuaGC {
 		//condhardstacktests(luaD_reallocstack(L, s_used));
 	}
 
-	private static void traversestack(LuaState.global_State g, lua_State l) {
+	private static void traversestack(LuaState.global_State g, LuaState.lua_State l) {
 		TValue[] o = new TValue[1]; //StkId
 		o[0] = new TValue();
 		TValue lim; //StkId
@@ -500,7 +500,7 @@ public class LuaGC {
 					return (cl.c.getIsC() != 0) ? LuaFunc.sizeCclosure(cl.c.getNupvalues()) : LuaFunc.sizeLclosure(cl.l.getNupvalues());
 				}
 			case Lua.LUA_TTHREAD: {
-					lua_State th = LuaState.gco2th(o);
+					LuaState.lua_State th = LuaState.gco2th(o);
 					g.gray = th.gclist;
 					th.gclist = g.grayagain;
 					g.grayagain = o;
@@ -587,7 +587,7 @@ public class LuaGC {
 	}
 
 
-	private static void freeobj(lua_State L, LuaState.GCObject o) {
+	private static void freeobj(LuaState.lua_State L, LuaState.GCObject o) {
 		switch (o.getGch().tt) {
 			case LuaObject.LUA_TPROTO: {
 					LuaFunc.luaF_freeproto(L, LuaState.gco2p(o));
@@ -628,11 +628,11 @@ public class LuaGC {
 		}
 	}
 
-	public static void sweepwholelist(lua_State L, LuaState.GCObjectRef p) {
+	public static void sweepwholelist(LuaState.lua_State L, LuaState.GCObjectRef p) {
 		sweeplist(L, p, LuaLimits.MAX_LUMEM);
 	}
 
-	private static LuaState.GCObjectRef sweeplist(lua_State L, LuaState.GCObjectRef p, long count) { //lu_mem - UInt32
+	private static LuaState.GCObjectRef sweeplist(LuaState.lua_State L, LuaState.GCObjectRef p, long count) { //lu_mem - UInt32
 		LuaState.GCObject curr;
 		LuaState.global_State g = LuaState.G(L);
 		int deadmask = otherwhite(g);
@@ -659,7 +659,7 @@ public class LuaGC {
 		return p;
 	}
 
-	private static void checkSizes(lua_State L) {
+	private static void checkSizes(LuaState.lua_State L) {
 		LuaState.global_State g = LuaState.G(L);
 		// check size of string hash 
 		if (g.strt.nuse < (long)(g.strt.size / 4) && g.strt.size > LuaLimits.MINSTRTABSIZE * 2) { //lu_int32 - UInt32
@@ -673,7 +673,7 @@ public class LuaGC {
 		}
 	}
 
-	private static void GCTM(lua_State L) {
+	private static void GCTM(LuaState.lua_State L) {
 		LuaState.global_State g = LuaState.G(L);
 		LuaState.GCObject o = g.tmudata.getGch().next; // get first element 
 		Udata udata = LuaState.rawgco2u(o);
@@ -706,13 +706,13 @@ public class LuaGC {
 //        
 //		 ** Call all GC tag methods
 //		 
-	public static void luaC_callGCTM(lua_State L) {
+	public static void luaC_callGCTM(LuaState.lua_State L) {
 		while (LuaState.G(L).tmudata != null) {
 			GCTM(L);
 		}
 	}
 
-	public static void luaC_freeall(lua_State L) {
+	public static void luaC_freeall(LuaState.lua_State L) {
 		LuaState.global_State g = LuaState.G(L);
 		int i;
 		g.currentwhite = (byte)(WHITEBITS | bitmask(SFIXEDBIT)); // mask to collect all elements 
@@ -732,7 +732,7 @@ public class LuaGC {
 	}
 
 	// mark root set 
-	private static void markroot(lua_State L) {
+	private static void markroot(LuaState.lua_State L) {
 		LuaState.global_State g = LuaState.G(L);
 		g.gray = null;
 		g.grayagain = null;
@@ -755,7 +755,7 @@ public class LuaGC {
 		}
 	}
 
-	private static void atomic(lua_State L) {
+	private static void atomic(LuaState.lua_State L) {
 		LuaState.global_State g = LuaState.G(L);
 		int udsize; // total size of userdata to be finalized  - uint
 		// remark occasional upvalues of (maybe) dead threads 
@@ -785,7 +785,7 @@ public class LuaGC {
 		g.estimate = g.totalbytes - udsize; // first estimate 
 	}
 
-	private static int singlestep(lua_State L) { //l_mem - Int32
+	private static int singlestep(LuaState.lua_State L) { //l_mem - Int32
 		LuaState.global_State g = LuaState.G(L);
 		//lua_checkmemory(L);
 		switch (g.gcstate) {
@@ -846,7 +846,7 @@ public class LuaGC {
 		}
 	}
 
-	public static void luaC_step(lua_State L) {
+	public static void luaC_step(LuaState.lua_State L) {
 		LuaState.global_State g = LuaState.G(L);
 		int lim = (int)((GCSTEPSIZE / 100) * g.gcstepmul); //l_mem - Int32 - l_mem - Int32
 		if (lim == 0) {
@@ -874,7 +874,7 @@ public class LuaGC {
 		}
 	}
 
-	public static void luaC_fullgc(lua_State L) {
+	public static void luaC_fullgc(LuaState.lua_State L) {
 		LuaState.global_State g = LuaState.G(L);
 		if (g.gcstate <= GCSpropagate) {
 			// reset sweep marks to sweep all elements (returning them to white) 
@@ -899,7 +899,7 @@ public class LuaGC {
 		setthreshold(g);
 	}
 
-	public static void luaC_barrierf(lua_State L, LuaState.GCObject o, LuaState.GCObject v) {
+	public static void luaC_barrierf(LuaState.lua_State L, LuaState.GCObject o, LuaState.GCObject v) {
 		LuaState.global_State g = LuaState.G(L);
 		LuaLimits.lua_assert(isblack(o) && iswhite(v) && !isdead(g, v) && !isdead(g, o));
 		LuaLimits.lua_assert(g.gcstate != GCSfinalize && g.gcstate != GCSpause);
@@ -914,7 +914,7 @@ public class LuaGC {
 	}
 
 
-	public static void luaC_barrierback(lua_State L, Table t) {
+	public static void luaC_barrierback(LuaState.lua_State L, Table t) {
 		LuaState.global_State g = LuaState.G(L);
 		LuaState.GCObject o = LuaState.obj2gco(t);
 		LuaLimits.lua_assert(isblack(o) && !isdead(g, o));
@@ -924,7 +924,7 @@ public class LuaGC {
 		g.grayagain = o;
 	}
 
-	public static void luaC_link(lua_State L, LuaState.GCObject o, byte tt) { //lu_byte
+	public static void luaC_link(LuaState.lua_State L, LuaState.GCObject o, byte tt) { //lu_byte
 		LuaState.global_State g = LuaState.G(L);
 		o.getGch().next = g.rootgc;
 		g.rootgc = o;
@@ -932,7 +932,7 @@ public class LuaGC {
 		o.getGch().tt = tt;
 	}
 
-	public static void luaC_linkupval(lua_State L, UpVal uv) {
+	public static void luaC_linkupval(LuaState.lua_State L, UpVal uv) {
 		LuaState.global_State g = LuaState.G(L);
 		LuaState.GCObject o = LuaState.obj2gco(uv);
 		o.getGch().next = g.rootgc; // link upvalue into `rootgc' list 

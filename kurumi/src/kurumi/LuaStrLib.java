@@ -11,7 +11,7 @@ package kurumi;
 //using UNSIGNED_LUA_INTFRM_T = System.UInt64;
 
 public class LuaStrLib {
-	public static int str_len(lua_State L) {
+	public static int str_len(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		LuaAPI.lua_pushinteger(L, l[0]); //(int)
@@ -26,7 +26,7 @@ public class LuaStrLib {
 		return (pos >= 0) ? pos : 0;
 	}
 
-	public static int str_sub(lua_State L) {
+	public static int str_sub(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		int start = posrelat(LuaAuxLib.luaL_checkinteger(L, 2), l[0]); //ptrdiff_t - Int32
@@ -46,7 +46,7 @@ public class LuaStrLib {
 		return 1;
 	}
 
-	public static int str_reverse(lua_State L) {
+	public static int str_reverse(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		luaL_Buffer b = new luaL_Buffer();
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
@@ -58,7 +58,7 @@ public class LuaStrLib {
 		return 1;
 	}
 
-	public static int str_lower(lua_State L) {
+	public static int str_lower(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		int i; //uint
 		luaL_Buffer b = new luaL_Buffer();
@@ -71,7 +71,7 @@ public class LuaStrLib {
 		return 1;
 	}
 
-	public static int str_upper(lua_State L) {
+	public static int str_upper(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		int i; //uint
 		luaL_Buffer b = new luaL_Buffer();
@@ -84,7 +84,7 @@ public class LuaStrLib {
 		return 1;
 	}
 
-	public static int str_rep(lua_State L) {
+	public static int str_rep(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		luaL_Buffer b = new luaL_Buffer();
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
@@ -97,7 +97,7 @@ public class LuaStrLib {
 		return 1;
 	}
 
-	public static int str_byte(lua_State L) {
+	public static int str_byte(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		int posi = posrelat(LuaAuxLib.luaL_optinteger(L, 2, 1), l[0]); //ptrdiff_t - Int32
@@ -123,7 +123,7 @@ public class LuaStrLib {
 		return n;
 	}
 
-	public static int str_char(lua_State L) {
+	public static int str_char(LuaState.lua_State L) {
 		int n = LuaAPI.lua_gettop(L); // number of arguments 
 		int i;
 		luaL_Buffer b = new luaL_Buffer();
@@ -137,7 +137,7 @@ public class LuaStrLib {
 		return 1;
 	}
 
-	private static int writer(lua_State L, Object b, int size, Object B, ClassType t) { //uint
+	private static int writer(LuaState.lua_State L, Object b, int size, Object B, ClassType t) { //uint
 		//FIXME:b always is CharPtr
 		//if (b.GetType() != typeof(CharPtr))
 		if (t.GetTypeID() == ClassType.TYPE_CHARPTR) {
@@ -153,12 +153,12 @@ public class LuaStrLib {
 	}
 
 	public static class writer_delegate implements Lua.lua_Writer {
-		public final int exec(lua_State L, LuaConf.CharPtr p, int sz, Object ud) { //uint
+		public final int exec(LuaState.lua_State L, LuaConf.CharPtr p, int sz, Object ud) { //uint
 			return writer(L, p, sz, ud, new ClassType(ClassType.TYPE_CHARPTR));
 		}
 	}
 
-	public static int str_dump(lua_State L) {
+	public static int str_dump(LuaState.lua_State L) {
 		luaL_Buffer b = new luaL_Buffer();
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TFUNCTION);
 		LuaAPI.lua_settop(L, 1);
@@ -728,7 +728,7 @@ public class LuaStrLib {
 		return nlevels; // number of strings pushed 
 	}
 
-	private static int str_find_aux(lua_State L, int find) {
+	private static int str_find_aux(LuaState.lua_State L, int find) {
 		int[] l1 = new int[1]; //uint
 		int[] l2 = new int[1]; //uint
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l1); //out
@@ -780,15 +780,15 @@ public class LuaStrLib {
 		return 1;
 	}
 
-	public static int str_find(lua_State L) {
+	public static int str_find(LuaState.lua_State L) {
 		return str_find_aux(L, 1);
 	}
 
-	public static int str_match(lua_State L) {
+	public static int str_match(LuaState.lua_State L) {
 		return str_find_aux(L, 0);
 	}
 
-	public static int gmatch_aux(lua_State L) {
+	public static int gmatch_aux(LuaState.lua_State L) {
 		MatchState ms = new MatchState();
 		int[] ls = new int[1]; //uint
 		LuaConf.CharPtr s = LuaAPI.lua_tolstring(L, Lua.lua_upvalueindex(1), ls); //out
@@ -813,7 +813,7 @@ public class LuaStrLib {
 		return 0; // not found 
 	}
 
-	public static int gmatch(lua_State L) {
+	public static int gmatch(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checkstring(L, 1);
 		LuaAuxLib.luaL_checkstring(L, 2);
 		LuaAPI.lua_settop(L, 2);
@@ -822,7 +822,7 @@ public class LuaStrLib {
 		return 1;
 	}
 
-	public static int gfind_nodef(lua_State L) {
+	public static int gfind_nodef(LuaState.lua_State L) {
 		return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("string.gfind") + " was renamed to " + LuaConf.LUA_QL("string.gmatch")));
 	}
 
@@ -852,7 +852,7 @@ public class LuaStrLib {
 
 
 	private static void add_value(MatchState ms, luaL_Buffer b, LuaConf.CharPtr s, LuaConf.CharPtr e) {
-		lua_State L = ms.L;
+		LuaState.lua_State L = ms.L;
 		switch (LuaAPI.lua_type(L, 3)) {
 			case Lua.LUA_TNUMBER:
 			case Lua.LUA_TSTRING: {
@@ -883,7 +883,7 @@ public class LuaStrLib {
 		LuaAuxLib.luaL_addvalue(b); // add result to accumulator 
 	}
 
-	public static int str_gsub(lua_State L) {
+	public static int str_gsub(LuaState.lua_State L) {
 		int[] srcl = new int[1]; //uint
 		LuaConf.CharPtr src = LuaAuxLib.luaL_checklstring(L, 1, srcl); //out
 		LuaConf.CharPtr p = LuaAuxLib.luaL_checkstring(L, 2);
@@ -943,7 +943,7 @@ public class LuaStrLib {
 //		 
 	public static final int MAX_FORMAT = (FLAGS.length() + 1) + (LuaConf.LUA_INTFRMLEN.length() + 1) + 10;
 
-	private static void addquoted(lua_State L, luaL_Buffer b, int arg) {
+	private static void addquoted(LuaState.lua_State L, luaL_Buffer b, int arg) {
 		int[] l = new int[1]; //uint
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, l); //out
 		LuaAuxLib.luaL_addchar(b, '"');
@@ -974,7 +974,7 @@ public class LuaStrLib {
 		LuaAuxLib.luaL_addchar(b, '"');
 	}
 
-	private static LuaConf.CharPtr scanformat(lua_State L, LuaConf.CharPtr strfrmt, LuaConf.CharPtr form) {
+	private static LuaConf.CharPtr scanformat(LuaState.lua_State L, LuaConf.CharPtr strfrmt, LuaConf.CharPtr form) {
 		LuaConf.CharPtr p = strfrmt;
 		while (p.get(0) != '\0' && LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaConf.CharPtr.toCharPtr(FLAGS), p.get(0)), null)) {
 			p = p.next(); // skip flags 
@@ -1016,7 +1016,7 @@ public class LuaStrLib {
 		form.set(l + (LuaConf.LUA_INTFRMLEN.length() + 1) - 1, '\0');
 	}
 
-	public static int str_format(lua_State L) {
+	public static int str_format(LuaState.lua_State L) {
 		int arg = 1;
 		int[] sfl = new int[1]; //uint
 		LuaConf.CharPtr strfrmt = LuaAuxLib.luaL_checklstring(L, arg, sfl); //out
@@ -1118,7 +1118,7 @@ public class LuaStrLib {
 		new luaL_Reg(null, null) 
 	};
 
-	private static void createmetatable(lua_State L) {
+	private static void createmetatable(LuaState.lua_State L) {
 		LuaAPI.lua_createtable(L, 0, 1); // create metatable for strings 
 		Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("")); // dummy string 
 		LuaAPI.lua_pushvalue(L, -2);
@@ -1132,7 +1132,7 @@ public class LuaStrLib {
 //        
 //		 ** Open string library
 //		 
-	public static int luaopen_string(lua_State L) {
+	public static int luaopen_string(LuaState.lua_State L) {
 		LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_STRLIBNAME), strlib);
 		///#if LUA_COMPAT_GFIND
 		LuaAPI.lua_getfield(L, -1, LuaConf.CharPtr.toCharPtr("gmatch"));

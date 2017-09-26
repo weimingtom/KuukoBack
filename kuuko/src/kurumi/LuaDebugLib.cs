@@ -7,13 +7,13 @@ namespace kurumi
 {
 	public class LuaDebugLib
 	{
-		private static int db_getregistry(lua_State L) 
+		private static int db_getregistry(LuaState.lua_State L) 
 		{
 			LuaAPI.lua_pushvalue(L, Lua.LUA_REGISTRYINDEX);
 			return 1;
 		}
 
-		private static int db_getmetatable(lua_State L) 
+		private static int db_getmetatable(LuaState.lua_State L) 
 		{
 			LuaAuxLib.luaL_checkany(L, 1);
 			if (LuaAPI.lua_getmetatable(L, 1) == 0)
@@ -23,7 +23,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static int db_setmetatable(lua_State L) 
+		private static int db_setmetatable(LuaState.lua_State L) 
 		{
 			int t = LuaAPI.lua_type(L, 2);
 			LuaAuxLib.luaL_argcheck(L, t == Lua.LUA_TNIL || t == Lua.LUA_TTABLE, 2,
@@ -33,14 +33,14 @@ namespace kurumi
 			return 1;
 		}
 
-		private static int db_getfenv(lua_State L) 
+		private static int db_getfenv(LuaState.lua_State L) 
 		{
 			LuaAPI.lua_getfenv(L, 1);
 			return 1;
 		}
 
 
-		private static int db_setfenv(lua_State L) 
+		private static int db_setfenv(LuaState.lua_State L) 
 		{
 			LuaAuxLib.luaL_checktype(L, 2, Lua.LUA_TTABLE);
 			LuaAPI.lua_settop(L, 2);
@@ -52,19 +52,19 @@ namespace kurumi
 			return 1;
 		}
 
-		private static void settabss(lua_State L, LuaConf.CharPtr i, LuaConf.CharPtr v) 
+		private static void settabss(LuaState.lua_State L, LuaConf.CharPtr i, LuaConf.CharPtr v) 
 		{
 			LuaAPI.lua_pushstring(L, v);
 			LuaAPI.lua_setfield(L, -2, i);
 		}
 
-		private static void settabsi(lua_State L, LuaConf.CharPtr i, int v) 
+		private static void settabsi(LuaState.lua_State L, LuaConf.CharPtr i, int v) 
 		{
 			LuaAPI.lua_pushinteger(L, v);
 			LuaAPI.lua_setfield(L, -2, i);
 		}
 
-		private static lua_State getthread(lua_State L, /*out*/ int[] arg)
+		private static LuaState.lua_State getthread(LuaState.lua_State L, /*out*/ int[] arg)
 		{
 			if (Lua.lua_isthread(L, 1)) 
 			{
@@ -78,7 +78,7 @@ namespace kurumi
 			}
 		}
 
-		private static void treatstackoption(lua_State L, lua_State L1, LuaConf.CharPtr fname) 
+		private static void treatstackoption(LuaState.lua_State L, LuaState.lua_State L1, LuaConf.CharPtr fname) 
 		{
 			if (L == L1) 
 			{
@@ -92,11 +92,11 @@ namespace kurumi
 			LuaAPI.lua_setfield(L, -2, fname);
 		}
 
-		private static int db_getinfo(lua_State L) 
+		private static int db_getinfo(LuaState.lua_State L) 
 		{
 			Lua.lua_Debug ar = new Lua.lua_Debug();
 			int[] arg = new int[1];
-			lua_State L1 = getthread(L, /*out*/ arg);
+			LuaState.lua_State L1 = getthread(L, /*out*/ arg);
 			LuaConf.CharPtr options = LuaAuxLib.luaL_optstring(L, arg[0] + 2, LuaConf.CharPtr.toCharPtr("flnSu"));
 			if (LuaAPI.lua_isnumber(L, arg[0] + 1) != 0)
 			{
@@ -154,10 +154,10 @@ namespace kurumi
 			return 1;  /* return table */
 		}
 		
-		private static int db_getlocal(lua_State L) 
+		private static int db_getlocal(LuaState.lua_State L) 
 		{
 			int[] arg = new int[1];
-			lua_State L1 = getthread(L, /*out*/ arg);
+			LuaState.lua_State L1 = getthread(L, /*out*/ arg);
 			Lua.lua_Debug ar = new Lua.lua_Debug();
 			LuaConf.CharPtr name;
 			if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0)  /* out of range? */
@@ -179,10 +179,10 @@ namespace kurumi
 			}
 		}
 
-		private static int db_setlocal(lua_State L) 
+		private static int db_setlocal(LuaState.lua_State L) 
 		{
 			int[] arg = new int[1];
-			lua_State L1 = getthread(L, /*out*/ arg);
+			LuaState.lua_State L1 = getthread(L, /*out*/ arg);
 			Lua.lua_Debug ar = new Lua.lua_Debug();
 			if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0)  /* out of range? */
 			{
@@ -195,7 +195,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static int auxupvalue(lua_State L, int get) 
+		private static int auxupvalue(LuaState.lua_State L, int get) 
 		{
 			LuaConf.CharPtr name;
 			int n = LuaAuxLib.luaL_checkint(L, 2);
@@ -213,12 +213,12 @@ namespace kurumi
 			return get + 1;
 		}
 
-		private static int db_getupvalue(lua_State L) 
+		private static int db_getupvalue(LuaState.lua_State L) 
 		{
 			return auxupvalue(L, 1);
 		}
 
-		private static int db_setupvalue(lua_State L) 
+		private static int db_setupvalue(LuaState.lua_State L) 
 		{
 			LuaAuxLib.luaL_checkany(L, 3);
 			return auxupvalue(L, 0);
@@ -234,7 +234,7 @@ namespace kurumi
 			"tail return"
 		};
 
-		private static void hookf(lua_State L, Lua.lua_Debug ar) 
+		private static void hookf(LuaState.lua_State L, Lua.lua_Debug ar) 
 		{
 			LuaAPI.lua_pushlightuserdata(L, KEY_HOOK);
 			LuaAPI.lua_rawget(L, Lua.LUA_REGISTRYINDEX);
@@ -258,7 +258,7 @@ namespace kurumi
 
 		public class hookf_delegate : Lua.lua_Hook
 		{
-			public void exec(lua_State L, Lua.lua_Debug ar)
+			public void exec(LuaState.lua_State L, Lua.lua_Debug ar)
 			{
 				hookf(L, ar);
 			}
@@ -305,7 +305,7 @@ namespace kurumi
 			return smask;
 		}
 
-		private static void gethooktable (lua_State L) 
+		private static void gethooktable (LuaState.lua_State L) 
 		{
 			LuaAPI.lua_pushlightuserdata(L, KEY_HOOK);
 			LuaAPI.lua_rawget(L, Lua.LUA_REGISTRYINDEX);
@@ -319,12 +319,12 @@ namespace kurumi
 			}
 		}
 
-		private static int db_sethook(lua_State L) 
+		private static int db_sethook(LuaState.lua_State L) 
 		{
 			int[] arg = new int[1];
 			int mask, count;
 			Lua.lua_Hook func;
-			lua_State L1 = getthread(L, /*out*/ arg);
+			LuaState.lua_State L1 = getthread(L, /*out*/ arg);
 			if (Lua.lua_isnoneornil(L, arg[0] + 1)) 
 			{
 				LuaAPI.lua_settop(L, arg[0] + 1);
@@ -349,10 +349,10 @@ namespace kurumi
 			return 0;
 		}
 
-		private static int db_gethook(lua_State L) 
+		private static int db_gethook(LuaState.lua_State L) 
 		{
 			int[] arg = new int[1];
-			lua_State L1 = getthread(L, /*out*/ arg);
+			LuaState.lua_State L1 = getthread(L, /*out*/ arg);
 			LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[5]);
 			int mask = LuaDebug.lua_gethookmask(L1);
 			Lua.lua_Hook hook = LuaDebug.lua_gethook(L1);
@@ -372,7 +372,7 @@ namespace kurumi
 			return 3;
 		}
 
-		private static int db_debug(lua_State L) 
+		private static int db_debug(LuaState.lua_State L) 
 		{
 			for (;;) 
 			{
@@ -396,12 +396,12 @@ namespace kurumi
 		public const int LEVELS1 = 12;	/* size of the first part of the stack */
 		public const int LEVELS2 = 10;	/* size of the second part of the stack */
 
-		private static int db_errorfb(lua_State L) 
+		private static int db_errorfb(LuaState.lua_State L) 
 		{
 			int level;
 			bool firstpart = true;  /* still before eventual `...' */
 			int[] arg = new int[1];
-			lua_State L1 = getthread(L, /*out*/ arg);
+			LuaState.lua_State L1 = getthread(L, /*out*/ arg);
 			Lua.lua_Debug ar = new Lua.lua_Debug();
 			if (LuaAPI.lua_isnumber(L, arg[0] + 2) != 0)
 			{
@@ -505,7 +505,7 @@ namespace kurumi
 				this.name = name;
 			}
 			
-			public int exec(lua_State L)
+			public int exec(LuaState.lua_State L)
 			{
 				if ("db_debug".Equals(name))
 				{
@@ -571,7 +571,7 @@ namespace kurumi
 		}
 
 
-		public static int luaopen_debug (lua_State L) {
+		public static int luaopen_debug (LuaState.lua_State L) {
 			LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_DBLIBNAME), dblib);
 			return 1;
 		}

@@ -9,12 +9,12 @@ package kurumi;
 //using lua_Number = System.Double;
 
 public class LuaTableLib {
-	private static int aux_getn(lua_State L, int n) {
+	private static int aux_getn(LuaState.lua_State L, int n) {
 		LuaAuxLib.luaL_checktype(L, n, Lua.LUA_TTABLE);
 		return LuaAuxLib.luaL_getn(L, n);
 	}
 
-	private static int foreachi(lua_State L) {
+	private static int foreachi(LuaState.lua_State L) {
 		int i;
 		int n = aux_getn(L, 1);
 		LuaAuxLib.luaL_checktype(L, 2, Lua.LUA_TFUNCTION);
@@ -31,7 +31,7 @@ public class LuaTableLib {
 		return 0;
 	}
 
-	private static int _foreach(lua_State L) {
+	private static int _foreach(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		LuaAuxLib.luaL_checktype(L, 2, Lua.LUA_TFUNCTION);
 		LuaAPI.lua_pushnil(L); // first key 
@@ -48,7 +48,7 @@ public class LuaTableLib {
 		return 0;
 	}
 
-	private static int maxn(lua_State L) {
+	private static int maxn(LuaState.lua_State L) {
 		double max = 0; //lua_Number
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		LuaAPI.lua_pushnil(L); // first key 
@@ -65,12 +65,12 @@ public class LuaTableLib {
 		return 1;
 	}
 
-	private static int getn(lua_State L) {
+	private static int getn(LuaState.lua_State L) {
 		LuaAPI.lua_pushinteger(L, aux_getn(L, 1));
 		return 1;
 	}
 
-	private static int setn(lua_State L) {
+	private static int setn(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		///#ifndef luaL_setn
 		//luaL_setn(L, 1, luaL_checkint(L, 2));
@@ -81,7 +81,7 @@ public class LuaTableLib {
 		return 1;
 	}
 
-	private static int tinsert(lua_State L) {
+	private static int tinsert(LuaState.lua_State L) {
 		int e = aux_getn(L, 1) + 1; // first empty element 
 		int pos; // where to insert new element 
 		switch (LuaAPI.lua_gettop(L)) {
@@ -112,7 +112,7 @@ public class LuaTableLib {
 		return 0;
 	}
 
-	private static int tremove(lua_State L) {
+	private static int tremove(LuaState.lua_State L) {
 		int e = aux_getn(L, 1);
 		int pos = LuaAuxLib.luaL_optint(L, 2, e);
 		if (!(1 <= pos && pos <= e)) { // position is outside bounds? 
@@ -129,7 +129,7 @@ public class LuaTableLib {
 		return 1;
 	}
 
-	private static void addfield(lua_State L, luaL_Buffer b, int i) {
+	private static void addfield(LuaState.lua_State L, luaL_Buffer b, int i) {
 		LuaAPI.lua_rawgeti(L, 1, i);
 		if (LuaAPI.lua_isstring(L, -1) == 0) {
 			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid value (%s) at index %d in table for " + LuaConf.LUA_QL("concat")), LuaAuxLib.luaL_typename(L, -1), i);
@@ -138,7 +138,7 @@ public class LuaTableLib {
 	}
 
 
-	private static int tconcat(lua_State L) {
+	private static int tconcat(LuaState.lua_State L) {
 		luaL_Buffer b = new luaL_Buffer();
 		int[] lsep = new int[1]; //uint
 		int i, last;
@@ -165,12 +165,12 @@ public class LuaTableLib {
 //		 **  Addison-Wesley, 1993.)
 //		 
 
-	private static void set2(lua_State L, int i, int j) {
+	private static void set2(LuaState.lua_State L, int i, int j) {
 		LuaAPI.lua_rawseti(L, 1, i);
 		LuaAPI.lua_rawseti(L, 1, j);
 	}
 
-	private static int sort_comp(lua_State L, int a, int b) {
+	private static int sort_comp(LuaState.lua_State L, int a, int b) {
 		if (!Lua.lua_isnil(L, 2)) {
 			// function? 
 			int res;
@@ -187,17 +187,17 @@ public class LuaTableLib {
 		}
 	}
 
-	private static int auxsort_loop1(lua_State L, int[] i) { //ref
+	private static int auxsort_loop1(LuaState.lua_State L, int[] i) { //ref
 		LuaAPI.lua_rawgeti(L, 1, ++i[0]);
 		return sort_comp(L, -1, -2);
 	}
 
-	private static int auxsort_loop2(lua_State L, int[] j) { //ref
+	private static int auxsort_loop2(LuaState.lua_State L, int[] j) { //ref
 		LuaAPI.lua_rawgeti(L, 1, --j[0]);
 		return sort_comp(L, -3, -1);
 	}
 
-	private static void auxsort(lua_State L, int l, int u) {
+	private static void auxsort(LuaState.lua_State L, int l, int u) {
 		while (l < u) {
 			// for tail recursion 
 			int i, j;
@@ -294,7 +294,7 @@ public class LuaTableLib {
 		} // repeat the routine for the larger one 
 	}
 
-	private static int sort(lua_State L) {
+	private static int sort(LuaState.lua_State L) {
 		int n = aux_getn(L, 1);
 		LuaAuxLib.luaL_checkstack(L, 40, LuaConf.CharPtr.toCharPtr("")); // assume array is smaller than 2^40 
 		if (!Lua.lua_isnoneornil(L, 2)) { // is there a 2nd argument? 
@@ -320,7 +320,7 @@ public class LuaTableLib {
 		new luaL_Reg(null, null) 
 	};
 
-	public static int luaopen_table(lua_State L) {
+	public static int luaopen_table(LuaState.lua_State L) {
 		LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_TABLIBNAME), tab_funcs);
 		return 1;
 	}
@@ -332,7 +332,7 @@ public class LuaTableLib {
 			this.name = name;
 		}
 
-		public final int exec(lua_State L) {
+		public final int exec(LuaState.lua_State L) {
 			if ((new String("tconcat")).equals(name)) {
 				return tconcat(L);
 			}

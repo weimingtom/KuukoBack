@@ -156,7 +156,7 @@ namespace kurumi
 			return (byte)(g.currentwhite & WHITEBITS); 
 		}
 
-		public static void luaC_checkGC(lua_State L)
+		public static void luaC_checkGC(LuaState.lua_State L)
 		{
 			//condhardstacktests(luaD_reallocstack(L, L.stacksize - EXTRA_STACK - 1));
 			//luaD_reallocstack(L, L.stacksize - EXTRA_STACK - 1);
@@ -166,7 +166,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_barrier(lua_State L, object p, TValue v)
+		public static void luaC_barrier(LuaState.lua_State L, object p, TValue v)
 		{
 			if (valiswhite(v) && isblack(LuaState.obj2gco(p)))
 			{
@@ -174,7 +174,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_barriert(lua_State L, Table t, TValue v)
+		public static void luaC_barriert(LuaState.lua_State L, Table t, TValue v)
 		{
 			if (valiswhite(v) && isblack(LuaState.obj2gco(t)))
 			{
@@ -182,7 +182,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_objbarrier(lua_State L, object p, object o)
+		public static void luaC_objbarrier(LuaState.lua_State L, object p, object o)
 		{
 			if (iswhite(LuaState.obj2gco(o)) && isblack(LuaState.obj2gco(p)))
 			{
@@ -190,7 +190,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_objbarriert(lua_State L, Table t, object o)
+		public static void luaC_objbarriert(LuaState.lua_State L, Table t, object o)
 		{ 
 			if (iswhite(LuaState.obj2gco(o)) && isblack(LuaState.obj2gco(t))) 
 			{
@@ -364,7 +364,7 @@ namespace kurumi
 		}
 
 		/* move `dead' udata that need finalization to list `tmudata' */
-		public static int/*uint*/ luaC_separateudata(lua_State L, int all) 
+		public static int/*uint*/ luaC_separateudata(LuaState.lua_State L, int all) 
 		{
 			LuaState.global_State g = LuaState.G(L);
 			int/*uint*/ deadmem = 0;
@@ -530,7 +530,7 @@ namespace kurumi
 			}
 		}
 
-		private static void checkstacksizes(lua_State L, TValue/*StkId*/ max)
+		private static void checkstacksizes(LuaState.lua_State L, TValue/*StkId*/ max)
 		{
 			int ci_used = LuaLimits.cast_int(LuaState.CallInfo.minus(L.ci, L.base_ci[0]));  /* number of `ci' in use */
 			int s_used = LuaLimits.cast_int(TValue.minus(max, L.stack));  /* part of stack in use */
@@ -551,7 +551,7 @@ namespace kurumi
 			//condhardstacktests(luaD_reallocstack(L, s_used));
 		}
 
-		private static void traversestack (LuaState.global_State g, lua_State l) 
+		private static void traversestack (LuaState.global_State g, LuaState.lua_State l) 
 		{
 			TValue[]/*StkId*/ o = new TValue[1];
 			o[0] = new TValue();
@@ -612,7 +612,7 @@ namespace kurumi
 					}
 				case Lua.LUA_TTHREAD:
 					{
-						lua_State th = LuaState.gco2th(o);
+						LuaState.lua_State th = LuaState.gco2th(o);
 						g.gray = th.gclist;
 						th.gclist = g.grayagain;
 						g.grayagain = o;
@@ -724,7 +724,7 @@ namespace kurumi
 		}
 
 
-		private static void freeobj(lua_State L, LuaState.GCObject o) 
+		private static void freeobj(LuaState.lua_State L, LuaState.GCObject o) 
 		{
 			switch (o.getGch().tt) 
 			{
@@ -775,12 +775,12 @@ namespace kurumi
 			}
 		}
 
-		public static void sweepwholelist(lua_State L, LuaState.GCObjectRef p) 
+		public static void sweepwholelist(LuaState.lua_State L, LuaState.GCObjectRef p) 
 		{ 
 			sweeplist(L, p, LuaLimits.MAX_LUMEM); 
 		}
 
-		private static LuaState.GCObjectRef sweeplist(lua_State L, LuaState.GCObjectRef p, long/*UInt32*//*lu_mem*/ count)
+		private static LuaState.GCObjectRef sweeplist(LuaState.lua_State L, LuaState.GCObjectRef p, long/*UInt32*//*lu_mem*/ count)
 		{
 			LuaState.GCObject curr;
 			LuaState.global_State g = LuaState.G(L);
@@ -813,7 +813,7 @@ namespace kurumi
 			return p;
 		}
 
-		private static void checkSizes(lua_State L) 
+		private static void checkSizes(LuaState.lua_State L) 
 		{
 			LuaState.global_State g = LuaState.G(L);
 			/* check size of string hash */
@@ -831,7 +831,7 @@ namespace kurumi
 			}
 		}
 
-		private static void GCTM(lua_State L) 
+		private static void GCTM(LuaState.lua_State L) 
 		{
 			LuaState.global_State g = LuaState.G(L);
 			LuaState.GCObject o = g.tmudata.getGch().next;  /* get first element */
@@ -868,7 +868,7 @@ namespace kurumi
 		/*
 		 ** Call all GC tag methods
 		 */
-		public static void luaC_callGCTM(lua_State L) 
+		public static void luaC_callGCTM(LuaState.lua_State L) 
 		{
 			while (LuaState.G(L).tmudata != null)
 			{
@@ -876,7 +876,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_freeall(lua_State L) 
+		public static void luaC_freeall(LuaState.lua_State L) 
 		{
 			LuaState.global_State g = LuaState.G(L);
 			int i;
@@ -901,7 +901,7 @@ namespace kurumi
 		}
 
 		/* mark root set */
-		private static void markroot(lua_State L) 
+		private static void markroot(LuaState.lua_State L) 
 		{
 			LuaState.global_State g = LuaState.G(L);
 			g.gray = null;
@@ -928,7 +928,7 @@ namespace kurumi
 			}
 		}
 
-		private static void atomic(lua_State L) 
+		private static void atomic(LuaState.lua_State L) 
 		{
 			LuaState.global_State g = LuaState.G(L);
 			int/*uint*/ udsize;  /* total size of userdata to be finalized */
@@ -959,7 +959,7 @@ namespace kurumi
 			g.estimate = g.totalbytes - udsize;  /* first estimate */
 		}
 
-		private static int/*Int32*//*l_mem*/ singlestep(lua_State L)
+		private static int/*Int32*//*l_mem*/ singlestep(LuaState.lua_State L)
 		{
 			LuaState.global_State g = LuaState.G(L);
 			/*lua_checkmemory(L);*/
@@ -1035,7 +1035,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_step (lua_State L) {
+		public static void luaC_step (LuaState.lua_State L) {
 			LuaState.global_State g = LuaState.G(L);
 			int/*Int32*//*l_mem*/ lim = (int/*Int32*//*l_mem*/)((GCSTEPSIZE / 100) * g.gcstepmul);
 			if (lim == 0)
@@ -1070,7 +1070,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_fullgc(lua_State L) 
+		public static void luaC_fullgc(LuaState.lua_State L) 
 		{
 			LuaState.global_State g = LuaState.G(L);
 			if (g.gcstate <= GCSpropagate) 
@@ -1099,7 +1099,7 @@ namespace kurumi
 			setthreshold(g);
 		}
 
-		public static void luaC_barrierf(lua_State L, LuaState.GCObject o, LuaState.GCObject v) 
+		public static void luaC_barrierf(LuaState.lua_State L, LuaState.GCObject o, LuaState.GCObject v) 
 		{
 			LuaState.global_State g = LuaState.G(L);
 			LuaLimits.lua_assert(isblack(o) && iswhite(v) && !isdead(g, v) && !isdead(g, o));
@@ -1117,7 +1117,7 @@ namespace kurumi
 		}
 
 
-		public static void luaC_barrierback(lua_State L, Table t)
+		public static void luaC_barrierback(LuaState.lua_State L, Table t)
 		{
 			LuaState.global_State g = LuaState.G(L);
 			LuaState.GCObject o = LuaState.obj2gco(t);
@@ -1128,7 +1128,7 @@ namespace kurumi
 			g.grayagain = o;
 		}
 
-		public static void luaC_link(lua_State L, LuaState.GCObject o, Byte/*lu_byte*/ tt)
+		public static void luaC_link(LuaState.lua_State L, LuaState.GCObject o, Byte/*lu_byte*/ tt)
 		{
 			LuaState.global_State g = LuaState.G(L);
 			o.getGch().next = g.rootgc;
@@ -1137,7 +1137,7 @@ namespace kurumi
 			o.getGch().tt = tt;
 		}
 
-		public static void luaC_linkupval(lua_State L, UpVal uv) 
+		public static void luaC_linkupval(LuaState.lua_State L, UpVal uv) 
 		{
 			LuaState.global_State g = LuaState.G(L);
 			LuaState.GCObject o = LuaState.obj2gco(uv);

@@ -157,12 +157,12 @@ namespace kurumi
 			return i;
 		}
 
-		static Proto toproto(lua_State L, int i) 
+		static Proto toproto(LuaState.lua_State L, int i) 
 		{
 			return LuaObject.clvalue(TValue.plus(L.top, i)).l.p;
 		}
 
-		static Proto combine(lua_State L, int n)
+		static Proto combine(LuaState.lua_State L, int n)
 		{
 			if (n == 1)
 			{
@@ -198,7 +198,7 @@ namespace kurumi
 		}
 
         //FIXME:StreamProxy/*object*/ u
-		static int writer(lua_State L, LuaConf.CharPtr p, int/*uint*/ size, object u)
+		static int writer(LuaState.lua_State L, LuaConf.CharPtr p, int/*uint*/ size, object u)
 		{
 			//UNUSED(L);
 			return ((LuaConf.fwrite(p, (int)size, 1, (StreamProxy)u) != 1) && (size != 0)) ? 1 : 0;
@@ -206,14 +206,14 @@ namespace kurumi
 		
 		public class writer_delegate : Lua.lua_Writer
 		{
-			public int exec(lua_State L, LuaConf.CharPtr p, int/*uint*/ sz, object ud)
+			public int exec(LuaState.lua_State L, LuaConf.CharPtr p, int/*uint*/ sz, object ud)
 			{
                 //FIXME:StreamProxy/*object*/ u
 				return writer(L, p, sz, ud);
 			}
 		}
 
-		static int pmain(lua_State L)
+		static int pmain(LuaState.lua_State L)
 		{
 			Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
 			int argc = s.argc;
@@ -272,7 +272,7 @@ namespace kurumi
 			}
 			args = newargs;
 
-			lua_State L;
+			LuaState.lua_State L;
 			Smain s = new Smain();
 			int argc = args.Length;
 			int i = doargs(argc,args);
@@ -305,7 +305,7 @@ namespace kurumi
 		
 		public class pmain_delegate : Lua.lua_CFunction
 		{
-			public int exec(lua_State L)
+			public int exec(LuaState.lua_State L)
 			{
 				return pmain(L);
 			}

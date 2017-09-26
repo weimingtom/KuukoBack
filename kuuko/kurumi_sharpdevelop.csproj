@@ -100,7 +100,6 @@
     <Compile Include="src\kurumi\LuaUndump.cs" />
     <Compile Include="src\kurumi\LuaVM.cs" />
     <Compile Include="src\kurumi\LuaZIO.cs" />
-    <Compile Include="src\kurumi\lua_State.cs" />
     <Compile Include="src\kurumi\MatchState.cs" />
     <Compile Include="src\kurumi\Mbuffer.cs" />
     <Compile Include="src\kurumi\NextRef.cs" />

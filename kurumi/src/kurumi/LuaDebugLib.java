@@ -6,12 +6,12 @@ package kurumi;
 // ** See Copyright Notice in lua.h
 // 
 public class LuaDebugLib {
-	private static int db_getregistry(lua_State L) {
+	private static int db_getregistry(LuaState.lua_State L) {
 		LuaAPI.lua_pushvalue(L, Lua.LUA_REGISTRYINDEX);
 		return 1;
 	}
 
-	private static int db_getmetatable(lua_State L) {
+	private static int db_getmetatable(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checkany(L, 1);
 		if (LuaAPI.lua_getmetatable(L, 1) == 0) {
 			LuaAPI.lua_pushnil(L); // no metatable 
@@ -19,7 +19,7 @@ public class LuaDebugLib {
 		return 1;
 	}
 
-	private static int db_setmetatable(lua_State L) {
+	private static int db_setmetatable(LuaState.lua_State L) {
 		int t = LuaAPI.lua_type(L, 2);
 		LuaAuxLib.luaL_argcheck(L, t == Lua.LUA_TNIL || t == Lua.LUA_TTABLE, 2, "nil or table expected");
 		LuaAPI.lua_settop(L, 2);
@@ -27,13 +27,13 @@ public class LuaDebugLib {
 		return 1;
 	}
 
-	private static int db_getfenv(lua_State L) {
+	private static int db_getfenv(LuaState.lua_State L) {
 		LuaAPI.lua_getfenv(L, 1);
 		return 1;
 	}
 
 
-	private static int db_setfenv(lua_State L) {
+	private static int db_setfenv(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 2, Lua.LUA_TTABLE);
 		LuaAPI.lua_settop(L, 2);
 		if (LuaAPI.lua_setfenv(L, 1) == 0) {
@@ -42,17 +42,17 @@ public class LuaDebugLib {
 		return 1;
 	}
 
-	private static void settabss(lua_State L, LuaConf.CharPtr i, LuaConf.CharPtr v) {
+	private static void settabss(LuaState.lua_State L, LuaConf.CharPtr i, LuaConf.CharPtr v) {
 		LuaAPI.lua_pushstring(L, v);
 		LuaAPI.lua_setfield(L, -2, i);
 	}
 
-	private static void settabsi(lua_State L, LuaConf.CharPtr i, int v) {
+	private static void settabsi(LuaState.lua_State L, LuaConf.CharPtr i, int v) {
 		LuaAPI.lua_pushinteger(L, v);
 		LuaAPI.lua_setfield(L, -2, i);
 	}
 
-	private static lua_State getthread(lua_State L, int[] arg) { //out
+	private static LuaState.lua_State getthread(LuaState.lua_State L, int[] arg) { //out
 		if (Lua.lua_isthread(L, 1)) {
 			arg[0] = 1;
 			return LuaAPI.lua_tothread(L, 1);
@@ -63,7 +63,7 @@ public class LuaDebugLib {
 		}
 	}
 
-	private static void treatstackoption(lua_State L, lua_State L1, LuaConf.CharPtr fname) {
+	private static void treatstackoption(LuaState.lua_State L, LuaState.lua_State L1, LuaConf.CharPtr fname) {
 		if (L == L1) {
 			LuaAPI.lua_pushvalue(L, -2);
 			LuaAPI.lua_remove(L, -3);
@@ -74,10 +74,10 @@ public class LuaDebugLib {
 		LuaAPI.lua_setfield(L, -2, fname);
 	}
 
-	private static int db_getinfo(lua_State L) {
+	private static int db_getinfo(LuaState.lua_State L) {
 		Lua.lua_Debug ar = new Lua.lua_Debug();
 		int[] arg = new int[1];
-		lua_State L1 = getthread(L, arg); //out
+		LuaState.lua_State L1 = getthread(L, arg); //out
 		LuaConf.CharPtr options = LuaAuxLib.luaL_optstring(L, arg[0] + 2, LuaConf.CharPtr.toCharPtr("flnSu"));
 		if (LuaAPI.lua_isnumber(L, arg[0] + 1) != 0) {
 			if (LuaDebug.lua_getstack(L1, (int)LuaAPI.lua_tointeger(L, arg[0] + 1), ar) == 0) {
@@ -124,9 +124,9 @@ public class LuaDebugLib {
 		return 1; // return table 
 	}
 
-	private static int db_getlocal(lua_State L) {
+	private static int db_getlocal(LuaState.lua_State L) {
 		int[] arg = new int[1];
-		lua_State L1 = getthread(L, arg); //out
+		LuaState.lua_State L1 = getthread(L, arg); //out
 		Lua.lua_Debug ar = new Lua.lua_Debug();
 		LuaConf.CharPtr name;
 		if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0) { // out of range? 
@@ -145,9 +145,9 @@ public class LuaDebugLib {
 		}
 	}
 
-	private static int db_setlocal(lua_State L) {
+	private static int db_setlocal(LuaState.lua_State L) {
 		int[] arg = new int[1];
-		lua_State L1 = getthread(L, arg); //out
+		LuaState.lua_State L1 = getthread(L, arg); //out
 		Lua.lua_Debug ar = new Lua.lua_Debug();
 		if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0) { // out of range? 
 			return LuaAuxLib.luaL_argerror(L, arg[0] + 1, LuaConf.CharPtr.toCharPtr("level out of range"));
@@ -159,7 +159,7 @@ public class LuaDebugLib {
 		return 1;
 	}
 
-	private static int auxupvalue(lua_State L, int get) {
+	private static int auxupvalue(LuaState.lua_State L, int get) {
 		LuaConf.CharPtr name;
 		int n = LuaAuxLib.luaL_checkint(L, 2);
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TFUNCTION);
@@ -176,11 +176,11 @@ public class LuaDebugLib {
 		return get + 1;
 	}
 
-	private static int db_getupvalue(lua_State L) {
+	private static int db_getupvalue(LuaState.lua_State L) {
 		return auxupvalue(L, 1);
 	}
 
-	private static int db_setupvalue(lua_State L) {
+	private static int db_setupvalue(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checkany(L, 3);
 		return auxupvalue(L, 0);
 	}
@@ -189,7 +189,7 @@ public class LuaDebugLib {
 
 	private static final String[] hooknames = { "call", "return", "line", "count", "tail return" };
 
-	private static void hookf(lua_State L, Lua.lua_Debug ar) {
+	private static void hookf(LuaState.lua_State L, Lua.lua_Debug ar) {
 		LuaAPI.lua_pushlightuserdata(L, KEY_HOOK);
 		LuaAPI.lua_rawget(L, Lua.LUA_REGISTRYINDEX);
 		LuaAPI.lua_pushlightuserdata(L, L);
@@ -208,7 +208,7 @@ public class LuaDebugLib {
 	}
 
 	public static class hookf_delegate implements Lua.lua_Hook {
-		public final void exec(lua_State L, Lua.lua_Debug ar) {
+		public final void exec(LuaState.lua_State L, Lua.lua_Debug ar) {
 			hookf(L, ar);
 		}
 	}
@@ -245,7 +245,7 @@ public class LuaDebugLib {
 		return smask;
 	}
 
-	private static void gethooktable(lua_State L) {
+	private static void gethooktable(LuaState.lua_State L) {
 		LuaAPI.lua_pushlightuserdata(L, KEY_HOOK);
 		LuaAPI.lua_rawget(L, Lua.LUA_REGISTRYINDEX);
 		if (!Lua.lua_istable(L, -1)) {
@@ -257,11 +257,11 @@ public class LuaDebugLib {
 		}
 	}
 
-	private static int db_sethook(lua_State L) {
+	private static int db_sethook(LuaState.lua_State L) {
 		int[] arg = new int[1];
 		int mask, count;
 		Lua.lua_Hook func;
-		lua_State L1 = getthread(L, arg); //out
+		LuaState.lua_State L1 = getthread(L, arg); //out
 		if (Lua.lua_isnoneornil(L, arg[0] + 1)) {
 			LuaAPI.lua_settop(L, arg[0] + 1);
 			func = null;
@@ -284,9 +284,9 @@ public class LuaDebugLib {
 		return 0;
 	}
 
-	private static int db_gethook(lua_State L) {
+	private static int db_gethook(LuaState.lua_State L) {
 		int[] arg = new int[1];
-		lua_State L1 = getthread(L, arg); //out
+		LuaState.lua_State L1 = getthread(L, arg); //out
 		LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[5]);
 		int mask = LuaDebug.lua_gethookmask(L1);
 		Lua.lua_Hook hook = LuaDebug.lua_gethook(L1);
@@ -304,7 +304,7 @@ public class LuaDebugLib {
 		return 3;
 	}
 
-	private static int db_debug(lua_State L) {
+	private static int db_debug(LuaState.lua_State L) {
 		for (;;) {
 			LuaConf.CharPtr buffer = LuaConf.CharPtr.toCharPtr(new char[250]);
 			LuaConf.fputs(LuaConf.CharPtr.toCharPtr("lua_debug> "), LuaConf.stderr);
@@ -322,11 +322,11 @@ public class LuaDebugLib {
 	public static final int LEVELS1 = 12; // size of the first part of the stack 
 	public static final int LEVELS2 = 10; // size of the second part of the stack 
 
-	private static int db_errorfb(lua_State L) {
+	private static int db_errorfb(LuaState.lua_State L) {
 		int level;
 		boolean firstpart = true; // still before eventual `...' 
 		int[] arg = new int[1];
-		lua_State L1 = getthread(L, arg); //out
+		LuaState.lua_State L1 = getthread(L, arg); //out
 		Lua.lua_Debug ar = new Lua.lua_Debug();
 		if (LuaAPI.lua_isnumber(L, arg[0] + 2) != 0) {
 			level = (int)LuaAPI.lua_tointeger(L, arg[0] + 2);
@@ -411,7 +411,7 @@ public class LuaDebugLib {
 			this.name = name;
 		}
 
-		public final int exec(lua_State L) {
+		public final int exec(LuaState.lua_State L) {
 			if ((new String("db_debug")).equals(name)) {
 				return db_debug(L);
 			}
@@ -461,7 +461,7 @@ public class LuaDebugLib {
 	}
 
 
-	public static int luaopen_debug(lua_State L) {
+	public static int luaopen_debug(LuaState.lua_State L) {
 		LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_DBLIBNAME), dblib);
 		return 1;
 	}

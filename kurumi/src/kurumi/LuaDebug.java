@@ -20,11 +20,11 @@ public class LuaDebug {
 		return (f.lineinfo != null) ? f.lineinfo[pc] : 0;
 	}
 
-	public static void resethookcount(lua_State L) {
+	public static void resethookcount(LuaState.lua_State L) {
 		L.hookcount = L.basehookcount;
 	}
 
-	private static int currentpc(lua_State L, LuaState.CallInfo ci) {
+	private static int currentpc(LuaState.lua_State L, LuaState.CallInfo ci) {
 		if (!LuaState.isLua(ci)) {
 			return -1; // function is not a Lua function? 
 		}
@@ -34,7 +34,7 @@ public class LuaDebug {
 		return pcRel(ci.savedpc, LuaState.ci_func(ci).l.p);
 	}
 
-	private static int currentline(lua_State L, LuaState.CallInfo ci) {
+	private static int currentline(LuaState.lua_State L, LuaState.CallInfo ci) {
 		int pc = currentpc(L, ci);
 		if (pc < 0) {
 			return -1; // only active lua functions have current-line information 
@@ -47,7 +47,7 @@ public class LuaDebug {
 //        
 //		 ** this function can be called asynchronous (e.g. during a signal)
 //		 
-	public static int lua_sethook(lua_State L, Lua.lua_Hook func, int mask, int count) {
+	public static int lua_sethook(LuaState.lua_State L, Lua.lua_Hook func, int mask, int count) {
 		if (func == null || mask == 0) {
 			// turn off hooks? 
 			mask = 0;
@@ -60,19 +60,19 @@ public class LuaDebug {
 		return 1;
 	}
 
-	public static Lua.lua_Hook lua_gethook(lua_State L) {
+	public static Lua.lua_Hook lua_gethook(LuaState.lua_State L) {
 		return L.hook;
 	}
 
-	public static int lua_gethookmask(lua_State L) {
+	public static int lua_gethookmask(LuaState.lua_State L) {
 		return L.hookmask;
 	}
 
-	public static int lua_gethookcount(lua_State L) {
+	public static int lua_gethookcount(LuaState.lua_State L) {
 		return L.basehookcount;
 	}
 
-	public static int lua_getstack(lua_State L, int level, Lua.lua_Debug ar) {
+	public static int lua_getstack(LuaState.lua_State L, int level, Lua.lua_Debug ar) {
 		int status;
 		LuaState.CallInfo[] ci = new LuaState.CallInfo[1];
 		ci[0] = new LuaState.CallInfo();
@@ -105,7 +105,7 @@ public class LuaDebug {
 		return (LuaState.isLua(ci) ? LuaState.ci_func(ci).l.p : null);
 	}
 
-	private static LuaConf.CharPtr findlocal(lua_State L, LuaState.CallInfo ci, int n) {
+	private static LuaConf.CharPtr findlocal(LuaState.lua_State L, LuaState.CallInfo ci, int n) {
 		LuaConf.CharPtr name;
 		Proto fp = getluaproto(ci);
 		if ((fp != null) && LuaConf.CharPtr.isNotEqual((name = LuaFunc.luaF_getlocalname(fp, n, currentpc(L, ci))), null)) {
@@ -122,7 +122,7 @@ public class LuaDebug {
 		}
 	}
 
-	public static LuaConf.CharPtr lua_getlocal(lua_State L, Lua.lua_Debug ar, int n) {
+	public static LuaConf.CharPtr lua_getlocal(LuaState.lua_State L, Lua.lua_Debug ar, int n) {
 		LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 		LuaConf.CharPtr name = findlocal(L, ci, n);
 		LuaLimits.lua_lock(L);
@@ -133,7 +133,7 @@ public class LuaDebug {
 		return name;
 	}
 
-	public static LuaConf.CharPtr lua_setlocal(lua_State L, Lua.lua_Debug ar, int n) {
+	public static LuaConf.CharPtr lua_setlocal(LuaState.lua_State L, Lua.lua_Debug ar, int n) {
 		LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 		LuaConf.CharPtr name = findlocal(L, ci, n);
 		LuaLimits.lua_lock(L);
@@ -174,7 +174,7 @@ TValue.dec(top); // pop value  - ref
 		ar.nups = 0;
 	}
 
-	private static void collectvalidlines(lua_State L, LuaObject.Closure f) {
+	private static void collectvalidlines(LuaState.lua_State L, LuaObject.Closure f) {
 		if (f == null || (f.c.getIsC() != 0)) {
 			LuaObject.setnilvalue(L.top);
 		}
@@ -190,7 +190,7 @@ TValue.dec(top); // pop value  - ref
 		LuaDo.incr_top(L);
 	}
 
-	private static int auxgetinfo(lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar, LuaObject.Closure f, LuaState.CallInfo ci) {
+	private static int auxgetinfo(LuaState.lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar, LuaObject.Closure f, LuaState.CallInfo ci) {
 		int status = 1;
 		if (f == null) {
 			info_tailcall(ar);
@@ -234,7 +234,7 @@ TValue.dec(top); // pop value  - ref
 		return status;
 	}
 
-	public static int lua_getinfo(lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar) {
+	public static int lua_getinfo(LuaState.lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar) {
 		int status;
 		LuaObject.Closure f = null;
 		LuaState.CallInfo ci = null;
@@ -618,7 +618,7 @@ TValue.dec(top); // pop function  - ref
 	}
 
 
-	private static LuaConf.CharPtr getobjname(lua_State L, LuaState.CallInfo ci, int stackpos, LuaConf.CharPtr[] name) { //ref
+	private static LuaConf.CharPtr getobjname(LuaState.lua_State L, LuaState.CallInfo ci, int stackpos, LuaConf.CharPtr[] name) { //ref
 		if (LuaState.isLua(ci)) {
 			// a Lua function? 
 			Proto p = LuaState.ci_func(ci).l.p;
@@ -668,7 +668,7 @@ TValue.dec(top); // pop function  - ref
 		return null; // no useful name found 
 	}
 
-	private static LuaConf.CharPtr getfuncname(lua_State L, LuaState.CallInfo ci, LuaConf.CharPtr[] name) { //ref
+	private static LuaConf.CharPtr getfuncname(LuaState.lua_State L, LuaState.CallInfo ci, LuaConf.CharPtr[] name) { //ref
 		long i; //Instruction - UInt32
 		if ((LuaState.isLua(ci) && ci.tailcalls > 0) || !LuaState.isLua(LuaState.CallInfo.minus(ci, 1))) {
 			return null; // calling function is not Lua (or is unknown) 
@@ -698,7 +698,7 @@ TValue.dec(top); // pop function  - ref
 		return 0;
 	}
 
-	public static void luaG_typeerror(lua_State L, TValue o, LuaConf.CharPtr op) {
+	public static void luaG_typeerror(LuaState.lua_State L, TValue o, LuaConf.CharPtr op) {
 		LuaConf.CharPtr name = null;
 		LuaConf.CharPtr t = LuaTM.luaT_typenames[LuaObject.ttype(o)];
 		LuaConf.CharPtr[] name_ref = new LuaConf.CharPtr[1];
@@ -713,7 +713,7 @@ TValue.dec(top); // pop function  - ref
 		}
 	}
 
-	public static void luaG_concaterror(lua_State L, TValue p1, TValue p2) { //StkId - StkId
+	public static void luaG_concaterror(LuaState.lua_State L, TValue p1, TValue p2) { //StkId - StkId
 		if (LuaObject.ttisstring(p1) || LuaObject.ttisnumber(p1)) {
 			p1 = p2;
 		}
@@ -721,7 +721,7 @@ TValue.dec(top); // pop function  - ref
 		luaG_typeerror(L, p1, LuaConf.CharPtr.toCharPtr("concatenate"));
 	}
 
-	public static void luaG_aritherror(lua_State L, TValue p1, TValue p2) {
+	public static void luaG_aritherror(LuaState.lua_State L, TValue p1, TValue p2) {
 		TValue temp = new TValue();
 		if (LuaVM.luaV_tonumber(p1, temp) == null) {
 			p2 = p1; // first operand is wrong 
@@ -729,7 +729,7 @@ TValue.dec(top); // pop function  - ref
 		luaG_typeerror(L, p2, LuaConf.CharPtr.toCharPtr("perform arithmetic on"));
 	}
 
-	public static int luaG_ordererror(lua_State L, TValue p1, TValue p2) {
+	public static int luaG_ordererror(LuaState.lua_State L, TValue p1, TValue p2) {
 		LuaConf.CharPtr t1 = LuaTM.luaT_typenames[LuaObject.ttype(p1)];
 		LuaConf.CharPtr t2 = LuaTM.luaT_typenames[LuaObject.ttype(p2)];
 		if (t1.get(2) == t2.get(2)) {
@@ -741,7 +741,7 @@ TValue.dec(top); // pop function  - ref
 		return 0;
 	}
 
-	private static void addinfo(lua_State L, LuaConf.CharPtr msg) {
+	private static void addinfo(LuaState.lua_State L, LuaConf.CharPtr msg) {
 		LuaState.CallInfo ci = L.ci;
 		if (LuaState.isLua(ci)) {
 			// is Lua code? 
@@ -752,7 +752,7 @@ TValue.dec(top); // pop function  - ref
 		}
 	}
 
-	public static void luaG_errormsg(lua_State L) {
+	public static void luaG_errormsg(LuaState.lua_State L) {
 		if (L.errfunc != 0) {
 			// is there an error handling function? 
 			TValue errfunc = LuaDo.restorestack(L, L.errfunc); //StkId
@@ -767,7 +767,7 @@ TValue.dec(top); // pop function  - ref
 		LuaDo.luaD_throw(L, Lua.LUA_ERRRUN);
 	}
 
-	public static void luaG_runerror(lua_State L, LuaConf.CharPtr fmt, Object... argp) {
+	public static void luaG_runerror(LuaState.lua_State L, LuaConf.CharPtr fmt, Object... argp) {
 		addinfo(L, LuaObject.luaO_pushvfstring(L, fmt, argp));
 		luaG_errormsg(L);
 	}

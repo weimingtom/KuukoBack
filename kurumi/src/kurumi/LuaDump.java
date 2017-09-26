@@ -11,7 +11,7 @@ package kurumi;
 
 public class LuaDump {
     public static class DumpState {
-        public lua_State L;
+        public LuaState.lua_State L;
         public Lua.lua_Writer writer;
 		public Object data;
         public int strip;
@@ -169,7 +169,7 @@ public class LuaDump {
 //        
 //		 ** dump Lua function as precompiled chunk
 //		 
-	public static int luaU_dump(lua_State L, Proto f, Lua.lua_Writer w, Object data, int strip) {
+	public static int luaU_dump(LuaState.lua_State L, Proto f, Lua.lua_Writer w, Object data, int strip) {
 		DumpState D = new DumpState();
 		D.L = L;
 		D.writer = w;

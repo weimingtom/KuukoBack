@@ -24,12 +24,12 @@ namespace kurumi
 			return (f.lineinfo != null) ? f.lineinfo[pc] : 0; 
 		}
 		
-		public static void resethookcount(lua_State L) 
+		public static void resethookcount(LuaState.lua_State L) 
 		{ 
 			L.hookcount = L.basehookcount; 
 		}
 
-		private static int currentpc (lua_State L, LuaState.CallInfo ci) 
+		private static int currentpc (LuaState.lua_State L, LuaState.CallInfo ci) 
 		{
 			if (!LuaState.isLua(ci)) 
 			{
@@ -42,7 +42,7 @@ namespace kurumi
 			return pcRel(ci.savedpc, LuaState.ci_func(ci).l.p);
 		}
 
-		private static int currentline(lua_State L, LuaState.CallInfo ci) 
+		private static int currentline(LuaState.lua_State L, LuaState.CallInfo ci) 
 		{
 			int pc = currentpc(L, ci);
 			if (pc < 0)
@@ -58,7 +58,7 @@ namespace kurumi
 		/*
 		 ** this function can be called asynchronous (e.g. during a signal)
 		 */
-		public static int lua_sethook(lua_State L, Lua.lua_Hook func, int mask, int count) 
+		public static int lua_sethook(LuaState.lua_State L, Lua.lua_Hook func, int mask, int count) 
 		{
 			if (func == null || mask == 0) 
 			{  
@@ -73,22 +73,22 @@ namespace kurumi
 			return 1;
 		}
 
-		public static Lua.lua_Hook lua_gethook (lua_State L) 
+		public static Lua.lua_Hook lua_gethook (LuaState.lua_State L) 
 		{
 			return L.hook;
 		}
 
-		public static int lua_gethookmask (lua_State L) 
+		public static int lua_gethookmask (LuaState.lua_State L) 
 		{
 			return L.hookmask;
 		}
 
-		public static int lua_gethookcount (lua_State L) 
+		public static int lua_gethookcount (LuaState.lua_State L) 
 		{
 			return L.basehookcount;
 		}
 
-		public static int lua_getstack (lua_State L, int level, Lua.lua_Debug ar) 
+		public static int lua_getstack (LuaState.lua_State L, int level, Lua.lua_Debug ar) 
 		{
 			int status;
 			LuaState.CallInfo[] ci = new LuaState.CallInfo[1];
@@ -128,7 +128,7 @@ namespace kurumi
 			return (LuaState.isLua(ci) ? LuaState.ci_func(ci).l.p : null);
 		}
 
-		private static LuaConf.CharPtr findlocal(lua_State L, LuaState.CallInfo ci, int n) 
+		private static LuaConf.CharPtr findlocal(LuaState.lua_State L, LuaState.CallInfo ci, int n) 
 		{
 			LuaConf.CharPtr name;
 			Proto fp = getluaproto(ci);
@@ -150,7 +150,7 @@ namespace kurumi
 			}
 		}
 
-		public static LuaConf.CharPtr lua_getlocal(lua_State L, Lua.lua_Debug ar, int n) 
+		public static LuaConf.CharPtr lua_getlocal(LuaState.lua_State L, Lua.lua_Debug ar, int n) 
 		{
 			LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 			LuaConf.CharPtr name = findlocal(L, ci, n);
@@ -163,7 +163,7 @@ namespace kurumi
 			return name;
 		}
 
-		public static LuaConf.CharPtr lua_setlocal(lua_State L, Lua.lua_Debug ar, int n) 
+		public static LuaConf.CharPtr lua_setlocal(LuaState.lua_State L, Lua.lua_Debug ar, int n) 
 		{
 			LuaState.CallInfo ci = L.base_ci[ar.i_ci];
 			LuaConf.CharPtr name = findlocal(L, ci, n);
@@ -209,7 +209,7 @@ namespace kurumi
 			ar.nups = 0;
 		}
 
-		private static void collectvalidlines(lua_State L, LuaObject.Closure f) 
+		private static void collectvalidlines(LuaState.lua_State L, LuaObject.Closure f) 
 		{
 			if (f == null || (f.c.getIsC() != 0)) 
 			{
@@ -229,7 +229,7 @@ namespace kurumi
 			LuaDo.incr_top(L);
 		}
 
-		private static int auxgetinfo (lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar,
+		private static int auxgetinfo (LuaState.lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar,
 			LuaObject.Closure f, LuaState.CallInfo ci) 
 		{
 			int status = 1;
@@ -285,7 +285,7 @@ namespace kurumi
 			return status;
 		}
 
-		public static int lua_getinfo(lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar) 
+		public static int lua_getinfo(LuaState.lua_State L, LuaConf.CharPtr what, Lua.lua_Debug ar) 
 		{
 			int status;
 			LuaObject.Closure f = null;
@@ -775,7 +775,7 @@ namespace kurumi
 		}
 
 
-		private static LuaConf.CharPtr getobjname(lua_State L, LuaState.CallInfo ci, int stackpos,
+		private static LuaConf.CharPtr getobjname(LuaState.lua_State L, LuaState.CallInfo ci, int stackpos,
 		                                  /*ref*/ LuaConf.CharPtr[] name)
 		{
 			if (LuaState.isLua(ci))
@@ -837,7 +837,7 @@ namespace kurumi
 			return null;  /* no useful name found */
 		}
 
-		private static LuaConf.CharPtr getfuncname(lua_State L, LuaState.CallInfo ci, /*ref*/ LuaConf.CharPtr[] name)
+		private static LuaConf.CharPtr getfuncname(LuaState.lua_State L, LuaState.CallInfo ci, /*ref*/ LuaConf.CharPtr[] name)
 		{
 			long/*UInt32*//*Instruction*/ i;
 			if ((LuaState.isLua(ci) && ci.tailcalls > 0) || !LuaState.isLua(LuaState.CallInfo.minus(ci, 1)))
@@ -875,7 +875,7 @@ namespace kurumi
 			return 0;
 		}
 
-		public static void luaG_typeerror(lua_State L, TValue o, LuaConf.CharPtr op) 
+		public static void luaG_typeerror(LuaState.lua_State L, TValue o, LuaConf.CharPtr op) 
 		{
 			LuaConf.CharPtr name = null;
 			LuaConf.CharPtr t = LuaTM.luaT_typenames[LuaObject.ttype(o)];
@@ -896,7 +896,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaG_concaterror(lua_State L, TValue/*StkId*/ p1, TValue/*StkId*/ p2)
+		public static void luaG_concaterror(LuaState.lua_State L, TValue/*StkId*/ p1, TValue/*StkId*/ p2)
 		{
 			if (LuaObject.ttisstring(p1) || LuaObject.ttisnumber(p1)) 
 			{
@@ -906,7 +906,7 @@ namespace kurumi
 			luaG_typeerror(L, p1, LuaConf.CharPtr.toCharPtr("concatenate"));
 		}
 
-		public static void luaG_aritherror(lua_State L, TValue p1, TValue p2) 
+		public static void luaG_aritherror(LuaState.lua_State L, TValue p1, TValue p2) 
 		{
 			TValue temp = new TValue();
 			if (LuaVM.luaV_tonumber(p1, temp) == null)
@@ -916,7 +916,7 @@ namespace kurumi
 			luaG_typeerror(L, p2, LuaConf.CharPtr.toCharPtr("perform arithmetic on"));
 		}
 		
-		public static int luaG_ordererror(lua_State L, TValue p1, TValue p2) 
+		public static int luaG_ordererror(LuaState.lua_State L, TValue p1, TValue p2) 
 		{
 			LuaConf.CharPtr t1 = LuaTM.luaT_typenames[LuaObject.ttype(p1)];
 			LuaConf.CharPtr t2 = LuaTM.luaT_typenames[LuaObject.ttype(p2)];
@@ -931,7 +931,7 @@ namespace kurumi
 			return 0;
 		}
 
-		private static void addinfo(lua_State L, LuaConf.CharPtr msg) 
+		private static void addinfo(LuaState.lua_State L, LuaConf.CharPtr msg) 
         {
 			LuaState.CallInfo ci = L.ci;
 			if (LuaState.isLua(ci))
@@ -944,7 +944,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaG_errormsg(lua_State L) 
+		public static void luaG_errormsg(LuaState.lua_State L) 
 		{
 			if (L.errfunc != 0) 
 			{  
@@ -962,7 +962,7 @@ namespace kurumi
 			LuaDo.luaD_throw(L, Lua.LUA_ERRRUN);
 		}
 
-		public static void luaG_runerror(lua_State L, LuaConf.CharPtr fmt, params object[] argp)
+		public static void luaG_runerror(LuaState.lua_State L, LuaConf.CharPtr fmt, params object[] argp)
 		{
 			addinfo(L, LuaObject.luaO_pushvfstring(L, fmt, argp));
 			luaG_errormsg(L);

@@ -99,7 +99,7 @@ public class LuaParser {
 		public Table h;  /* table to find (and reuse) elements in `k' */
 		public FuncState prev;  /* enclosing function */
 		public LuaLex.LexState ls;  /* lexical state */
-		public lua_State L;  /* copy of the Lua state */
+		public LuaState.lua_State L;  /* copy of the Lua state */
 		public LuaParser.BlockCnt bl;  /* chain of current blocks */
 		public int pc;  /* next position to code (equivalent to `ncode') */
 		public int lasttarget;   /* `pc' of last `jump target' */
@@ -436,7 +436,7 @@ public class LuaParser {
 	}
 
 	private static void open_func(LuaLex.LexState ls, FuncState fs) {
-		lua_State L = ls.L;
+		LuaState.lua_State L = ls.L;
 		Proto f = LuaFunc.luaF_newproto(L);
 		fs.f = f;
 		fs.prev = ls.fs; // linked list of funcstates 
@@ -465,7 +465,7 @@ public class LuaParser {
 	private static Proto lastfunc;
 
 	private static void close_func(LuaLex.LexState ls) {
-		lua_State L = ls.L;
+		LuaState.lua_State L = ls.L;
 		FuncState fs = ls.fs;
 		Proto f = fs.f;
 		lastfunc = f;
@@ -515,7 +515,7 @@ public class LuaParser {
 		}
 	}
 
-	public static Proto luaY_parser(lua_State L, ZIO z, Mbuffer buff, LuaConf.CharPtr name) {
+	public static Proto luaY_parser(LuaState.lua_State L, ZIO z, Mbuffer buff, LuaConf.CharPtr name) {
 		LuaLex.LexState lexstate = new LuaLex.LexState();
 		FuncState funcstate = new FuncState();
 		lexstate.buff = buff;

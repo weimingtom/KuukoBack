@@ -2,6 +2,6 @@
 //{
 	public interface Pfunc
 	{
-		void exec(lua_State L, Object ud);
+		void exec(LuaState.lua_State L, Object ud);
 	} 
 //}

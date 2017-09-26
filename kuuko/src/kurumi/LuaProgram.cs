@@ -16,11 +16,11 @@ namespace kurumi
 		//#include "lauxlib.h"
 		//#include "lualib.h"
 
-		static lua_State globalL = null;
+		static LuaState.lua_State globalL = null;
 
 		static LuaConf.CharPtr progname = LuaConf.CharPtr.toCharPtr(LuaConf.LUA_PROGNAME);
 
-		static void lstop(lua_State L, Lua.lua_Debug ar)
+		static void lstop(LuaState.lua_State L, Lua.lua_Debug ar)
 		{
 			LuaDebug.lua_sethook(L, null, 0, 0);
 			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("interrupted!"));
@@ -28,7 +28,7 @@ namespace kurumi
 		
 		public class lstop_delegate : Lua.lua_Hook
 		{
-			public void exec(lua_State L, Lua.lua_Debug ar)
+			public void exec(LuaState.lua_State L, Lua.lua_Debug ar)
 			{
 				lstop(L, ar);
 			}
@@ -65,7 +65,7 @@ namespace kurumi
 			LuaConf.fflush(LuaConf.stderr);
 		}
 
-		static int report(lua_State L, int status)
+		static int report(LuaState.lua_State L, int status)
 		{
 			if ((status != 0) && !Lua.lua_isnil(L, -1))
 			{
@@ -80,7 +80,7 @@ namespace kurumi
 			return status;
 		}
 
-		static int traceback(lua_State L)
+		static int traceback(LuaState.lua_State L)
 		{
 			if (LuaAPI.lua_isstring(L, 1) == 0)  /* 'message' not a string? */
 			{
@@ -104,7 +104,7 @@ namespace kurumi
 			return 1;
 		}
 
-		static int docall(lua_State L, int narg, int clear)
+		static int docall(LuaState.lua_State L, int narg, int clear)
 		{
 			int status;
 			int base_ = LuaAPI.lua_gettop(L) - narg;  /* function index */
@@ -127,7 +127,7 @@ namespace kurumi
 			l_message(null, LuaConf.CharPtr.toCharPtr(Lua.LUA_RELEASE + "  " + Lua.LUA_COPYRIGHT));
 		}
 
-		static int getargs(lua_State L, string[] argv, int n)
+		static int getargs(LuaState.lua_State L, string[] argv, int n)
 		{
 			int narg;
 			int i;
@@ -147,26 +147,26 @@ namespace kurumi
 			return narg;
 		}
 
-		static int dofile(lua_State L, LuaConf.CharPtr name)
+		static int dofile(LuaState.lua_State L, LuaConf.CharPtr name)
 		{
 			int status = (LuaAuxLib.luaL_loadfile(L, name) != 0) || (docall(L, 0, 1) != 0) ? 1 : 0;
 			return report(L, status);
 		}
 
-		static int dostring(lua_State L, LuaConf.CharPtr s, LuaConf.CharPtr name)
+		static int dostring(LuaState.lua_State L, LuaConf.CharPtr s, LuaConf.CharPtr name)
 		{
 			int status = (LuaAuxLib.luaL_loadbuffer(L, s, /*(uint)*/LuaConf.strlen(s), name) != 0) || (docall(L, 0, 1) != 0) ? 1 : 0;
 			return report(L, status);
 		}
 
-		static int dolibrary(lua_State L, LuaConf.CharPtr name)
+		static int dolibrary(LuaState.lua_State L, LuaConf.CharPtr name)
 		{
 			Lua.lua_getglobal(L, LuaConf.CharPtr.toCharPtr("require"));
 			LuaAPI.lua_pushstring(L, name);
 			return report(L, docall(L, 1, 1));
 		}
 
-		static LuaConf.CharPtr get_prompt(lua_State L, int firstline)
+		static LuaConf.CharPtr get_prompt(LuaState.lua_State L, int firstline)
 		{
 			LuaConf.CharPtr p;
 			LuaAPI.lua_getfield(L, Lua.LUA_GLOBALSINDEX, (firstline != 0) ? LuaConf.CharPtr.toCharPtr("_PROMPT") : LuaConf.CharPtr.toCharPtr("_PROMPT2"));
@@ -179,7 +179,7 @@ namespace kurumi
 			return p;
 		}
 
-		static int incomplete(lua_State L, int status)
+		static int incomplete(LuaState.lua_State L, int status)
 		{
 			if (status == Lua.LUA_ERRSYNTAX)
 			{
@@ -195,7 +195,7 @@ namespace kurumi
 			return 0;  /* else... */
 		}
 
-		static int pushline(lua_State L, int firstline)
+		static int pushline(LuaState.lua_State L, int firstline)
 		{
 			LuaConf.CharPtr buffer = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUA_MAXINPUT]);
 			LuaConf.CharPtr b = new LuaConf.CharPtr(buffer);
@@ -222,7 +222,7 @@ namespace kurumi
 			return 1;
 		}
 
-		static int loadline(lua_State L)
+		static int loadline(LuaState.lua_State L)
 		{
 			int status;
 			LuaAPI.lua_settop(L, 0);
@@ -251,7 +251,7 @@ namespace kurumi
 			return status;
 		}
 
-		static void dotty(lua_State L)
+		static void dotty(LuaState.lua_State L)
 		{
 			int status;
 			LuaConf.CharPtr oldprogname = progname;
@@ -282,7 +282,7 @@ namespace kurumi
 			progname = oldprogname;
 		}
 
-		static int handle_script(lua_State L, string[] argv, int n)
+		static int handle_script(LuaState.lua_State L, string[] argv, int n)
 		{
 			int status;
 			LuaConf.CharPtr fname;
@@ -388,7 +388,7 @@ namespace kurumi
 			return 0;
 		}
 
-		static int runargs(lua_State L, string[] argv, int n)
+		static int runargs(LuaState.lua_State L, string[] argv, int n)
 		{
 			int i;
 			for (i = 1; i < n; i++)
@@ -439,7 +439,7 @@ namespace kurumi
 			return 0;
 		}
 
-		static int handle_luainit(lua_State L)
+		static int handle_luainit(LuaState.lua_State L)
 		{
 			LuaConf.CharPtr init = LuaConf.getenv(LuaConf.CharPtr.toCharPtr(LuaConf.LUA_INIT));
 			if (LuaConf.CharPtr.isEqual(init, null)) 
@@ -456,7 +456,7 @@ namespace kurumi
 			}
 		}
 
-		static int pmain(lua_State L)
+		static int pmain(LuaState.lua_State L)
 		{
 			Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
 			string[] argv = s.argv;
@@ -526,7 +526,7 @@ namespace kurumi
 
 		public class pmain_delegate : Lua.lua_CFunction
 		{
-			public int exec(lua_State L)
+			public int exec(LuaState.lua_State L)
 			{
 				return pmain(L);
 			}
@@ -534,7 +534,7 @@ namespace kurumi
 		
 		public class traceback_delegate : Lua.lua_CFunction
 		{
-			public int exec(lua_State L)
+			public int exec(LuaState.lua_State L)
 			{
 				return traceback(L);
 			}
@@ -556,7 +556,7 @@ namespace kurumi
 
 			int status;
 			Smain s = new Smain();
-			lua_State L = Lua.lua_open();  /* create state */
+			LuaState.lua_State L = Lua.lua_open();  /* create state */
 			if (L == null)
 			{
 				l_message(LuaConf.CharPtr.toCharPtr(args[0]), LuaConf.CharPtr.toCharPtr("cannot create state: not enough memory"));

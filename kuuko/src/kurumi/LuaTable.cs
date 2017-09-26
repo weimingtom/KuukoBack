@@ -178,7 +178,7 @@ namespace kurumi
 		 ** elements in the array part, then elements in the hash part. The
 		 ** beginning of a traversal is signalled by -1.
 		 */
-		private static int findindex(lua_State L, Table t, TValue/*StkId*/ key)
+		private static int findindex(LuaState.lua_State L, Table t, TValue/*StkId*/ key)
 		{
 			int i;
 			if (LuaObject.ttisnil(key)) 
@@ -214,7 +214,7 @@ namespace kurumi
 			}
 		}
 
-		public static int luaH_next(lua_State L, Table t, TValue/*StkId*/ key)
+		public static int luaH_next(LuaState.lua_State L, Table t, TValue/*StkId*/ key)
 		{
 			int i = findindex(L, t, key);  /* find original element */
 			for (i++; i < t.sizearray; i++) 
@@ -344,7 +344,7 @@ namespace kurumi
 			return totaluse;
 		}
 
-		private static void setarrayvector(lua_State L, Table t, int size) 
+		private static void setarrayvector(LuaState.lua_State L, Table t, int size) 
 		{
 			int i;
 			TValue[][] array_ref = new TValue[1][];
@@ -358,7 +358,7 @@ namespace kurumi
 			t.sizearray = size;
 		}
 
-		private static void setnodevector (lua_State L, Table t, int size) 
+		private static void setnodevector (LuaState.lua_State L, Table t, int size) 
 		{
 			int lsize;
 			if (size == 0) 
@@ -390,7 +390,7 @@ namespace kurumi
 			t.lastfree = size;  /* all positions are free */
 		}
 
-		private static void resize(lua_State L, Table t, int nasize, int nhsize) 
+		private static void resize(LuaState.lua_State L, Table t, int nasize, int nhsize) 
 		{
 			int i;
 			int oldasize = t.sizearray;
@@ -435,13 +435,13 @@ namespace kurumi
 			}
 		}
 
-		public static void luaH_resizearray(lua_State L, Table t, int nasize) 
+		public static void luaH_resizearray(LuaState.lua_State L, Table t, int nasize) 
 		{
 			int nsize = (Node.isEqual(t.node[0], dummynode)) ? 0 : LuaObject.sizenode(t);
 			resize(L, t, nasize, nsize);
 		}
 
-		private static void rehash(lua_State L, Table t, TValue ek) 
+		private static void rehash(LuaState.lua_State L, Table t, TValue ek) 
 		{
 			int[] nasize = new int[1];
 			int na;
@@ -468,7 +468,7 @@ namespace kurumi
 		 ** }=============================================================
 		 */
 		
-		public static Table luaH_new(lua_State L, int narray, int nhash) 
+		public static Table luaH_new(LuaState.lua_State L, int narray, int nhash) 
 		{
 			Table t = LuaMem.luaM_new_Table(L, new ClassType(ClassType.TYPE_TABLE));
 			LuaGC.luaC_link(L, LuaState.obj2gco(t), (byte)Lua.LUA_TTABLE);
@@ -484,7 +484,7 @@ namespace kurumi
 			return t;
 		}
 
-		public static void luaH_free(lua_State L, Table t) 
+		public static void luaH_free(LuaState.lua_State L, Table t) 
 		{
 			if (Node.isNotEqual(t.node[0], dummynode))
 			{
@@ -513,7 +513,7 @@ namespace kurumi
 		 ** put new key in its main position; otherwise (colliding node is in its main
 		 ** position), new key goes to an empty position.
 		 */
-		private static TValue newkey(lua_State L, Table t, TValue key) 
+		private static TValue newkey(LuaState.lua_State L, Table t, TValue key) 
 		{
 			Node mp = mainposition(t, key);
 			if (!LuaObject.ttisnil(gval(mp)) || Node.isEqual(mp, dummynode))
@@ -669,7 +669,7 @@ namespace kurumi
 			}
 		}
 
-		public static TValue luaH_set(lua_State L, Table t, TValue key) 
+		public static TValue luaH_set(LuaState.lua_State L, Table t, TValue key) 
 		{
 			TValue p = luaH_get(t, key);
 			t.flags = 0;
@@ -691,7 +691,7 @@ namespace kurumi
 			}
 		}
 		
-		public static TValue luaH_setnum(lua_State L, Table t, int key) 
+		public static TValue luaH_setnum(LuaState.lua_State L, Table t, int key) 
 		{
 			TValue p = luaH_getnum(t, key);
 			if (p != LuaObject.luaO_nilobject)
@@ -706,7 +706,7 @@ namespace kurumi
 			}
 		}
 
-		public static TValue luaH_setstr(lua_State L, Table t, TString key) 
+		public static TValue luaH_setstr(LuaState.lua_State L, Table t, TString key) 
 		{
 			TValue p = luaH_getstr(t, key);
 			if (p != LuaObject.luaO_nilobject)

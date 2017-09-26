@@ -28,7 +28,7 @@ namespace kurumi
 				this.name = name;
 			}
 			
-			public int exec(lua_State L)
+			public int exec(LuaState.lua_State L)
 			{
 				if ("LuaBaseLib.luaopen_base".Equals(name))
 				{
@@ -70,7 +70,7 @@ namespace kurumi
 		}
 		
 
-		public static void luaL_openlibs(lua_State L) 
+		public static void luaL_openlibs(LuaState.lua_State L) 
 		{
 			for (int i = 0; i < lualibs.Length - 1; i++)
 			{

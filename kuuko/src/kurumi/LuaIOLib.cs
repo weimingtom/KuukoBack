@@ -23,7 +23,7 @@ namespace kurumi
 			"output" 
 		};
 
-		private static int pushresult(lua_State L, int i, LuaConf.CharPtr filename) 
+		private static int pushresult(LuaState.lua_State L, int i, LuaConf.CharPtr filename) 
 		{
 			int en = LuaConf.errno();  /* calls to Lua API may change this value */
 			if (i != 0) 
@@ -47,18 +47,18 @@ namespace kurumi
 			}
 		}
 
-		private static void fileerror(lua_State L, int arg, LuaConf.CharPtr filename) 
+		private static void fileerror(LuaState.lua_State L, int arg, LuaConf.CharPtr filename) 
 		{
 			LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("%s: %s"), filename, LuaConf.strerror(LuaConf.errno()));
 			LuaAuxLib.luaL_argerror(L, arg, Lua.lua_tostring(L, -1));
 		}
 
-		public static FilePtr tofilep(lua_State L) 
+		public static FilePtr tofilep(LuaState.lua_State L) 
 		{ 
 			return (FilePtr)LuaAuxLib.luaL_checkudata(L, 1, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE)); 
 		}
 
-		private static int io_type(lua_State L) 
+		private static int io_type(LuaState.lua_State L) 
 		{
 			object ud;
 			LuaAuxLib.luaL_checkany(L, 1);
@@ -79,7 +79,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static StreamProxy tofile(lua_State L) 
+		private static StreamProxy tofile(LuaState.lua_State L) 
 		{
 			FilePtr f = tofilep(L);
 			if (f.file == null)
@@ -94,7 +94,7 @@ namespace kurumi
 		 ** before opening the actual file; so, if there is a memory error, the
 		 ** file is not left opened.
 		 */
-		private static FilePtr newfile(lua_State L) 
+		private static FilePtr newfile(LuaState.lua_State L) 
 		{
 			FilePtr pf = (FilePtr)LuaAPI.lua_newuserdata(L, new ClassType(ClassType.TYPE_FILEPTR)); //FilePtr
 			pf.file = null;  /* file file is currently `closed' */
@@ -106,7 +106,7 @@ namespace kurumi
 		/*
 		 ** function to (not) close the standard files stdin, stdout, and stderr
 		 */
-		private static int io_noclose(lua_State L) 
+		private static int io_noclose(LuaState.lua_State L) 
 		{
 			LuaAPI.lua_pushnil(L);
 			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("cannot close standard file"));
@@ -116,7 +116,7 @@ namespace kurumi
 		/*
 		 ** function to close 'popen' files
 		 */
-		private static int io_pclose(lua_State L) 
+		private static int io_pclose(LuaState.lua_State L) 
 		{
 			FilePtr p = tofilep(L);
 			int ok = (LuaConf.lua_pclose(L, p.file) == 0) ? 1 : 0;
@@ -127,7 +127,7 @@ namespace kurumi
 		/*
 		 ** function to close regular files
 		 */
-		private static int io_fclose(lua_State L) 
+		private static int io_fclose(LuaState.lua_State L) 
 		{
 			FilePtr p = tofilep(L);
 			int ok = (LuaConf.fclose(p.file) == 0) ? 1 : 0;
@@ -135,14 +135,14 @@ namespace kurumi
 			return pushresult(L, ok, null);
 		}
 
-		private static int aux_close(lua_State L) 
+		private static int aux_close(LuaState.lua_State L) 
 		{
 			LuaAPI.lua_getfenv(L, 1);
 			LuaAPI.lua_getfield(L, -1, LuaConf.CharPtr.toCharPtr("__close"));
 			return (LuaAPI.lua_tocfunction(L, -1)).exec(L);
 		}
 
-		private static int io_close(lua_State L) 
+		private static int io_close(LuaState.lua_State L) 
 		{
 			if (Lua.lua_isnone(L, 1))
 			{
@@ -152,7 +152,7 @@ namespace kurumi
 			return aux_close(L);
 		}
 
-		private static int io_gc(lua_State L) 
+		private static int io_gc(LuaState.lua_State L) 
 		{
 			StreamProxy f = tofilep(L).file;
 			/* ignore closed files */
@@ -161,7 +161,7 @@ namespace kurumi
 			return 0;
 		}
 
-		private static int io_tostring(lua_State L) 
+		private static int io_tostring(LuaState.lua_State L) 
 		{
 			StreamProxy f = tofilep(L).file;
 			if (f == null)
@@ -175,7 +175,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static int io_open(lua_State L) 
+		private static int io_open(LuaState.lua_State L) 
 		{
 			LuaConf.CharPtr filename = LuaAuxLib.luaL_checkstring(L, 1);
 			LuaConf.CharPtr mode = LuaAuxLib.luaL_optstring(L, 2, LuaConf.CharPtr.toCharPtr("r"));
@@ -188,7 +188,7 @@ namespace kurumi
 		 ** this function has a separated environment, which defines the
 		 ** correct __close for 'popen' files
 		 */
-		private static int io_popen(lua_State L) 
+		private static int io_popen(LuaState.lua_State L) 
 		{
 			LuaConf.CharPtr filename = LuaAuxLib.luaL_checkstring(L, 1);
 			LuaConf.CharPtr mode = LuaAuxLib.luaL_optstring(L, 2, LuaConf.CharPtr.toCharPtr("r"));
@@ -197,14 +197,14 @@ namespace kurumi
 			return (pf.file == null) ? pushresult(L, 0, filename) : 1;
 		}
 
-		private static int io_tmpfile(lua_State L) 
+		private static int io_tmpfile(LuaState.lua_State L) 
 		{
 			FilePtr pf = newfile(L);
 			pf.file = LuaConf.tmpfile();
 			return (pf.file == null) ? pushresult(L, 0, null) : 1;
 		}
 
-		private static StreamProxy getiofile(lua_State L, int findex) 
+		private static StreamProxy getiofile(LuaState.lua_State L, int findex) 
 		{
 			StreamProxy f;
 			LuaAPI.lua_rawgeti(L, Lua.LUA_ENVIRONINDEX, findex);
@@ -216,7 +216,7 @@ namespace kurumi
 			return f;
 		}
 
-		private static int g_iofile(lua_State L, int f, LuaConf.CharPtr mode) 
+		private static int g_iofile(LuaState.lua_State L, int f, LuaConf.CharPtr mode) 
 		{
 			if (!Lua.lua_isnoneornil(L, 1))
 			{
@@ -242,31 +242,31 @@ namespace kurumi
 			return 1;
 		}
 
-		private static int io_input(lua_State L) 
+		private static int io_input(LuaState.lua_State L) 
 		{
 			return g_iofile(L, IO_INPUT, LuaConf.CharPtr.toCharPtr("r"));
 		}
 
-		private static int io_output(lua_State L) 
+		private static int io_output(LuaState.lua_State L) 
 		{
 			return g_iofile(L, IO_OUTPUT, LuaConf.CharPtr.toCharPtr("w"));
 		}
 
-		private static void aux_lines(lua_State L, int idx, int toclose) 
+		private static void aux_lines(LuaState.lua_State L, int idx, int toclose) 
 		{
 			LuaAPI.lua_pushvalue(L, idx);
 			LuaAPI.lua_pushboolean(L, toclose);  /* close/not close file when finished */
 			LuaAPI.lua_pushcclosure(L, new LuaIOLib_delegate("io_readline"), 2);
 		}
 
-		private static int f_lines(lua_State L) 
+		private static int f_lines(LuaState.lua_State L) 
 		{
 			tofile(L);  /* check that it's a valid file file */
 			aux_lines(L, 1, 0);
 			return 1;
 		}
 
-		private static int io_lines(lua_State L) 
+		private static int io_lines(LuaState.lua_State L) 
 		{
 			if (Lua.lua_isnoneornil(L, 1))
 			{  
@@ -296,7 +296,7 @@ namespace kurumi
 		 ** =======================================================
 		 */
 
-		private static int read_number(lua_State L, StreamProxy f) 
+		private static int read_number(LuaState.lua_State L, StreamProxy f) 
 		{
 			//lua_Number d;
 			object[] parms = {(object)(double)0.0};
@@ -311,7 +311,7 @@ namespace kurumi
 			}
 		}
 
-		private static int test_eof(lua_State L, StreamProxy f) 
+		private static int test_eof(LuaState.lua_State L, StreamProxy f) 
 		{
 			int c = LuaConf.getc(f);
 			LuaConf.ungetc(c, f);
@@ -319,7 +319,7 @@ namespace kurumi
 			return (c != LuaConf.EOF) ? 1 : 0;
 		}
 
-		private static int read_line(lua_State L, StreamProxy f) 
+		private static int read_line(LuaState.lua_State L, StreamProxy f) 
 		{
 			luaL_Buffer b = new luaL_Buffer();
 			LuaAuxLib.luaL_buffinit(L, b);
@@ -347,7 +347,7 @@ namespace kurumi
 			}
 		}
 
-		private static int read_chars(lua_State L, StreamProxy f, long/*uint*/ n) 
+		private static int read_chars(LuaState.lua_State L, StreamProxy f, long/*uint*/ n) 
 		{
 			long/*uint*/ rlen;  /* how much to read */
 			int/*uint*/ nr;  /* number of chars actually read */
@@ -369,7 +369,7 @@ namespace kurumi
 			return (n == 0 || LuaAPI.lua_objlen(L, -1) > 0) ? 1 : 0;
 		}
 
-		private static int g_read(lua_State L, StreamProxy f, int first) 
+		private static int g_read(LuaState.lua_State L, StreamProxy f, int first) 
 		{
 			int nargs = LuaAPI.lua_gettop(L) - 1;
 			int success;
@@ -435,17 +435,17 @@ namespace kurumi
 			return n - first;
 		}
 
-		private static int io_read(lua_State L) 
+		private static int io_read(LuaState.lua_State L) 
 		{
 			return g_read(L, getiofile(L, IO_INPUT), 1);
 		}
 
-		private static int f_read(lua_State L) 
+		private static int f_read(LuaState.lua_State L) 
 		{
 			return g_read(L, tofile(L), 2);
 		}
 
-		private static int io_readline(lua_State L) 
+		private static int io_readline(LuaState.lua_State L) 
 		{
 			StreamProxy f = (LuaAPI.lua_touserdata(L, Lua.lua_upvalueindex(1)) as FilePtr).file;
 			int sucess;
@@ -478,7 +478,7 @@ namespace kurumi
 
 		/* }====================================================== */
 
-		private static int g_write (lua_State L, StreamProxy f, int arg) 
+		private static int g_write (LuaState.lua_State L, StreamProxy f, int arg) 
 		{
 			int nargs = LuaAPI.lua_gettop(L) - 1;
 			int status = 1;
@@ -500,17 +500,17 @@ namespace kurumi
 			return pushresult(L, status, null);
 		}
 
-		private static int io_write(lua_State L) 
+		private static int io_write(LuaState.lua_State L) 
 		{
 			return g_write(L, getiofile(L, IO_OUTPUT), 1);
 		}
 
-		private static int f_write(lua_State L) 
+		private static int f_write(LuaState.lua_State L) 
 		{
 			return g_write(L, tofile(L), 2);
 		}
 
-		private static int f_seek(lua_State L) 
+		private static int f_seek(LuaState.lua_State L) 
 		{
 			int[] mode = { 
 				LuaConf.SEEK_SET, 
@@ -538,7 +538,7 @@ namespace kurumi
 			}
 		}
 
-		private static int f_setvbuf(lua_State L) 
+		private static int f_setvbuf(LuaState.lua_State L) 
 		{
 			LuaConf.CharPtr[] modenames = { 
 				LuaConf.CharPtr.toCharPtr("no"), 
@@ -554,7 +554,7 @@ namespace kurumi
 			return pushresult(L, (res == 0) ? 1 : 0, null);
 		}
 		
-		private static int io_flush(lua_State L) 
+		private static int io_flush(LuaState.lua_State L) 
 		{
 			int result = 1;
 			try 
@@ -568,7 +568,7 @@ namespace kurumi
 			return pushresult(L, result, null);
 		}
 
-		private static int f_flush (lua_State L) 
+		private static int f_flush (LuaState.lua_State L) 
 		{
 			int result = 1;
 			try 
@@ -620,7 +620,7 @@ namespace kurumi
 				this.name = name;
 			}
 			
-			public int exec(lua_State L)
+			public int exec(LuaState.lua_State L)
 			{
 				if ("io_close".Equals(name))
 				{
@@ -721,7 +721,7 @@ namespace kurumi
 			}
 		}
 
-		private static void createmeta(lua_State L) 
+		private static void createmeta(LuaState.lua_State L) 
 		{
 			LuaAuxLib.luaL_newmetatable(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE));  /* create metatable for file files */
 			LuaAPI.lua_pushvalue(L, -1);  /* push metatable */
@@ -729,7 +729,7 @@ namespace kurumi
 			LuaAuxLib.luaL_register(L, null, flib);  /* file methods */
 		}
 
-		private static void createstdfile(lua_State L, StreamProxy f, int k, LuaConf.CharPtr fname) 
+		private static void createstdfile(LuaState.lua_State L, StreamProxy f, int k, LuaConf.CharPtr fname) 
 		{
 			newfile(L).file = f;
 			if (k > 0) 
@@ -742,14 +742,14 @@ namespace kurumi
 			LuaAPI.lua_setfield(L, -3, fname);
 		}
 
-		private static void newfenv(lua_State L, Lua.lua_CFunction cls) 
+		private static void newfenv(LuaState.lua_State L, Lua.lua_CFunction cls) 
 		{
 			LuaAPI.lua_createtable(L, 0, 1);
 			Lua.lua_pushcfunction(L, cls);
 			LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("__close"));
 		}
 
-		public static int luaopen_io(lua_State L) 
+		public static int luaopen_io(LuaState.lua_State L) 
 		{
 			createmeta(L);
 			/* create (private) environment (with fields IO_INPUT, IO_OUTPUT, __close) */

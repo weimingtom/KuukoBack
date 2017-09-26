@@ -28,7 +28,7 @@ public class LuaLoadLib {
 
 	//public static void setprogdir(lua_State L) { }
 
-	public static void setprogdir(lua_State L) {
+	public static void setprogdir(LuaState.lua_State L) {
 		LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(StreamProxy.GetCurrentDirectory());
 		LuaAuxLib.luaL_gsub(L, Lua.lua_tostring(L, -1), LuaConf.CharPtr.toCharPtr(LuaConf.LUA_EXECDIR), buff);
 		LuaAPI.lua_remove(L, -2); // remove original string 
@@ -256,13 +256,13 @@ public class LuaLoadLib {
 		//(void)lib;  /* to avoid warnings */
 	}
 
-	public static Object ll_load(lua_State L, LuaConf.CharPtr path) {
+	public static Object ll_load(LuaState.lua_State L, LuaConf.CharPtr path) {
 		//(void)path;  /* to avoid warnings */
 		Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(DLMSG));
 		return null;
 	}
 
-	public static Lua.lua_CFunction ll_sym(lua_State L, Object lib, LuaConf.CharPtr sym) {
+	public static Lua.lua_CFunction ll_sym(LuaState.lua_State L, Object lib, LuaConf.CharPtr sym) {
 		//(void)lib; (void)sym;  /* to avoid warnings */
 		Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(DLMSG));
 		return null;
@@ -271,7 +271,7 @@ public class LuaLoadLib {
 	// }====================================================== 
 	///#endif
 
-	private static Object ll_register(lua_State L, LuaConf.CharPtr path) {
+	private static Object ll_register(LuaState.lua_State L, LuaConf.CharPtr path) {
 		// todo: the whole usage of plib here is wrong, fix it - mjf
 		//void **plib;
 		Object plib = null;
@@ -298,7 +298,7 @@ public class LuaLoadLib {
 //		 ** __gc tag method: calls library's `ll_unloadlib' function with the lib
 //		 ** handle
 //		 
-	private static int gctm(lua_State L) {
+	private static int gctm(LuaState.lua_State L) {
 		Object lib = LuaAuxLib.luaL_checkudata(L, 1, LuaConf.CharPtr.toCharPtr("_LOADLIB"));
 		if (lib != null) {
 			ll_unloadlib(lib);
@@ -307,7 +307,7 @@ public class LuaLoadLib {
 		return 0;
 	}
 
-	private static int ll_loadfunc(lua_State L, LuaConf.CharPtr path, LuaConf.CharPtr sym) {
+	private static int ll_loadfunc(LuaState.lua_State L, LuaConf.CharPtr path, LuaConf.CharPtr sym) {
 		Object reg = ll_register(L, path);
 		if (reg == null) {
 			reg = ll_load(L, path);
@@ -325,7 +325,7 @@ public class LuaLoadLib {
 		}
 	}
 
-	private static int ll_loadlib(lua_State L) {
+	private static int ll_loadlib(LuaState.lua_State L) {
 		LuaConf.CharPtr path = LuaAuxLib.luaL_checkstring(L, 1);
 		LuaConf.CharPtr init = LuaAuxLib.luaL_checkstring(L, 2);
 		int stat = ll_loadfunc(L, path, init);
@@ -356,7 +356,7 @@ public class LuaLoadLib {
 		return 1;
 	}
 
-	private static LuaConf.CharPtr pushnexttemplate(lua_State L, LuaConf.CharPtr path) {
+	private static LuaConf.CharPtr pushnexttemplate(LuaState.lua_State L, LuaConf.CharPtr path) {
 		LuaConf.CharPtr l;
 		while (path.get(0) == LuaConf.LUA_PATHSEP.charAt(0)) {
 			path = path.next(); // skip separators 
@@ -372,7 +372,7 @@ public class LuaLoadLib {
 		return l;
 	}
 
-	private static LuaConf.CharPtr findfile(lua_State L, LuaConf.CharPtr name, LuaConf.CharPtr pname) {
+	private static LuaConf.CharPtr findfile(LuaState.lua_State L, LuaConf.CharPtr name, LuaConf.CharPtr pname) {
 		LuaConf.CharPtr path;
 		name = LuaAuxLib.luaL_gsub(L, name, LuaConf.CharPtr.toCharPtr("."), LuaConf.CharPtr.toCharPtr(LuaConf.LUA_DIRSEP));
 		LuaAPI.lua_getfield(L, Lua.LUA_ENVIRONINDEX, pname);
@@ -395,11 +395,11 @@ public class LuaLoadLib {
 		return null; // not found 
 	}
 
-	private static void loaderror(lua_State L, LuaConf.CharPtr filename) {
+	private static void loaderror(LuaState.lua_State L, LuaConf.CharPtr filename) {
 		LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("error loading module " + LuaConf.getLUA_QS() + " from file " + LuaConf.getLUA_QS() + ":\n\t%s"), Lua.lua_tostring(L, 1), filename, Lua.lua_tostring(L, -1));
 	}
 
-	private static int loader_Lua(lua_State L) {
+	private static int loader_Lua(LuaState.lua_State L) {
 		LuaConf.CharPtr filename;
 		LuaConf.CharPtr name = LuaAuxLib.luaL_checkstring(L, 1);
 		filename = findfile(L, name, LuaConf.CharPtr.toCharPtr("path"));
@@ -412,7 +412,7 @@ public class LuaLoadLib {
 		return 1; // library loaded successfully 
 	}
 
-	private static LuaConf.CharPtr mkfuncname(lua_State L, LuaConf.CharPtr modname) {
+	private static LuaConf.CharPtr mkfuncname(LuaState.lua_State L, LuaConf.CharPtr modname) {
 		LuaConf.CharPtr funcname;
 		LuaConf.CharPtr mark = LuaConf.strchr(modname, LuaConf.LUA_IGMARK.charAt(0));
 		if (LuaConf.CharPtr.isNotEqual(mark, null)) {
@@ -424,7 +424,7 @@ public class LuaLoadLib {
 		return funcname;
 	}
 
-	private static int loader_C(lua_State L) {
+	private static int loader_C(LuaState.lua_State L) {
 		LuaConf.CharPtr funcname;
 		LuaConf.CharPtr name = LuaAuxLib.luaL_checkstring(L, 1);
 		LuaConf.CharPtr filename = findfile(L, name, LuaConf.CharPtr.toCharPtr("cpath"));
@@ -438,7 +438,7 @@ public class LuaLoadLib {
 		return 1; // library loaded successfully 
 	}
 
-	private static int loader_Croot(lua_State L) {
+	private static int loader_Croot(LuaState.lua_State L) {
 		LuaConf.CharPtr funcname;
 		LuaConf.CharPtr filename;
 		LuaConf.CharPtr name = LuaAuxLib.luaL_checkstring(L, 1);
@@ -463,7 +463,7 @@ public class LuaLoadLib {
 		return 1;
 	}
 
-	private static int loader_preload(lua_State L) {
+	private static int loader_preload(LuaState.lua_State L) {
 		LuaConf.CharPtr name = LuaAuxLib.luaL_checkstring(L, 1);
 		LuaAPI.lua_getfield(L, Lua.LUA_ENVIRONINDEX, LuaConf.CharPtr.toCharPtr("preload"));
 		if (!Lua.lua_istable(L, -1)) {
@@ -478,7 +478,7 @@ public class LuaLoadLib {
 
 	public static Object sentinel = new Object();
 
-	public static int ll_require(lua_State L) {
+	public static int ll_require(LuaState.lua_State L) {
 		LuaConf.CharPtr name = LuaAuxLib.luaL_checkstring(L, 1);
 		int i;
 		LuaAPI.lua_settop(L, 1); // _LOADED table will be at index 2 
@@ -540,7 +540,7 @@ public class LuaLoadLib {
 //		 
 
 
-	private static void setfenv(lua_State L) {
+	private static void setfenv(LuaState.lua_State L) {
 		Lua.lua_Debug ar = new Lua.lua_Debug();
 		if (LuaDebug.lua_getstack(L, 1, ar) == 0 || LuaDebug.lua_getinfo(L, LuaConf.CharPtr.toCharPtr("f"), ar) == 0 || LuaAPI.lua_iscfunction(L, -1)) { // get calling function 
 			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("module") + " not called from a Lua function"));
@@ -550,7 +550,7 @@ public class LuaLoadLib {
 		Lua.lua_pop(L, 1);
 	}
 
-	private static void dooptions(lua_State L, int n) {
+	private static void dooptions(LuaState.lua_State L, int n) {
 		int i;
 		for (i = 2; i <= n; i++) {
 			LuaAPI.lua_pushvalue(L, i); // get option (a function) 
@@ -559,7 +559,7 @@ public class LuaLoadLib {
 		}
 	}
 
-	private static void modinit(lua_State L, LuaConf.CharPtr modname) {
+	private static void modinit(LuaState.lua_State L, LuaConf.CharPtr modname) {
 		LuaConf.CharPtr dot;
 		LuaAPI.lua_pushvalue(L, -1);
 		LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("_M")); // module._M = module 
@@ -577,7 +577,7 @@ public class LuaLoadLib {
 		LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("_PACKAGE"));
 	}
 
-	private static int ll_module(lua_State L) {
+	private static int ll_module(LuaState.lua_State L) {
 		LuaConf.CharPtr modname = LuaAuxLib.luaL_checkstring(L, 1);
 		int loaded = LuaAPI.lua_gettop(L) + 1; // index of _LOADED table 
 		LuaAPI.lua_getfield(L, Lua.LUA_REGISTRYINDEX, LuaConf.CharPtr.toCharPtr("_LOADED"));
@@ -608,7 +608,7 @@ public class LuaLoadLib {
 		return 0;
 	}
 
-	private static int ll_seeall(lua_State L) {
+	private static int ll_seeall(LuaState.lua_State L) {
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TTABLE);
 		if (LuaAPI.lua_getmetatable(L, 1) == 0) {
 			LuaAPI.lua_createtable(L, 0, 1); // create new metatable 
@@ -625,7 +625,7 @@ public class LuaLoadLib {
 	// auxiliary mark (for internal use) 
 	public final static String AUXMARK = String.format("%1$s", (char)1);
 
-	private static void setpath(lua_State L, LuaConf.CharPtr fieldname, LuaConf.CharPtr envname, LuaConf.CharPtr def) {
+	private static void setpath(LuaState.lua_State L, LuaConf.CharPtr fieldname, LuaConf.CharPtr envname, LuaConf.CharPtr def) {
 		LuaConf.CharPtr path = LuaConf.getenv(envname);
 		if (LuaConf.CharPtr.isEqual(path, null)) { // no environment variable? 
 			LuaAPI.lua_pushstring(L, def); // use default 
@@ -661,7 +661,7 @@ public class LuaLoadLib {
 			this.name = name;
 		}
 
-		public final int exec(lua_State L) {
+		public final int exec(LuaState.lua_State L) {
 			if ((new String("ll_loadlib")).equals(name)) {
 				return ll_loadlib(L);
 			}
@@ -695,7 +695,7 @@ public class LuaLoadLib {
 		}
 	}
 
-	public static int luaopen_package(lua_State L) {
+	public static int luaopen_package(LuaState.lua_State L) {
 		int i;
 		// create new type _LOADLIB 
 		LuaAuxLib.luaL_newmetatable(L, LuaConf.CharPtr.toCharPtr("_LOADLIB"));

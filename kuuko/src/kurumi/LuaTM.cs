@@ -16,7 +16,7 @@ namespace kurumi
 				luaT_gettm(et, e, g.tmname[(int)e]);
 		}
 
-		public static TValue fasttm(lua_State l, Table et, TMS e) 
+		public static TValue fasttm(LuaState.lua_State l, Table et, TMS e) 
 		{ 
 			return gfasttm(LuaState.G(l), et, e); 
 		}
@@ -55,7 +55,7 @@ namespace kurumi
 			LuaConf.CharPtr.toCharPtr("__call")
 		};
 
-		public static void luaT_init(lua_State L) 
+		public static void luaT_init(LuaState.lua_State L) 
 		{
 			int i;
 			for (i = 0; i < (int)TMS.TM_N; i++) 
@@ -86,7 +86,7 @@ namespace kurumi
 			}
 		}
 
-		public static TValue luaT_gettmbyobj(lua_State L, TValue o, TMS event_) 
+		public static TValue luaT_gettmbyobj(LuaState.lua_State L, TValue o, TMS event_) 
 		{
 			Table mt;
 			switch (LuaObject.ttype(o))

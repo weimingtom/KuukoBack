@@ -26,7 +26,7 @@ namespace kurumi
 
 		public class LoadState
 		{
-			public lua_State L;
+			public LuaState.lua_State L;
 			public ZIO Z;
 			public Mbuffer b;
 			public LuaConf.CharPtr name;
@@ -278,7 +278,7 @@ namespace kurumi
 		/*
 		 ** load precompiled chunk
 		 */
-		public static Proto luaU_undump(lua_State L, ZIO Z, Mbuffer buff, LuaConf.CharPtr name)
+		public static Proto luaU_undump(LuaState.lua_State L, ZIO Z, Mbuffer buff, LuaConf.CharPtr name)
 		{
 			LoadState S = new LoadState();
 			if (name.get(0) == '@' || name.get(0) == '=')

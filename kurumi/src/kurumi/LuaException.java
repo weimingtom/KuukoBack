@@ -8,10 +8,10 @@ package kurumi;
 //{
 	public class LuaException extends RuntimeException 
 	{
-		public lua_State L;
+		public LuaState.lua_State L;
 		public LuaDo.lua_longjmp c;
 	
-		public LuaException(lua_State L, LuaDo.lua_longjmp c) 
+		public LuaException(LuaState.lua_State L, LuaDo.lua_longjmp c) 
 		{ 
 			this.L = L; 
 			this.c = c;

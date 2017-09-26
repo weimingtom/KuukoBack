@@ -17,11 +17,11 @@ public class LuaString {
 		return (int)u.len;
 	}
 
-	public static TString luaS_new(lua_State L, LuaConf.CharPtr s) {
+	public static TString luaS_new(LuaState.lua_State L, LuaConf.CharPtr s) {
 		return luaS_newlstr(L, s, LuaConf.strlen(s)); //(uint)
 	}
 
-	public static TString luaS_newliteral(lua_State L, LuaConf.CharPtr s) {
+	public static TString luaS_newliteral(LuaState.lua_State L, LuaConf.CharPtr s) {
 		return luaS_newlstr(L, s, LuaConf.strlen(s)); //(uint)
 	}
 
@@ -34,7 +34,7 @@ public class LuaString {
 		s.getTsv().marked = marked;
 	}
 
-	public static void luaS_resize(lua_State L, int newsize) {
+	public static void luaS_resize(LuaState.lua_State L, int newsize) {
 		LuaState.GCObject[] newhash;
 		stringtable tb;
 		int i;
@@ -76,7 +76,7 @@ public class LuaString {
 		tb.hash = newhash;
 	}
 
-	public static TString newlstr(lua_State L, LuaConf.CharPtr str, int l, long h) { //uint - int - uint
+	public static TString newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int l, long h) { //uint - int - uint
 		TString ts;
 		stringtable tb;
 		if (l + 1 > LuaLimits.MAX_SIZET / LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR))) { //typeof(char)
@@ -103,7 +103,7 @@ public class LuaString {
 		return ts;
 	}
 
-	public static TString luaS_newlstr(lua_State L, LuaConf.CharPtr str, int l) { //uint
+	public static TString luaS_newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int l) { //uint
 		LuaState.GCObject o;
 		//FIXME:
 		long h = ((long)l) & 0xffffffffL; // seed  - (uint) - uint - int
@@ -129,7 +129,7 @@ public class LuaString {
 		return res;
 	}
 
-	public static Udata luaS_newudata(lua_State L, int s, Table e) { //uint
+	public static Udata luaS_newudata(LuaState.lua_State L, int s, Table e) { //uint
 		Udata u = new Udata();
 		u.uv.marked = LuaGC.luaC_white(LuaState.G(L)); // is not finalized 
 		u.uv.tt = Lua.LUA_TUSERDATA;
@@ -143,7 +143,7 @@ public class LuaString {
 		return u;
 	}
 
-	public static Udata luaS_newudata(lua_State L, ClassType t, Table e) {
+	public static Udata luaS_newudata(LuaState.lua_State L, ClassType t, Table e) {
 		Udata u = new Udata();
 		u.uv.marked = LuaGC.luaC_white(LuaState.G(L)); // is not finalized 
 		u.uv.tt = Lua.LUA_TUSERDATA;

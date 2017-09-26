@@ -402,7 +402,7 @@ namespace kurumi
 
 		private static int addk(LuaParser.FuncState fs, TValue k, TValue v)
 		{
-			lua_State L = fs.L;
+			LuaState.lua_State L = fs.L;
 			TValue idx = LuaTable.luaH_set(L, fs.h, k);
 			Proto f = fs.f;
 			int oldsize = f.sizek;
