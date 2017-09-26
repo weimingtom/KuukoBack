@@ -32,6 +32,18 @@ public class LuaAuxLib {
 	// extra error code for `luaL_load' 
 	public static final int LUA_ERRFILE = (Lua.LUA_ERRERR+1);
 
+	public static class luaL_Reg
+	{
+		public LuaConf.CharPtr name;
+		public Lua.lua_CFunction func;
+		
+		public luaL_Reg(LuaConf.CharPtr name, Lua.lua_CFunction func)
+		{
+			this.name = name;
+			this.func = func;
+		}
+	}
+	
 //        
 //		 ** ===============================================================
 //		 ** some useful macros

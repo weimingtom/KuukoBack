@@ -1360,23 +1360,23 @@ namespace kurumi
 			return 1;
 		}
 
-		private readonly static luaL_Reg[] strlib = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("byte"), new LuaStrLib_delegate("str_byte")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("char"), new LuaStrLib_delegate("str_char")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("dump"), new LuaStrLib_delegate("str_dump")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("find"), new LuaStrLib_delegate("str_find")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("format"), new LuaStrLib_delegate("str_format")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("gfind"), new LuaStrLib_delegate("gfind_nodef")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("gmatch"), new LuaStrLib_delegate("gmatch")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("gsub"), new LuaStrLib_delegate("str_gsub")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("len"), new LuaStrLib_delegate("str_len")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("lower"), new LuaStrLib_delegate("str_lower")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("match"), new LuaStrLib_delegate("str_match")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("rep"), new LuaStrLib_delegate("str_rep")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("reverse"), new LuaStrLib_delegate("str_reverse")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("sub"), new LuaStrLib_delegate("str_sub")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("upper"), new LuaStrLib_delegate("str_upper")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] strlib = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("byte"), new LuaStrLib_delegate("str_byte")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("char"), new LuaStrLib_delegate("str_char")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("dump"), new LuaStrLib_delegate("str_dump")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("find"), new LuaStrLib_delegate("str_find")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("format"), new LuaStrLib_delegate("str_format")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("gfind"), new LuaStrLib_delegate("gfind_nodef")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("gmatch"), new LuaStrLib_delegate("gmatch")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("gsub"), new LuaStrLib_delegate("str_gsub")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("len"), new LuaStrLib_delegate("str_len")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("lower"), new LuaStrLib_delegate("str_lower")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("match"), new LuaStrLib_delegate("str_match")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("rep"), new LuaStrLib_delegate("str_rep")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("reverse"), new LuaStrLib_delegate("str_reverse")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("sub"), new LuaStrLib_delegate("str_sub")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("upper"), new LuaStrLib_delegate("str_upper")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 		
 		public class LuaStrLib_delegate : Lua.lua_CFunction

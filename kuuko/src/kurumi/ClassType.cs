@@ -1111,7 +1111,7 @@ namespace kurumi
             {
                 return 76;
             }
-            else if (t == typeof(luaL_Reg))
+            else if (t == typeof(LuaAuxLib.luaL_Reg))
             {
                 return 8;
             }

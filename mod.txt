@@ -133,3 +133,5 @@ luaL_opt_delegate_integer->LuaAuxLib.luaL_opt_delegate_integer
 LuaStrLib_delegate->LuaStrLib.LuaStrLib_delegate
 15:10 2017/9/26
 
+luaL_Reg->LuaAuxLib.luaL_Reg
+15:15 2017/9/26

@@ -478,22 +478,22 @@ namespace kurumi
 			return 1;
 		}
 
-		private readonly static luaL_Reg[] dblib = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("debug"), new LuaDebugLib_delegate("db_debug")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getfenv"), new LuaDebugLib_delegate("db_getfenv")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("gethook"), new LuaDebugLib_delegate("db_gethook")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getinfo"), new LuaDebugLib_delegate("db_getinfo")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getlocal"), new LuaDebugLib_delegate("db_getlocal")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getregistry"), new LuaDebugLib_delegate("db_getregistry")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getmetatable"), new LuaDebugLib_delegate("db_getmetatable")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getupvalue"), new LuaDebugLib_delegate("db_getupvalue")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("setfenv"), new LuaDebugLib_delegate("db_setfenv")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("sethook"), new LuaDebugLib_delegate("db_sethook")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("setlocal"), new LuaDebugLib_delegate("db_setlocal")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("setmetatable"), new LuaDebugLib_delegate("db_setmetatable")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("setupvalue"), new LuaDebugLib_delegate("db_setupvalue")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("traceback"), new LuaDebugLib_delegate("db_errorfb")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] dblib = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("debug"), new LuaDebugLib_delegate("db_debug")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getfenv"), new LuaDebugLib_delegate("db_getfenv")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("gethook"), new LuaDebugLib_delegate("db_gethook")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getinfo"), new LuaDebugLib_delegate("db_getinfo")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getlocal"), new LuaDebugLib_delegate("db_getlocal")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getregistry"), new LuaDebugLib_delegate("db_getregistry")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getmetatable"), new LuaDebugLib_delegate("db_getmetatable")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getupvalue"), new LuaDebugLib_delegate("db_getupvalue")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setfenv"), new LuaDebugLib_delegate("db_setfenv")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("sethook"), new LuaDebugLib_delegate("db_sethook")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setlocal"), new LuaDebugLib_delegate("db_setlocal")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setmetatable"), new LuaDebugLib_delegate("db_setmetatable")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setupvalue"), new LuaDebugLib_delegate("db_setupvalue")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("traceback"), new LuaDebugLib_delegate("db_errorfb")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 		
 		public class LuaDebugLib_delegate : Lua.lua_CFunction

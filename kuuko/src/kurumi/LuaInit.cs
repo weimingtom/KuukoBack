@@ -7,16 +7,16 @@ namespace kurumi
 {
 	public class LuaInit
 	{
-		private readonly static luaL_Reg[] lualibs = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr(""), new LuaInit_delegate("LuaBaseLib.luaopen_base")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_LOADLIBNAME), new LuaInit_delegate("LuaLoadLib.luaopen_package")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_TABLIBNAME), new LuaInit_delegate("LuaTableLib.luaopen_table")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_IOLIBNAME), new LuaInit_delegate("LuaIOLib.luaopen_io")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_OSLIBNAME), new LuaInit_delegate("LuaOSLib.luaopen_os")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_STRLIBNAME), new LuaInit_delegate("LuaStrLib.luaopen_string")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_MATHLIBNAME), new LuaInit_delegate("LuaMathLib.luaopen_math")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_DBLIBNAME), new LuaInit_delegate("LuaDebugLib.luaopen_debug")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] lualibs = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr(""), new LuaInit_delegate("LuaBaseLib.luaopen_base")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_LOADLIBNAME), new LuaInit_delegate("LuaLoadLib.luaopen_package")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_TABLIBNAME), new LuaInit_delegate("LuaTableLib.luaopen_table")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_IOLIBNAME), new LuaInit_delegate("LuaIOLib.luaopen_io")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_OSLIBNAME), new LuaInit_delegate("LuaOSLib.luaopen_os")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_STRLIBNAME), new LuaInit_delegate("LuaStrLib.luaopen_string")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_MATHLIBNAME), new LuaInit_delegate("LuaMathLib.luaopen_math")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr(LuaLib.LUA_DBLIBNAME), new LuaInit_delegate("LuaDebugLib.luaopen_debug")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 			
 		public class LuaInit_delegate : Lua.lua_CFunction
@@ -74,7 +74,7 @@ namespace kurumi
 		{
 			for (int i = 0; i < lualibs.Length - 1; i++)
 			{
-				luaL_Reg lib = lualibs[i];
+				LuaAuxLib.luaL_Reg lib = lualibs[i];
 				Lua.lua_pushcfunction(L, lib.func);
 				LuaAPI.lua_pushstring(L, lib.name);
 				LuaAPI.lua_call(L, 1, 0);

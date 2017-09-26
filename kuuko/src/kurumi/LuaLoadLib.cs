@@ -716,16 +716,16 @@ namespace kurumi
 			LuaAPI.lua_setfield(L, -2, fieldname);
 		}
 
-		private readonly static luaL_Reg[] pk_funcs = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("loadlib"), new LuaLoadLib_delegate("ll_loadlib")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("seeall"), new LuaLoadLib_delegate("ll_seeall")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] pk_funcs = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("loadlib"), new LuaLoadLib_delegate("ll_loadlib")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("seeall"), new LuaLoadLib_delegate("ll_seeall")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 
-		private readonly static luaL_Reg[] ll_funcs = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("module"), new LuaLoadLib_delegate("ll_module")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("require"), new LuaLoadLib_delegate("ll_require")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] ll_funcs = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("module"), new LuaLoadLib_delegate("ll_module")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("require"), new LuaLoadLib_delegate("ll_require")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 
 		public readonly static Lua.lua_CFunction[] loaders = {

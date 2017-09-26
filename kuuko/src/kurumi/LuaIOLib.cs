@@ -583,32 +583,32 @@ namespace kurumi
 		}
 
 
-		private readonly static luaL_Reg[] iolib = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("close"), new LuaIOLib_delegate("io_close")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("flush"), new LuaIOLib_delegate("io_flush")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("input"), new LuaIOLib_delegate("io_input")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("lines"), new LuaIOLib_delegate("io_lines")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("open"), new LuaIOLib_delegate("io_open")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("output"), new LuaIOLib_delegate("io_output")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("popen"), new LuaIOLib_delegate("io_popen")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("read"), new LuaIOLib_delegate("io_read")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("tmpfile"), new LuaIOLib_delegate("io_tmpfile")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("type"), new LuaIOLib_delegate("io_type")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("write"), new LuaIOLib_delegate("io_write")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] iolib = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("close"), new LuaIOLib_delegate("io_close")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("flush"), new LuaIOLib_delegate("io_flush")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("input"), new LuaIOLib_delegate("io_input")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("lines"), new LuaIOLib_delegate("io_lines")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("open"), new LuaIOLib_delegate("io_open")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("output"), new LuaIOLib_delegate("io_output")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("popen"), new LuaIOLib_delegate("io_popen")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("read"), new LuaIOLib_delegate("io_read")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("tmpfile"), new LuaIOLib_delegate("io_tmpfile")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("type"), new LuaIOLib_delegate("io_type")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("write"), new LuaIOLib_delegate("io_write")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 
-		private readonly static luaL_Reg[] flib = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("close"), new LuaIOLib_delegate("io_close")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("flush"), new LuaIOLib_delegate("f_flush")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("lines"), new LuaIOLib_delegate("f_lines")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("read"), new LuaIOLib_delegate("f_read")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("seek"), new LuaIOLib_delegate("f_seek")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("setvbuf"), new LuaIOLib_delegate("f_setvbuf")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("write"), new LuaIOLib_delegate("f_write")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("__gc"), new LuaIOLib_delegate("io_gc")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("__tostring"), new LuaIOLib_delegate("io_tostring")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] flib = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("close"), new LuaIOLib_delegate("io_close")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("flush"), new LuaIOLib_delegate("f_flush")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("lines"), new LuaIOLib_delegate("f_lines")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("read"), new LuaIOLib_delegate("f_read")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("seek"), new LuaIOLib_delegate("f_seek")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setvbuf"), new LuaIOLib_delegate("f_setvbuf")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("write"), new LuaIOLib_delegate("f_write")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("__gc"), new LuaIOLib_delegate("io_gc")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("__tostring"), new LuaIOLib_delegate("io_tostring")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 		
 		public class LuaIOLib_delegate : Lua.lua_CFunction

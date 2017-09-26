@@ -366,17 +366,17 @@ namespace kurumi
 
 		/* }====================================================== */
 
-		private readonly static luaL_Reg[] tab_funcs = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("concat"), new LuaTableLib_delegate("tconcat")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("foreach"), new LuaTableLib_delegate("_foreach")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("foreachi"), new LuaTableLib_delegate("foreachi")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getn"), new LuaTableLib_delegate("getn")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("maxn"), new LuaTableLib_delegate("maxn")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("insert"), new LuaTableLib_delegate("tinsert")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("remove"), new LuaTableLib_delegate("tremove")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("setn"), new LuaTableLib_delegate("setn")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("sort"), new LuaTableLib_delegate("sort")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] tab_funcs = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("concat"), new LuaTableLib_delegate("tconcat")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("foreach"), new LuaTableLib_delegate("_foreach")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("foreachi"), new LuaTableLib_delegate("foreachi")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getn"), new LuaTableLib_delegate("getn")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("maxn"), new LuaTableLib_delegate("maxn")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("insert"), new LuaTableLib_delegate("tinsert")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("remove"), new LuaTableLib_delegate("tremove")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setn"), new LuaTableLib_delegate("setn")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("sort"), new LuaTableLib_delegate("sort")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 
 		public static int luaopen_table(LuaState.lua_State L) 

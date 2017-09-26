@@ -30,7 +30,19 @@ namespace kurumi
 
 		/* extra error code for `luaL_load' */
 		public const int LUA_ERRFILE = (Lua.LUA_ERRERR+1);
-
+	
+		public class luaL_Reg
+		{
+			public LuaConf.CharPtr name;
+			public Lua.lua_CFunction func;
+			
+			public luaL_Reg(LuaConf.CharPtr name, Lua.lua_CFunction func)
+			{
+				this.name = name;
+				this.func = func;
+			}
+		}		
+		
 		/*
 		 ** ===============================================================
 		 ** some useful macros

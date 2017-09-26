@@ -255,19 +255,19 @@ namespace kurumi
 			return 0;
 		}
 
-		private readonly static luaL_Reg[] syslib = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("clock"), new LuaOSLib_delegate("os_clock")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("date"), new LuaOSLib_delegate("os_date")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("difftime"), new LuaOSLib_delegate("os_difftime")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("execute"), new LuaOSLib_delegate("os_execute")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("exit"), new LuaOSLib_delegate("os_exit")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getenv"), new LuaOSLib_delegate("os_getenv")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("remove"), new LuaOSLib_delegate("os_remove")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("rename"), new LuaOSLib_delegate("os_rename")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("setlocale"), new LuaOSLib_delegate("os_setlocale")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("time"), new LuaOSLib_delegate("os_time")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("tmpname"), new LuaOSLib_delegate("os_tmpname")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] syslib = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("clock"), new LuaOSLib_delegate("os_clock")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("date"), new LuaOSLib_delegate("os_date")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("difftime"), new LuaOSLib_delegate("os_difftime")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("execute"), new LuaOSLib_delegate("os_execute")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("exit"), new LuaOSLib_delegate("os_exit")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getenv"), new LuaOSLib_delegate("os_getenv")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("remove"), new LuaOSLib_delegate("os_remove")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("rename"), new LuaOSLib_delegate("os_rename")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setlocale"), new LuaOSLib_delegate("os_setlocale")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("time"), new LuaOSLib_delegate("os_time")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("tmpname"), new LuaOSLib_delegate("os_tmpname")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 
 		public class LuaOSLib_delegate : Lua.lua_CFunction

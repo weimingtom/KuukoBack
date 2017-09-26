@@ -554,32 +554,32 @@ namespace kurumi
 		}
 
 
-		private readonly static luaL_Reg[] base_funcs = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("assert"), new LuaBaseLib_delegate("luaB_assert")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("collectgarbage"), new LuaBaseLib_delegate("luaB_collectgarbage")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("dofile"), new LuaBaseLib_delegate("luaB_dofile")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("error"), new LuaBaseLib_delegate("luaB_error")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("gcinfo"), new LuaBaseLib_delegate("luaB_gcinfo")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getfenv"), new LuaBaseLib_delegate("luaB_getfenv")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("getmetatable"), new LuaBaseLib_delegate("luaB_getmetatable")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("loadfile"), new LuaBaseLib_delegate("luaB_loadfile")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("load"), new LuaBaseLib_delegate("luaB_load")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("loadstring"), new LuaBaseLib_delegate("luaB_loadstring")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("next"), new LuaBaseLib_delegate("luaB_next")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("pcall"), new LuaBaseLib_delegate("luaB_pcall")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("print"), new LuaBaseLib_delegate("luaB_print")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("rawequal"), new LuaBaseLib_delegate("luaB_rawequal")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("rawget"), new LuaBaseLib_delegate("luaB_rawget")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("rawset"), new LuaBaseLib_delegate("luaB_rawset")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("select"), new LuaBaseLib_delegate("luaB_select")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("setfenv"), new LuaBaseLib_delegate("luaB_setfenv")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("setmetatable"), new LuaBaseLib_delegate("luaB_setmetatable")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("tonumber"), new LuaBaseLib_delegate("luaB_tonumber")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("tostring"), new LuaBaseLib_delegate("luaB_tostring")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("type"), new LuaBaseLib_delegate("luaB_type")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("unpack"), new LuaBaseLib_delegate("luaB_unpack")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("xpcall"), new LuaBaseLib_delegate("luaB_xpcall")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] base_funcs = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("assert"), new LuaBaseLib_delegate("luaB_assert")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("collectgarbage"), new LuaBaseLib_delegate("luaB_collectgarbage")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("dofile"), new LuaBaseLib_delegate("luaB_dofile")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("error"), new LuaBaseLib_delegate("luaB_error")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("gcinfo"), new LuaBaseLib_delegate("luaB_gcinfo")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getfenv"), new LuaBaseLib_delegate("luaB_getfenv")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getmetatable"), new LuaBaseLib_delegate("luaB_getmetatable")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("loadfile"), new LuaBaseLib_delegate("luaB_loadfile")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("load"), new LuaBaseLib_delegate("luaB_load")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("loadstring"), new LuaBaseLib_delegate("luaB_loadstring")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("next"), new LuaBaseLib_delegate("luaB_next")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("pcall"), new LuaBaseLib_delegate("luaB_pcall")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("print"), new LuaBaseLib_delegate("luaB_print")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("rawequal"), new LuaBaseLib_delegate("luaB_rawequal")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("rawget"), new LuaBaseLib_delegate("luaB_rawget")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("rawset"), new LuaBaseLib_delegate("luaB_rawset")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("select"), new LuaBaseLib_delegate("luaB_select")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setfenv"), new LuaBaseLib_delegate("luaB_setfenv")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setmetatable"), new LuaBaseLib_delegate("luaB_setmetatable")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("tonumber"), new LuaBaseLib_delegate("luaB_tonumber")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("tostring"), new LuaBaseLib_delegate("luaB_tostring")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("type"), new LuaBaseLib_delegate("luaB_type")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("unpack"), new LuaBaseLib_delegate("luaB_unpack")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("xpcall"), new LuaBaseLib_delegate("luaB_xpcall")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 
 		public class LuaBaseLib_delegate : Lua.lua_CFunction
@@ -908,14 +908,14 @@ namespace kurumi
 			return 1;
 		}
 
-		private readonly static luaL_Reg[] co_funcs = {
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("create"), new LuaBaseLib_delegate("luaB_cocreate")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("resume"), new LuaBaseLib_delegate("luaB_coresume")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("running"), new LuaBaseLib_delegate("luaB_corunning")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("status"), new LuaBaseLib_delegate("luaB_costatus")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("wrap"), new LuaBaseLib_delegate("luaB_cowrap")),
-			new luaL_Reg(LuaConf.CharPtr.toCharPtr("yield"), new LuaBaseLib_delegate("luaB_yield")),
-			new luaL_Reg(null, null)
+		private readonly static LuaAuxLib.luaL_Reg[] co_funcs = {
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("create"), new LuaBaseLib_delegate("luaB_cocreate")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("resume"), new LuaBaseLib_delegate("luaB_coresume")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("running"), new LuaBaseLib_delegate("luaB_corunning")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("status"), new LuaBaseLib_delegate("luaB_costatus")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("wrap"), new LuaBaseLib_delegate("luaB_cowrap")),
+			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("yield"), new LuaBaseLib_delegate("luaB_yield")),
+			new LuaAuxLib.luaL_Reg(null, null)
 		};
 
 
