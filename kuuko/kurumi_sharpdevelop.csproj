@@ -88,7 +88,6 @@
     <Compile Include="src\kurumi\LuaState.cs" />
     <Compile Include="src\kurumi\LuaString.cs" />
     <Compile Include="src\kurumi\LuaStrLib.cs" />
-    <Compile Include="src\kurumi\LuaStrLib_delegate.cs" />
     <Compile Include="src\kurumi\LuaTable.cs" />
     <Compile Include="src\kurumi\LuaTableLib.cs" />
     <Compile Include="src\kurumi\LuaTM.cs" />
