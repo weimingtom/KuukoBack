@@ -154,7 +154,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static void addfield(LuaState.lua_State L, luaL_Buffer b, int i) 
+		private static void addfield(LuaState.lua_State L, LuaAuxLib.luaL_Buffer b, int i) 
 		{
 			LuaAPI.lua_rawgeti(L, 1, i);
 			if (LuaAPI.lua_isstring(L, -1) == 0)
@@ -168,7 +168,7 @@ namespace kurumi
 
 		private static int tconcat(LuaState.lua_State L) 
 		{
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			int[]/*uint*/ lsep = new int[1];
 			int i, last;
 			LuaConf.CharPtr sep = LuaAuxLib.luaL_optlstring(L, 2, LuaConf.CharPtr.toCharPtr(""), /*out*/ lsep);

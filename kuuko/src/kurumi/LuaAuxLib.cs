@@ -114,6 +114,14 @@ namespace kurumi
 		 ** Generic Buffer manipulation
 		 ** =======================================================
 		 */
+		public class luaL_Buffer
+		{
+			public int p; /* current position in buffer */
+			public int lvl; /* number of strings in the stack (level) */
+			public LuaState.lua_State L;
+			public LuaConf.CharPtr buffer = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUAL_BUFFERSIZE]);
+		}		
+		
 		public static void luaL_addchar(luaL_Buffer B, char c) 
 		{
 			if (B.p >= LuaConf.LUAL_BUFFERSIZE)

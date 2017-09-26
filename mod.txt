@@ -123,3 +123,6 @@ LuaException->LuaConf.LuaException
 luai_jmpbuf->LuaDo.luai_jmpbuf
 14:53 2017/9/26
 
+luaL_Buffer->LuaAuxLib.luaL_Buffer
+14:55 2017/9/26
+

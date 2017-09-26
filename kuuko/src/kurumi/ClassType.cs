@@ -1115,7 +1115,7 @@ namespace kurumi
             {
                 return 8;
             }
-            else if (t == typeof(luaL_Buffer))
+            else if (t == typeof(LuaAuxLib.luaL_Buffer))
             {
                 return 524;
             }

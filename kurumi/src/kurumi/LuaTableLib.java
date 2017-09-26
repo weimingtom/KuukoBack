@@ -129,7 +129,7 @@ public class LuaTableLib {
 		return 1;
 	}
 
-	private static void addfield(LuaState.lua_State L, luaL_Buffer b, int i) {
+	private static void addfield(LuaState.lua_State L, LuaAuxLib.luaL_Buffer b, int i) {
 		LuaAPI.lua_rawgeti(L, 1, i);
 		if (LuaAPI.lua_isstring(L, -1) == 0) {
 			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid value (%s) at index %d in table for " + LuaConf.LUA_QL("concat")), LuaAuxLib.luaL_typename(L, -1), i);
@@ -139,7 +139,7 @@ public class LuaTableLib {
 
 
 	private static int tconcat(LuaState.lua_State L) {
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		int[] lsep = new int[1]; //uint
 		int i, last;
 		LuaConf.CharPtr sep = LuaAuxLib.luaL_optlstring(L, 2, LuaConf.CharPtr.toCharPtr(""), lsep); //out

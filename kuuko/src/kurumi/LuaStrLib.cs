@@ -58,7 +58,7 @@ namespace kurumi
 		public static int str_reverse(LuaState.lua_State L) 
 		{
 			int[]/*uint*/ l = new int[1];
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			LuaAuxLib.luaL_buffinit(L, b);
 			while ((l[0]--) != 0)
@@ -73,7 +73,7 @@ namespace kurumi
 		{
 			int[]/*uint*/ l = new int[1];
 			int/*uint*/ i;
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			LuaAuxLib.luaL_buffinit(L, b);
 			for (i = 0; i < l[0]; i++)
@@ -88,7 +88,7 @@ namespace kurumi
 		{
 			int[]/*uint*/ l = new int[1];
 			int/*uint*/ i;
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			LuaAuxLib.luaL_buffinit(L, b);
 			for (i = 0; i < l[0]; i++)
@@ -102,7 +102,7 @@ namespace kurumi
 		public static int str_rep(LuaState.lua_State L) 
 		{
 			int[]/*uint*/ l = new int[1];
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, /*out*/ l);
 			int n = LuaAuxLib.luaL_checkint(L, 2);
 			LuaAuxLib.luaL_buffinit(L, b);
@@ -150,7 +150,7 @@ namespace kurumi
 		{
 			int n = LuaAPI.lua_gettop(L);  /* number of arguments */
 			int i;
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaAuxLib.luaL_buffinit(L, b);
 			for (i = 1; i <= n; i++) 
 			{
@@ -176,7 +176,7 @@ namespace kurumi
                 }
                 b = new LuaConf.CharPtr(chars);
 			}
-			LuaAuxLib.luaL_addlstring((luaL_Buffer)B, (LuaConf.CharPtr)b, size);
+			LuaAuxLib.luaL_addlstring((LuaAuxLib.luaL_Buffer)B, (LuaConf.CharPtr)b, size);
 			return 0;
 		}
 		
@@ -190,7 +190,7 @@ namespace kurumi
 
 		public static int str_dump(LuaState.lua_State L) 
 		{
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TFUNCTION);
 			LuaAPI.lua_settop(L, 1);
 			LuaAuxLib.luaL_buffinit(L, b);
@@ -1032,7 +1032,7 @@ namespace kurumi
 				LuaConf.LUA_QL("string.gmatch")));
 		}
 
-		private static void add_s(MatchState ms, luaL_Buffer b, LuaConf.CharPtr s,
+		private static void add_s(MatchState ms, LuaAuxLib.luaL_Buffer b, LuaConf.CharPtr s,
 			LuaConf.CharPtr e) 
 		{
 			int[]/*uint*/ l = new int[1];
@@ -1065,7 +1065,7 @@ namespace kurumi
 		}
 
 
-		private static void add_value(MatchState ms, luaL_Buffer b, LuaConf.CharPtr s,
+		private static void add_value(MatchState ms, LuaAuxLib.luaL_Buffer b, LuaConf.CharPtr s,
 			LuaConf.CharPtr e) 
 		{
 			LuaState.lua_State L = ms.L;
@@ -1120,7 +1120,7 @@ namespace kurumi
 			}
 			int n = 0;
 			MatchState ms = new MatchState();
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaAuxLib.luaL_argcheck(L, tr == Lua.LUA_TNUMBER || tr == Lua.LUA_TSTRING ||
 				tr == Lua.LUA_TFUNCTION || tr == Lua.LUA_TTABLE, 3,
 			    "string/function/table expected");
@@ -1172,7 +1172,7 @@ namespace kurumi
 		 */
 		public static readonly int MAX_FORMAT = (FLAGS.Length + 1) + (LuaConf.LUA_INTFRMLEN.Length + 1) + 10;
 
-		private static void addquoted (LuaState.lua_State L, luaL_Buffer b, int arg) 
+		private static void addquoted (LuaState.lua_State L, LuaAuxLib.luaL_Buffer b, int arg) 
 		{
 			int[]/*uint*/ l = new int[1];
 			LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, /*out*/ l);
@@ -1268,7 +1268,7 @@ namespace kurumi
 			int[]/*uint*/ sfl = new int[1];
 			LuaConf.CharPtr strfrmt = LuaAuxLib.luaL_checklstring(L, arg, /*out*/ sfl);
 			LuaConf.CharPtr strfrmt_end = LuaConf.CharPtr.plus(strfrmt, sfl[0]);
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaAuxLib.luaL_buffinit(L, b);
             while (LuaConf.CharPtr.lessThan(strfrmt, strfrmt_end)) 
 			{

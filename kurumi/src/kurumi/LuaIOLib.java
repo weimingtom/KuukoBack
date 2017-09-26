@@ -271,7 +271,7 @@ public class LuaIOLib {
 	}
 
 	private static int read_line(LuaState.lua_State L, StreamProxy f) {
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaAuxLib.luaL_buffinit(L, b);
 		for (;;) {
 			int l; //uint
@@ -296,7 +296,7 @@ public class LuaIOLib {
 	private static int read_chars(LuaState.lua_State L, StreamProxy f, long n) { //uint
 		long rlen; // how much to read  - uint
 		int nr; // number of chars actually read  - uint
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaAuxLib.luaL_buffinit(L, b);
 		rlen = LuaConf.LUAL_BUFFERSIZE; // try to read that much each time 
 		do {

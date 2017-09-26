@@ -321,7 +321,7 @@ namespace kurumi
 
 		private static int read_line(LuaState.lua_State L, StreamProxy f) 
 		{
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaAuxLib.luaL_buffinit(L, b);
 			for (;;) 
 			{
@@ -351,7 +351,7 @@ namespace kurumi
 		{
 			long/*uint*/ rlen;  /* how much to read */
 			int/*uint*/ nr;  /* number of chars actually read */
-			luaL_Buffer b = new luaL_Buffer();
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 			LuaAuxLib.luaL_buffinit(L, b);
 			rlen = LuaConf.LUAL_BUFFERSIZE;  /* try to read that much each time */
 			do 

@@ -48,7 +48,7 @@ public class LuaStrLib {
 
 	public static int str_reverse(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		LuaAuxLib.luaL_buffinit(L, b);
 		while ((l[0]--) != 0) {
@@ -61,7 +61,7 @@ public class LuaStrLib {
 	public static int str_lower(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		int i; //uint
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		LuaAuxLib.luaL_buffinit(L, b);
 		for (i = 0; i < l[0]; i++) {
@@ -74,7 +74,7 @@ public class LuaStrLib {
 	public static int str_upper(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		int i; //uint
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		LuaAuxLib.luaL_buffinit(L, b);
 		for (i = 0; i < l[0]; i++) {
@@ -86,7 +86,7 @@ public class LuaStrLib {
 
 	public static int str_rep(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		int n = LuaAuxLib.luaL_checkint(L, 2);
 		LuaAuxLib.luaL_buffinit(L, b);
@@ -126,7 +126,7 @@ public class LuaStrLib {
 	public static int str_char(LuaState.lua_State L) {
 		int n = LuaAPI.lua_gettop(L); // number of arguments 
 		int i;
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaAuxLib.luaL_buffinit(L, b);
 		for (i = 1; i <= n; i++) {
 			int c = LuaAuxLib.luaL_checkint(L, i);
@@ -148,7 +148,7 @@ public class LuaStrLib {
 			}
 			b = new LuaConf.CharPtr(chars);
 		}
-		LuaAuxLib.luaL_addlstring((luaL_Buffer)B, (LuaConf.CharPtr)b, size);
+		LuaAuxLib.luaL_addlstring((LuaAuxLib.luaL_Buffer)B, (LuaConf.CharPtr)b, size);
 		return 0;
 	}
 
@@ -159,7 +159,7 @@ public class LuaStrLib {
 	}
 
 	public static int str_dump(LuaState.lua_State L) {
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TFUNCTION);
 		LuaAPI.lua_settop(L, 1);
 		LuaAuxLib.luaL_buffinit(L, b);
@@ -826,7 +826,7 @@ public class LuaStrLib {
 		return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("string.gfind") + " was renamed to " + LuaConf.LUA_QL("string.gmatch")));
 	}
 
-	private static void add_s(MatchState ms, luaL_Buffer b, LuaConf.CharPtr s, LuaConf.CharPtr e) {
+	private static void add_s(MatchState ms, LuaAuxLib.luaL_Buffer b, LuaConf.CharPtr s, LuaConf.CharPtr e) {
 		int[] l = new int[1]; //uint
 		int i;
 		LuaConf.CharPtr news = LuaAPI.lua_tolstring(ms.L, 3, l); //out
@@ -851,7 +851,7 @@ public class LuaStrLib {
 	}
 
 
-	private static void add_value(MatchState ms, luaL_Buffer b, LuaConf.CharPtr s, LuaConf.CharPtr e) {
+	private static void add_value(MatchState ms, LuaAuxLib.luaL_Buffer b, LuaConf.CharPtr s, LuaConf.CharPtr e) {
 		LuaState.lua_State L = ms.L;
 		switch (LuaAPI.lua_type(L, 3)) {
 			case Lua.LUA_TNUMBER:
@@ -896,7 +896,7 @@ public class LuaStrLib {
 		}
 		int n = 0;
 		MatchState ms = new MatchState();
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaAuxLib.luaL_argcheck(L, tr == Lua.LUA_TNUMBER || tr == Lua.LUA_TSTRING || tr == Lua.LUA_TFUNCTION || tr == Lua.LUA_TTABLE, 3, "string/function/table expected");
 		LuaAuxLib.luaL_buffinit(L, b);
 		ms.L = L;
@@ -943,7 +943,7 @@ public class LuaStrLib {
 //		 
 	public static final int MAX_FORMAT = (FLAGS.length() + 1) + (LuaConf.LUA_INTFRMLEN.length() + 1) + 10;
 
-	private static void addquoted(LuaState.lua_State L, luaL_Buffer b, int arg) {
+	private static void addquoted(LuaState.lua_State L, LuaAuxLib.luaL_Buffer b, int arg) {
 		int[] l = new int[1]; //uint
 		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, l); //out
 		LuaAuxLib.luaL_addchar(b, '"');
@@ -1021,7 +1021,7 @@ public class LuaStrLib {
 		int[] sfl = new int[1]; //uint
 		LuaConf.CharPtr strfrmt = LuaAuxLib.luaL_checklstring(L, arg, sfl); //out
 		LuaConf.CharPtr strfrmt_end = LuaConf.CharPtr.plus(strfrmt, sfl[0]);
-		luaL_Buffer b = new luaL_Buffer();
+		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaAuxLib.luaL_buffinit(L, b);
 		while (LuaConf.CharPtr.lessThan(strfrmt, strfrmt_end)) {
 			if (strfrmt.get(0) != L_ESC) {
