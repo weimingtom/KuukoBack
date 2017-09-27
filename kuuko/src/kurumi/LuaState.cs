@@ -345,6 +345,34 @@ namespace kurumi
 	        }
 	    }		
 		
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+		public class NextRef : LuaState.GCObjectRef
+		{
+			private LuaObject.GCheader header;
+			
+			public NextRef(LuaObject.GCheader header) 
+			{ 
+				this.header = header; 
+			}
+			
+			public void set(LuaState.GCObject value) 
+			{ 
+				this.header.next = value; 
+			}
+			
+			public LuaState.GCObject get() 
+			{ 
+				return this.header.next; 
+			}
+		}
+	    
 		/* macros to convert a GCObject into a specific value */
 		public static TString rawgco2ts(GCObject o) 
 		{ 

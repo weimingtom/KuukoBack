@@ -307,15 +307,15 @@ public class LuaGC {
 	public static int luaC_separateudata(LuaState.lua_State L, int all) { //uint
 		LuaState.global_State g = LuaState.G(L);
 		int deadmem = 0; //uint
-		LuaState.GCObjectRef p = new NextRef(g.mainthread);
+		LuaState.GCObjectRef p = new LuaState.NextRef(g.mainthread);
 		LuaState.GCObject curr;
 		while ((curr = p.get()) != null) {
 			if (!(iswhite(curr) || (all != 0)) || isfinalized(LuaState.gco2u(curr))) {
-				p = new NextRef(curr.getGch()); // don't bother with them 
+				p = new LuaState.NextRef(curr.getGch()); // don't bother with them 
 			}
 			else if (LuaTM.fasttm(L, LuaState.gco2u(curr).metatable, TMS.TM_GC) == null) {
 				markfinalized(LuaState.gco2u(curr)); // don't need finalization 
-				p = new NextRef(curr.getGch());
+				p = new LuaState.NextRef(curr.getGch());
 			}
 			else {
 				// must call its gc method 
@@ -644,7 +644,7 @@ public class LuaGC {
 				// not dead? 
 				LuaLimits.lua_assert(isdead(g, curr) || testbit(curr.getGch().marked, FIXEDBIT));
 				makewhite(g, curr); // make it white (for next cycle) 
-				p = new NextRef(curr.getGch());
+				p = new LuaState.NextRef(curr.getGch());
 			}
 			else {
 				// must erase `curr' 

@@ -86,7 +86,7 @@ namespace kurumi
 					}
 					return p;
 				}
-				pp = new NextRef(p);
+				pp = new LuaState.NextRef(p);
 			}
 			uv = LuaMem.luaM_new_UpVal(L, new ClassType(ClassType.TYPE_UPVAL));  /* not found: create a new one */
 			uv.tt = LuaObject.LUA_TUPVAL;
