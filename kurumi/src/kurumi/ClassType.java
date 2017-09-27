@@ -200,7 +200,7 @@ public class ClassType {
 				result = new TString();
 			}
 			else if (type == TYPE_NODE) {
-				result = new Node();
+				result = new LuaObject.Node();
 			}
 			else if (type == TYPE_UDATA) {
 				result = new Udata();

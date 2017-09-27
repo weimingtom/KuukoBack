@@ -26,32 +26,32 @@ namespace kurumi
 		 ** Hence even when the load factor reaches 100%, performance remains good.
 		 */
 
-		public static Node gnode(Table t, int i)	
+		public static LuaObject.Node gnode(Table t, int i)	
 		{
 			return t.node[i];
 		}
 		
-		public static TKey_nk gkey(Node n)
+		public static TKey_nk gkey(LuaObject.Node n)
 		{ 
 			return n.i_key.nk; 
 		}
 		
-		public static TValue gval(Node n)
+		public static TValue gval(LuaObject.Node n)
 		{
 			return n.i_val;
 		}
 		
-		public static Node gnext(Node n)
+		public static LuaObject.Node gnext(LuaObject.Node n)
 		{
 			return n.i_key.nk.next;
 		}
 		
-		public static void gnext_set(Node n, Node v) 
+		public static void gnext_set(LuaObject.Node n, LuaObject.Node v) 
 		{ 
 			n.i_key.nk.next = v; 
 		}
 
-		public static TValue key2tval(Node n) 
+		public static TValue key2tval(LuaObject.Node n) 
 		{ 
 			return n.i_key.getTvk(); 
 		}
@@ -68,17 +68,17 @@ namespace kurumi
 		public const int MAXASIZE = (1 << MAXBITS);
 
 		//public static Node gnode(Table t, int i)	{return t.node[i];}
-		public static Node hashpow2(Table t, Double/*lua_Number*/ n) 
+		public static LuaObject.Node hashpow2(Table t, Double/*lua_Number*/ n) 
 		{ 
 			return gnode(t, (int)LuaConf.lmod(n, LuaObject.sizenode(t))); 
 		}
 		
-		public static Node hashstr(Table t, TString str)  
+		public static LuaObject.Node hashstr(Table t, TString str)  
 		{
             return hashpow2(t, str.getTsv().hash);
 		}
 		
-		public static Node hashboolean(Table t, int p)
+		public static LuaObject.Node hashboolean(Table t, int p)
 		{
 			return hashpow2(t, p);
 		}
@@ -87,12 +87,12 @@ namespace kurumi
 		 ** for some types, it is better to avoid modulus by power of 2, as
 		 ** they tend to have many 2 factors.
 		 */
-		public static Node hashmod(Table t, int n) 
+		public static LuaObject.Node hashmod(Table t, int n) 
 		{ 
 			return gnode(t, (n % ((LuaObject.sizenode(t) - 1) | 1))); 
 		}
 
-		public static Node hashpointer(Table t, object p) 
+		public static LuaObject.Node hashpointer(Table t, object p) 
 		{ 
 			return hashmod(t, p.GetHashCode()); 
 		}
@@ -106,13 +106,13 @@ namespace kurumi
 		//{{null}, LUA_TNIL},  /* value */
 		//{{{null}, LUA_TNIL, null}}  /* key */
 		//};
-		public static Node dummynode_ = new Node(new TValue(new Value(), Lua.LUA_TNIL), new TKey(new Value(), Lua.LUA_TNIL, null));
-		public static Node dummynode = dummynode_;
+		public static LuaObject.Node dummynode_ = new LuaObject.Node(new TValue(new Value(), Lua.LUA_TNIL), new TKey(new Value(), Lua.LUA_TNIL, null));
+		public static LuaObject.Node dummynode = dummynode_;
 
 		/*
 		 ** hash for lua_Numbers
 		 */
-		private static Node hashnum(Table t, Double/*lua_Number*/ n)
+		private static LuaObject.Node hashnum(Table t, Double/*lua_Number*/ n)
 		{
 			byte[] a = ClassType.GetBytes(n);
 			for (int i = 1; i < a.Length; i++) 
@@ -126,7 +126,7 @@ namespace kurumi
 		 ** returns the `main' position of an element in a table (that is, the index
 		 ** of its hash value)
 		 */
-		private static Node mainposition(Table t, TValue key) 
+		private static LuaObject.Node mainposition(Table t, TValue key) 
 		{
 			switch (LuaObject.ttype(key))
 			{
@@ -192,7 +192,7 @@ namespace kurumi
 			}
 			else 
 			{
-				Node n = mainposition(t, key);
+				LuaObject.Node n = mainposition(t, key);
 				do {  
 					/* check whether `key' is somewhere in the chain */
 					/* key may be dead already, but it is ok to use it in `next' */
@@ -200,7 +200,7 @@ namespace kurumi
 					    (LuaObject.ttype(gkey(n)) == LuaObject.LUA_TDEADKEY && LuaObject.iscollectable(key) &&
 					     LuaObject.gcvalue(gkey(n)) == LuaObject.gcvalue(key)))
 					{
-						i = LuaLimits.cast_int(Node.minus(n, gnode(t, 0)));  /* key index in hash table */
+						i = LuaLimits.cast_int(LuaObject.Node.minus(n, gnode(t, 0)));  /* key index in hash table */
 						/* hash elements are numbered after array ones */
 						return i + t.sizearray;
 					}
@@ -208,7 +208,7 @@ namespace kurumi
 					{
 						n = gnext(n);
 					}
-                } while (Node.isNotEqual(n, null));
+                } while (LuaObject.Node.isNotEqual(n, null));
 				LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("invalid key to " + LuaConf.LUA_QL("next")));  /* key not found */
 				return 0;  /* to avoid warnings */
 			}
@@ -333,7 +333,7 @@ namespace kurumi
 			int i = LuaObject.sizenode(t);
 			while ((i--) != 0) 
 			{
-				Node n = t.node[i];
+				LuaObject.Node n = t.node[i];
 				if (!LuaObject.ttisnil(gval(n)))
 				{
 					ause += countint(key2tval(n), nums);
@@ -364,7 +364,7 @@ namespace kurumi
 			if (size == 0) 
 			{  
 				/* no elements to hash part? */
-				t.node = new Node[] { dummynode };  /* use common `dummynode' */
+				t.node = new LuaObject.Node[] { dummynode };  /* use common `dummynode' */
 				lsize = 0;
 			}
 			else 
@@ -376,11 +376,11 @@ namespace kurumi
 					LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("table overflow"));
 				}
 				size = LuaObject.twoto(lsize);
-				Node[] nodes = LuaMem.luaM_newvector_Node(L, size, new ClassType(ClassType.TYPE_NODE));
+				LuaObject.Node[] nodes = LuaMem.luaM_newvector_Node(L, size, new ClassType(ClassType.TYPE_NODE));
 				t.node = nodes;
 				for (i = 0; i < size; i++) 
 				{
-					Node n = gnode(t, i);
+					LuaObject.Node n = gnode(t, i);
 					gnext_set(n, null);
 					LuaObject.setnilvalue(gkey(n));
 					LuaObject.setnilvalue(gval(n));
@@ -395,7 +395,7 @@ namespace kurumi
 			int i;
 			int oldasize = t.sizearray;
 			int oldhsize = t.lsizenode;
-			Node[] nold = t.node;  /* save old hash ... */
+			LuaObject.Node[] nold = t.node;  /* save old hash ... */
 			if (nasize > oldasize)  /* array part must grow? */
 			{
 				setarrayvector(L, t, nasize);
@@ -423,13 +423,13 @@ namespace kurumi
 			/* re-insert elements from hash part */
 			for (i = LuaObject.twoto(oldhsize) - 1; i >= 0; i--)
 			{
-				Node old = nold[i];
+				LuaObject.Node old = nold[i];
 				if (!LuaObject.ttisnil(gval(old)))
 				{
 					LuaObject.setobjt2t(L, luaH_set(L, t, key2tval(old)), gval(old));
 				}
 			}
-			if (Node.isNotEqual(nold[0], dummynode))
+			if (LuaObject.Node.isNotEqual(nold[0], dummynode))
 			{
 				LuaMem.luaM_freearray_Node(L, nold, new ClassType(ClassType.TYPE_NODE));  /* free old array */
 			}
@@ -437,7 +437,7 @@ namespace kurumi
 
 		public static void luaH_resizearray(LuaState.lua_State L, Table t, int nasize) 
 		{
-			int nsize = (Node.isEqual(t.node[0], dummynode)) ? 0 : LuaObject.sizenode(t);
+			int nsize = (LuaObject.Node.isEqual(t.node[0], dummynode)) ? 0 : LuaObject.sizenode(t);
 			resize(L, t, nasize, nsize);
 		}
 
@@ -478,7 +478,7 @@ namespace kurumi
 			t.array = null;
 			t.sizearray = 0;
 			t.lsizenode = 0;
-			t.node = new Node[] { dummynode };
+			t.node = new LuaObject.Node[] { dummynode };
 			setarrayvector(L, t, narray);
 			setnodevector(L, t, nhash);
 			return t;
@@ -486,7 +486,7 @@ namespace kurumi
 
 		public static void luaH_free(LuaState.lua_State L, Table t) 
 		{
-			if (Node.isNotEqual(t.node[0], dummynode))
+			if (LuaObject.Node.isNotEqual(t.node[0], dummynode))
 			{
 				LuaMem.luaM_freearray_Node(L, t.node, new ClassType(ClassType.TYPE_NODE));
 			}
@@ -494,7 +494,7 @@ namespace kurumi
 			LuaMem.luaM_free_Table(L, t, new ClassType(ClassType.TYPE_TABLE));
 		}
 
-		private static Node getfreepos(Table t) 
+		private static LuaObject.Node getfreepos(Table t) 
 		{
 			while (t.lastfree-- > 0) 
 			{
@@ -515,24 +515,24 @@ namespace kurumi
 		 */
 		private static TValue newkey(LuaState.lua_State L, Table t, TValue key) 
 		{
-			Node mp = mainposition(t, key);
-			if (!LuaObject.ttisnil(gval(mp)) || Node.isEqual(mp, dummynode))
+			LuaObject.Node mp = mainposition(t, key);
+			if (!LuaObject.ttisnil(gval(mp)) || LuaObject.Node.isEqual(mp, dummynode))
 			{
-				Node othern;
-				Node n = getfreepos(t);  /* get a free place */
-				if (Node.isEqual(n, null)) 
+				LuaObject.Node othern;
+				LuaObject.Node n = getfreepos(t);  /* get a free place */
+				if (LuaObject.Node.isEqual(n, null)) 
 				{  
 					/* cannot find a free place? */
 					rehash(L, t, key);  /* grow table */
 					return luaH_set(L, t, key);  /* re-insert key into grown table */
 				}
-				LuaLimits.lua_assert(Node.isNotEqual(n, dummynode));
+				LuaLimits.lua_assert(LuaObject.Node.isNotEqual(n, dummynode));
 				othern = mainposition(t, key2tval(mp));
-				if (Node.isNotEqual(othern, mp)) 
+				if (LuaObject.Node.isNotEqual(othern, mp)) 
 				{  
 					/* is colliding node out of its main position? */
 					/* yes; move colliding node into free position */
-					while (Node.isNotEqual(gnext(othern), mp)) 
+					while (LuaObject.Node.isNotEqual(gnext(othern), mp)) 
 					{
 						othern = gnext(othern);  /* find previous */
 					}
@@ -571,7 +571,7 @@ namespace kurumi
 			else 
 			{
 				Double/*lua_Number*/ nk = LuaLimits.cast_num(key);
-				Node n = hashnum(t, nk);
+				LuaObject.Node n = hashnum(t, nk);
 				do 
 				{  
 					/* check whether `key' is somewhere in the chain */
@@ -583,7 +583,7 @@ namespace kurumi
 					{
 						n = gnext(n);
 					}
-				} while (Node.isNotEqual(n, null));
+				} while (LuaObject.Node.isNotEqual(n, null));
 				return LuaObject.luaO_nilobject;
 			}
 		}
@@ -593,7 +593,7 @@ namespace kurumi
 		 */
 		public static TValue luaH_getstr(Table t, TString key) 
 		{
-			Node n = hashstr(t, key);
+			LuaObject.Node n = hashstr(t, key);
 			do 
 			{  
 				/* check whether `key' is somewhere in the chain */
@@ -605,7 +605,7 @@ namespace kurumi
 				{
 					n = gnext(n);
 				}
-			} while (Node.isNotEqual(n, null));
+			} while (LuaObject.Node.isNotEqual(n, null));
 			return LuaObject.luaO_nilobject;
 		}
 
@@ -634,7 +634,7 @@ namespace kurumi
 							return luaH_getnum(t, k[0]);  /* use specialized version */
 						}
 						/* else go through ... actually on second thoughts don't, because this is C#*/
-						Node node = mainposition(t, key);
+						LuaObject.Node node = mainposition(t, key);
 						do
 						{  
 							/* check whether `key' is somewhere in the chain */
@@ -646,12 +646,12 @@ namespace kurumi
 							{
 								node = gnext(node);
 							}
-						} while (Node.isNotEqual(node, null));
+						} while (LuaObject.Node.isNotEqual(node, null));
 						return LuaObject.luaO_nilobject;
 					}
 				default: 
 					{
-						Node node = mainposition(t, key);
+						LuaObject.Node node = mainposition(t, key);
 						do 
 						{  
 							/* check whether `key' is somewhere in the chain */
@@ -663,7 +663,7 @@ namespace kurumi
 							{
 								node = gnext(node);
 							}
-						} while (Node.isNotEqual(node, null));
+						} while (LuaObject.Node.isNotEqual(node, null));
 						return LuaObject.luaO_nilobject;
 					}
 			}
@@ -784,7 +784,7 @@ namespace kurumi
 				return (int)i;
 			}
 			/* else must find a boundary in hash part */
-			else if (Node.isEqual(t.node[0], dummynode))  /* hash part is empty? */
+			else if (LuaObject.Node.isEqual(t.node[0], dummynode))  /* hash part is empty? */
 			{
 				return (int)j;  /* that is easy... */
 			}

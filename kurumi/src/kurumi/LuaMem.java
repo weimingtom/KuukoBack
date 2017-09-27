@@ -43,8 +43,8 @@ public class LuaMem {
 		return (LuaObject.LocVar[])luaM_realloc__LocVar(L, block, new_size, t);
 	}
 
-	public static Node[] luaM_reallocv_Node(LuaState.lua_State L, Node[] block, int new_size, ClassType t) {
-		return (Node[])luaM_realloc__Node(L, block, new_size, t);
+	public static LuaObject.Node[] luaM_reallocv_Node(LuaState.lua_State L, LuaObject.Node[] block, int new_size, ClassType t) {
+		return (LuaObject.Node[])luaM_realloc__Node(L, block, new_size, t);
 	}
 
 	public static LuaState.GCObject[] luaM_reallocv_GCObject(LuaState.lua_State L, LuaState.GCObject[] block, int new_size, ClassType t) {
@@ -106,7 +106,7 @@ public class LuaMem {
 		luaM_reallocv_TString(L, b, 0, t);
 	}
 
-	public static void luaM_freearray_Node(LuaState.lua_State L, Node[] b, ClassType t) {
+	public static void luaM_freearray_Node(LuaState.lua_State L, LuaObject.Node[] b, ClassType t) {
 		luaM_reallocv_Node(L, b, 0, t);
 	}
 
@@ -177,7 +177,7 @@ public class LuaMem {
 		return luaM_reallocv_CallInfo(L, null, n, t);
 	}
 
-	public static Node[] luaM_newvector_Node(LuaState.lua_State L, int n, ClassType t) {
+	public static LuaObject.Node[] luaM_newvector_Node(LuaState.lua_State L, int n, ClassType t) {
 		return luaM_reallocv_Node(L, null, n, t);
 	}
 
@@ -819,17 +819,17 @@ public class LuaMem {
 		return new_block;
 	}
 
-	public static Object luaM_realloc__Node(LuaState.lua_State L, Node[] old_block, int new_size, ClassType t) {
+	public static Object luaM_realloc__Node(LuaState.lua_State L, LuaObject.Node[] old_block, int new_size, ClassType t) {
 		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
-		Node[] new_block = new Node[new_size];
+		LuaObject.Node[] new_block = new LuaObject.Node[new_size];
 		for (int i = 0; i < Math.min(old_size, new_size); i++) {
 			new_block[i] = old_block[i];
 		}
 		for (int i = old_size; i < new_size; i++) {
-			new_block[i] = (Node)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
+			new_block[i] = (LuaObject.Node)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {

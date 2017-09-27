@@ -93,7 +93,6 @@
     <Compile Include="src\kurumi\LuaUndump.cs" />
     <Compile Include="src\kurumi\LuaVM.cs" />
     <Compile Include="src\kurumi\LuaZIO.cs" />
-    <Compile Include="src\kurumi\Node.cs" />
     <Compile Include="src\kurumi\OpArgMask.cs" />
     <Compile Include="src\kurumi\OpCode.cs" />
     <Compile Include="src\kurumi\OpCodeUtil.cs" />

@@ -10,14 +10,14 @@ package kurumi;
 	 */
 	public class TKey_nk extends TValue 
 	{
-		public Node next;  /* for chaining */
+		public LuaObject.Node next;  /* for chaining */
 		
 		public TKey_nk() 
 		{
 			
 		}
 		
-		public TKey_nk(Value value, int tt, Node next)
+		public TKey_nk(Value value, int tt, LuaObject.Node next)
 		{
 			super(new Value(value), tt);
 			this.next = next;

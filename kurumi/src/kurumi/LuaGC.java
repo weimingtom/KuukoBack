@@ -234,7 +234,7 @@ public class LuaGC {
 		g.GCthreshold = ((g.estimate / 100) * g.gcpause); //(uint)
 	}
 
-	private static void removeentry(Node n) {
+	private static void removeentry(LuaObject.Node n) {
 		LuaLimits.lua_assert(LuaObject.ttisnil(LuaTable.gval(n)));
 		if (LuaObject.iscollectable(LuaTable.gkey(n))) {
 			LuaObject.setttype(LuaTable.gkey(n), LuaObject.LUA_TDEADKEY); // dead key; remove it 
@@ -369,7 +369,7 @@ public class LuaGC {
 		}
 		i = LuaObject.sizenode(h);
 		while ((i--) != 0) {
-			Node n = LuaTable.gnode(h, i);
+			LuaObject.Node n = LuaTable.gnode(h, i);
 			LuaLimits.lua_assert(LuaObject.ttype(LuaTable.gkey(n)) != LuaObject.LUA_TDEADKEY || LuaObject.ttisnil(LuaTable.gval(n)));
 			if (LuaObject.ttisnil(LuaTable.gval(n))) {
 				removeentry(n); // remove empty entries 
@@ -576,7 +576,7 @@ public class LuaGC {
 			}
 			i = LuaObject.sizenode(h);
 			while (i-- != 0) {
-				Node n = LuaTable.gnode(h, i);
+				LuaObject.Node n = LuaTable.gnode(h, i);
 				if (!LuaObject.ttisnil(LuaTable.gval(n)) && (iscleared(LuaTable.key2tval(n), true) || iscleared(LuaTable.gval(n), false))) { // non-empty entry? 
 					LuaObject.setnilvalue(LuaTable.gval(n)); // remove value... 
 					removeentry(n); // remove entry from Table 

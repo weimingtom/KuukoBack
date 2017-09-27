@@ -19,7 +19,7 @@ package kurumi;
 			this.nk = new TKey_nk(new Value(copy.nk.value), copy.nk.tt, copy.nk.next);
 		}
 		
-		public TKey(Value value, int tt, Node next)
+		public TKey(Value value, int tt, LuaObject.Node next)
 		{
 			this.nk = new TKey_nk(new Value(value), tt, next);
 		}

@@ -277,7 +277,7 @@ namespace kurumi
 			g.GCthreshold = /*(uint)*/((g.estimate / 100) * g.gcpause);
 		}
 
-		private static void removeentry(Node n) 
+		private static void removeentry(LuaObject.Node n) 
 		{
 			LuaLimits.lua_assert(LuaObject.ttisnil(LuaTable.gval(n)));
 			if (LuaObject.iscollectable(LuaTable.gkey(n)))
@@ -444,7 +444,7 @@ namespace kurumi
 			i = LuaObject.sizenode(h);
 			while ((i--) != 0) 
 			{
-				Node n = LuaTable.gnode(h, i);
+				LuaObject.Node n = LuaTable.gnode(h, i);
 				LuaLimits.lua_assert(LuaObject.ttype(LuaTable.gkey(n)) != LuaObject.LUA_TDEADKEY || LuaObject.ttisnil(LuaTable.gval(n)));
 				if (LuaObject.ttisnil(LuaTable.gval(n)))
 				{
@@ -711,7 +711,7 @@ namespace kurumi
 				i = LuaObject.sizenode(h);
 				while (i-- != 0) 
 				{
-					Node n = LuaTable.gnode(h, i);
+					LuaObject.Node n = LuaTable.gnode(h, i);
 					if (!LuaObject.ttisnil(LuaTable.gval(n)) &&  /* non-empty entry? */
 						(iscleared(LuaTable.key2tval(n), true) || iscleared(LuaTable.gval(n), false)))
 					{
