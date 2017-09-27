@@ -179,6 +179,29 @@ public class LuaStrLib {
 	public static final int CAP_UNFINISHED = (-1);
 	public static final int CAP_POSITION = (-2);
 
+	public static class MatchState {
+		public static class capture_ 
+		{
+			public LuaConf.CharPtr init;
+            public int/*Int32*//*ptrdiff_t*/ len;
+		}
+		
+		public LuaConf.CharPtr src_init;  /* init of source string */
+		public LuaConf.CharPtr src_end;  /* end (`\0') of source string */
+		public LuaState.lua_State L;
+		public int level;  /* total number of captures (finished or unfinished) */
+
+		public capture_[] capture = new capture_[LuaConf.LUA_MAXCAPTURES];
+		
+		public MatchState()
+		{
+			for (int i = 0; i < LuaConf.LUA_MAXCAPTURES; i++)
+			{
+				capture[i] = new capture_();
+			}
+		}
+	}	
+	
 	public static final char L_ESC = '%';
 	public static final String SPECIALS = "^$*+?.([%-";
 

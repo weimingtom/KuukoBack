@@ -211,6 +211,30 @@ namespace kurumi
 		public const int CAP_UNFINISHED	= (-1);
 		public const int CAP_POSITION = (-2);
 
+		public class MatchState
+		{
+			public class capture_
+			{
+				public LuaConf.CharPtr init;
+	            public int/*Int32*//*ptrdiff_t*/ len;
+			}
+			
+			public LuaConf.CharPtr src_init;  /* init of source string */
+			public LuaConf.CharPtr src_end;  /* end (`\0') of source string */
+			public LuaState.lua_State L;
+			public int level;  /* total number of captures (finished or unfinished) */
+	
+			public capture_[] capture = new capture_[LuaConf.LUA_MAXCAPTURES];
+			
+			public MatchState()
+			{
+				for (int i = 0; i < LuaConf.LUA_MAXCAPTURES; i++)
+				{
+					capture[i] = new capture_();
+				}
+			}
+		}		
+		
 		public const char L_ESC	= '%';
 		public const string SPECIALS = "^$*+?.([%-";
 

@@ -1223,7 +1223,7 @@ namespace kurumi
             {
                 return 16;
             }
-            else if (t == typeof(MatchState))
+            else if (t == typeof(LuaStrLib.MatchState))
             {
                 return 272;
             }

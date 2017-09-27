@@ -135,3 +135,7 @@ LuaStrLib_delegate->LuaStrLib.LuaStrLib_delegate
 
 luaL_Reg->LuaAuxLib.luaL_Reg
 15:15 2017/9/26
+
+MatchState->LuaStrLib.MatchState
+8:09 2017/9/27
+
