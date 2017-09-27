@@ -584,7 +584,7 @@ namespace kurumi
 			}
 		}
 
-		public static Proto luaY_parser(LuaState.lua_State L, ZIO z, Mbuffer buff, LuaConf.CharPtr name) 
+		public static Proto luaY_parser(LuaState.lua_State L, ZIO z, LuaZIO.Mbuffer buff, LuaConf.CharPtr name) 
 		{
 			LuaLex.LexState lexstate = new LuaLex.LexState();
 			FuncState funcstate = new FuncState();

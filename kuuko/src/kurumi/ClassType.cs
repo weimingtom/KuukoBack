@@ -1215,7 +1215,7 @@ namespace kurumi
             {
                 return 20;
             }
-            else if (t == typeof(Mbuffer))
+            else if (t == typeof(LuaZIO.Mbuffer))
             {
                 return 12;
             }

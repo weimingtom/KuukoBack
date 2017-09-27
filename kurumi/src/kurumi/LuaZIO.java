@@ -22,6 +22,13 @@ public class LuaZIO {
 			return luaZ_fill(z);
 		}
 	}
+	
+	public static class Mbuffer
+	{
+		public LuaConf.CharPtr buffer = new LuaConf.CharPtr();
+		public int n; /*uint*/
+		public int buffsize; /*uint*/
+	}
 
 	public static void luaZ_initbuffer(LuaState.lua_State L, Mbuffer buff) {
 		buff.buffer = null;

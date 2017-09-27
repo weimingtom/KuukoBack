@@ -139,3 +139,6 @@ luaL_Reg->LuaAuxLib.luaL_Reg
 MatchState->LuaStrLib.MatchState
 8:09 2017/9/27
 
+Mbuffer->LuaZIO.Mbuffer
+8:17 2017/9/27
+

@@ -25,7 +25,7 @@ public class LuaUndump {
 	public static class LoadState {
 		public LuaState.lua_State L;
 		public ZIO Z;
-		public Mbuffer b;
+		public LuaZIO.Mbuffer b;
 		public LuaConf.CharPtr name;
 	}	
 	
@@ -238,7 +238,7 @@ TValue.dec(top); //ref
 //        
 //		 ** load precompiled chunk
 //		 
-	public static Proto luaU_undump(LuaState.lua_State L, ZIO Z, Mbuffer buff, LuaConf.CharPtr name) {
+	public static Proto luaU_undump(LuaState.lua_State L, ZIO Z, LuaZIO.Mbuffer buff, LuaConf.CharPtr name) {
 		LoadState S = new LoadState();
 		if (name.get(0) == '@' || name.get(0) == '=') {
 			S.name = LuaConf.CharPtr.plus(name, 1);

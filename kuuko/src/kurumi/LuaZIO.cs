@@ -27,6 +27,13 @@ namespace kurumi
 				return luaZ_fill(z);
 			}
 		}
+		
+		public class Mbuffer
+		{
+			public LuaConf.CharPtr buffer = new LuaConf.CharPtr();
+			public int n; /*uint*/
+			public int buffsize; /*uint*/
+		}
 
 		public static void luaZ_initbuffer(LuaState.lua_State L, Mbuffer buff)
 		{

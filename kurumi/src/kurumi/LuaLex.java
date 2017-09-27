@@ -29,7 +29,7 @@ public class LuaLex {
 		public LuaParser.FuncState fs;  /* `FuncState' is private to the parser */
 		public LuaState.lua_State L;
 		public ZIO z;  /* input stream */
-		public Mbuffer buff;  /* buffer for tokens */
+		public LuaZIO.Mbuffer buff;  /* buffer for tokens */
 		public TString source;  /* current source name */
 		public char decpoint;  /* locale decimal point */
 	}
@@ -58,7 +58,7 @@ public class LuaLex {
 	}
 
 	private static void save(LexState ls, int c) {
-		Mbuffer b = ls.buff;
+		LuaZIO.Mbuffer b = ls.buff;
 		if (b.n + 1 > b.buffsize) {
 			int newsize; //uint
 			if (b.buffsize >= LuaLimits.MAX_SIZET / 2) {

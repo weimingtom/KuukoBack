@@ -165,7 +165,7 @@ namespace kurumi
 			public LuaState.GCObject grayagain;  /* list of objects to be traversed atomically */
 			public LuaState.GCObject weak;  /* list of weak tables (to be cleared) */
 			public LuaState.GCObject tmudata;  /* last element of list of userdata to be GC */
-			public Mbuffer buff = new Mbuffer();  /* temporary buffer for string concatentation */
+			public LuaZIO.Mbuffer buff = new LuaZIO.Mbuffer();  /* temporary buffer for string concatentation */
 			public long/*UInt32*//*lu_mem*/ GCthreshold;
 			public long/*UInt32*//*lu_mem*/ totalbytes;  /* number of bytes currently allocated */
 			public long/*UInt32*//*lu_mem*/ estimate;  /* an estimate of number of bytes actually in use */
