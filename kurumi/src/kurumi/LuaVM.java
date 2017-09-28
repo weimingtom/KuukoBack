@@ -454,7 +454,7 @@ TValue.dec(top); //ref
 
 	///#define Protect(x)	{ L.savedpc = pc; {x;}; base = L.base_; }
 
-	public static void arith_op(LuaState.lua_State L, op_delegate op, TMS tm, TValue base_, long i, TValue[] k, TValue ra, LuaCode.InstructionPtr pc) { //StkId - Instruction - UInt32 - StkId
+	public static void arith_op(LuaState.lua_State L, LuaConf.op_delegate op, TMS tm, TValue base_, long i, TValue[] k, TValue ra, LuaCode.InstructionPtr pc) { //StkId - Instruction - UInt32 - StkId
 		TValue rb = RKB(L, base_, i, k);
 		TValue rc = RKC(L, base_, i, k);
 		if (LuaObject.ttisnumber(rb) && LuaObject.ttisnumber(rc)) {

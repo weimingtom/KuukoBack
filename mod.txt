@@ -147,3 +147,6 @@ NextRef->LuaState.NextRef
 
 Node->LuaObject.Node
 15:15 2017/9/27
+
+op_delegate->LuaConf.op_delegate
+21:01 2017-09-28

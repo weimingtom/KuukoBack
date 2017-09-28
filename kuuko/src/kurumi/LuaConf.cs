@@ -582,7 +582,15 @@ namespace kurumi
 		 */
 		//#if LUA_CORE
 		//#include <math.h>
-
+	    
+		public interface op_delegate
+	    {
+	        /*lua_Number*/
+	        /*lua_Number*/
+	        /*lua_Number*/
+	        Double exec(Double a, Double b);
+	    }
+		
 		public static Double/*lua_Number*/ luai_numadd(Double/*lua_Number*/ a, Double/*lua_Number*/ b) 
 		{ 
 			return ((a) + (b)); 

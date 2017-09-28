@@ -563,7 +563,7 @@ namespace kurumi
 
 		//#define Protect(x)	{ L.savedpc = pc; {x;}; base = L.base_; }
 
-		public static void arith_op(LuaState.lua_State L, op_delegate op, TMS tm, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, TValue[] k, TValue/*StkId*/ ra, LuaCode.InstructionPtr pc)
+		public static void arith_op(LuaState.lua_State L, LuaConf.op_delegate op, TMS tm, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, TValue[] k, TValue/*StkId*/ ra, LuaCode.InstructionPtr pc)
 		{
 			TValue rb = RKB(L, base_, i, k);
 			TValue rc = RKC(L, base_, i, k);

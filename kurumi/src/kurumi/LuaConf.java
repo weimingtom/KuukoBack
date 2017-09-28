@@ -565,6 +565,13 @@ public class LuaConf {
 	///#if LUA_CORE
 	///#include <math.h>
 
+    public static interface op_delegate {
+        /*lua_Number*/
+        /*lua_Number*/
+        /*lua_Number*/
+		double exec(double a, double b);
+    }	
+	
 	public static double luai_numadd(double a, double b) { //lua_Number - lua_Number - lua_Number
 		return ((a) + (b));
 	}

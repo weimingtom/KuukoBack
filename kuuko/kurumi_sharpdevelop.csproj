@@ -98,7 +98,6 @@
     <Compile Include="src\kurumi\OpCodeUtil.cs" />
     <Compile Include="src\kurumi\OpenValRef.cs" />
     <Compile Include="src\kurumi\OpMode.cs" />
-    <Compile Include="src\kurumi\op_delegate.cs" />
     <Compile Include="src\kurumi\Pfunc.cs" />
     <Compile Include="src\kurumi\priority_.cs" />
     <Compile Include="src\kurumi\Program.cs" />
