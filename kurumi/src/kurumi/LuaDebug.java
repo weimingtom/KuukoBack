@@ -309,7 +309,7 @@ TValue.dec(top); // pop function  - ref
 		if (!(pt.sizelineinfo == pt.sizecode || pt.sizelineinfo == 0)) {
 			return 0;
 		}
-		if (!(pt.sizecode > 0 && LuaOpCodes.GET_OPCODE(pt.code[pt.sizecode - 1]) == OpCode.OP_RETURN)) {
+		if (!(pt.sizecode > 0 && LuaOpCodes.GET_OPCODE(pt.code[pt.sizecode - 1]) == LuaOpCodes.OpCode.OP_RETURN)) {
 			return 0;
 		}
 		return 1;
@@ -337,7 +337,7 @@ TValue.dec(top); // pop function  - ref
 	}
 
 
-	private static int checkArgMode(Proto pt, int r, OpArgMask mode) {
+	private static int checkArgMode(Proto pt, int r, LuaOpCodes.OpArgMask mode) {
 		switch (mode) {
 			case OpArgN: {
 					if (r!=0) {
@@ -372,7 +372,7 @@ TValue.dec(top); // pop function  - ref
 		}
 		for (pc = 0; pc < lastpc; pc++) {
 			long i = pt.code[pc]; //Instruction - UInt32
-			OpCode op = LuaOpCodes.GET_OPCODE(i);
+			LuaOpCodes.OpCode op = LuaOpCodes.GET_OPCODE(i);
 			int a = LuaOpCodes.GETARG_A(i);
 			int b = 0;
 			int c = 0;
@@ -394,7 +394,7 @@ TValue.dec(top); // pop function  - ref
 					}
 				case iABx: {
 						b = LuaOpCodes.GETARG_Bx(i);
-						if (LuaOpCodes.getBMode(op) == OpArgMask.OpArgK) {
+						if (LuaOpCodes.getBMode(op) == LuaOpCodes.OpArgMask.OpArgK) {
 							if (!(b < pt.sizek)) {
 								return 0;
 							}
@@ -403,7 +403,7 @@ TValue.dec(top); // pop function  - ref
 					}
 				case iAsBx: {
 						b = LuaOpCodes.GETARG_sBx(i);
-						if (LuaOpCodes.getBMode(op) == OpArgMask.OpArgR) {
+						if (LuaOpCodes.getBMode(op) == LuaOpCodes.OpArgMask.OpArgR) {
 							dest = pc + 1 + b;
 							if (!((0 <= dest && dest < pt.sizecode))) {
 								return 0;
@@ -416,7 +416,7 @@ TValue.dec(top); // pop function  - ref
 //					   go all the way back to the first of them (if any) 
 								for (j = 0; j < dest; j++) {
 									long d = pt.code[dest - 1 - j]; //Instruction - UInt32
-									if (!(LuaOpCodes.GET_OPCODE(d) == OpCode.OP_SETLIST && LuaOpCodes.GETARG_C(d) == 0)) {
+									if (!(LuaOpCodes.GET_OPCODE(d) == LuaOpCodes.OpCode.OP_SETLIST && LuaOpCodes.GETARG_C(d) == 0)) {
 										break;
 									}
 								}
@@ -439,7 +439,7 @@ TValue.dec(top); // pop function  - ref
 				if (!(pc+2 < pt.sizecode)) {
 					return 0; // check skip 
 				}
-				if (!(LuaOpCodes.GET_OPCODE(pt.code[pc + 1]) == OpCode.OP_JMP)) {
+				if (!(LuaOpCodes.GET_OPCODE(pt.code[pc + 1]) == LuaOpCodes.OpCode.OP_JMP)) {
 					return 0;
 				}
 			}
@@ -450,7 +450,7 @@ TValue.dec(top); // pop function  - ref
 							if (!(pc+2 < pt.sizecode)) {
 								return 0; // check its jump 
 							}
-							if (!(LuaOpCodes.GET_OPCODE(pt.code[pc + 1]) != OpCode.OP_SETLIST || LuaOpCodes.GETARG_C(pt.code[pc + 1]) != 0)) {
+							if (!(LuaOpCodes.GET_OPCODE(pt.code[pc + 1]) != LuaOpCodes.OpCode.OP_SETLIST || LuaOpCodes.GETARG_C(pt.code[pc + 1]) != 0)) {
 								return 0;
 							}
 						}
@@ -567,8 +567,8 @@ TValue.dec(top); // pop function  - ref
 							return 0;
 						}
 						for (j = 1; j <= nup; j++) {
-							OpCode op1 = LuaOpCodes.GET_OPCODE(pt.code[pc + j]);
-							if (!(op1 == OpCode.OP_GETUPVAL || op1 == OpCode.OP_MOVE)) {
+							LuaOpCodes.OpCode op1 = LuaOpCodes.GET_OPCODE(pt.code[pc + j]);
+							if (!(op1 == LuaOpCodes.OpCode.OP_GETUPVAL || op1 == LuaOpCodes.OpCode.OP_MOVE)) {
 								return 0;
 							}
 						}
@@ -678,7 +678,7 @@ TValue.dec(top); // pop function  - ref
 		LuaState.CallInfo.dec(ci_ref); // calling function  - ref
 		ci = ci_ref[0];
 		i = LuaState.ci_func(ci).l.p.code[currentpc(L, ci)];
-		if (LuaOpCodes.GET_OPCODE(i) == OpCode.OP_CALL || LuaOpCodes.GET_OPCODE(i) == OpCode.OP_TAILCALL || LuaOpCodes.GET_OPCODE(i) == OpCode.OP_TFORLOOP) {
+		if (LuaOpCodes.GET_OPCODE(i) == LuaOpCodes.OpCode.OP_CALL || LuaOpCodes.GET_OPCODE(i) == LuaOpCodes.OpCode.OP_TAILCALL || LuaOpCodes.GET_OPCODE(i) == LuaOpCodes.OpCode.OP_TFORLOOP) {
 			return getobjname(L, ci, LuaOpCodes.GETARG_A(i), name); //ref
 		}
 		else {

@@ -949,7 +949,7 @@ TValue rb = RB(L, base_, i);
 									L.top = L.ci.top;
 								}
 								LuaLimits.lua_assert(LuaState.isLua(L.ci));
-								LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(L.ci.savedpc.get(-1)) == OpCode.OP_CALL);
+								LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(L.ci.savedpc.get(-1)) == LuaOpCodes.OpCode.OP_CALL);
 								//goto reentry;
 								reentry2 = true;
 								break;
@@ -1067,11 +1067,11 @@ TValue rb = RB(L, base_, i);
 							ncl = LuaFunc.luaF_newLclosure(L, nup, cl.getEnv());
 							ncl.l.p = p;
 							for (j = 0; j < nup;) {
-								if (LuaOpCodes.GET_OPCODE(pc.get(0)) == OpCode.OP_GETUPVAL) {
+								if (LuaOpCodes.GET_OPCODE(pc.get(0)) == LuaOpCodes.OpCode.OP_GETUPVAL) {
 									ncl.l.upvals[j] = cl.upvals[LuaOpCodes.GETARG_B(pc.get(0))];
 								}
 								else {
-									LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(pc.get(0)) == OpCode.OP_MOVE);
+									LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(pc.get(0)) == LuaOpCodes.OpCode.OP_MOVE);
 									ncl.l.upvals[j] = LuaFunc.luaF_findupval(L, TValue.plus(base_, LuaOpCodes.GETARG_B(pc.get(0))));
 								}
 

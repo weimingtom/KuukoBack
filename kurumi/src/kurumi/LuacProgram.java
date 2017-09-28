@@ -146,10 +146,10 @@ public class LuacProgram {
 			pc = 0;
 			for (i = 0; i < n; i++) {
 				f.p[i] = toproto(L, i-n-1);
-				f.code[pc++] = (long)LuaOpCodes.CREATE_ABx(OpCode.OP_CLOSURE, 0, i); //uint
-				f.code[pc++] = (long)LuaOpCodes.CREATE_ABC(OpCode.OP_CALL, 0, 1, 1); //uint
+				f.code[pc++] = (long)LuaOpCodes.CREATE_ABx(LuaOpCodes.OpCode.OP_CLOSURE, 0, i); //uint
+				f.code[pc++] = (long)LuaOpCodes.CREATE_ABC(LuaOpCodes.OpCode.OP_CALL, 0, 1, 1); //uint
 			}
-			f.code[pc++] = (long)LuaOpCodes.CREATE_ABC(OpCode.OP_RETURN, 0, 1, 0); //uint
+			f.code[pc++] = (long)LuaOpCodes.CREATE_ABC(LuaOpCodes.OpCode.OP_RETURN, 0, 1, 0); //uint
 			return f;
 		}
 	}

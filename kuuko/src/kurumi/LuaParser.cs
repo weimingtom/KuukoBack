@@ -463,7 +463,7 @@ namespace kurumi
 			removevars(fs.ls, bl.nactvar);
 			if (bl.upval != 0)
 			{
-				LuaCode.luaK_codeABC(fs, OpCode.OP_CLOSE, bl.nactvar, 0, 0);
+				LuaCode.luaK_codeABC(fs, LuaOpCodes.OpCode.OP_CLOSE, bl.nactvar, 0, 0);
 			}
 			/* a block either controls scope or breaks (never both) */
 			LuaLimits.lua_assert((bl.isbreakable == 0) || (bl.upval == 0));
@@ -492,10 +492,10 @@ namespace kurumi
 			}
 			f.p[fs.np++] = func.f;
 			LuaGC.luaC_objbarrier(ls.L, f, func.f);
-			init_exp(v, expkind.VRELOCABLE, LuaCode.luaK_codeABx(fs, OpCode.OP_CLOSURE, 0, fs.np - 1));
+			init_exp(v, expkind.VRELOCABLE, LuaCode.luaK_codeABx(fs, LuaOpCodes.OpCode.OP_CLOSURE, 0, fs.np - 1));
 			for (i = 0; i < func.f.nups; i++) 
 			{
-				OpCode o = ((int)func.upvalues[i].k == (int)expkind.VLOCAL) ? OpCode.OP_MOVE : OpCode.OP_GETUPVAL;
+				LuaOpCodes.OpCode o = ((int)func.upvalues[i].k == (int)expkind.VLOCAL) ? LuaOpCodes.OpCode.OP_MOVE : LuaOpCodes.OpCode.OP_GETUPVAL;
 				LuaCode.luaK_codeABC(fs, o, 0, func.upvalues[i].info, 0);
 			}
 		}
@@ -661,7 +661,7 @@ namespace kurumi
 			checknext(ls, '=');
 			rkkey = LuaCode.luaK_exp2RK(fs, key);
 			expr(ls, val);
-			LuaCode.luaK_codeABC(fs, OpCode.OP_SETTABLE, cc.t.u.s.info, rkkey, LuaCode.luaK_exp2RK(fs, val));
+			LuaCode.luaK_codeABC(fs, LuaOpCodes.OpCode.OP_SETTABLE, cc.t.u.s.info, rkkey, LuaCode.luaK_exp2RK(fs, val));
 			fs.freereg = reg;  /* free registers */
 		}
 
@@ -716,7 +716,7 @@ namespace kurumi
 			/* constructor . ?? */
 			FuncState fs = ls.fs;
 			int line = ls.linenumber;
-			int pc = LuaCode.luaK_codeABC(fs, OpCode.OP_NEWTABLE, 0, 0, 0);
+			int pc = LuaCode.luaK_codeABC(fs, LuaOpCodes.OpCode.OP_NEWTABLE, 0, 0, 0);
 			ConsControl cc = new ConsControl();
 			cc.na = cc.nh = cc.tostore = 0;
 			cc.t = t;
@@ -913,7 +913,7 @@ namespace kurumi
 				}
 				nparams = fs.freereg - (base_+1);
 			}
-			init_exp(f, expkind.VCALL, LuaCode.luaK_codeABC(fs, OpCode.OP_CALL, base_, nparams + 1, 2));
+			init_exp(f, expkind.VCALL, LuaCode.luaK_codeABC(fs, LuaOpCodes.OpCode.OP_CALL, base_, nparams + 1, 2));
 			LuaCode.luaK_fixline(fs, line);
 			fs.freereg = base_ + 1;  /* call remove function and arguments and leaves
 									(unless changed) one result */
@@ -1043,7 +1043,7 @@ namespace kurumi
 						check_condition(ls, fs.f.is_vararg != 0,
 							LuaConf.CharPtr.toCharPtr("cannot use " + LuaConf.LUA_QL("...") + " outside a vararg function"));
 						fs.f.is_vararg &= /*unchecked*/((Byte/*lu_byte*/)((~LuaObject.VARARG_NEEDSARG) & 0xff));  /* don't need 'arg' */
-						init_exp(v, expkind.VVARARG, LuaCode.luaK_codeABC(fs, OpCode.OP_VARARG, 0, 1, 0));
+						init_exp(v, expkind.VVARARG, LuaCode.luaK_codeABC(fs, LuaOpCodes.OpCode.OP_VARARG, 0, 1, 0));
 						break;
 					}
 				case '{': 
@@ -1312,7 +1312,7 @@ namespace kurumi
 			}
 			if (conflict != 0) 
 			{
-				LuaCode.luaK_codeABC(fs, OpCode.OP_MOVE, fs.freereg, v.u.s.info, 0);  /* make copy */
+				LuaCode.luaK_codeABC(fs, LuaOpCodes.OpCode.OP_MOVE, fs.freereg, v.u.s.info, 0);  /* make copy */
 				LuaCode.luaK_reserveregs(fs, 1);
 			}
 		}
@@ -1390,7 +1390,7 @@ namespace kurumi
 			}
 			if (upval != 0)
 			{
-				LuaCode.luaK_codeABC(fs, OpCode.OP_CLOSE, bl.nactvar, 0, 0);
+				LuaCode.luaK_codeABC(fs, LuaOpCodes.OpCode.OP_CLOSE, bl.nactvar, 0, 0);
 			}
 			int[] breaklist_ref = new int[1];
 			breaklist_ref[0] = bl.breaklist;
@@ -1465,15 +1465,15 @@ namespace kurumi
 			int prep, endfor;
 			adjustlocalvars(ls, 3);  /* control variables */
 			checknext(ls, (int)RESERVED.TK_DO);
-			prep = (isnum != 0) ? LuaCode.luaK_codeAsBx(fs, OpCode.OP_FORPREP, base_, LuaCode.NO_JUMP) : LuaCode.luaK_jump(fs);
+			prep = (isnum != 0) ? LuaCode.luaK_codeAsBx(fs, LuaOpCodes.OpCode.OP_FORPREP, base_, LuaCode.NO_JUMP) : LuaCode.luaK_jump(fs);
             enterblock(fs, bl, (byte)0);  /* scope for declared variables */
 			adjustlocalvars(ls, nvars);
 			LuaCode.luaK_reserveregs(fs, nvars);
 			block(ls);
 			leaveblock(fs);  /* end of scope for declared variables */
 			LuaCode.luaK_patchtohere(fs, prep);
-			endfor = (isnum != 0) ? LuaCode.luaK_codeAsBx(fs, OpCode.OP_FORLOOP, base_, LuaCode.NO_JUMP) :
-				LuaCode.luaK_codeABC(fs, OpCode.OP_TFORLOOP, base_, 0, nvars);
+			endfor = (isnum != 0) ? LuaCode.luaK_codeAsBx(fs, LuaOpCodes.OpCode.OP_FORLOOP, base_, LuaCode.NO_JUMP) :
+				LuaCode.luaK_codeABC(fs, LuaOpCodes.OpCode.OP_TFORLOOP, base_, 0, nvars);
 			LuaCode.luaK_fixline(fs, line);  /* pretend that `OP_FOR' starts the loop */
 			LuaCode.luaK_patchlist(fs, ((isnum != 0) ? endfor : LuaCode.luaK_jump(fs)), prep + 1);
 		}
@@ -1498,7 +1498,7 @@ namespace kurumi
 			else 
 			{
 				/* default step = 1 */
-				LuaCode.luaK_codeABx(fs, OpCode.OP_LOADK, fs.freereg, LuaCode.luaK_numberK(fs, 1));
+				LuaCode.luaK_codeABx(fs, LuaOpCodes.OpCode.OP_LOADK, fs.freereg, LuaCode.luaK_numberK(fs, 1));
 				LuaCode.luaK_reserveregs(fs, 1);
 			}
 			forbody(ls, base_, line, 1, 1);
@@ -1704,7 +1704,7 @@ namespace kurumi
 					if (e.k == expkind.VCALL && nret == 1) 
 					{  
 						/* tail call? */
-						LuaOpCodes.SET_OPCODE(LuaCode.getcode(fs, e), OpCode.OP_TAILCALL);
+						LuaOpCodes.SET_OPCODE(LuaCode.getcode(fs, e), LuaOpCodes.OpCode.OP_TAILCALL);
 						LuaLimits.lua_assert(LuaOpCodes.GETARG_A(LuaCode.getcode(fs, e)) == fs.nactvar);
 					}
 					first = fs.nactvar;

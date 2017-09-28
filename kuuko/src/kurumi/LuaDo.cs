@@ -596,8 +596,8 @@ namespace kurumi
                 {
                     /* `common' yield? */
                     /* finish interrupted execution of `OP_CALL' */
-                    LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(LuaState.CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_CALL ||
-                                         LuaOpCodes.GET_OPCODE(LuaState.CallInfo.minus(ci, 1).savedpc.get(-1)) == OpCode.OP_TAILCALL);
+                    LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(LuaState.CallInfo.minus(ci, 1).savedpc.get(-1)) == LuaOpCodes.OpCode.OP_CALL ||
+                                         LuaOpCodes.GET_OPCODE(LuaState.CallInfo.minus(ci, 1).savedpc.get(-1)) == LuaOpCodes.OpCode.OP_TAILCALL);
                     if (luaD_poscall(L, firstArg) != 0)
                     {
                         /* complete it... */

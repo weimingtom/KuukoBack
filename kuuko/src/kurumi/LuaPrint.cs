@@ -131,7 +131,7 @@ namespace kurumi
 			for (pc = 0; pc < n; pc++)
 			{
 				long/*UInt32*//*Instruction*/ i = f.code[pc];
-				OpCode o = LuaOpCodes.GET_OPCODE(i);
+				LuaOpCodes.OpCode o = LuaOpCodes.GET_OPCODE(i);
 				int a = LuaOpCodes.GETARG_A(i);
 				int b = LuaOpCodes.GETARG_B(i);
 				int c = LuaOpCodes.GETARG_C(i);
@@ -153,11 +153,11 @@ namespace kurumi
 					case OpMode.iABC:
 						{
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d"), a);
-							if (LuaOpCodes.getBMode(o) != OpArgMask.OpArgN) 
+							if (LuaOpCodes.getBMode(o) != LuaOpCodes.OpArgMask.OpArgN) 
 							{
 								LuaConf.printf(LuaConf.CharPtr.toCharPtr(" %d"), (LuaOpCodes.ISK(b) != 0) ? (-1 - LuaOpCodes.INDEXK(b)) : b);
 							}
-							if (LuaOpCodes.getCMode(o) != OpArgMask.OpArgN) 
+							if (LuaOpCodes.getCMode(o) != LuaOpCodes.OpArgMask.OpArgN) 
 							{
 								LuaConf.printf(LuaConf.CharPtr.toCharPtr(" %d"), (LuaOpCodes.ISK(c) != 0) ? (-1 - LuaOpCodes.INDEXK(c)) : c);
 							}
@@ -165,7 +165,7 @@ namespace kurumi
 						}
 					case OpMode.iABx:
 						{
-							if (LuaOpCodes.getBMode(o) == OpArgMask.OpArgK) 
+							if (LuaOpCodes.getBMode(o) == LuaOpCodes.OpArgMask.OpArgK) 
 							{
 								LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d %d"), a, -1 - bx); 
 							}
@@ -176,7 +176,7 @@ namespace kurumi
 							break;
 						}
 					case OpMode.iAsBx:
-						if (o == OpCode.OP_JMP) 
+						if (o == LuaOpCodes.OpCode.OP_JMP) 
 						{
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d"), sbx);
 						}
@@ -188,26 +188,26 @@ namespace kurumi
 				}
 				switch (o)
 				{
-					case OpCode.OP_LOADK:
+					case LuaOpCodes.OpCode.OP_LOADK:
 						{
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; "));
 							PrintConstant(f,bx);
 							break;
 						}
-					case OpCode.OP_GETUPVAL:
-					case OpCode.OP_SETUPVAL:
+					case LuaOpCodes.OpCode.OP_GETUPVAL:
+					case LuaOpCodes.OpCode.OP_SETUPVAL:
 						{
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; %s"), (f.sizeupvalues > 0) ? LuaObject.getstr(f.upvalues[b]) : LuaConf.CharPtr.toCharPtr("-"));
 							break;
 						}
-					case OpCode.OP_GETGLOBAL:
-					case OpCode.OP_SETGLOBAL:
+					case LuaOpCodes.OpCode.OP_GETGLOBAL:
+					case LuaOpCodes.OpCode.OP_SETGLOBAL:
 						{
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; %s"), LuaObject.svalue(f.k[bx]));
 							break;
 						}
-					case OpCode.OP_GETTABLE:
-					case OpCode.OP_SELF:
+					case LuaOpCodes.OpCode.OP_GETTABLE:
+					case LuaOpCodes.OpCode.OP_SELF:
 						{
 							if (LuaOpCodes.ISK(c) != 0)
 							{ 
@@ -216,15 +216,15 @@ namespace kurumi
 							}
 							break;
 						}
-					case OpCode.OP_SETTABLE:
-					case OpCode.OP_ADD:
-					case OpCode.OP_SUB:
-					case OpCode.OP_MUL:
-					case OpCode.OP_DIV:
-					case OpCode.OP_POW:
-					case OpCode.OP_EQ:
-					case OpCode.OP_LT:
-					case OpCode.OP_LE:
+					case LuaOpCodes.OpCode.OP_SETTABLE:
+					case LuaOpCodes.OpCode.OP_ADD:
+					case LuaOpCodes.OpCode.OP_SUB:
+					case LuaOpCodes.OpCode.OP_MUL:
+					case LuaOpCodes.OpCode.OP_DIV:
+					case LuaOpCodes.OpCode.OP_POW:
+					case LuaOpCodes.OpCode.OP_EQ:
+					case LuaOpCodes.OpCode.OP_LT:
+					case LuaOpCodes.OpCode.OP_LE:
 						{
 							if (LuaOpCodes.ISK(b) != 0 || LuaOpCodes.ISK(c) != 0)
 							{
@@ -249,19 +249,19 @@ namespace kurumi
 							}
 							break;
 						}
-					case OpCode.OP_JMP:
-					case OpCode.OP_FORLOOP:
-					case OpCode.OP_FORPREP:
+					case LuaOpCodes.OpCode.OP_JMP:
+					case LuaOpCodes.OpCode.OP_FORLOOP:
+					case LuaOpCodes.OpCode.OP_FORPREP:
 						{
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; to %d"), sbx + pc + 2);
 							break;
 						}
-					case OpCode.OP_CLOSURE:
+					case LuaOpCodes.OpCode.OP_CLOSURE:
 						{
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; %p"), LuaConf.VOID(f.p[bx]));
 							break;
 						}
-					case OpCode.OP_SETLIST:
+					case LuaOpCodes.OpCode.OP_SETLIST:
 						{
 							if (c == 0) 
 							{

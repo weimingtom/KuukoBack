@@ -106,7 +106,7 @@ public class LuaPrint {
 		int pc, n = f.sizecode;
 		for (pc = 0; pc < n; pc++) {
 			long i = f.code[pc]; //Instruction - UInt32
-			OpCode o = LuaOpCodes.GET_OPCODE(i);
+			LuaOpCodes.OpCode o = LuaOpCodes.GET_OPCODE(i);
 			int a = LuaOpCodes.GETARG_A(i);
 			int b = LuaOpCodes.GETARG_B(i);
 			int c = LuaOpCodes.GETARG_C(i);
@@ -124,16 +124,16 @@ public class LuaPrint {
 			switch (LuaOpCodes.getOpMode(o)) {
 				case iABC: {
 						LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d"), a);
-						if (LuaOpCodes.getBMode(o) != OpArgMask.OpArgN) {
+						if (LuaOpCodes.getBMode(o) != LuaOpCodes.OpArgMask.OpArgN) {
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr(" %d"), (LuaOpCodes.ISK(b) != 0) ? (-1 - LuaOpCodes.INDEXK(b)) : b);
 						}
-						if (LuaOpCodes.getCMode(o) != OpArgMask.OpArgN) {
+						if (LuaOpCodes.getCMode(o) != LuaOpCodes.OpArgMask.OpArgN) {
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr(" %d"), (LuaOpCodes.ISK(c) != 0) ? (-1 - LuaOpCodes.INDEXK(c)) : c);
 						}
 						break;
 					}
 				case iABx: {
-						if (LuaOpCodes.getBMode(o) == OpArgMask.OpArgK) {
+						if (LuaOpCodes.getBMode(o) == LuaOpCodes.OpArgMask.OpArgK) {
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d %d"), a, -1 - bx);
 						}
 						else {
@@ -142,7 +142,7 @@ public class LuaPrint {
 						break;
 					}
 				case iAsBx:
-					if (o == OpCode.OP_JMP) {
+					if (o == LuaOpCodes.OpCode.OP_JMP) {
 						LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d"), sbx);
 					}
 					else {

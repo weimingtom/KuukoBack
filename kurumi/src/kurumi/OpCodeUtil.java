@@ -2,7 +2,7 @@
 //{
     public class OpCodeUtil
     {
-        public static long opCodeToLong(OpCode code)
+        public static long opCodeToLong(LuaOpCodes.OpCode code)
         {
             switch (code)
             {
@@ -86,86 +86,86 @@
 			throw new RuntimeException("OpCode error");
         }
 
-        public static OpCode longToOpCode(long code)
+        public static LuaOpCodes.OpCode longToOpCode(long code)
         {
             switch ((int)code)
             {
                 case 0:
-                    return OpCode.OP_MOVE;
+                    return LuaOpCodes.OpCode.OP_MOVE;
                 case 1:
-                    return OpCode.OP_LOADK;
+                    return LuaOpCodes.OpCode.OP_LOADK;
                 case 2:
-                    return OpCode.OP_LOADBOOL;
+                    return LuaOpCodes.OpCode.OP_LOADBOOL;
                 case 3:
-                    return OpCode.OP_LOADNIL;
+                    return LuaOpCodes.OpCode.OP_LOADNIL;
                 case 4:
-                    return OpCode.OP_GETUPVAL;
+                    return LuaOpCodes.OpCode.OP_GETUPVAL;
                 case 5:
-                    return OpCode.OP_GETGLOBAL;
+                    return LuaOpCodes.OpCode.OP_GETGLOBAL;
                 case 6:
-                    return OpCode.OP_GETTABLE;
+                    return LuaOpCodes.OpCode.OP_GETTABLE;
                 case 7:
-                    return OpCode.OP_SETGLOBAL;
+                    return LuaOpCodes.OpCode.OP_SETGLOBAL;
                 case 8:
-                    return OpCode.OP_SETUPVAL;
+                    return LuaOpCodes.OpCode.OP_SETUPVAL;
                 case 9:
-                    return OpCode.OP_SETTABLE;
+                    return LuaOpCodes.OpCode.OP_SETTABLE;
                 case 10:
-                    return OpCode.OP_NEWTABLE;
+                    return LuaOpCodes.OpCode.OP_NEWTABLE;
                 case 11:
-                    return OpCode.OP_SELF;
+                    return LuaOpCodes.OpCode.OP_SELF;
                 case 12:
-                    return OpCode.OP_ADD;
+                    return LuaOpCodes.OpCode.OP_ADD;
                 case 13:
-                    return OpCode.OP_SUB;
+                    return LuaOpCodes.OpCode.OP_SUB;
                 case 14:
-                    return OpCode.OP_MUL;
+                    return LuaOpCodes.OpCode.OP_MUL;
                 case 15:
-                    return OpCode.OP_DIV;
+                    return LuaOpCodes.OpCode.OP_DIV;
                 case 16:
-                    return OpCode.OP_MOD;
+                    return LuaOpCodes.OpCode.OP_MOD;
                 case 17:
-                    return OpCode.OP_POW;
+                    return LuaOpCodes.OpCode.OP_POW;
                 case 18:
-                    return OpCode.OP_UNM;
+                    return LuaOpCodes.OpCode.OP_UNM;
                 case 19:
-                    return OpCode.OP_NOT;
+                    return LuaOpCodes.OpCode.OP_NOT;
                 case 20:
-                    return OpCode.OP_LEN;
+                    return LuaOpCodes.OpCode.OP_LEN;
                 case 21:
-                    return OpCode.OP_CONCAT;
+                    return LuaOpCodes.OpCode.OP_CONCAT;
                 case 22:
-                    return OpCode.OP_JMP;
+                    return LuaOpCodes.OpCode.OP_JMP;
                 case 23:
-                    return OpCode.OP_EQ;
+                    return LuaOpCodes.OpCode.OP_EQ;
                 case 24:
-                    return OpCode.OP_LT;
+                    return LuaOpCodes.OpCode.OP_LT;
                 case 25:
-                    return OpCode.OP_LE;
+                    return LuaOpCodes.OpCode.OP_LE;
                 case 26:
-                    return OpCode.OP_TEST;
+                    return LuaOpCodes.OpCode.OP_TEST;
                 case 27:
-                    return OpCode.OP_TESTSET;
+                    return LuaOpCodes.OpCode.OP_TESTSET;
                 case 28:
-                    return OpCode.OP_CALL;
+                    return LuaOpCodes.OpCode.OP_CALL;
                 case 29:
-                    return OpCode.OP_TAILCALL;
+                    return LuaOpCodes.OpCode.OP_TAILCALL;
                 case 30:
-                    return OpCode.OP_RETURN;
+                    return LuaOpCodes.OpCode.OP_RETURN;
                 case 31:
-                    return OpCode.OP_FORLOOP;
+                    return LuaOpCodes.OpCode.OP_FORLOOP;
                 case 32:
-                    return OpCode.OP_FORPREP;
+                    return LuaOpCodes.OpCode.OP_FORPREP;
                 case 33:
-                    return OpCode.OP_TFORLOOP;
+                    return LuaOpCodes.OpCode.OP_TFORLOOP;
                 case 34:
-                    return OpCode.OP_SETLIST;
+                    return LuaOpCodes.OpCode.OP_SETLIST;
                 case 35:
-                    return OpCode.OP_CLOSE;
+                    return LuaOpCodes.OpCode.OP_CLOSE;
                 case 36:
-                    return OpCode.OP_CLOSURE;
+                    return LuaOpCodes.OpCode.OP_CLOSURE;
                 case 37:
-                    return OpCode.OP_VARARG;
+                    return LuaOpCodes.OpCode.OP_VARARG;
             }
 			throw new RuntimeException("OpCode error");
         }

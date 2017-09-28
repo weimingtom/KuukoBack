@@ -131,7 +131,7 @@ public class LuaCode {
 		return new InstructionPtr(fs.f.code, e.u.s.info);
 	}
 
-	public static int luaK_codeAsBx(LuaParser.FuncState fs, OpCode o, int A, int sBx) {
+	public static int luaK_codeAsBx(LuaParser.FuncState fs, LuaOpCodes.OpCode o, int A, int sBx) {
 		return LuaCode.luaK_codeABx(fs, o, A, sBx + LuaOpCodes.MAXARG_sBx);
 	}
 
@@ -159,7 +159,7 @@ public class LuaCode {
 			}
 			else {
 				previous = new InstructionPtr(fs.f.code, fs.pc-1);
-				if (LuaOpCodes.GET_OPCODE(previous) == OpCode.OP_LOADNIL) {
+				if (LuaOpCodes.GET_OPCODE(previous) == LuaOpCodes.OpCode.OP_LOADNIL) {
 					int pfrom = LuaOpCodes.GETARG_A(previous);
 					int pto = LuaOpCodes.GETARG_B(previous);
 					if (pfrom <= from && from <= pto+1) {
@@ -172,7 +172,7 @@ public class LuaCode {
 				}
 			}
 		}
-		luaK_codeABC(fs, OpCode.OP_LOADNIL, from, from + n - 1, 0); // else no optimization 
+		luaK_codeABC(fs, LuaOpCodes.OpCode.OP_LOADNIL, from, from + n - 1, 0); // else no optimization 
 	}
 
 	public static int luaK_jump(LuaParser.FuncState fs) {
@@ -180,16 +180,16 @@ public class LuaCode {
 		int[] j = new int[1];
 		j[0] = 0;
 		fs.jpc = NO_JUMP;
-		j[0] = luaK_codeAsBx(fs, OpCode.OP_JMP, 0, NO_JUMP);
+		j[0] = luaK_codeAsBx(fs, LuaOpCodes.OpCode.OP_JMP, 0, NO_JUMP);
 		luaK_concat(fs, j, jpc); // keep them on hold  - ref
 		return j[0];
 	}
 
 	public static void luaK_ret(LuaParser.FuncState fs, int first, int nret) {
-		luaK_codeABC(fs, OpCode.OP_RETURN, first, nret + 1, 0);
+		luaK_codeABC(fs, LuaOpCodes.OpCode.OP_RETURN, first, nret + 1, 0);
 	}
 
-	private static int condjump(LuaParser.FuncState fs, OpCode op, int A, int B, int C) {
+	private static int condjump(LuaParser.FuncState fs, LuaOpCodes.OpCode op, int A, int B, int C) {
 		luaK_codeABC(fs, op, A, B, C);
 		return luaK_jump(fs);
 	}
@@ -240,7 +240,7 @@ public class LuaCode {
 	private static int need_value(LuaParser.FuncState fs, int list) {
 		for (; list != NO_JUMP; list = getjump(fs, list)) {
 			InstructionPtr i = getjumpcontrol(fs, list);
-			if (LuaOpCodes.GET_OPCODE(i.get(0)) != OpCode.OP_TESTSET) {
+			if (LuaOpCodes.GET_OPCODE(i.get(0)) != LuaOpCodes.OpCode.OP_TESTSET) {
 				return 1;
 			}
 		}
@@ -249,14 +249,14 @@ public class LuaCode {
 
 	private static int patchtestreg(LuaParser.FuncState fs, int node, int reg) {
 		InstructionPtr i = getjumpcontrol(fs, node);
-		if (LuaOpCodes.GET_OPCODE(i.get(0)) != OpCode.OP_TESTSET) {
+		if (LuaOpCodes.GET_OPCODE(i.get(0)) != LuaOpCodes.OpCode.OP_TESTSET) {
 			return 0; // cannot patch other instructions 
 		}
 		if (reg != LuaOpCodes.NO_REG && reg != LuaOpCodes.GETARG_B(i.get(0))) {
 			LuaOpCodes.SETARG_A(i, reg);
 		}
 		else { // no register to put value or register already has the value 
-			i.set(0, (long)(LuaOpCodes.CREATE_ABC(OpCode.OP_TEST, LuaOpCodes.GETARG_B(i.get(0)), 0, LuaOpCodes.GETARG_C(i.get(0))) &0xffffffff)); //uint
+			i.set(0, (long)(LuaOpCodes.CREATE_ABC(LuaOpCodes.OpCode.OP_TEST, LuaOpCodes.GETARG_B(i.get(0)), 0, LuaOpCodes.GETARG_C(i.get(0))) &0xffffffff)); //uint
 		}
 
 		return 1;
@@ -434,19 +434,19 @@ public class LuaCode {
 					break;
 				}
 			case VUPVAL: {
-					e.u.s.info = luaK_codeABC(fs, OpCode.OP_GETUPVAL, 0, e.u.s.info, 0);
+					e.u.s.info = luaK_codeABC(fs, LuaOpCodes.OpCode.OP_GETUPVAL, 0, e.u.s.info, 0);
 					e.k = LuaParser.expkind.VRELOCABLE;
 					break;
 				}
 			case VGLOBAL: {
-					e.u.s.info = luaK_codeABx(fs, OpCode.OP_GETGLOBAL, 0, e.u.s.info);
+					e.u.s.info = luaK_codeABx(fs, LuaOpCodes.OpCode.OP_GETGLOBAL, 0, e.u.s.info);
 					e.k = LuaParser.expkind.VRELOCABLE;
 					break;
 				}
 			case VINDEXED: {
 					freereg(fs, e.u.s.aux);
 					freereg(fs, e.u.s.info);
-					e.u.s.info = luaK_codeABC(fs, OpCode.OP_GETTABLE, 0, e.u.s.info, e.u.s.aux);
+					e.u.s.info = luaK_codeABC(fs, LuaOpCodes.OpCode.OP_GETTABLE, 0, e.u.s.info, e.u.s.aux);
 					e.k = LuaParser.expkind.VRELOCABLE;
 					break;
 				}
@@ -463,7 +463,7 @@ public class LuaCode {
 
 	private static int code_label(LuaParser.FuncState fs, int A, int b, int jump) {
 		luaK_getlabel(fs); // those instructions may be jump targets 
-		return luaK_codeABC(fs, OpCode.OP_LOADBOOL, A, b, jump);
+		return luaK_codeABC(fs, LuaOpCodes.OpCode.OP_LOADBOOL, A, b, jump);
 	}
 
 	private static void discharge2reg(LuaParser.FuncState fs, LuaParser.expdesc e, int reg) {
@@ -475,15 +475,15 @@ public class LuaCode {
 				}
 			case VFALSE:
 			case VTRUE: {
-					luaK_codeABC(fs, OpCode.OP_LOADBOOL, reg, (e.k == LuaParser.expkind.VTRUE) ? 1 : 0, 0);
+					luaK_codeABC(fs, LuaOpCodes.OpCode.OP_LOADBOOL, reg, (e.k == LuaParser.expkind.VTRUE) ? 1 : 0, 0);
 					break;
 				}
 			case VK: {
-					luaK_codeABx(fs, OpCode.OP_LOADK, reg, e.u.s.info);
+					luaK_codeABx(fs, LuaOpCodes.OpCode.OP_LOADK, reg, e.u.s.info);
 					break;
 				}
 			case VKNUM: {
-					luaK_codeABx(fs, OpCode.OP_LOADK, reg, luaK_numberK(fs, e.u.nval));
+					luaK_codeABx(fs, LuaOpCodes.OpCode.OP_LOADK, reg, luaK_numberK(fs, e.u.nval));
 					break;
 				}
 			case VRELOCABLE: {
@@ -493,7 +493,7 @@ public class LuaCode {
 				}
 			case VNONRELOC: {
 					if (reg != e.u.s.info) {
-						luaK_codeABC(fs, OpCode.OP_MOVE, reg, e.u.s.info, 0);
+						luaK_codeABC(fs, LuaOpCodes.OpCode.OP_MOVE, reg, e.u.s.info, 0);
 					}
 					break;
 				}
@@ -615,17 +615,17 @@ public class LuaCode {
 				}
 			case VUPVAL: {
 					int e = luaK_exp2anyreg(fs, ex);
-					luaK_codeABC(fs, OpCode.OP_SETUPVAL, e, var.u.s.info, 0);
+					luaK_codeABC(fs, LuaOpCodes.OpCode.OP_SETUPVAL, e, var.u.s.info, 0);
 					break;
 				}
 			case VGLOBAL: {
 					int e = luaK_exp2anyreg(fs, ex);
-					luaK_codeABx(fs, OpCode.OP_SETGLOBAL, e, var.u.s.info);
+					luaK_codeABx(fs, LuaOpCodes.OpCode.OP_SETGLOBAL, e, var.u.s.info);
 					break;
 				}
 			case VINDEXED: {
 					int e = luaK_exp2RK(fs, ex);
-					luaK_codeABC(fs, OpCode.OP_SETTABLE, var.u.s.info, var.u.s.aux, e);
+					luaK_codeABC(fs, LuaOpCodes.OpCode.OP_SETTABLE, var.u.s.info, var.u.s.aux, e);
 					break;
 				}
 			default: {
@@ -643,7 +643,7 @@ public class LuaCode {
 		freeexp(fs, e);
 		func = fs.freereg;
 		luaK_reserveregs(fs, 2);
-		luaK_codeABC(fs, OpCode.OP_SELF, func, e.u.s.info, luaK_exp2RK(fs, key));
+		luaK_codeABC(fs, LuaOpCodes.OpCode.OP_SELF, func, e.u.s.info, luaK_exp2RK(fs, key));
 		freeexp(fs, key);
 		e.u.s.info = func;
 		e.k = LuaParser.expkind.VNONRELOC;
@@ -651,7 +651,7 @@ public class LuaCode {
 
 	private static void invertjump(LuaParser.FuncState fs, LuaParser.expdesc e) {
 		InstructionPtr pc = getjumpcontrol(fs, e.u.s.info);
-		LuaLimits.lua_assert(LuaOpCodes.testTMode(LuaOpCodes.GET_OPCODE(pc.get(0))) != 0 && LuaOpCodes.GET_OPCODE(pc.get(0)) != OpCode.OP_TESTSET && LuaOpCodes.GET_OPCODE(pc.get(0)) != OpCode.OP_TEST);
+		LuaLimits.lua_assert(LuaOpCodes.testTMode(LuaOpCodes.GET_OPCODE(pc.get(0))) != 0 && LuaOpCodes.GET_OPCODE(pc.get(0)) != LuaOpCodes.OpCode.OP_TESTSET && LuaOpCodes.GET_OPCODE(pc.get(0)) != LuaOpCodes.OpCode.OP_TEST);
 		LuaOpCodes.SETARG_A(pc, (LuaOpCodes.GETARG_A(pc.get(0)) == 0) ? 1 : 0);
 	}
 
@@ -659,15 +659,15 @@ public class LuaCode {
 	private static int jumponcond(LuaParser.FuncState fs, LuaParser.expdesc e, int cond) {
 		if (e.k == LuaParser.expkind.VRELOCABLE) {
 			InstructionPtr ie = getcode(fs, e);
-			if (LuaOpCodes.GET_OPCODE(ie) == OpCode.OP_NOT) {
+			if (LuaOpCodes.GET_OPCODE(ie) == LuaOpCodes.OpCode.OP_NOT) {
 				fs.pc--; // remove previous OpCode.OP_NOT 
-				return condjump(fs, OpCode.OP_TEST, LuaOpCodes.GETARG_B(ie), 0, (cond == 0) ? 1 : 0);
+				return condjump(fs, LuaOpCodes.OpCode.OP_TEST, LuaOpCodes.GETARG_B(ie), 0, (cond == 0) ? 1 : 0);
 			}
 			// else go through 
 		}
 		discharge2anyreg(fs, e);
 		freeexp(fs, e);
-		return condjump(fs, OpCode.OP_TESTSET, LuaOpCodes.NO_REG, e.u.s.info, cond);
+		return condjump(fs, LuaOpCodes.OpCode.OP_TESTSET, LuaOpCodes.NO_REG, e.u.s.info, cond);
 	}
 
 	public static void luaK_goiftrue(LuaParser.FuncState fs, LuaParser.expdesc e) {
@@ -754,7 +754,7 @@ public class LuaCode {
 			case VNONRELOC: {
 					discharge2anyreg(fs, e);
 					freeexp(fs, e);
-					e.u.s.info = luaK_codeABC(fs, OpCode.OP_NOT, 0, e.u.s.info, 0);
+					e.u.s.info = luaK_codeABC(fs, LuaOpCodes.OpCode.OP_NOT, 0, e.u.s.info, 0);
 					e.k = LuaParser.expkind.VRELOCABLE;
 					break;
 				}
@@ -782,7 +782,7 @@ public class LuaCode {
 		t.k = LuaParser.expkind.VINDEXED;
 	}
 
-	private static int constfolding(OpCode op, LuaParser.expdesc e1, LuaParser.expdesc e2) {
+	private static int constfolding(LuaOpCodes.OpCode op, LuaParser.expdesc e1, LuaParser.expdesc e2) {
 		double v1, v2, r; //lua_Number
 		if ((isnumeral(e1)==0) || (isnumeral(e2)==0)) {
 			return 0;
@@ -840,12 +840,12 @@ public class LuaCode {
 		return 1;
 	}
 
-	private static void codearith(LuaParser.FuncState fs, OpCode op, LuaParser.expdesc e1, LuaParser.expdesc e2) {
+	private static void codearith(LuaParser.FuncState fs, LuaOpCodes.OpCode op, LuaParser.expdesc e1, LuaParser.expdesc e2) {
 		if (constfolding(op, e1, e2) != 0) {
 			return;
 		}
 		else {
-			int o2 = (op != OpCode.OP_UNM && op != OpCode.OP_LEN) ? luaK_exp2RK(fs, e2) : 0;
+			int o2 = (op != LuaOpCodes.OpCode.OP_UNM && op != LuaOpCodes.OpCode.OP_LEN) ? luaK_exp2RK(fs, e2) : 0;
 			int o1 = luaK_exp2RK(fs, e1);
 			if (o1 > o2) {
 				freeexp(fs, e1);
@@ -860,12 +860,12 @@ public class LuaCode {
 		}
 	}
 
-	private static void codecomp(LuaParser.FuncState fs, OpCode op, int cond, LuaParser.expdesc e1, LuaParser.expdesc e2) {
+	private static void codecomp(LuaParser.FuncState fs, LuaOpCodes.OpCode op, int cond, LuaParser.expdesc e1, LuaParser.expdesc e2) {
 		int o1 = luaK_exp2RK(fs, e1);
 		int o2 = luaK_exp2RK(fs, e2);
 		freeexp(fs, e2);
 		freeexp(fs, e1);
-		if (cond == 0 && op != OpCode.OP_EQ) {
+		if (cond == 0 && op != LuaOpCodes.OpCode.OP_EQ) {
 			int temp; // exchange args to replace by `<' or `<=' 
 			temp = o1;
 			o1 = o2;
@@ -887,7 +887,7 @@ public class LuaCode {
 					if (isnumeral(e)==0) {
 						luaK_exp2anyreg(fs, e); // cannot operate on non-numeric constants 
 					}
-					codearith(fs, OpCode.OP_UNM, e, e2);
+					codearith(fs, LuaOpCodes.OpCode.OP_UNM, e, e2);
 					break;
 				}
 			case OPR_NOT: {
@@ -896,7 +896,7 @@ public class LuaCode {
 				}
 			case OPR_LEN: {
 					luaK_exp2anyreg(fs, e); // cannot operate on constants 
-					codearith(fs, OpCode.OP_LEN, e, e2);
+					codearith(fs, LuaOpCodes.OpCode.OP_LEN, e, e2);
 					break;
 				}
 			default: {
@@ -964,7 +964,7 @@ public class LuaCode {
 				}
 			case OPR_CONCAT: {
 					luaK_exp2val(fs, e2);
-					if (e2.k == LuaParser.expkind.VRELOCABLE && LuaOpCodes.GET_OPCODE(getcode(fs, e2)) == OpCode.OP_CONCAT) {
+					if (e2.k == LuaParser.expkind.VRELOCABLE && LuaOpCodes.GET_OPCODE(getcode(fs, e2)) == LuaOpCodes.OpCode.OP_CONCAT) {
 						LuaLimits.lua_assert(e1.u.s.info == LuaOpCodes.GETARG_B(getcode(fs, e2)) - 1);
 						freeexp(fs, e1);
 						LuaOpCodes.SETARG_B(getcode(fs, e2), e1.u.s.info);
@@ -973,56 +973,56 @@ public class LuaCode {
 					}
 					else {
 						luaK_exp2nextreg(fs, e2); // operand must be on the 'stack' 
-						codearith(fs, OpCode.OP_CONCAT, e1, e2);
+						codearith(fs, LuaOpCodes.OpCode.OP_CONCAT, e1, e2);
 					}
 					break;
 				}
 			case OPR_ADD: {
-					codearith(fs, OpCode.OP_ADD, e1, e2);
+					codearith(fs, LuaOpCodes.OpCode.OP_ADD, e1, e2);
 					break;
 				}
 			case OPR_SUB: {
-					codearith(fs, OpCode.OP_SUB, e1, e2);
+					codearith(fs, LuaOpCodes.OpCode.OP_SUB, e1, e2);
 					break;
 				}
 			case OPR_MUL: {
-					codearith(fs, OpCode.OP_MUL, e1, e2);
+					codearith(fs, LuaOpCodes.OpCode.OP_MUL, e1, e2);
 					break;
 				}
 			case OPR_DIV: {
-					codearith(fs, OpCode.OP_DIV, e1, e2);
+					codearith(fs, LuaOpCodes.OpCode.OP_DIV, e1, e2);
 					break;
 				}
 			case OPR_MOD: {
-					codearith(fs, OpCode.OP_MOD, e1, e2);
+					codearith(fs, LuaOpCodes.OpCode.OP_MOD, e1, e2);
 					break;
 				}
 			case OPR_POW: {
-					codearith(fs, OpCode.OP_POW, e1, e2);
+					codearith(fs, LuaOpCodes.OpCode.OP_POW, e1, e2);
 					break;
 				}
 			case OPR_EQ: {
-					codecomp(fs, OpCode.OP_EQ, 1, e1, e2);
+					codecomp(fs, LuaOpCodes.OpCode.OP_EQ, 1, e1, e2);
 					break;
 				}
 			case OPR_NE: {
-					codecomp(fs, OpCode.OP_EQ, 0, e1, e2);
+					codecomp(fs, LuaOpCodes.OpCode.OP_EQ, 0, e1, e2);
 					break;
 				}
 			case OPR_LT: {
-					codecomp(fs, OpCode.OP_LT, 1, e1, e2);
+					codecomp(fs, LuaOpCodes.OpCode.OP_LT, 1, e1, e2);
 					break;
 				}
 			case OPR_LE: {
-					codecomp(fs, OpCode.OP_LE, 1, e1, e2);
+					codecomp(fs, LuaOpCodes.OpCode.OP_LE, 1, e1, e2);
 					break;
 				}
 			case OPR_GT: {
-					codecomp(fs, OpCode.OP_LT, 0, e1, e2);
+					codecomp(fs, LuaOpCodes.OpCode.OP_LT, 0, e1, e2);
 					break;
 				}
 			case OPR_GE: {
-					codecomp(fs, OpCode.OP_LE, 0, e1, e2);
+					codecomp(fs, LuaOpCodes.OpCode.OP_LE, 0, e1, e2);
 					break;
 				}
 			default: {
@@ -1060,16 +1060,16 @@ public class LuaCode {
 		return fs.pc++;
 	}
 
-	public static int luaK_codeABC(LuaParser.FuncState fs, OpCode o, int a, int b, int c) {
+	public static int luaK_codeABC(LuaParser.FuncState fs, LuaOpCodes.OpCode o, int a, int b, int c) {
 		LuaLimits.lua_assert(LuaOpCodes.getOpMode(o) == OpMode.iABC);
-		LuaLimits.lua_assert(LuaOpCodes.getBMode(o) != OpArgMask.OpArgN || b == 0);
-		LuaLimits.lua_assert(LuaOpCodes.getCMode(o) != OpArgMask.OpArgN || c == 0);
+		LuaLimits.lua_assert(LuaOpCodes.getBMode(o) != LuaOpCodes.OpArgMask.OpArgN || b == 0);
+		LuaLimits.lua_assert(LuaOpCodes.getCMode(o) != LuaOpCodes.OpArgMask.OpArgN || c == 0);
 		return luaK_code(fs, LuaOpCodes.CREATE_ABC(o, a, b, c), fs.ls.lastline);
 	}
 
-	public static int luaK_codeABx(LuaParser.FuncState fs, OpCode o, int a, int bc) {
+	public static int luaK_codeABx(LuaParser.FuncState fs, LuaOpCodes.OpCode o, int a, int bc) {
 		LuaLimits.lua_assert(LuaOpCodes.getOpMode(o) == OpMode.iABx || LuaOpCodes.getOpMode(o) == OpMode.iAsBx);
-		LuaLimits.lua_assert(LuaOpCodes.getCMode(o) == OpArgMask.OpArgN);
+		LuaLimits.lua_assert(LuaOpCodes.getCMode(o) == LuaOpCodes.OpArgMask.OpArgN);
 		return luaK_code(fs, LuaOpCodes.CREATE_ABx(o, a, bc), fs.ls.lastline);
 	}
 
@@ -1078,10 +1078,10 @@ public class LuaCode {
 		int b = (tostore == Lua.LUA_MULTRET) ? 0 : tostore;
 		LuaLimits.lua_assert(tostore != 0);
 		if (c <= LuaOpCodes.MAXARG_C) {
-			luaK_codeABC(fs, OpCode.OP_SETLIST, base_, b, c);
+			luaK_codeABC(fs, LuaOpCodes.OpCode.OP_SETLIST, base_, b, c);
 		}
 		else {
-			luaK_codeABC(fs, OpCode.OP_SETLIST, base_, b, 0);
+			luaK_codeABC(fs, LuaOpCodes.OpCode.OP_SETLIST, base_, b, 0);
 			luaK_code(fs, c, fs.ls.lastline);
 		}
 		fs.freereg = base_ + 1; // free registers with list values 

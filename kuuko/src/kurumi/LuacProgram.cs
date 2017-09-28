@@ -189,10 +189,10 @@ namespace kurumi
 				for (i = 0; i < n; i++)
 				{
 					f.p[i] = toproto(L,i-n-1);
-					f.code[pc++] = (long/*uint*/)LuaOpCodes.CREATE_ABx(OpCode.OP_CLOSURE, 0, i);
-					f.code[pc++] = (long/*uint*/)LuaOpCodes.CREATE_ABC(OpCode.OP_CALL, 0, 1, 1);
+					f.code[pc++] = (long/*uint*/)LuaOpCodes.CREATE_ABx(LuaOpCodes.OpCode.OP_CLOSURE, 0, i);
+					f.code[pc++] = (long/*uint*/)LuaOpCodes.CREATE_ABC(LuaOpCodes.OpCode.OP_CALL, 0, 1, 1);
 				}
-				f.code[pc++] = (long/*uint*/)LuaOpCodes.CREATE_ABC(OpCode.OP_RETURN, 0, 1, 0);
+				f.code[pc++] = (long/*uint*/)LuaOpCodes.CREATE_ABC(LuaOpCodes.OpCode.OP_RETURN, 0, 1, 0);
 				return f;
 			}
 		}

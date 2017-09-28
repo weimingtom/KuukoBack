@@ -597,64 +597,64 @@ namespace kurumi
             StreamProxy.Write("" + LuaOpCodes.luaP_opnames[(int)LuaOpCodes.GET_OPCODE(i)].ToString() + "\t"); //"{0,-10}\t"
 			switch (LuaOpCodes.GET_OPCODE(i))
 			{
-				case OpCode.OP_CLOSE:
+				case LuaOpCodes.OpCode.OP_CLOSE:
 					{
                         StreamProxy.Write("" + A + "");
 						break;
 					}
-				case OpCode.OP_MOVE:
-				case OpCode.OP_LOADNIL:
-				case OpCode.OP_GETUPVAL:
-				case OpCode.OP_SETUPVAL:
-				case OpCode.OP_UNM:
-				case OpCode.OP_NOT:
-				case OpCode.OP_RETURN:
+				case LuaOpCodes.OpCode.OP_MOVE:
+				case LuaOpCodes.OpCode.OP_LOADNIL:
+				case LuaOpCodes.OpCode.OP_GETUPVAL:
+				case LuaOpCodes.OpCode.OP_SETUPVAL:
+				case LuaOpCodes.OpCode.OP_UNM:
+				case LuaOpCodes.OpCode.OP_NOT:
+				case LuaOpCodes.OpCode.OP_RETURN:
 					{
                         StreamProxy.Write("" + A + ", " + B + "");
 						break;
 					}
-				case OpCode.OP_LOADBOOL:
-				case OpCode.OP_GETTABLE:
-				case OpCode.OP_SETTABLE:
-				case OpCode.OP_NEWTABLE:
-				case OpCode.OP_SELF:
-				case OpCode.OP_ADD:
-				case OpCode.OP_SUB:
-				case OpCode.OP_MUL:
-				case OpCode.OP_DIV:
-				case OpCode.OP_POW:
-				case OpCode.OP_CONCAT:
-				case OpCode.OP_EQ:
-				case OpCode.OP_LT:
-				case OpCode.OP_LE:
-				case OpCode.OP_TEST:
-				case OpCode.OP_CALL:
-				case OpCode.OP_TAILCALL:
+				case LuaOpCodes.OpCode.OP_LOADBOOL:
+				case LuaOpCodes.OpCode.OP_GETTABLE:
+				case LuaOpCodes.OpCode.OP_SETTABLE:
+				case LuaOpCodes.OpCode.OP_NEWTABLE:
+				case LuaOpCodes.OpCode.OP_SELF:
+				case LuaOpCodes.OpCode.OP_ADD:
+				case LuaOpCodes.OpCode.OP_SUB:
+				case LuaOpCodes.OpCode.OP_MUL:
+				case LuaOpCodes.OpCode.OP_DIV:
+				case LuaOpCodes.OpCode.OP_POW:
+				case LuaOpCodes.OpCode.OP_CONCAT:
+				case LuaOpCodes.OpCode.OP_EQ:
+				case LuaOpCodes.OpCode.OP_LT:
+				case LuaOpCodes.OpCode.OP_LE:
+				case LuaOpCodes.OpCode.OP_TEST:
+				case LuaOpCodes.OpCode.OP_CALL:
+				case LuaOpCodes.OpCode.OP_TAILCALL:
 					{
                         StreamProxy.Write("" + A + ", " + B + ", " + C + "");
 						break;
 					}
-				case OpCode.OP_LOADK:
+				case LuaOpCodes.OpCode.OP_LOADK:
 					{
                         StreamProxy.Write("" + A + ", " + Bx + "");
 						break;
 					}
-				case OpCode.OP_GETGLOBAL:
-				case OpCode.OP_SETGLOBAL:
-				case OpCode.OP_SETLIST:
-				case OpCode.OP_CLOSURE:
+				case LuaOpCodes.OpCode.OP_GETGLOBAL:
+				case LuaOpCodes.OpCode.OP_SETGLOBAL:
+				case LuaOpCodes.OpCode.OP_SETLIST:
+				case LuaOpCodes.OpCode.OP_CLOSURE:
 					{
                         StreamProxy.Write("" + A + ", " + Bx + "");
 						break;
 					}
-				case OpCode.OP_TFORLOOP:
+				case LuaOpCodes.OpCode.OP_TFORLOOP:
 					{
                         StreamProxy.Write("" + A + ", " + C + "");
 						break;
 					}
-				case OpCode.OP_JMP:
-				case OpCode.OP_FORLOOP:
-				case OpCode.OP_FORPREP:
+				case LuaOpCodes.OpCode.OP_JMP:
+				case LuaOpCodes.OpCode.OP_FORLOOP:
+				case LuaOpCodes.OpCode.OP_FORPREP:
 					{
                         StreamProxy.Write("" + A + ", " + sBx + "");
 						break;
@@ -712,17 +712,17 @@ namespace kurumi
 					
 					switch (LuaOpCodes.GET_OPCODE(i))
 					{
-						case OpCode.OP_MOVE: 
+						case LuaOpCodes.OpCode.OP_MOVE: 
 							{
 								LuaObject.setobjs2s(L, ra, RB(L, base_, i));
 								continue;
 							}
-						case OpCode.OP_LOADK: 
+						case LuaOpCodes.OpCode.OP_LOADK: 
 							{
 								LuaObject.setobj2s(L, ra, KBx(L, i, k));
 								continue;
 							}
-						case OpCode.OP_LOADBOOL: 
+						case LuaOpCodes.OpCode.OP_LOADBOOL: 
 							{
 								LuaObject.setbvalue(ra, LuaOpCodes.GETARG_B(i));
 								if (LuaOpCodes.GETARG_C(i) != 0) 
@@ -734,7 +734,7 @@ namespace kurumi
 								}
 								continue;
 							}
-						case OpCode.OP_LOADNIL: 
+						case LuaOpCodes.OpCode.OP_LOADNIL: 
 							{
 								TValue rb = RB(L, base_, i);
 								do 
@@ -747,13 +747,13 @@ namespace kurumi
 								} while (TValue.greaterEqual(rb, ra));
 								continue;
 							}
-						case OpCode.OP_GETUPVAL: 
+						case LuaOpCodes.OpCode.OP_GETUPVAL: 
 							{
 								int b = LuaOpCodes.GETARG_B(i);
 								LuaObject.setobj2s(L, ra, cl.upvals[b].v);
 								continue;
 							}
-						case OpCode.OP_GETGLOBAL: 
+						case LuaOpCodes.OpCode.OP_GETGLOBAL: 
 							{
 								TValue g = new TValue();
 								TValue rb = KBx(L, i, k);
@@ -767,7 +767,7 @@ namespace kurumi
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
-						case OpCode.OP_GETTABLE: 
+						case LuaOpCodes.OpCode.OP_GETTABLE: 
 							{
 								//Protect(
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
@@ -777,7 +777,7 @@ namespace kurumi
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
-						case OpCode.OP_SETGLOBAL: 
+						case LuaOpCodes.OpCode.OP_SETGLOBAL: 
 							{
 								TValue g = new TValue();
 								LuaObject.sethvalue(L, g, cl.getEnv());
@@ -790,14 +790,14 @@ namespace kurumi
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
-						case OpCode.OP_SETUPVAL: 
+						case LuaOpCodes.OpCode.OP_SETUPVAL: 
 							{
 								UpVal uv = cl.upvals[LuaOpCodes.GETARG_B(i)];
 								LuaObject.setobj(L, uv.v, ra);
 								LuaGC.luaC_barrier(L, uv, ra);
 								continue;
 							}
-						case OpCode.OP_SETTABLE: 
+						case LuaOpCodes.OpCode.OP_SETTABLE: 
 							{
 								//Protect(
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
@@ -807,7 +807,7 @@ namespace kurumi
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
-						case OpCode.OP_NEWTABLE: 
+						case LuaOpCodes.OpCode.OP_NEWTABLE: 
 							{
 								int b = LuaOpCodes.GETARG_B(i);
 								int c = LuaOpCodes.GETARG_C(i);
@@ -820,7 +820,7 @@ namespace kurumi
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
-						case OpCode.OP_SELF: 
+						case LuaOpCodes.OpCode.OP_SELF: 
 							{
 								/*StkId*/TValue rb = RB(L, base_, i);
 								LuaObject.setobjs2s(L, TValue.plus(ra, 1), rb);
@@ -832,37 +832,37 @@ namespace kurumi
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								continue;
 							}
-						case OpCode.OP_ADD: 
+						case LuaOpCodes.OpCode.OP_ADD: 
 							{
 								arith_op(L, new LuaConf.luai_numadd_delegate(), TMS.TM_ADD, base_, i, k, ra, pc);
 								continue;
 							}
-						case OpCode.OP_SUB: 
+						case LuaOpCodes.OpCode.OP_SUB: 
 							{
 								arith_op(L, new LuaConf.luai_numsub_delegate(), TMS.TM_SUB, base_, i, k, ra, pc);
 								continue;
 							}
-						case OpCode.OP_MUL: 
+						case LuaOpCodes.OpCode.OP_MUL: 
 							{
 								arith_op(L, new LuaConf.luai_nummul_delegate(), TMS.TM_MUL, base_, i, k, ra, pc);
 								continue;
 							}
-						case OpCode.OP_DIV: 
+						case LuaOpCodes.OpCode.OP_DIV: 
 							{
 								arith_op(L, new LuaConf.luai_numdiv_delegate(), TMS.TM_DIV, base_, i, k, ra, pc);
 								continue;
 							}
-						case OpCode.OP_MOD: 
+						case LuaOpCodes.OpCode.OP_MOD: 
 							{
 								arith_op(L, new LuaConf.luai_nummod_delegate(), TMS.TM_MOD, base_, i, k, ra, pc);
 								continue;
 							}
-						case OpCode.OP_POW: 
+						case LuaOpCodes.OpCode.OP_POW: 
 							{
 								arith_op(L, new LuaConf.luai_numpow_delegate(), TMS.TM_POW, base_, i, k, ra, pc);
 								continue;
 							}
-						case OpCode.OP_UNM: 
+						case LuaOpCodes.OpCode.OP_UNM: 
 							{
 								TValue rb = RB(L, base_, i);
 								if (LuaObject.ttisnumber(rb))
@@ -881,13 +881,13 @@ namespace kurumi
 								}
 								continue;
 							}
-						case OpCode.OP_NOT: 
+						case LuaOpCodes.OpCode.OP_NOT: 
 							{
 								int res = LuaObject.l_isfalse(RB(L, base_, i)) == 0 ? 0 : 1;  /* next assignment may change this value */
 								LuaObject.setbvalue(ra, res);
 								continue;
 							}
-						case OpCode.OP_LEN: 
+						case LuaOpCodes.OpCode.OP_LEN: 
 							{
 								TValue rb = RB(L, base_, i);
 								switch (LuaObject.ttype(rb))
@@ -918,7 +918,7 @@ namespace kurumi
 								}
 								continue;
 							}
-						case OpCode.OP_CONCAT: 
+						case LuaOpCodes.OpCode.OP_CONCAT: 
 							{
 								int b = LuaOpCodes.GETARG_B(i);
 								int c = LuaOpCodes.GETARG_C(i);
@@ -930,12 +930,12 @@ namespace kurumi
 								LuaObject.setobjs2s(L, RA(L, base_, i), TValue.plus(base_, b));
 								continue;
 							}
-						case OpCode.OP_JMP: 
+						case LuaOpCodes.OpCode.OP_JMP: 
 							{
 								dojump(L, pc, LuaOpCodes.GETARG_sBx(i));
 								continue;
 							}
-						case OpCode.OP_EQ: 
+						case LuaOpCodes.OpCode.OP_EQ: 
 							{
 								TValue rb = RKB(L, base_, i, k);
 								TValue rc = RKC(L, base_, i, k);
@@ -951,7 +951,7 @@ namespace kurumi
 								pc = pc_ref2[0];
 								continue;
 							}
-						case OpCode.OP_LT: 
+						case LuaOpCodes.OpCode.OP_LT: 
 							{
 								//Protect(
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
@@ -967,7 +967,7 @@ namespace kurumi
 								pc = pc_ref3[0];
 								continue;
 							}
-						case OpCode.OP_LE: 
+						case LuaOpCodes.OpCode.OP_LE: 
 							{
 								//Protect(
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
@@ -983,7 +983,7 @@ namespace kurumi
 								pc = pc_ref4[0];
 								continue;
 							}
-						case OpCode.OP_TEST: 
+						case LuaOpCodes.OpCode.OP_TEST: 
 							{
 								if (LuaObject.l_isfalse(ra) != LuaOpCodes.GETARG_C(i))
 								{
@@ -995,7 +995,7 @@ namespace kurumi
 								pc = pc_ref5[0];
 								continue;
 							}
-						case OpCode.OP_TESTSET: 
+						case LuaOpCodes.OpCode.OP_TESTSET: 
 							{
 								TValue rb = RB(L, base_, i);
 								if (LuaObject.l_isfalse(rb) != LuaOpCodes.GETARG_C(i))
@@ -1009,7 +1009,7 @@ namespace kurumi
 								pc = pc_ref6[0];
 								continue;
 							}
-						case OpCode.OP_CALL: 
+						case LuaOpCodes.OpCode.OP_CALL: 
 							{
 								int b = LuaOpCodes.GETARG_B(i);
 								int nresults = LuaOpCodes.GETARG_C(i) - 1;
@@ -1053,7 +1053,7 @@ namespace kurumi
 									break;
 								}
 							}
-						case OpCode.OP_TAILCALL: 
+						case LuaOpCodes.OpCode.OP_TAILCALL: 
 							{
 								int b = LuaOpCodes.GETARG_B(i);
 								if (b != 0) 
@@ -1114,7 +1114,7 @@ namespace kurumi
 									break;
 								}
 							}
-						case OpCode.OP_RETURN: 
+						case LuaOpCodes.OpCode.OP_RETURN: 
 							{
 								int b = LuaOpCodes.GETARG_B(i);
 								if (b != 0) 
@@ -1139,13 +1139,13 @@ namespace kurumi
 										L.top = L.ci.top;
 									}
 									LuaLimits.lua_assert(LuaState.isLua(L.ci));
-									LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(L.ci.savedpc.get(-1)) == OpCode.OP_CALL);
+									LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(L.ci.savedpc.get(-1)) == LuaOpCodes.OpCode.OP_CALL);
 									//goto reentry;
 									reentry2 = true;
 									break;
 								}
 							}
-						case OpCode.OP_FORLOOP: 
+						case LuaOpCodes.OpCode.OP_FORLOOP: 
 							{
 								Double/*lua_Number*/ step = LuaObject.nvalue(TValue.plus(ra, 2));
 								Double/*lua_Number*/ idx = LuaConf.luai_numadd(LuaObject.nvalue(ra), step); /* increment index */
@@ -1159,7 +1159,7 @@ namespace kurumi
 								}
 								continue;
 							}
-						case OpCode.OP_FORPREP: 
+						case LuaOpCodes.OpCode.OP_FORPREP: 
 							{
 								TValue init = ra;
 								TValue plimit = TValue.plus(ra, 1);
@@ -1200,7 +1200,7 @@ namespace kurumi
 								dojump(L, pc, LuaOpCodes.GETARG_sBx(i));
 								continue;
 							}
-						case OpCode.OP_TFORLOOP: 
+						case LuaOpCodes.OpCode.OP_TFORLOOP: 
 							{
 								TValue/*StkId*/ cb = TValue.plus(ra, 3);  /* call base */
 								LuaObject.setobjs2s(L, TValue.plus(cb, 2), TValue.plus(ra, 2));
@@ -1226,7 +1226,7 @@ namespace kurumi
 								pc = pc_ref3[0];
 								continue;
 							}
-						case OpCode.OP_SETLIST: 
+						case LuaOpCodes.OpCode.OP_SETLIST: 
 							{
 								int n = LuaOpCodes.GETARG_B(i);
 								int c = LuaOpCodes.GETARG_C(i);
@@ -1260,12 +1260,12 @@ namespace kurumi
 								}
 								continue;
 							}
-						case OpCode.OP_CLOSE: 
+						case LuaOpCodes.OpCode.OP_CLOSE: 
 							{
 								LuaFunc.luaF_close(L, ra);
 								continue;
 							}
-						case OpCode.OP_CLOSURE: 
+						case LuaOpCodes.OpCode.OP_CLOSURE: 
 							{
 								Proto p;
 								LuaObject.Closure ncl;
@@ -1276,13 +1276,13 @@ namespace kurumi
 								ncl.l.p = p;
 								for (j = 0; j < nup;) 
 								{
-									if (LuaOpCodes.GET_OPCODE(pc.get(0)) == OpCode.OP_GETUPVAL)
+									if (LuaOpCodes.GET_OPCODE(pc.get(0)) == LuaOpCodes.OpCode.OP_GETUPVAL)
 									{
 										ncl.l.upvals[j] = cl.upvals[LuaOpCodes.GETARG_B(pc.get(0))];
 									}
 									else 
 									{
-										LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(pc.get(0)) == OpCode.OP_MOVE);
+										LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(pc.get(0)) == LuaOpCodes.OpCode.OP_MOVE);
 										ncl.l.upvals[j] = LuaFunc.luaF_findupval(L, TValue.plus(base_, LuaOpCodes.GETARG_B(pc.get(0))));
 									}
 									
@@ -1300,7 +1300,7 @@ namespace kurumi
 								//);
 								continue;
 							}
-						case OpCode.OP_VARARG: 
+						case LuaOpCodes.OpCode.OP_VARARG: 
 							{
 								int b = LuaOpCodes.GETARG_B(i) - 1;
 								int j;

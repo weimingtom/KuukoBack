@@ -150,3 +150,8 @@ Node->LuaObject.Node
 
 op_delegate->LuaConf.op_delegate
 21:01 2017-09-28
+
+OpArgMask->LuaOpCodes.OpArgMask
+OpCode->LuaOpCodes.OpCode
+21:06 2017-09-28
+
