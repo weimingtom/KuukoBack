@@ -469,7 +469,7 @@ namespace kurumi
 				checkreg(pt, a);
 				switch (LuaOpCodes.getOpMode(op))
 				{
-					case OpMode.iABC:
+					case LuaOpCodes.OpMode.iABC:
 						{
 							b = LuaOpCodes.GETARG_B(i);
 							c = LuaOpCodes.GETARG_C(i);
@@ -483,7 +483,7 @@ namespace kurumi
 							}
 							break;
 						}
-					case OpMode.iABx:
+					case LuaOpCodes.OpMode.iABx:
 						{
 							b = LuaOpCodes.GETARG_Bx(i);
 							if (LuaOpCodes.getBMode(op) == LuaOpCodes.OpArgMask.OpArgK) 
@@ -495,7 +495,7 @@ namespace kurumi
 							}
 							break;
 						}
-					case OpMode.iAsBx:
+					case LuaOpCodes.OpMode.iAsBx:
 						{
 							b = LuaOpCodes.GETARG_sBx(i);
 							if (LuaOpCodes.getBMode(op) == LuaOpCodes.OpArgMask.OpArgR)

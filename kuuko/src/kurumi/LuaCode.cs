@@ -1265,7 +1265,7 @@ namespace kurumi
 
 		public static int luaK_codeABC(LuaParser.FuncState fs, LuaOpCodes.OpCode o, int a, int b, int c)
 		{
-			LuaLimits.lua_assert(LuaOpCodes.getOpMode(o) == OpMode.iABC);
+			LuaLimits.lua_assert(LuaOpCodes.getOpMode(o) == LuaOpCodes.OpMode.iABC);
 			LuaLimits.lua_assert(LuaOpCodes.getBMode(o) != LuaOpCodes.OpArgMask.OpArgN || b == 0);
 			LuaLimits.lua_assert(LuaOpCodes.getCMode(o) != LuaOpCodes.OpArgMask.OpArgN || c == 0);
 			return luaK_code(fs, LuaOpCodes.CREATE_ABC(o, a, b, c), fs.ls.lastline);
@@ -1273,7 +1273,7 @@ namespace kurumi
 
 		public static int luaK_codeABx(LuaParser.FuncState fs, LuaOpCodes.OpCode o, int a, int bc)
 		{
-			LuaLimits.lua_assert(LuaOpCodes.getOpMode(o) == OpMode.iABx || LuaOpCodes.getOpMode(o) == OpMode.iAsBx);
+			LuaLimits.lua_assert(LuaOpCodes.getOpMode(o) == LuaOpCodes.OpMode.iABx || LuaOpCodes.getOpMode(o) == LuaOpCodes.OpMode.iAsBx);
 			LuaLimits.lua_assert(LuaOpCodes.getCMode(o) == LuaOpCodes.OpArgMask.OpArgN);
 			return luaK_code(fs, LuaOpCodes.CREATE_ABx(o, a, bc), fs.ls.lastline);
 		}

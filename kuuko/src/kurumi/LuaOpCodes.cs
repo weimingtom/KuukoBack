@@ -27,8 +27,14 @@ namespace kurumi
 		  represented by 2*max), which is half the maximum for the corresponding
 		  unsigned argument.
 		===========================================================================*/
-
-
+	
+		public enum OpMode 
+		{ 
+			/* basic instruction format */
+			iABC, 
+			iABx, 
+			iAsBx
+		} 
 
 		/*
 		 ** size and position of opcode arguments.

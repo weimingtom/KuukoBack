@@ -26,7 +26,21 @@ public class LuaOpCodes {
 //		  unsigned argument.
 //		===========================================================================
 
+	public static enum OpMode 
+	{ 
+		/* basic instruction format */
+		iABC, 
+		iABx, 
+		iAsBx;
 
+		public int getValue() {
+			return this.ordinal();
+		}
+
+		public static OpMode forValue(int value) {
+			return values()[value];
+		}
+	}
 
 //        
 //		 ** size and position of opcode arguments.

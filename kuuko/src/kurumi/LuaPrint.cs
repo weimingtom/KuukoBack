@@ -150,7 +150,7 @@ namespace kurumi
 				LuaConf.printf(LuaConf.CharPtr.toCharPtr("%-9s\t"), LuaOpCodes.luaP_opnames[(int)o]);
 				switch (LuaOpCodes.getOpMode(o))
 				{
-					case OpMode.iABC:
+					case LuaOpCodes.OpMode.iABC:
 						{
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d"), a);
 							if (LuaOpCodes.getBMode(o) != LuaOpCodes.OpArgMask.OpArgN) 
@@ -163,7 +163,7 @@ namespace kurumi
 							}
 							break;
 						}
-					case OpMode.iABx:
+					case LuaOpCodes.OpMode.iABx:
 						{
 							if (LuaOpCodes.getBMode(o) == LuaOpCodes.OpArgMask.OpArgK) 
 							{
@@ -175,7 +175,7 @@ namespace kurumi
 							}
 							break;
 						}
-					case OpMode.iAsBx:
+					case LuaOpCodes.OpMode.iAsBx:
 						if (o == LuaOpCodes.OpCode.OP_JMP) 
 						{
 							LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d"), sbx);
