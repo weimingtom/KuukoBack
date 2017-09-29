@@ -2,7 +2,7 @@
 //{
 	public class Program 
 	{
-		private static int main(String[] args) 
+		public static void main(String[] args) 
 		{
 			if (false)
 			{
@@ -12,7 +12,6 @@
 			{
 				LuaProgram.MainLua(args);
 			}
-			return 0;
 		}
 	}
 //}
