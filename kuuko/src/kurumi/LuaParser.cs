@@ -140,7 +140,7 @@ namespace kurumi
 
 		private static void anchor_token(LuaLex.LexState ls) 
 		{
-			if (ls.t.token == (int)RESERVED.TK_NAME || ls.t.token == (int)RESERVED.TK_STRING) 
+			if (ls.t.token == (int)LuaLex.RESERVED.TK_NAME || ls.t.token == (int)LuaLex.RESERVED.TK_STRING) 
 			{
 				TString ts = ls.t.seminfo.ts;
 				LuaLex.luaX_newstring(ls, LuaObject.getstr(ts), ts.getTsv().len);
@@ -219,7 +219,7 @@ namespace kurumi
 		private static TString str_checkname(LuaLex.LexState ls) 
 		{
 			TString ts;
-			check(ls, (int)RESERVED.TK_NAME);
+			check(ls, (int)LuaLex.RESERVED.TK_NAME);
 			ts = ls.t.seminfo.ts;
 			LuaLex.luaX_next(ls);
 			return ts;
@@ -594,7 +594,7 @@ namespace kurumi
 			funcstate.f.is_vararg = LuaObject.VARARG_ISVARARG;  /* main func. is always vararg */
 			LuaLex.luaX_next(lexstate);  /* read first token */
 			chunk(lexstate);
-			check(lexstate, (int)RESERVED.TK_EOS);
+			check(lexstate, (int)LuaLex.RESERVED.TK_EOS);
 			close_func(lexstate);
 			LuaLimits.lua_assert(funcstate.prev == null);
 			LuaLimits.lua_assert(funcstate.f.nups == 0);
@@ -648,7 +648,7 @@ namespace kurumi
 			int reg = ls.fs.freereg;
 			expdesc key = new expdesc(), val = new expdesc();
 			int rkkey;
-			if (ls.t.token == (int)RESERVED.TK_NAME) 
+			if (ls.t.token == (int)LuaLex.RESERVED.TK_NAME) 
 			{
 				luaY_checklimit(fs, cc.nh, LuaLimits.MAX_INT, LuaConf.CharPtr.toCharPtr("items in a constructor"));
 				checkname(ls, key);
@@ -734,7 +734,7 @@ namespace kurumi
 				closelistfield(fs, cc);
 				switch (ls.t.token) 
 				{
-					case (int)RESERVED.TK_NAME: 
+					case (int)LuaLex.RESERVED.TK_NAME: 
 						{  
 							/* may be listfields or recfields */
 							LuaLex.luaX_lookahead(ls);
@@ -785,13 +785,13 @@ namespace kurumi
 				{
 					switch (ls.t.token) 
 					{
-						case (int)RESERVED.TK_NAME: 
+						case (int)LuaLex.RESERVED.TK_NAME: 
 							{  
 								/* param . NAME */
 								new_localvar(ls, str_checkname(ls), nparams++);
 								break;
 							}
-						case (int)RESERVED.TK_DOTS: 
+						case (int)LuaLex.RESERVED.TK_DOTS: 
 							{  
 								/* param . `...' */
 								LuaLex.luaX_next(ls);
@@ -833,7 +833,7 @@ namespace kurumi
 			checknext(ls, ')');
 			chunk(ls);
 			new_fs.f.lastlinedefined = ls.linenumber;
-			check_match(ls, (int)RESERVED.TK_END, (int)RESERVED.TK_FUNCTION, line);
+			check_match(ls, (int)LuaLex.RESERVED.TK_END, (int)LuaLex.RESERVED.TK_FUNCTION, line);
 			close_func(ls);
 			pushclosure(ls, new_fs, e);
 		}
@@ -886,7 +886,7 @@ namespace kurumi
 						constructor(ls, args);
 						break;
 					}
-				case (int)RESERVED.TK_STRING: 
+				case (int)LuaLex.RESERVED.TK_STRING: 
 					{  
 						/* funcargs . STRING */
 						codestring(ls, args, ls.t.seminfo.ts);
@@ -939,7 +939,7 @@ namespace kurumi
 						LuaCode.luaK_dischargevars(ls.fs, v);
 						return;
 					}
-				case (int)RESERVED.TK_NAME: 
+				case (int)LuaLex.RESERVED.TK_NAME: 
 					{
 						singlevar(ls, v);
 						return;
@@ -988,7 +988,7 @@ namespace kurumi
 							break;
 						}
 					case '(': 
-					case (int)RESERVED.TK_STRING: 
+					case (int)LuaLex.RESERVED.TK_STRING: 
 					case '{': 
 						{  
 							/* funcargs */
@@ -1010,33 +1010,33 @@ namespace kurumi
 						  constructor | FUNCTION body | primaryexp */
 			switch (ls.t.token) 
 			{
-				case (int)RESERVED.TK_NUMBER: 
+				case (int)LuaLex.RESERVED.TK_NUMBER: 
 					{
 						init_exp(v, expkind.VKNUM, 0);
 						v.u.nval = ls.t.seminfo.r;
 						break;
 					}
-				case (int)RESERVED.TK_STRING: 
+				case (int)LuaLex.RESERVED.TK_STRING: 
 					{
 						codestring(ls, v, ls.t.seminfo.ts);
 						break;
 					}
-				case (int)RESERVED.TK_NIL: 
+				case (int)LuaLex.RESERVED.TK_NIL: 
 					{
 						init_exp(v, expkind.VNIL, 0);
 						break;
 					}
-				case (int)RESERVED.TK_TRUE: 
+				case (int)LuaLex.RESERVED.TK_TRUE: 
 					{
 						init_exp(v, expkind.VTRUE, 0);
 						break;
 					}
-				case (int)RESERVED.TK_FALSE: 
+				case (int)LuaLex.RESERVED.TK_FALSE: 
 					{
 						init_exp(v, expkind.VFALSE, 0);
 						break;
 					}
-				case (int)RESERVED.TK_DOTS: 
+				case (int)LuaLex.RESERVED.TK_DOTS: 
 					{  
 						/* vararg */
 						FuncState fs = ls.fs;
@@ -1052,7 +1052,7 @@ namespace kurumi
 						constructor(ls, v);
 						return;
 					}
-				case (int)RESERVED.TK_FUNCTION: 
+				case (int)LuaLex.RESERVED.TK_FUNCTION: 
 					{
 						LuaLex.luaX_next(ls);
 						body(ls, v, 0, ls.linenumber);
@@ -1071,7 +1071,7 @@ namespace kurumi
 		{
 			switch (op) 
 			{
-				case (int)RESERVED.TK_NOT: 
+				case (int)LuaLex.RESERVED.TK_NOT: 
 					{
 						return UnOpr.OPR_NOT;
 					}
@@ -1118,15 +1118,15 @@ namespace kurumi
 					{
 						return LuaCode.BinOpr.OPR_POW;
 					}
-				case (int)RESERVED.TK_CONCAT: 
+				case (int)LuaLex.RESERVED.TK_CONCAT: 
 					{
 						return LuaCode.BinOpr.OPR_CONCAT;
 					}
-				case (int)RESERVED.TK_NE: 
+				case (int)LuaLex.RESERVED.TK_NE: 
 					{
 						return LuaCode.BinOpr.OPR_NE;
 					}
-				case (int)RESERVED.TK_EQ: 
+				case (int)LuaLex.RESERVED.TK_EQ: 
 					{
 						return LuaCode.BinOpr.OPR_EQ;
 					}
@@ -1134,7 +1134,7 @@ namespace kurumi
 					{
 						return LuaCode.BinOpr.OPR_LT;
 					}
-				case (int)RESERVED.TK_LE: 
+				case (int)LuaLex.RESERVED.TK_LE: 
 					{
 						return LuaCode.BinOpr.OPR_LE;
 					}
@@ -1142,15 +1142,15 @@ namespace kurumi
 					{
 						return LuaCode.BinOpr.OPR_GT;
 					}
-				case (int)RESERVED.TK_GE: 
+				case (int)LuaLex.RESERVED.TK_GE: 
 					{
 						return LuaCode.BinOpr.OPR_GE;
 					}
-				case (int)RESERVED.TK_AND: 
+				case (int)LuaLex.RESERVED.TK_AND: 
 					{
 						return LuaCode.BinOpr.OPR_AND;
 					}
-				case (int)RESERVED.TK_OR: 
+				case (int)LuaLex.RESERVED.TK_OR: 
 					{
 						return LuaCode.BinOpr.OPR_OR;
 					}
@@ -1258,11 +1258,11 @@ namespace kurumi
 		{
 			switch (token) 
 			{
-				case (int)RESERVED.TK_ELSE: 
-				case (int)RESERVED.TK_ELSEIF: 
-				case (int)RESERVED.TK_END:
-				case (int)RESERVED.TK_UNTIL: 
-				case (int)RESERVED.TK_EOS:
+				case (int)LuaLex.RESERVED.TK_ELSE: 
+				case (int)LuaLex.RESERVED.TK_ELSEIF: 
+				case (int)LuaLex.RESERVED.TK_END:
+				case (int)LuaLex.RESERVED.TK_UNTIL: 
+				case (int)LuaLex.RESERVED.TK_EOS:
 					{
 						return 1;
 					}
@@ -1422,10 +1422,10 @@ namespace kurumi
 			whileinit = LuaCode.luaK_getlabel(fs);
 			condexit = cond(ls);
 			enterblock(fs, bl, (byte)1);
-			checknext(ls, (int)RESERVED.TK_DO);
+			checknext(ls, (int)LuaLex.RESERVED.TK_DO);
 			block(ls);
 			LuaCode.luaK_patchlist(fs, LuaCode.luaK_jump(fs), whileinit);
-			check_match(ls, (int)RESERVED.TK_END, (int)RESERVED.TK_WHILE, line);
+			check_match(ls, (int)LuaLex.RESERVED.TK_END, (int)LuaLex.RESERVED.TK_WHILE, line);
 			leaveblock(fs);
 			LuaCode.luaK_patchtohere(fs, condexit);  /* false conditions finish the loop */
 		}
@@ -1441,7 +1441,7 @@ namespace kurumi
             enterblock(fs, bl2, (byte)0);  /* scope block */
 			LuaLex.luaX_next(ls);  /* skip REPEAT */
 			chunk(ls);
-			check_match(ls, (int)RESERVED.TK_UNTIL, (int)RESERVED.TK_REPEAT, line);
+			check_match(ls, (int)LuaLex.RESERVED.TK_UNTIL, (int)LuaLex.RESERVED.TK_REPEAT, line);
 			condexit = cond(ls);  /* read condition (inside scope block) */
 			if (bl2.upval == 0) 
 			{  
@@ -1477,7 +1477,7 @@ namespace kurumi
 			FuncState fs = ls.fs;
 			int prep, endfor;
 			adjustlocalvars(ls, 3);  /* control variables */
-			checknext(ls, (int)RESERVED.TK_DO);
+			checknext(ls, (int)LuaLex.RESERVED.TK_DO);
 			prep = (isnum != 0) ? LuaCode.luaK_codeAsBx(fs, LuaOpCodes.OpCode.OP_FORPREP, base_, LuaCode.NO_JUMP) : LuaCode.luaK_jump(fs);
             enterblock(fs, bl, (byte)0);  /* scope for declared variables */
 			adjustlocalvars(ls, nvars);
@@ -1535,7 +1535,7 @@ namespace kurumi
 			{
 				new_localvar(ls, str_checkname(ls), nvars++);
 			}
-			checknext(ls, (int)RESERVED.TK_IN);
+			checknext(ls, (int)LuaLex.RESERVED.TK_IN);
 			line = ls.linenumber;
 			adjust_assign(ls, 3, explist1(ls, e), e);
 			LuaCode.luaK_checkstack(fs, 3);  /* extra space to call generator */
@@ -1558,7 +1558,7 @@ namespace kurumi
 						fornum(ls, varname, line); break;
 					}
 				case ',':
-				case (int)RESERVED.TK_IN:
+				case (int)LuaLex.RESERVED.TK_IN:
 					{
 						forlist(ls, varname);
 						break;
@@ -1569,7 +1569,7 @@ namespace kurumi
 						break;
 					}
 			}
-			check_match(ls, (int)RESERVED.TK_END, (int)RESERVED.TK_FOR, line);
+			check_match(ls, (int)LuaLex.RESERVED.TK_END, (int)LuaLex.RESERVED.TK_FOR, line);
 			leaveblock(fs);  /* loop scope (`break' jumps to this point) */
 		}
 
@@ -1579,7 +1579,7 @@ namespace kurumi
 			int condexit;
 			LuaLex.luaX_next(ls);  /* skip IF or ELSEIF */
 			condexit = cond(ls);
-			checknext(ls, (int)RESERVED.TK_THEN);
+			checknext(ls, (int)LuaLex.RESERVED.TK_THEN);
 			block(ls);  /* `then' part */
 			return condexit;
 		}
@@ -1592,13 +1592,13 @@ namespace kurumi
 			int[] escapelist = new int[1];
 			escapelist[0] = LuaCode.NO_JUMP;
 			flist = test_then_block(ls);  /* IF cond THEN block */
-			while (ls.t.token == (int)RESERVED.TK_ELSEIF) 
+			while (ls.t.token == (int)LuaLex.RESERVED.TK_ELSEIF) 
 			{
 				LuaCode.luaK_concat(fs, /*ref*/ escapelist, LuaCode.luaK_jump(fs));
 				LuaCode.luaK_patchtohere(fs, flist);
 				flist = test_then_block(ls);  /* ELSEIF cond THEN block */
 			}
-			if (ls.t.token == (int)RESERVED.TK_ELSE) 
+			if (ls.t.token == (int)LuaLex.RESERVED.TK_ELSE) 
 			{
 				LuaCode.luaK_concat(fs, /*ref*/ escapelist, LuaCode.luaK_jump(fs));
 				LuaCode.luaK_patchtohere(fs, flist);
@@ -1610,7 +1610,7 @@ namespace kurumi
 				LuaCode.luaK_concat(fs, /*ref*/ escapelist, flist);
 			}
 			LuaCode.luaK_patchtohere(fs, escapelist[0]);
-			check_match(ls, (int)RESERVED.TK_END, (int)RESERVED.TK_IF, line);
+			check_match(ls, (int)LuaLex.RESERVED.TK_END, (int)LuaLex.RESERVED.TK_IF, line);
 		}
 
 		private static void localfunc(LuaLex.LexState ls) 
@@ -1745,48 +1745,48 @@ namespace kurumi
 			int line = ls.linenumber;  /* may be needed for error messages */
 			switch (ls.t.token) 
 			{
-				case (int)RESERVED.TK_IF: 
+				case (int)LuaLex.RESERVED.TK_IF: 
 					{  
 						/* stat . ifstat */
 						ifstat(ls, line);
 						return 0;
 					}
-				case (int)RESERVED.TK_WHILE: 
+				case (int)LuaLex.RESERVED.TK_WHILE: 
 					{  
 						/* stat . whilestat */
 						whilestat(ls, line);
 						return 0;
 					}
-				case (int)RESERVED.TK_DO: 
+				case (int)LuaLex.RESERVED.TK_DO: 
 					{  
 						/* stat . DO block END */
 						LuaLex.luaX_next(ls);  /* skip DO */
 						block(ls);
-						check_match(ls, (int)RESERVED.TK_END, (int)RESERVED.TK_DO, line);
+						check_match(ls, (int)LuaLex.RESERVED.TK_END, (int)LuaLex.RESERVED.TK_DO, line);
 						return 0;
 					}
-				case (int)RESERVED.TK_FOR: 
+				case (int)LuaLex.RESERVED.TK_FOR: 
 					{  
 						/* stat . forstat */
 						forstat(ls, line);
 						return 0;
 					}
-				case (int)RESERVED.TK_REPEAT: 
+				case (int)LuaLex.RESERVED.TK_REPEAT: 
 					{  
 						/* stat . repeatstat */
 						repeatstat(ls, line);
 						return 0;
 					}
-				case (int)RESERVED.TK_FUNCTION: 
+				case (int)LuaLex.RESERVED.TK_FUNCTION: 
 					{
 						funcstat(ls, line);  /* stat . funcstat */
 						return 0;
 					}
-				case (int)RESERVED.TK_LOCAL: 
+				case (int)LuaLex.RESERVED.TK_LOCAL: 
 					{  
 						/* stat . localstat */
 						LuaLex.luaX_next(ls);  /* skip LOCAL */
-						if (testnext(ls, (int)RESERVED.TK_FUNCTION) != 0)  /* local function? */
+						if (testnext(ls, (int)LuaLex.RESERVED.TK_FUNCTION) != 0)  /* local function? */
 						{
 							localfunc(ls);
 						}
@@ -1796,13 +1796,13 @@ namespace kurumi
 						}
 						return 0;
 					}
-				case (int)RESERVED.TK_RETURN: 
+				case (int)LuaLex.RESERVED.TK_RETURN: 
 					{
 						/* stat . retstat */
 						retstat(ls);
 						return 1;  /* must be last statement */
 					}
-				case (int)RESERVED.TK_BREAK: 
+				case (int)LuaLex.RESERVED.TK_BREAK: 
 					{  
 						/* stat . breakstat */
 						LuaLex.luaX_next(ls);  /* skip BREAK */
