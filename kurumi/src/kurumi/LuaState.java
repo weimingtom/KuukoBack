@@ -328,7 +328,25 @@ public class LuaState {
 		}
 	}	
 	
-	
+	public static class OpenValRef implements LuaState.GCObjectRef 
+	{
+		private LuaState.lua_State L;
+		
+		public OpenValRef(LuaState.lua_State L) 
+		{ 
+			this.L = L; 
+		}
+		
+		public void set(LuaState.GCObject value) 
+		{ 
+			this.L.openupval = value; 
+		}
+		
+		public LuaState.GCObject get() 
+		{ 
+			return this.L.openupval; 
+		}
+	}
 	
 	
 	

@@ -789,7 +789,7 @@ namespace kurumi
 			{
 				if (curr.getGch().tt == Lua.LUA_TTHREAD)  /* sweep open upvalues of each thread */
 				{
-					sweepwholelist(L, new OpenValRef(LuaState.gco2th(curr)));
+					sweepwholelist(L, new LuaState.OpenValRef(LuaState.gco2th(curr)));
 				}
 				if (((curr.getGch().marked ^ WHITEBITS) & deadmask) != 0) 
 				{  

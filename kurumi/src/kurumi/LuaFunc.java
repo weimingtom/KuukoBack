@@ -61,7 +61,7 @@ public class LuaFunc {
 
 	public static UpVal luaF_findupval(LuaState.lua_State L, TValue level) { //StkId
 		LuaState.global_State g = LuaState.G(L);
-		LuaState.GCObjectRef pp = new OpenValRef(L);
+		LuaState.GCObjectRef pp = new LuaState.OpenValRef(L);
 		UpVal p;
 		UpVal uv;
 		while (pp.get() != null && TValue.greaterEqual((p = LuaState.ngcotouv(pp.get())).v, level)) {

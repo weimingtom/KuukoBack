@@ -345,12 +345,33 @@ namespace kurumi
 	        }
 	    }		
 		
-	    
-	    
-	    
-	    
-	    
-	    
+		public class OpenValRef : LuaState.GCObjectRef
+		{
+			private LuaState.lua_State L;
+			
+			public OpenValRef(LuaState.lua_State L) 
+			{ 
+				this.L = L; 
+			}
+			
+			public void set(LuaState.GCObject value) 
+			{ 
+				this.L.openupval = value; 
+			}
+			
+			public LuaState.GCObject get() 
+			{ 
+				return this.L.openupval; 
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 	    
 	    
 		public class NextRef : LuaState.GCObjectRef
