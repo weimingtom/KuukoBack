@@ -57,6 +57,28 @@ public class LuaLex {
 	// number of reserved words 
 	public static final int NUM_RESERVED = (int)RESERVED.TK_WHILE - FIRST_RESERVED + 1;
 	
+	public static class SemInfo
+	{
+		public double r;  /*Double*/ /*lua_Number*/
+		public TString ts;
+		
+		public SemInfo() 
+		{
+			
+		}
+		
+		public SemInfo(SemInfo copy)
+		{
+			this.r = copy.r;
+			this.ts = copy.ts;
+		}
+	}  /* semantics information */
+	
+	
+	
+	
+	
+	
 	public static class LexState {
 		public int current;  /* current character (charint) */
 		public int linenumber;  /* input line counter */
@@ -70,13 +92,6 @@ public class LuaLex {
 		public TString source;  /* current source name */
 		public char decpoint;  /* locale decimal point */
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 	public static void next(LexState ls) {
 		ls.current = LuaZIO.zgetc(ls.z);

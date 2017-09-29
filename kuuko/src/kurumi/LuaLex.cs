@@ -59,7 +59,22 @@ namespace kurumi
 		/* number of reserved words */
 		public const int NUM_RESERVED = (int)RESERVED.TK_WHILE - FIRST_RESERVED + 1;
 
-		
+		public class SemInfo
+		{
+			public double r;  /*Double*/ /*lua_Number*/
+			public TString ts;
+			
+			public SemInfo() 
+			{
+				
+			}
+			
+			public SemInfo(SemInfo copy)
+			{
+				this.r = copy.r;
+				this.ts = copy.ts;
+			}
+		}  /* semantics information */
 		
 		
 		

@@ -178,3 +178,6 @@ resume_delegate->LuaDo.resume_delegate
 
 RootGCRef->LuaState.RootGCRef
 16:56 2017/9/29
+
+SemInfo->LuaLex.SemInfo
+17:00 2017/9/29

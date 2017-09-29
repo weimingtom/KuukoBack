@@ -8,7 +8,7 @@ package kurumi;
 	public class Token
 	{
 		public int token;
-		public SemInfo seminfo = new SemInfo();
+		public LuaLex.SemInfo seminfo = new LuaLex.SemInfo();
 		
 		public Token()
 		{
@@ -18,7 +18,7 @@ package kurumi;
 		public Token(Token copy)
 		{
 			this.token = copy.token;
-			this.seminfo = new SemInfo(copy.seminfo);
+			this.seminfo = new LuaLex.SemInfo(copy.seminfo);
 		}
 	}
 //}
