@@ -175,3 +175,6 @@ RESERVED->LuaLex.RESERVED
 
 resume_delegate->LuaDo.resume_delegate
 16:55 2017/9/29
+
+RootGCRef->LuaState.RootGCRef
+16:56 2017/9/29

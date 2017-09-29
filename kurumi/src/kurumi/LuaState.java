@@ -348,14 +348,25 @@ public class LuaState {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	public static class RootGCRef implements LuaState.GCObjectRef 
+	{
+		private LuaState.global_State g;
+		
+		public RootGCRef(LuaState.global_State g) 
+		{ 
+			this.g = g; 
+		}
+		
+		public void set(LuaState.GCObject value) 
+		{ 
+			this.g.rootgc = value; 
+		}
+		
+		public LuaState.GCObject get() 
+		{ 
+			return this.g.rootgc; 
+		}
+	}
 	
 	public static class NextRef implements LuaState.GCObjectRef {
 		private LuaObject.GCheader header;

@@ -716,7 +716,7 @@ public class LuaGC {
 		LuaState.global_State g = LuaState.G(L);
 		int i;
 		g.currentwhite = (byte)(WHITEBITS | bitmask(SFIXEDBIT)); // mask to collect all elements 
-		sweepwholelist(L, new RootGCRef(g));
+		sweepwholelist(L, new LuaState.RootGCRef(g));
 		for (i = 0; i < g.strt.size; i++) { // free all string lists 
 			sweepwholelist(L, new LuaState.ArrayRef(g.strt.hash, i));
 		}
@@ -780,7 +780,7 @@ public class LuaGC {
 		// flip current white 
 		g.currentwhite = LuaLimits.cast_byte(otherwhite(g));
 		g.sweepstrgc = 0;
-		g.sweepgc = new RootGCRef(g);
+		g.sweepgc = new LuaState.RootGCRef(g);
 		g.gcstate = GCSsweepstring;
 		g.estimate = g.totalbytes - udsize; // first estimate 
 	}
@@ -879,7 +879,7 @@ public class LuaGC {
 		if (g.gcstate <= GCSpropagate) {
 			// reset sweep marks to sweep all elements (returning them to white) 
 			g.sweepstrgc = 0;
-			g.sweepgc = new RootGCRef(g);
+			g.sweepgc = new LuaState.RootGCRef(g);
 			// reset other collector lists 
 			g.gray = null;
 			g.grayagain = null;
