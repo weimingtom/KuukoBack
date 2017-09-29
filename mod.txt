@@ -160,3 +160,6 @@ OpenValRef->LuaState.OpenValRef
 
 OpMode->LuaOpCodes.OpMode
 14:05 2017/9/29
+
+Pfunc->LuaDo.Pfunc
+14:10 2017/9/29

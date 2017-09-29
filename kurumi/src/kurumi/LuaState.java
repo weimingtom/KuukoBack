@@ -493,7 +493,7 @@ public class LuaState {
 		g.GCthreshold = 4 * g.totalbytes;
 	}
 
-	public static class f_luaopen_delegate implements Pfunc {
+	public static class f_luaopen_delegate implements LuaDo.Pfunc {
 		public final void exec(lua_State L, Object ud) {
 			f_luaopen(L, ud);
 		}
@@ -624,7 +624,7 @@ public class LuaState {
 		LuaGC.luaC_callGCTM(L); // call GC metamethods for all udata 
 	}
 
-	public static class callallgcTM_delegate implements Pfunc {
+	public static class callallgcTM_delegate implements LuaDo.Pfunc {
 		public final void exec(lua_State L, Object ud) {
 			callallgcTM(L, ud);
 		}

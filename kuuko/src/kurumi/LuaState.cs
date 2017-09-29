@@ -528,7 +528,7 @@ namespace kurumi
 			g.GCthreshold = 4 * g.totalbytes;
 		}
 		
-		public class f_luaopen_delegate : Pfunc
+		public class f_luaopen_delegate : LuaDo.Pfunc
 		{
 			public void exec(lua_State L, object ud)
 			{
@@ -671,7 +671,7 @@ namespace kurumi
 			LuaGC.luaC_callGCTM(L);  /* call GC metamethods for all udata */
 		}
 		
-		public class callallgcTM_delegate : Pfunc
+		public class callallgcTM_delegate : LuaDo.Pfunc
 		{
 			public void exec(lua_State L, object ud)
 			{

@@ -94,7 +94,6 @@
     <Compile Include="src\kurumi\LuaVM.cs" />
     <Compile Include="src\kurumi\LuaZIO.cs" />
     <Compile Include="src\kurumi\OpCodeUtil.cs" />
-    <Compile Include="src\kurumi\Pfunc.cs" />
     <Compile Include="src\kurumi\priority_.cs" />
     <Compile Include="src\kurumi\Program.cs" />
     <Compile Include="src\kurumi\Proto.cs" />

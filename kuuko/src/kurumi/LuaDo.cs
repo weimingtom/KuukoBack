@@ -65,11 +65,10 @@ namespace kurumi
 		public const int PCRC = 1;	/* did a call to a C function */
 		public const int PCRYIELD = 2;	/* C funtion yielded */
 
-		
-		
-		
-		
-		
+		public interface Pfunc
+		{
+			void exec(LuaState.lua_State L, object ud);
+		} 
 		
 		/*
 		 ** {======================================================

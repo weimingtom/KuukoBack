@@ -970,7 +970,7 @@ namespace kurumi
 			LuaDo.luaD_call(L, c.func, c.nresults);
 		}
 
-		public class f_call_delegate : Pfunc
+		public class f_call_delegate : LuaDo.Pfunc
 		{
 			public void exec(LuaState.lua_State L, object ud)
 			{
@@ -1027,7 +1027,7 @@ namespace kurumi
 			LuaDo.luaD_call(L, TValue.minus(L.top, 2), 0);
 		}
 
-		public class f_Ccall_delegate : Pfunc
+		public class f_Ccall_delegate : LuaDo.Pfunc
 		{
 			public void exec(LuaState.lua_State L, object ud)
 			{

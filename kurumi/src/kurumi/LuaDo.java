@@ -56,8 +56,10 @@ TValue.inc(top); //ref
 	public static final int PCRC = 1; // did a call to a C function 
 	public static final int PCRYIELD = 2; // C funtion yielded 
 
-	
-	
+	public static interface Pfunc
+	{
+		void exec(LuaState.lua_State L, Object ud);
+	} 
 	
 	/*
 	 ** {======================================================
@@ -137,7 +139,7 @@ TValue.inc(top); //ref
 		}
 	}
 
-	public static int luaD_rawrunprotected(LuaState.lua_State L, Pfunc f, Object ud) {
+	public static int luaD_rawrunprotected(LuaState.lua_State L, LuaDo.Pfunc f, Object ud) {
 		lua_longjmp lj = new lua_longjmp();
 		lj.status = 0;
 		lj.previous = L.errorJmp; // chain new error handler 

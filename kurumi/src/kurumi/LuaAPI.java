@@ -832,7 +832,7 @@ TValue.dec(top); //ref
 		LuaDo.luaD_call(L, c.func, c.nresults);
 	}
 
-	public static class f_call_delegate implements Pfunc {
+	public static class f_call_delegate implements LuaDo.Pfunc {
 		public final void exec(LuaState.lua_State L, Object ud) {
 			f_call(L, ud);
 		}
@@ -882,7 +882,7 @@ TValue.dec(top); //ref
 		LuaDo.luaD_call(L, TValue.minus(L.top, 2), 0);
 	}
 
-	public static class f_Ccall_delegate implements Pfunc {
+	public static class f_Ccall_delegate implements LuaDo.Pfunc {
 		public final void exec(LuaState.lua_State L, Object ud) {
 			f_Ccall(L, ud);
 		}
