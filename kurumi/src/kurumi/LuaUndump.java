@@ -114,7 +114,7 @@ public class LuaUndump {
 		}
 	}
 
-	private static void LoadCode(LoadState S, Proto f) {
+	private static void LoadCode(LoadState S, LuaObject.Proto f) {
 		int n = LoadInt(S);
 		//UInt32
 		//Instruction
@@ -123,7 +123,7 @@ public class LuaUndump {
 		f.code = (long[])LoadVector(S, new ClassType(ClassType.TYPE_LONG), n); //Instruction[] - UInt32[]
 	}
 
-	private static void LoadConstants(LoadState S, Proto f) {
+	private static void LoadConstants(LoadState S, LuaObject.Proto f) {
 		int i,n;
 		n = LoadInt(S);
 		f.k = LuaMem.luaM_newvector_TValue(S.L, n, new ClassType(ClassType.TYPE_TVALUE));
@@ -168,7 +168,7 @@ public class LuaUndump {
 		}
 	}
 
-	private static void LoadDebug(LoadState S, Proto f) {
+	private static void LoadDebug(LoadState S, LuaObject.Proto f) {
 		int i, n;
 		n = LoadInt(S);
 		f.lineinfo = LuaMem.luaM_newvector_int(S.L, n, new ClassType(ClassType.TYPE_INT));
@@ -196,8 +196,8 @@ public class LuaUndump {
 		}
 	}
 
-	private static Proto LoadFunction(LoadState S, TString p) {
-		Proto f;
+	private static LuaObject.Proto LoadFunction(LoadState S, TString p) {
+		LuaObject.Proto f;
 		if (++S.L.nCcalls > LuaConf.LUAI_MAXCCALLS) {
 			error(S, LuaConf.CharPtr.toCharPtr("code too deep"));
 		}
@@ -238,7 +238,7 @@ TValue.dec(top); //ref
 //        
 //		 ** load precompiled chunk
 //		 
-	public static Proto luaU_undump(LuaState.lua_State L, ZIO Z, LuaZIO.Mbuffer buff, LuaConf.CharPtr name) {
+	public static LuaObject.Proto luaU_undump(LuaState.lua_State L, ZIO Z, LuaZIO.Mbuffer buff, LuaConf.CharPtr name) {
 		LoadState S = new LoadState();
 		if (name.get(0) == '@' || name.get(0) == '=') {
 			S.name = LuaConf.CharPtr.plus(name, 1);

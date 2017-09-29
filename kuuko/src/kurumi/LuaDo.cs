@@ -313,7 +313,7 @@ namespace kurumi
 		}
 
 
-		private static TValue/*StkId*/ adjust_varargs(LuaState.lua_State L, Proto p, int actual)
+		private static TValue/*StkId*/ adjust_varargs(LuaState.lua_State L, LuaObject.Proto p, int actual)
 		{
 			int i;
 			int nfixargs = p.numparams;
@@ -422,7 +422,7 @@ namespace kurumi
 				TValue[]/*StkId*/ st = new TValue[1];
 				st[0] = new TValue();
 				TValue/*StkId*/ base_;
-				Proto p = cl.p;
+				LuaObject.Proto p = cl.p;
 				luaD_checkstack(L, p.maxstacksize);
 				func = restorestack(L, funcr);
 				if (p.is_vararg == 0) 
@@ -699,7 +699,7 @@ namespace kurumi
 		public static void f_parser(LuaState.lua_State L, object ud) 
 		{
 			int i;
-			Proto tf;
+			LuaObject.Proto tf;
 			LuaObject.Closure cl;
 			SParser p = (SParser)ud;
 			int c = LuaZIO.luaZ_lookahead(p.z);

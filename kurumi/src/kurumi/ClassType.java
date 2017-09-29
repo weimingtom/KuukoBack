@@ -212,7 +212,7 @@ public class ClassType {
 				result = new LuaState.CallInfo();
 			}
 			else if (type == TYPE_PROTO) {
-				result = new Proto();
+				result = new LuaObject.Proto();
 			}
 			else if (type == TYPE_LOCVAR) {
 				result = new LuaObject.LocVar();

@@ -66,7 +66,7 @@ public class LuaVM {
 			LuaDo.luaD_callhook(L, Lua.LUA_HOOKCOUNT, -1);
 		}
 		if ((mask & Lua.LUA_MASKLINE) != 0) {
-			Proto p = LuaState.ci_func(L.ci).l.p;
+			LuaObject.Proto p = LuaState.ci_func(L.ci).l.p;
 			int npc = LuaDebug.pcRel(pc, p);
 			int newline = LuaDebug.getline(p, npc);
 //                 call linehook when enter a new function, when jump back (loop),
@@ -1059,7 +1059,7 @@ TValue rb = RB(L, base_, i);
 							continue;
 						}
 					case OP_CLOSURE: {
-							Proto p;
+							LuaObject.Proto p;
 							LuaObject.Closure ncl;
 							int nup, j;
 							p = cl.p.p[LuaOpCodes.GETARG_Bx(i)];

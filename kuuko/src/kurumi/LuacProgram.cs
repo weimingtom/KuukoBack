@@ -157,12 +157,12 @@ namespace kurumi
 			return i;
 		}
 
-		static Proto toproto(LuaState.lua_State L, int i) 
+		static LuaObject.Proto toproto(LuaState.lua_State L, int i) 
 		{
 			return LuaObject.clvalue(TValue.plus(L.top, i)).l.p;
 		}
 
-		static Proto combine(LuaState.lua_State L, int n)
+		static LuaObject.Proto combine(LuaState.lua_State L, int n)
 		{
 			if (n == 1)
 			{
@@ -171,7 +171,7 @@ namespace kurumi
 			else
 			{
 				int i, pc;
-				Proto f = LuaFunc.luaF_newproto(L);
+				LuaObject.Proto f = LuaFunc.luaF_newproto(L);
 				LuaObject.setptvalue2s(L, L.top,f); 
 				LuaDo.incr_top(L);
 				f.source = LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("=(" + PROGNAME + ")"));
@@ -218,7 +218,7 @@ namespace kurumi
 			Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
 			int argc = s.argc;
 			string[] argv = s.argv;
-			Proto f;
+			LuaObject.Proto f;
 			int i;
 			if (LuaAPI.lua_checkstack(L,argc) == 0) 
 			{

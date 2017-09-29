@@ -270,7 +270,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_PROTO)
 	            {
-	                result = new Proto();
+	                result = new LuaObject.Proto();
 	            }
 	            else if (type == TYPE_LOCVAR)
 	            {
@@ -989,7 +989,7 @@ namespace kurumi
             }
             else if (type == TYPE_PROTO)
             {
-                return typeof(Proto);
+                return typeof(LuaObject.Proto);
             }
             else if (type == TYPE_LOCVAR)
             {
@@ -1107,7 +1107,7 @@ namespace kurumi
             {
                 return 0;	// handle this one manually in the code
             }
-            else if (t == typeof(Proto))
+            else if (t == typeof(LuaObject.Proto))
             {
                 return 76;
             }

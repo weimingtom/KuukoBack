@@ -13,13 +13,13 @@ namespace kurumi
 
 	public class LuaDebug
 	{
-		public static int pcRel(LuaCode.InstructionPtr pc, Proto p)
+		public static int pcRel(LuaCode.InstructionPtr pc, LuaObject.Proto p)
 		{
 			ClassType.Assert(pc.codes == p.code);
 			return pc.pc - 1;
 		}
 		
-		public static int getline(Proto f, int pc) 
+		public static int getline(LuaObject.Proto f, int pc) 
 		{ 
 			return (f.lineinfo != null) ? f.lineinfo[pc] : 0; 
 		}
@@ -123,7 +123,7 @@ namespace kurumi
 		}
 
 
-		private static Proto getluaproto(LuaState.CallInfo ci) 
+		private static LuaObject.Proto getluaproto(LuaState.CallInfo ci) 
 		{
 			return (LuaState.isLua(ci) ? LuaState.ci_func(ci).l.p : null);
 		}
@@ -131,7 +131,7 @@ namespace kurumi
 		private static LuaConf.CharPtr findlocal(LuaState.lua_State L, LuaState.CallInfo ci, int n) 
 		{
 			LuaConf.CharPtr name;
-			Proto fp = getluaproto(ci);
+			LuaObject.Proto fp = getluaproto(ci);
 			if ((fp != null) && LuaConf.CharPtr.isNotEqual((name = LuaFunc.luaF_getlocalname(fp, n, currentpc(L, ci))), null))
 			{
 				return name;  /* is a local variable in a Lua function */
@@ -336,7 +336,7 @@ namespace kurumi
 		 ** =======================================================
 		 */
 
-		private static int checkjump(Proto pt, int pc) 
+		private static int checkjump(LuaObject.Proto pt, int pc) 
 		{ 
 			if (!(0 <= pc && pc < pt.sizecode)) 
 			{
@@ -345,7 +345,7 @@ namespace kurumi
 			return 1; 
 		}
 
-		private static int checkreg(Proto pt, int reg) 
+		private static int checkreg(LuaObject.Proto pt, int reg) 
 		{ 
 			if (!((reg) < (pt).maxstacksize)) 
 			{
@@ -354,7 +354,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static int precheck(Proto pt) 
+		private static int precheck(LuaObject.Proto pt) 
 		{
 			if (!(pt.maxstacksize <= LuaLimits.MAXSTACK)) 
 			{
@@ -384,7 +384,7 @@ namespace kurumi
 			return 1;
 		}
 
-		public static int checkopenop(Proto pt, int pc) 
+		public static int checkopenop(LuaObject.Proto pt, int pc) 
 		{ 
 			return luaG_checkopenop(pt.code[pc + 1]); 
 		}
@@ -412,7 +412,7 @@ namespace kurumi
 		}
 
 
-		private static int checkArgMode(Proto pt, int r, LuaOpCodes.OpArgMask mode) 
+		private static int checkArgMode(LuaObject.Proto pt, int r, LuaOpCodes.OpArgMask mode) 
 		{
 			switch (mode) 
 			{
@@ -445,7 +445,7 @@ namespace kurumi
 			return 1;
 		}
 
-		private static long/*UInt32*//*Instruction*/ symbexec(Proto pt, int lastpc, int reg)
+		private static long/*UInt32*//*Instruction*/ symbexec(LuaObject.Proto pt, int lastpc, int reg)
 		{
 			int pc;
 			int last;  /* stores position of last instruction that changed `reg' */
@@ -757,12 +757,12 @@ namespace kurumi
 
 		/* }====================================================== */
 
-		public static int luaG_checkcode(Proto pt) 
+		public static int luaG_checkcode(LuaObject.Proto pt) 
 		{
 			return (symbexec(pt, pt.sizecode, LuaOpCodes.NO_REG) != 0) ? 1 : 0;
 		}
 
-		private static LuaConf.CharPtr kname(Proto p, int c) 
+		private static LuaConf.CharPtr kname(LuaObject.Proto p, int c) 
 		{
 			if (LuaOpCodes.ISK(c) != 0 && LuaObject.ttisstring(p.k[LuaOpCodes.INDEXK(c)]))
 			{
@@ -781,7 +781,7 @@ namespace kurumi
 			if (LuaState.isLua(ci))
 			{  
 				/* a Lua function? */
-				Proto p = LuaState.ci_func(ci).l.p;
+				LuaObject.Proto p = LuaState.ci_func(ci).l.p;
 				int pc = currentpc(L, ci);
 				long/*UInt32*//*Instruction*/ i;
 				name[0] = LuaFunc.luaF_getlocalname(p, stackpos + 1, pc);

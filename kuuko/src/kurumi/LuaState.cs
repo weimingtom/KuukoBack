@@ -267,9 +267,9 @@ namespace kurumi
 	            return (Table)this;
 	        }
 	
-	        public Proto getP()
+	        public LuaObject.Proto getP()
 	        {
-	            return (Proto)this;
+	            return (LuaObject.Proto)this;
 	        }
 	
 	        public UpVal getUv()
@@ -425,9 +425,9 @@ namespace kurumi
             return (Table)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TTABLE, o.getH()); 
 		}
 		
-		public static Proto gco2p(GCObject o) 
+		public static LuaObject.Proto gco2p(GCObject o) 
 		{
-            return (Proto)LuaLimits.check_exp(o.getGch().tt == LuaObject.LUA_TPROTO, o.getP()); 
+            return (LuaObject.Proto)LuaLimits.check_exp(o.getGch().tt == LuaObject.LUA_TPROTO, o.getP()); 
 		}
 		
 		public static UpVal gco2uv(GCObject o) 

@@ -109,12 +109,12 @@ namespace kurumi
 			}
 		}
 
-		private static void DumpCode(Proto f, DumpState D)
+		private static void DumpCode(LuaObject.Proto f, DumpState D)
 		{
 			DumpVector_long(f.code, f.sizecode, D, new ClassType(ClassType.TYPE_LONG));
 		}
 
-		private static void DumpConstants(Proto f, DumpState D)
+		private static void DumpConstants(LuaObject.Proto f, DumpState D)
 		{
 			int i, n = f.sizek;
 			DumpInt(n, D);
@@ -158,7 +158,7 @@ namespace kurumi
 			}
 		}
 
-		private static void DumpDebug(Proto f, DumpState D)
+		private static void DumpDebug(LuaObject.Proto f, DumpState D)
 		{
 			int i,n;
 			n = (D.strip != 0) ? 0 : f.sizelineinfo;
@@ -179,7 +179,7 @@ namespace kurumi
 			}
 		}
 
-		private static void DumpFunction(Proto f, TString p, DumpState D)
+		private static void DumpFunction(LuaObject.Proto f, TString p, DumpState D)
 		{
 			DumpString(((f.source == p) || (D.strip != 0)) ? null : f.source, D);
 			DumpInt(f.linedefined, D);
@@ -203,7 +203,7 @@ namespace kurumi
 		/*
 		 ** dump Lua function as precompiled chunk
 		 */
-		public static int luaU_dump (LuaState.lua_State L, Proto f, Lua.lua_Writer w, object data, int strip)
+		public static int luaU_dump (LuaState.lua_State L, LuaObject.Proto f, Lua.lua_Writer w, object data, int strip)
 		{
 			DumpState D = new DumpState();
 			D.L = L;

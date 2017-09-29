@@ -43,9 +43,9 @@ namespace kurumi
             return (int[])luaM_realloc__int(L, block, new_size, t);
         }
 
-        public static Proto[] luaM_reallocv_Proto(LuaState.lua_State L, Proto[] block, int new_size, ClassType t)
+        public static LuaObject.Proto[] luaM_reallocv_Proto(LuaState.lua_State L, LuaObject.Proto[] block, int new_size, ClassType t)
         {
-            return (Proto[])luaM_realloc__Proto(L, block, new_size, t);
+            return (LuaObject.Proto[])luaM_realloc__Proto(L, block, new_size, t);
         }
 
         public static LuaObject.LocVar[] luaM_reallocv_LocVar(LuaState.lua_State L, LuaObject.LocVar[] block, int new_size, ClassType t)
@@ -92,9 +92,9 @@ namespace kurumi
             luaM_realloc__UpVal(L, new UpVal[] { b }, 0, t);
         }
 
-        public static void luaM_free_Proto(LuaState.lua_State L, Proto b, ClassType t)
+        public static void luaM_free_Proto(LuaState.lua_State L, LuaObject.Proto b, ClassType t)
         {
-            luaM_realloc__Proto(L, new Proto[] { b }, 0, t);
+            luaM_realloc__Proto(L, new LuaObject.Proto[] { b }, 0, t);
         }
 
         //-------------------------------
@@ -104,7 +104,7 @@ namespace kurumi
 			luaM_reallocv_long(L, b, 0, t); 
 		}
 
-        public static void luaM_freearray_Proto(LuaState.lua_State L, Proto[] b, ClassType t)
+        public static void luaM_freearray_Proto(LuaState.lua_State L, LuaObject.Proto[] b, ClassType t)
         {
             luaM_reallocv_Proto(L, b, 0, t);
         }
@@ -152,9 +152,9 @@ namespace kurumi
 		//	return (T)luaM_realloc_<T>(L, t); 
 		//}
 
-        public static Proto luaM_new_Proto(LuaState.lua_State L, ClassType t) 
+        public static LuaObject.Proto luaM_new_Proto(LuaState.lua_State L, ClassType t) 
 		{ 
-			return (Proto)luaM_realloc__Proto(L, t); 
+			return (LuaObject.Proto)luaM_realloc__Proto(L, t); 
 		}
 
         public static LuaObject.Closure luaM_new_Closure(LuaState.lua_State L, ClassType t)
@@ -200,7 +200,7 @@ namespace kurumi
             return luaM_reallocv_int(L, null, n, t);
         }
 
-        public static Proto[] luaM_newvector_Proto(LuaState.lua_State L, int n, ClassType t)
+        public static LuaObject.Proto[] luaM_newvector_Proto(LuaState.lua_State L, int n, ClassType t)
         {
             return luaM_reallocv_Proto(L, null, n, t);
         }
@@ -236,11 +236,11 @@ namespace kurumi
 			}
 		}
 
-        public static void luaM_growvector_Proto(LuaState.lua_State L, /*ref*/ Proto[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
+        public static void luaM_growvector_Proto(LuaState.lua_State L, /*ref*/ LuaObject.Proto[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
 		{
 			if (nelems + 1 > size[0])
 			{
-				v[0] = (Proto[])luaM_growaux__Proto(L, /*ref*/ v, /*ref*/ size, limit, e, t);
+				v[0] = (LuaObject.Proto[])luaM_growaux__Proto(L, /*ref*/ v, /*ref*/ size, limit, e, t);
 			}
 		}
 
@@ -322,7 +322,7 @@ namespace kurumi
             return v[0];
         }
 
-        public static Proto[] luaM_reallocvector_Proto(LuaState.lua_State L, /*ref*/ Proto[][] v, int oldn, int n, ClassType t)
+        public static LuaObject.Proto[] luaM_reallocvector_Proto(LuaState.lua_State L, /*ref*/ LuaObject.Proto[][] v, int oldn, int n, ClassType t)
         {
             ClassType.Assert((v[0] == null && oldn == 0) || (v[0].Length == oldn));
             v[0] = luaM_reallocv_Proto(L, v[0], n, t);
@@ -386,10 +386,10 @@ namespace kurumi
 			return newblock;
 		}
 
-        public static Proto[] luaM_growaux__Proto(LuaState.lua_State L, /*ref*/ Proto[][] block, /*ref*/ int[] size,
+        public static LuaObject.Proto[] luaM_growaux__Proto(LuaState.lua_State L, /*ref*/ LuaObject.Proto[][] block, /*ref*/ int[] size,
                     int limit, LuaConf.CharPtr errormsg, ClassType t)
         {
-            Proto[] newblock;
+            LuaObject.Proto[] newblock;
             int newsize;
             if (size[0] >= limit / 2)
             {
@@ -545,7 +545,7 @@ namespace kurumi
 		{
 			int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
 			int nsize = unmanaged_size;
-            Proto new_obj = (Proto)t.Alloc();//System.Activator.CreateInstance(typeof(T));
+            LuaObject.Proto new_obj = (LuaObject.Proto)t.Alloc();//System.Activator.CreateInstance(typeof(T));
 			AddTotalBytes(L, nsize);
 			return new_obj;
 		}
@@ -913,20 +913,20 @@ namespace kurumi
             return new_block;
         }
 
-        public static object luaM_realloc__Proto(LuaState.lua_State L, Proto[] old_block, int new_size, ClassType t)
+        public static object luaM_realloc__Proto(LuaState.lua_State L, LuaObject.Proto[] old_block, int new_size, ClassType t)
         {
             int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
-            Proto[] new_block = new Proto[new_size];
+            LuaObject.Proto[] new_block = new LuaObject.Proto[new_size];
             for (int i = 0; i < Math.Min(old_size, new_size); i++)
             {
                 new_block[i] = old_block[i];
             }
             for (int i = old_size; i < new_size; i++)
             {
-                new_block[i] = (Proto)t.Alloc();// System.Activator.CreateInstance(typeof(T));
+                new_block[i] = (LuaObject.Proto)t.Alloc();// System.Activator.CreateInstance(typeof(T));
             }
             if (CanIndex(t))
             {

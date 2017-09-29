@@ -268,7 +268,7 @@ TValue.inc(top); //ref
 	}
 
 
-	private static TValue adjust_varargs(LuaState.lua_State L, Proto p, int actual) { //StkId
+	private static TValue adjust_varargs(LuaState.lua_State L, LuaObject.Proto p, int actual) { //StkId
 		int i;
 		int nfixargs = p.numparams;
 		Table htab = null;
@@ -369,7 +369,7 @@ TValue.inc(top_ref); //ref
 			TValue[] st = new TValue[1]; //StkId
 			st[0] = new TValue();
 			TValue base_; //StkId
-			Proto p = cl.p;
+			LuaObject.Proto p = cl.p;
 			luaD_checkstack(L, p.maxstacksize);
 			func = restorestack(L, funcr);
 			if (p.is_vararg == 0) {
@@ -611,7 +611,7 @@ TValue.inc(top_ref); //ref
 
 	public static void f_parser(LuaState.lua_State L, Object ud) {
 		int i;
-		Proto tf;
+		LuaObject.Proto tf;
 		LuaObject.Closure cl;
 		SParser p = (SParser)ud;
 		int c = LuaZIO.luaZ_lookahead(p.z);

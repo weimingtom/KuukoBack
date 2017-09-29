@@ -352,7 +352,7 @@ public class LuaCode {
 	private static int addk(LuaParser.FuncState fs, TValue k, TValue v) {
 		LuaState.lua_State L = fs.L;
 		TValue idx = LuaTable.luaH_set(L, fs.h, k);
-		Proto f = fs.f;
+		LuaObject.Proto f = fs.f;
 		int oldsize = f.sizek;
 		if (LuaObject.ttisnumber(idx)) {
 			LuaLimits.lua_assert(LuaObject.luaO_rawequalObj(fs.f.k[LuaLimits.cast_int(LuaObject.nvalue(idx))], v));
@@ -1037,7 +1037,7 @@ public class LuaCode {
 	}
 
 	private static int luaK_code(LuaParser.FuncState fs, int i, int line) {
-		Proto f = fs.f;
+		LuaObject.Proto f = fs.f;
 		dischargejpc(fs); // `pc' will change 
 		// put new instruction in code array 
 		long[][] code_ref = new long[1][];

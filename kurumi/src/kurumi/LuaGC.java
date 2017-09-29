@@ -391,7 +391,7 @@ public class LuaGC {
 //		 ** All marks are conditional because a GC may happen while the
 //		 ** prototype is still being created
 //		 
-	private static void traverseproto(LuaState.global_State g, Proto f) {
+	private static void traverseproto(LuaState.global_State g, LuaObject.Proto f) {
 		int i;
 		if (f.source != null) {
 			stringmark(f.source);
@@ -512,7 +512,7 @@ public class LuaGC {
 					return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LUA_STATE)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * th.stacksize + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CALLINFO)) * th.size_ci;
 				}
 			case LuaObject.LUA_TPROTO: {
-					Proto p = LuaState.gco2p(o);
+					LuaObject.Proto p = LuaState.gco2p(o);
 					g.gray = p.gclist;
 					traverseproto(g, p);
 					//typeof(Proto)

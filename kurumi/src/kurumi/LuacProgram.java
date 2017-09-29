@@ -119,17 +119,17 @@ public class LuacProgram {
 		return i;
 	}
 
-	private static Proto toproto(LuaState.lua_State L, int i) {
+	private static LuaObject.Proto toproto(LuaState.lua_State L, int i) {
 		return LuaObject.clvalue(TValue.plus(L.top, i)).l.p;
 	}
 
-	private static Proto combine(LuaState.lua_State L, int n) {
+	private static LuaObject.Proto combine(LuaState.lua_State L, int n) {
 		if (n == 1) {
 			return toproto(L, -1);
 		}
 		else {
 			int i, pc;
-			Proto f = LuaFunc.luaF_newproto(L);
+			LuaObject.Proto f = LuaFunc.luaF_newproto(L);
 			LuaObject.setptvalue2s(L, L.top, f);
 			LuaDo.incr_top(L);
 			f.source = LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("=(" + PROGNAME + ")"));
@@ -171,7 +171,7 @@ public class LuacProgram {
 		Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
 		int argc = s.argc;
 		String[] argv = s.argv;
-		Proto f;
+		LuaObject.Proto f;
 		int i;
 		if (LuaAPI.lua_checkstack(L, argc) == 0) {
 			fatal(LuaConf.CharPtr.toCharPtr("too many input files"));

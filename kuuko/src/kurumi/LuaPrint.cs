@@ -10,7 +10,7 @@ namespace kurumi
 
 	public class LuaPrint
 	{
-		public static void luaU_print(Proto f, int full) 
+		public static void luaU_print(LuaObject.Proto f, int full) 
 		{
 			PrintFunction(f, full);
 		}
@@ -90,7 +90,7 @@ namespace kurumi
 			LuaConf.putchar('"');
 		}
 
-		private static void PrintConstant(Proto f, int i)
+		private static void PrintConstant(LuaObject.Proto f, int i)
 		{
 			/*const*/ TValue o = f.k[i];
 			switch (LuaObject.ttype(o))
@@ -124,7 +124,7 @@ namespace kurumi
 			}
 		}
 
-		private static void PrintCode(Proto f)
+		private static void PrintCode(LuaObject.Proto f)
 		{
 			long[]/*UInt32[]*//*Instruction[]*/ code = f.code;
 			int pc, n = f.sizecode;
@@ -289,7 +289,7 @@ namespace kurumi
 		
 		//#define S(x)	x,SS(x)
 
-		private static void PrintHeader(Proto f)
+		private static void PrintHeader(LuaObject.Proto f)
 		{
 			LuaConf.CharPtr s = LuaObject.getstr(f.source);
 			if (s.get(0) == '@' || s.get(0) == '=')
@@ -316,7 +316,7 @@ namespace kurumi
 				f.sizelocvars, SS(f.sizelocvars), f.sizek, SS(f.sizek), f.sizep, SS(f.sizep));
 		}
 
-		private static void PrintConstants(Proto f)
+		private static void PrintConstants(LuaObject.Proto f)
 		{
 			int i, n = f.sizek;
 			LuaConf.printf(LuaConf.CharPtr.toCharPtr("constants (%d) for %p:\n"), n, LuaConf.VOID(f));
@@ -328,7 +328,7 @@ namespace kurumi
 			}
 		}
 
-		private static void PrintLocals(Proto f)
+		private static void PrintLocals(LuaObject.Proto f)
 		{
 			int i, n = f.sizelocvars;
 			LuaConf.printf(LuaConf.CharPtr.toCharPtr("locals (%d) for %p:\n"), n, LuaConf.VOID(f));
@@ -339,7 +339,7 @@ namespace kurumi
 			}
 		}
 
-		private static void PrintUpvalues(Proto f)
+		private static void PrintUpvalues(LuaObject.Proto f)
 		{
 			int i, n = f.sizeupvalues;
 			LuaConf.printf(LuaConf.CharPtr.toCharPtr("upvalues (%d) for %p:\n"), n, LuaConf.VOID(f));
@@ -353,7 +353,7 @@ namespace kurumi
 			}
 		}
 
-		public static void PrintFunction(Proto f, int full)
+		public static void PrintFunction(LuaObject.Proto f, int full)
 		{
 			int i, n = f.sizep;
 			PrintHeader(f);

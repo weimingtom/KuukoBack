@@ -95,7 +95,7 @@ public class LuaParser {
 	
 	/* state needed to generate code for a given function */
 	public static class FuncState {	
-		public Proto f;  /* current function header */
+		public LuaObject.Proto f;  /* current function header */
 		public Table h;  /* table to find (and reuse) elements in `k' */
 		public FuncState prev;  /* enclosing function */
 		public LuaLex.LexState ls;  /* lexical state */
@@ -225,7 +225,7 @@ public class LuaParser {
 
 	private static int registerlocalvar(LuaLex.LexState ls, TString varname) {
 		FuncState fs = ls.fs;
-		Proto f = fs.f;
+		LuaObject.Proto f = fs.f;
 		int oldsize = f.sizelocvars;
 		LuaObject.LocVar[][] locvars_ref = new LuaObject.LocVar[1][];
 		locvars_ref[0] = f.locvars;
@@ -269,7 +269,7 @@ public class LuaParser {
 
 	private static int indexupvalue(FuncState fs, TString name, expdesc v) {
 		int i;
-		Proto f = fs.f;
+		LuaObject.Proto f = fs.f;
 		int oldsize = f.sizeupvalues;
 		for (i=0; i<f.nups; i++) {
 			if ((int)fs.upvalues[i].k == (int)expkindUtil.expkindToInt(v.k) && fs.upvalues[i].info == v.u.s.info) {
@@ -413,10 +413,10 @@ public class LuaParser {
 
 	private static void pushclosure(LuaLex.LexState ls, FuncState func, expdesc v) {
 		FuncState fs = ls.fs;
-		Proto f = fs.f;
+		LuaObject.Proto f = fs.f;
 		int oldsize = f.sizep;
 		int i;
-		Proto[][] p_ref = new Proto[1][];
+		LuaObject.Proto[][] p_ref = new LuaObject.Proto[1][];
 		p_ref[0] = f.p;
 		int[] sizep_ref = new int[1];
 		sizep_ref[0] = f.sizep;
@@ -437,7 +437,7 @@ public class LuaParser {
 
 	private static void open_func(LuaLex.LexState ls, FuncState fs) {
 		LuaState.lua_State L = ls.L;
-		Proto f = LuaFunc.luaF_newproto(L);
+		LuaObject.Proto f = LuaFunc.luaF_newproto(L);
 		fs.f = f;
 		fs.prev = ls.fs; // linked list of funcstates 
 		fs.ls = ls;
@@ -462,12 +462,12 @@ public class LuaParser {
 		LuaDo.incr_top(L);
 	}
 
-	private static Proto lastfunc;
+	private static LuaObject.Proto lastfunc;
 
 	private static void close_func(LuaLex.LexState ls) {
 		LuaState.lua_State L = ls.L;
 		FuncState fs = ls.fs;
-		Proto f = fs.f;
+		LuaObject.Proto f = fs.f;
 		lastfunc = f;
 		removevars(ls, 0);
 		LuaCode.luaK_ret(fs, 0, 0); // final return 
@@ -486,7 +486,7 @@ public class LuaParser {
 		LuaMem.luaM_reallocvector_TValue(L, k_ref, f.sizek, fs.nk, new ClassType(ClassType.TYPE_TVALUE)); //, TValue - ref
 		f.k = k_ref[0];
 		f.sizek = fs.nk;
-		Proto[][] p_ref = new Proto[1][];
+		LuaObject.Proto[][] p_ref = new LuaObject.Proto[1][];
 		p_ref[0] = f.p;
 		LuaMem.luaM_reallocvector_Proto(L, p_ref, f.sizep, fs.np, new ClassType(ClassType.TYPE_PROTO)); //, Proto - ref
 		f.p = p_ref[0];
@@ -515,7 +515,7 @@ public class LuaParser {
 		}
 	}
 
-	public static Proto luaY_parser(LuaState.lua_State L, ZIO z, LuaZIO.Mbuffer buff, LuaConf.CharPtr name) {
+	public static LuaObject.Proto luaY_parser(LuaState.lua_State L, ZIO z, LuaZIO.Mbuffer buff, LuaConf.CharPtr name) {
 		LuaLex.LexState lexstate = new LuaLex.LexState();
 		FuncState funcstate = new FuncState();
 		lexstate.buff = buff;
@@ -679,7 +679,7 @@ public class LuaParser {
 	private static void parlist(LuaLex.LexState ls) {
 		// parlist . [ param { `,' param } ] 
 		FuncState fs = ls.fs;
-		Proto f = fs.f;
+		LuaObject.Proto f = fs.f;
 		int nparams = 0;
 		f.is_vararg = 0;
 		if (ls.t.token != ')') {

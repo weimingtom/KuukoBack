@@ -1102,7 +1102,7 @@ TValue.dec(top); // remove key  - ref
 			return LuaConf.CharPtr.toCharPtr("");
 		}
 		else {
-			Proto p = f.l.p;
+			LuaObject.Proto p = f.l.p;
 			if (!(1 <= n && n <= p.sizeupvalues)) {
 				return null;
 			}

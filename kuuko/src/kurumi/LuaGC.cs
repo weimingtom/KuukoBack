@@ -470,7 +470,7 @@ namespace kurumi
 		 ** All marks are conditional because a GC may happen while the
 		 ** prototype is still being created
 		 */
-		private static void traverseproto(LuaState.global_State g, Proto f) 
+		private static void traverseproto(LuaState.global_State g, LuaObject.Proto f) 
 		{
 			int i;
 			if (f.source != null) 
@@ -627,7 +627,7 @@ namespace kurumi
 					}
 				case LuaObject.LUA_TPROTO:
 					{
-						Proto p = LuaState.gco2p(o);
+						LuaObject.Proto p = LuaState.gco2p(o);
 						g.gray = p.gclist;
 						traverseproto(g, p);
                         //typeof(Proto)

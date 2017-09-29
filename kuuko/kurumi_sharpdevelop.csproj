@@ -95,7 +95,6 @@
     <Compile Include="src\kurumi\LuaZIO.cs" />
     <Compile Include="src\kurumi\OpCodeUtil.cs" />
     <Compile Include="src\kurumi\Program.cs" />
-    <Compile Include="src\kurumi\Proto.cs" />
     <Compile Include="src\kurumi\RESERVED.cs" />
     <Compile Include="src\kurumi\resume_delegate.cs" />
     <Compile Include="src\kurumi\RootGCRef.cs" />

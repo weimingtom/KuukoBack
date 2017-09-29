@@ -141,9 +141,9 @@ namespace kurumi
 			}
 		}
 
-		public static Proto luaF_newproto(LuaState.lua_State L) 
+		public static LuaObject.Proto luaF_newproto(LuaState.lua_State L) 
 		{
-			Proto f = LuaMem.luaM_new_Proto(L, new ClassType(ClassType.TYPE_PROTO));
+			LuaObject.Proto f = LuaMem.luaM_new_Proto(L, new ClassType(ClassType.TYPE_PROTO));
 			LuaGC.luaC_link(L, LuaState.obj2gco(f), (byte)LuaObject.LUA_TPROTO);
 			f.k = null;
 			f.sizek = 0;
@@ -167,7 +167,7 @@ namespace kurumi
 			return f;
 		}
 
-		public static void luaF_freeproto(LuaState.lua_State L, Proto f) 
+		public static void luaF_freeproto(LuaState.lua_State L, LuaObject.Proto f) 
 		{
             /*UInt32*/
             /*Instruction*/
@@ -194,7 +194,7 @@ namespace kurumi
 		 ** Look for n-th local variable at line `line' in function `func'.
 		 ** Returns null if not found.
 		 */
-		public static LuaConf.CharPtr luaF_getlocalname(Proto f, int local_number, int pc) 
+		public static LuaConf.CharPtr luaF_getlocalname(LuaObject.Proto f, int local_number, int pc) 
 		{
 			int i;
 			for (i = 0; i<f.sizelocvars && f.locvars[i].startpc <= pc; i++) 

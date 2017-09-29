@@ -134,7 +134,7 @@ namespace kurumi
 			}
 		}
 
-		private static void LoadCode(LoadState S, Proto f)
+		private static void LoadCode(LoadState S, LuaObject.Proto f)
 		{
 			int n = LoadInt(S);
             /*UInt32*/
@@ -144,7 +144,7 @@ namespace kurumi
 			f.code = (long[]/*UInt32[]*//*Instruction[]*/)LoadVector(S, new ClassType(ClassType.TYPE_LONG), n);
 		}
 
-		private static void LoadConstants(LoadState S, Proto f)
+		private static void LoadConstants(LoadState S, LuaObject.Proto f)
 		{
 			int i,n;
 			n = LoadInt(S);
@@ -200,7 +200,7 @@ namespace kurumi
 			}
 		}
 
-		private static void LoadDebug(LoadState S, Proto f)
+		private static void LoadDebug(LoadState S, LuaObject.Proto f)
 		{
 			int i, n;
 			n = LoadInt(S);
@@ -233,9 +233,9 @@ namespace kurumi
 			}
 		}
 
-		private static Proto LoadFunction(LoadState S, TString p)
+		private static LuaObject.Proto LoadFunction(LoadState S, TString p)
 		{
-			Proto f;
+			LuaObject.Proto f;
 			if (++S.L.nCcalls > LuaConf.LUAI_MAXCCALLS) 
 			{
 				error(S, LuaConf.CharPtr.toCharPtr("code too deep"));
@@ -278,7 +278,7 @@ namespace kurumi
 		/*
 		 ** load precompiled chunk
 		 */
-		public static Proto luaU_undump(LuaState.lua_State L, ZIO Z, LuaZIO.Mbuffer buff, LuaConf.CharPtr name)
+		public static LuaObject.Proto luaU_undump(LuaState.lua_State L, ZIO Z, LuaZIO.Mbuffer buff, LuaConf.CharPtr name)
 		{
 			LoadState S = new LoadState();
 			if (name.get(0) == '@' || name.get(0) == '=')

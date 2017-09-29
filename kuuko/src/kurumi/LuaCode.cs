@@ -404,7 +404,7 @@ namespace kurumi
 		{
 			LuaState.lua_State L = fs.L;
 			TValue idx = LuaTable.luaH_set(L, fs.h, k);
-			Proto f = fs.f;
+			LuaObject.Proto f = fs.f;
 			int oldsize = f.sizek;
 			if (LuaObject.ttisnumber(idx))
 			{
@@ -1238,7 +1238,7 @@ namespace kurumi
 
 		private static int luaK_code(LuaParser.FuncState fs, int i, int line)
 		{
-			Proto f = fs.f;
+			LuaObject.Proto f = fs.f;
 			dischargejpc(fs);  /* `pc' will change */
 			/* put new instruction in code array */
 			long[][] code_ref = new long[1][];
