@@ -655,6 +655,14 @@ namespace kurumi
 			return status;
 		}
 
+		public class resume_delegate : LuaDo.Pfunc
+		{
+			public void exec(LuaState.lua_State L, object ud)
+			{
+				LuaDo.resume(L, ud);
+			}
+		}		
+		
 		public static int lua_yield(LuaState.lua_State L, int nresults) 
 		{
 			LuaConf.luai_userstateyield(L, nresults);

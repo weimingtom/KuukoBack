@@ -173,3 +173,5 @@ Proto->LuaObject.Proto
 RESERVED->LuaLex.RESERVED
 16:45 2017/9/29
 
+resume_delegate->LuaDo.resume_delegate
+16:55 2017/9/29

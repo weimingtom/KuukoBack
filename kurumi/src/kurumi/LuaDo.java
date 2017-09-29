@@ -573,6 +573,14 @@ TValue.inc(top_ref); //ref
 		return status;
 	}
 
+	public static class resume_delegate implements LuaDo.Pfunc 
+	{
+		public void exec(LuaState.lua_State L, Object ud) 
+		{
+			LuaDo.resume(L, ud);
+		}
+	}	
+	
 	public static int lua_yield(LuaState.lua_State L, int nresults) {
 		LuaConf.luai_userstateyield(L, nresults);
 		LuaLimits.lua_lock(L);
