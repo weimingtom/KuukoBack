@@ -994,13 +994,42 @@ public class LuaParser {
 		}
 	}
 
+	public static class priority_
+	{	
+		public byte left; /*Byte*/ /*lu_byte*/ /* left priority for each binary operator */
+		public byte right; /*Byte*/ /*lu_byte*/ /* right priority */
+	
+		/*Byte*/ /*lu_byte*/
+		public priority_(byte left, byte right)
+		{
+			this.left = left;
+			this.right = right;
+		}
+	}	
+	
 	// ORDER OPR 
 	// `+' `-' `/' `%' 
 	// power and concat (right associative) 
 	// equality and inequality 
 	// order 
 	// logical (and/or) 
-	private static priority_[] priority = { new priority_((byte)6, (byte)6), new priority_((byte)6, (byte)6), new priority_((byte)7, (byte)7), new priority_((byte)7, (byte)7), new priority_((byte)7, (byte)7), new priority_((byte)10, (byte)9), new priority_((byte)5, (byte)4), new priority_((byte)3, (byte)3), new priority_((byte)3, (byte)3), new priority_((byte)3, (byte)3), new priority_((byte)3, (byte)3), new priority_((byte)3, (byte)3), new priority_((byte)3, (byte)3), new priority_((byte)2, (byte)2), new priority_((byte)1, (byte)1) };
+	private static priority_[] priority = { 
+		new priority_((byte)6, (byte)6), 
+		new priority_((byte)6, (byte)6), 
+		new priority_((byte)7, (byte)7), 
+		new priority_((byte)7, (byte)7), 
+		new priority_((byte)7, (byte)7), 
+		new priority_((byte)10, (byte)9), 
+		new priority_((byte)5, (byte)4), 
+		new priority_((byte)3, (byte)3), 
+		new priority_((byte)3, (byte)3), 
+		new priority_((byte)3, (byte)3), 
+		new priority_((byte)3, (byte)3), 
+		new priority_((byte)3, (byte)3), 
+		new priority_((byte)3, (byte)3), 
+		new priority_((byte)2, (byte)2), 
+		new priority_((byte)1, (byte)1) 
+	};
 
 	public static final int UNARY_PRIORITY = 8; // priority for unary operators 
 

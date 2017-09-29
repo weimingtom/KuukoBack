@@ -163,3 +163,6 @@ OpMode->LuaOpCodes.OpMode
 
 Pfunc->LuaDo.Pfunc
 14:10 2017/9/29
+
+priority_->LuaParser.priority_
+14:14 2017/9/29
