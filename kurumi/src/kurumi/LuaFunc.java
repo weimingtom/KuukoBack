@@ -18,7 +18,7 @@ public class LuaFunc {
 		return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LCLOSURE)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * (n - 1); //typeof(LClosure)//typeof(TValue)
 	}
 
-	public static LuaObject.Closure luaF_newCclosure(LuaState.lua_State L, int nelems, Table e) {
+	public static LuaObject.Closure luaF_newCclosure(LuaState.lua_State L, int nelems, LuaObject.Table e) {
 		//Closure c = (Closure)luaM_malloc(L, sizeCclosure(nelems));
 		LuaObject.Closure c = LuaMem.luaM_new_Closure(L, new ClassType(ClassType.TYPE_CLOSURE));
 		LuaMem.AddTotalBytes(L, sizeCclosure(nelems));
@@ -33,7 +33,7 @@ public class LuaFunc {
 		return c;
 	}
 
-	public static LuaObject.Closure luaF_newLclosure(LuaState.lua_State L, int nelems, Table e) {
+	public static LuaObject.Closure luaF_newLclosure(LuaState.lua_State L, int nelems, LuaObject.Table e) {
 		//Closure c = (Closure)luaM_malloc(L, sizeLclosure(nelems));
 		LuaObject.Closure c = LuaMem.luaM_new_Closure(L, new ClassType(ClassType.TYPE_CLOSURE));
 		LuaMem.AddTotalBytes(L, sizeLclosure(nelems));

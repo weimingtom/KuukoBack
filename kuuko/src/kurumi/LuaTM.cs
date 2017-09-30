@@ -9,14 +9,14 @@ namespace kurumi
 
 	public class LuaTM
 	{
-		public static TValue gfasttm(LuaState.global_State g, Table et, TMS e)
+		public static TValue gfasttm(LuaState.global_State g, LuaObject.Table et, TMS e)
 		{
 			return (et == null) ? null :
 				((et.flags & (1 << (int)e)) != 0) ? null :
 				luaT_gettm(et, e, g.tmname[(int)e]);
 		}
 
-		public static TValue fasttm(LuaState.lua_State l, Table et, TMS e) 
+		public static TValue fasttm(LuaState.lua_State l, LuaObject.Table et, TMS e) 
 		{ 
 			return gfasttm(LuaState.G(l), et, e); 
 		}
@@ -69,7 +69,7 @@ namespace kurumi
 		 ** function to be used with macro "fasttm": optimized for absence of
 		 ** tag methods
 		 */
-		public static TValue luaT_gettm(Table events, TMS event_, TString ename) 
+		public static TValue luaT_gettm(LuaObject.Table events, TMS event_, TString ename) 
 		{
 			//const
 			TValue tm = LuaTable.luaH_getstr(events, ename);
@@ -88,7 +88,7 @@ namespace kurumi
 
 		public static TValue luaT_gettmbyobj(LuaState.lua_State L, TValue o, TMS event_) 
 		{
-			Table mt;
+			LuaObject.Table mt;
 			switch (LuaObject.ttype(o))
 			{
 				case Lua.LUA_TTABLE:

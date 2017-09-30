@@ -152,7 +152,7 @@ namespace kurumi
 			return res;
 		}
 
-		public static Udata luaS_newudata(LuaState.lua_State L, int/*uint*/ s, Table e)
+		public static Udata luaS_newudata(LuaState.lua_State L, int/*uint*/ s, LuaObject.Table e)
 		{
 			Udata u = new Udata();
 			u.uv.marked = LuaGC.luaC_white(LuaState.G(L));  /* is not finalized */
@@ -167,7 +167,7 @@ namespace kurumi
 			return u;
 		}
 
-        public static Udata luaS_newudata(LuaState.lua_State L, ClassType t, Table e)
+        public static Udata luaS_newudata(LuaState.lua_State L, ClassType t, LuaObject.Table e)
 		{
 			Udata u = new Udata();
 			u.uv.marked = LuaGC.luaC_white(LuaState.G(L));  /* is not finalized */

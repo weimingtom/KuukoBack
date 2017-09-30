@@ -7,8 +7,8 @@ namespace kurumi
 {
 	public class Udata_uv : LuaState.GCObject
 	{
-		public Table metatable;
-		public Table env;
+		public LuaObject.Table metatable;
+		public LuaObject.Table env;
 		public int len; /*uint*/
 	}
 }

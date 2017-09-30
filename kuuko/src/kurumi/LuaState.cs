@@ -182,7 +182,7 @@ namespace kurumi
 			public TValue l_registry = new TValue();
 			public lua_State mainthread;
 			public UpVal uvhead = new UpVal();  /* head of double-linked list of all open upvalues */
-			public Table[] mt = new Table[LuaObject.NUM_TAGS];  /* metatables for basic types */
+			public LuaObject.Table[] mt = new LuaObject.Table[LuaObject.NUM_TAGS];  /* metatables for basic types */
 			public TString[] tmname = new TString[(int)TMS.TM_N];  /* array with tag-method names */
 		}
 		
@@ -268,9 +268,9 @@ namespace kurumi
 	            return (LuaObject.Closure)this;
 	        }
 	
-	        public Table getH()
+	        public LuaObject.Table getH()
 	        {
-	            return (Table)this;
+	            return (LuaObject.Table)this;
 	        }
 	
 	        public LuaObject.Proto getP()
@@ -437,9 +437,9 @@ namespace kurumi
             return (LuaObject.Closure)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TFUNCTION, o.getCl()); 
 		}
 		
-		public static Table gco2h(GCObject o) 
+		public static LuaObject.Table gco2h(GCObject o) 
 		{
-            return (Table)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TTABLE, o.getH()); 
+            return (LuaObject.Table)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TTABLE, o.getH()); 
 		}
 		
 		public static LuaObject.Proto gco2p(GCObject o) 

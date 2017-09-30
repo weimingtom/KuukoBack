@@ -190,3 +190,6 @@ SParser->LuaDo.SParser
 
 stringtable->LuaState.stringtable
 14:02 2017/9/30
+
+Table->LuaObject.Table
+14:07 2017/9/30

@@ -317,7 +317,7 @@ namespace kurumi
 		{
 			int i;
 			int nfixargs = p.numparams;
-			Table htab = null;
+			LuaObject.Table htab = null;
 			TValue/*StkId*/ base_, fixed_;
 			for (; actual < nfixargs; ++actual) 
 			{

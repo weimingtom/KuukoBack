@@ -24,7 +24,7 @@ public class LuaTable {
 //		 ** Hence even when the load factor reaches 100%, performance remains good.
 //		 
 
-	public static LuaObject.Node gnode(Table t, int i) {
+	public static LuaObject.Node gnode(LuaObject.Table t, int i) {
 		return t.node[i];
 	}
 
@@ -60,15 +60,15 @@ public class LuaTable {
 	public static final int MAXASIZE = (1 << MAXBITS);
 
 	//public static Node gnode(Table t, int i)	{return t.node[i];}
-	public static LuaObject.Node hashpow2(Table t, double n) { //lua_Number
+	public static LuaObject.Node hashpow2(LuaObject.Table t, double n) { //lua_Number
 		return gnode(t, (int)LuaConf.lmod(n, LuaObject.sizenode(t)));
 	}
 
-	public static LuaObject.Node hashstr(Table t, TString str) {
+	public static LuaObject.Node hashstr(LuaObject.Table t, TString str) {
 		return hashpow2(t, str.getTsv().hash);
 	}
 
-	public static LuaObject.Node hashboolean(Table t, int p) {
+	public static LuaObject.Node hashboolean(LuaObject.Table t, int p) {
 		return hashpow2(t, p);
 	}
 
@@ -76,11 +76,11 @@ public class LuaTable {
 //		 ** for some types, it is better to avoid modulus by power of 2, as
 //		 ** they tend to have many 2 factors.
 //		 
-	public static LuaObject.Node hashmod(Table t, int n) {
+	public static LuaObject.Node hashmod(LuaObject.Table t, int n) {
 		return gnode(t, (n % ((LuaObject.sizenode(t) - 1) | 1)));
 	}
 
-	public static LuaObject.Node hashpointer(Table t, Object p) {
+	public static LuaObject.Node hashpointer(LuaObject.Table t, Object p) {
 		return hashmod(t, p.hashCode());
 	}
 
@@ -99,7 +99,7 @@ public class LuaTable {
 //        
 //		 ** hash for lua_Numbers
 //		 
-	private static LuaObject.Node hashnum(Table t, double n) { //lua_Number
+	private static LuaObject.Node hashnum(LuaObject.Table t, double n) { //lua_Number
 		byte[] a = ClassType.GetBytes(n);
 		for (int i = 1; i < a.length; i++) {
 			a[0] += a[i];
@@ -111,7 +111,7 @@ public class LuaTable {
 //		 ** returns the `main' position of an element in a table (that is, the index
 //		 ** of its hash value)
 //		 
-	private static LuaObject.Node mainposition(Table t, TValue key) {
+	private static LuaObject.Node mainposition(LuaObject.Table t, TValue key) {
 		switch (LuaObject.ttype(key)) {
 			case Lua.LUA_TNUMBER: {
 					return hashnum(t, LuaObject.nvalue(key));
@@ -153,7 +153,7 @@ public class LuaTable {
 //		 ** elements in the array part, then elements in the hash part. The
 //		 ** beginning of a traversal is signalled by -1.
 //		 
-	private static int findindex(LuaState.lua_State L, Table t, TValue key) { //StkId
+	private static int findindex(LuaState.lua_State L, LuaObject.Table t, TValue key) { //StkId
 		int i;
 		if (LuaObject.ttisnil(key)) {
 			return -1; // first iteration 
@@ -181,7 +181,7 @@ public class LuaTable {
 		}
 	}
 
-	public static int luaH_next(LuaState.lua_State L, Table t, TValue key) { //StkId
+	public static int luaH_next(LuaState.lua_State L, LuaObject.Table t, TValue key) { //StkId
 		int i = findindex(L, t, key); // find original element 
 		for (i++; i < t.sizearray; i++) {
 			// try first array part 
@@ -247,7 +247,7 @@ public class LuaTable {
 		}
 	}
 
-	private static int numusearray(Table t, int[] nums) {
+	private static int numusearray(LuaObject.Table t, int[] nums) {
 		int lg;
 		int ttlg; // 2^lg 
 		int ause = 0; // summation of `nums' 
@@ -274,7 +274,7 @@ public class LuaTable {
 		return ause;
 	}
 
-	private static int numusehash(Table t, int[] nums, int[] pnasize) { //ref
+	private static int numusehash(LuaObject.Table t, int[] nums, int[] pnasize) { //ref
 		int totaluse = 0; // total number of elements 
 		int ause = 0; // summation of `nums' 
 		int i = LuaObject.sizenode(t);
@@ -289,7 +289,7 @@ public class LuaTable {
 		return totaluse;
 	}
 
-	private static void setarrayvector(LuaState.lua_State L, Table t, int size) {
+	private static void setarrayvector(LuaState.lua_State L, LuaObject.Table t, int size) {
 		int i;
 		TValue[][] array_ref = new TValue[1][];
 		array_ref[0] = t.array;
@@ -301,7 +301,7 @@ public class LuaTable {
 		t.sizearray = size;
 	}
 
-	private static void setnodevector(LuaState.lua_State L, Table t, int size) {
+	private static void setnodevector(LuaState.lua_State L, LuaObject.Table t, int size) {
 		int lsize;
 		if (size == 0) {
 			// no elements to hash part? 
@@ -328,7 +328,7 @@ public class LuaTable {
 		t.lastfree = size; // all positions are free 
 	}
 
-	private static void resize(LuaState.lua_State L, Table t, int nasize, int nhsize) {
+	private static void resize(LuaState.lua_State L, LuaObject.Table t, int nasize, int nhsize) {
 		int i;
 		int oldasize = t.sizearray;
 		int oldhsize = t.lsizenode;
@@ -365,12 +365,12 @@ public class LuaTable {
 		}
 	}
 
-	public static void luaH_resizearray(LuaState.lua_State L, Table t, int nasize) {
+	public static void luaH_resizearray(LuaState.lua_State L, LuaObject.Table t, int nasize) {
 		int nsize = (LuaObject.Node.isEqual(t.node[0], dummynode)) ? 0 : LuaObject.sizenode(t);
 		resize(L, t, nasize, nsize);
 	}
 
-	private static void rehash(LuaState.lua_State L, Table t, TValue ek) {
+	private static void rehash(LuaState.lua_State L, LuaObject.Table t, TValue ek) {
 		int[] nasize = new int[1];
 		int na;
 		int[] nums = new int[MAXBITS + 1]; // nums[i] = number of keys between 2^(i-1) and 2^i 
@@ -395,8 +395,8 @@ public class LuaTable {
 //		 ** }=============================================================
 //		 
 
-	public static Table luaH_new(LuaState.lua_State L, int narray, int nhash) {
-		Table t = LuaMem.luaM_new_Table(L, new ClassType(ClassType.TYPE_TABLE));
+	public static LuaObject.Table luaH_new(LuaState.lua_State L, int narray, int nhash) {
+		LuaObject.Table t = LuaMem.luaM_new_Table(L, new ClassType(ClassType.TYPE_TABLE));
 		LuaGC.luaC_link(L, LuaState.obj2gco(t), (byte)Lua.LUA_TTABLE);
 		t.metatable = null;
 		t.flags = LuaLimits.cast_byte(~0);
@@ -410,7 +410,7 @@ public class LuaTable {
 		return t;
 	}
 
-	public static void luaH_free(LuaState.lua_State L, Table t) {
+	public static void luaH_free(LuaState.lua_State L, LuaObject.Table t) {
 		if (LuaObject.Node.isNotEqual(t.node[0], dummynode)) {
 			LuaMem.luaM_freearray_Node(L, t.node, new ClassType(ClassType.TYPE_NODE));
 		}
@@ -418,7 +418,7 @@ public class LuaTable {
 		LuaMem.luaM_free_Table(L, t, new ClassType(ClassType.TYPE_TABLE));
 	}
 
-	private static LuaObject.Node getfreepos(Table t) {
+	private static LuaObject.Node getfreepos(LuaObject.Table t) {
 		while (t.lastfree-- > 0) {
 			if (LuaObject.ttisnil(gkey(t.node[t.lastfree]))) {
 				return t.node[t.lastfree];
@@ -434,7 +434,7 @@ public class LuaTable {
 //		 ** put new key in its main position; otherwise (colliding node is in its main
 //		 ** position), new key goes to an empty position.
 //		 
-	private static TValue newkey(LuaState.lua_State L, Table t, TValue key) {
+	private static TValue newkey(LuaState.lua_State L, LuaObject.Table t, TValue key) {
 		LuaObject.Node mp = mainposition(t, key);
 		if (!LuaObject.ttisnil(gval(mp)) || LuaObject.Node.isEqual(mp, dummynode)) {
 			LuaObject.Node othern;
@@ -476,7 +476,7 @@ public class LuaTable {
 //        
 //		 ** search function for integers
 //		 
-	public static TValue luaH_getnum(Table t, int key) {
+	public static TValue luaH_getnum(LuaObject.Table t, int key) {
 		// (1 <= key && key <= t.sizearray) 
 		if ((long)(((long)(key - 1)) & 0xffffffffL) < (long)(((long)t.sizearray) & 0xffffffffL)) { //uint - uint
 			return t.array[key - 1];
@@ -500,7 +500,7 @@ public class LuaTable {
 //        
 //		 ** search function for strings
 //		 
-	public static TValue luaH_getstr(Table t, TString key) {
+	public static TValue luaH_getstr(LuaObject.Table t, TString key) {
 		LuaObject.Node n = hashstr(t, key);
 		do {
 			// check whether `key' is somewhere in the chain 
@@ -517,7 +517,7 @@ public class LuaTable {
 //        
 //		 ** main search function
 //		 
-	public static TValue luaH_get(Table t, TValue key) {
+	public static TValue luaH_get(LuaObject.Table t, TValue key) {
 		switch (LuaObject.ttype(key)) {
 			case Lua.LUA_TNIL: {
 					return LuaObject.luaO_nilobject;
@@ -561,7 +561,7 @@ public class LuaTable {
 		}
 	}
 
-	public static TValue luaH_set(LuaState.lua_State L, Table t, TValue key) {
+	public static TValue luaH_set(LuaState.lua_State L, LuaObject.Table t, TValue key) {
 		TValue p = luaH_get(t, key);
 		t.flags = 0;
 		if (p != LuaObject.luaO_nilobject) {
@@ -578,7 +578,7 @@ public class LuaTable {
 		}
 	}
 
-	public static TValue luaH_setnum(LuaState.lua_State L, Table t, int key) {
+	public static TValue luaH_setnum(LuaState.lua_State L, LuaObject.Table t, int key) {
 		TValue p = luaH_getnum(t, key);
 		if (p != LuaObject.luaO_nilobject) {
 			return (TValue)p;
@@ -590,7 +590,7 @@ public class LuaTable {
 		}
 	}
 
-	public static TValue luaH_setstr(LuaState.lua_State L, Table t, TString key) {
+	public static TValue luaH_setstr(LuaState.lua_State L, LuaObject.Table t, TString key) {
 		TValue p = luaH_getstr(t, key);
 		if (p != LuaObject.luaO_nilobject) {
 			return (TValue)p;
@@ -602,7 +602,7 @@ public class LuaTable {
 		}
 	}
 
-	public static int unbound_search(Table t, int j) { //uint
+	public static int unbound_search(LuaObject.Table t, int j) { //uint
 		int i = j; // i is zero or a present index  - uint
 		j++;
 		// find `i' and `j' such that i is present and j is not 
@@ -636,7 +636,7 @@ public class LuaTable {
 //		 ** Try to find a boundary in table `t'. A `boundary' is an integer index
 //		 ** such that t[i] is non-nil and t[i+1] is nil (and 0 if t[1] is nil).
 //		 
-	public static int luaH_getn(Table t) {
+	public static int luaH_getn(LuaObject.Table t) {
 		int j = (int)t.sizearray; //uint - uint
 		if (j > 0 && LuaObject.ttisnil(t.array[j - 1])) {
 			// there is a boundary in the array part: (binary) search for it 

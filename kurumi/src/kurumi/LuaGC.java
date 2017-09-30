@@ -148,7 +148,7 @@ public class LuaGC {
 		}
 	}
 
-	public static void luaC_barriert(LuaState.lua_State L, Table t, TValue v) {
+	public static void luaC_barriert(LuaState.lua_State L, LuaObject.Table t, TValue v) {
 		if (valiswhite(v) && isblack(LuaState.obj2gco(t))) {
 			luaC_barrierback(L, t);
 		}
@@ -160,7 +160,7 @@ public class LuaGC {
 		}
 	}
 
-	public static void luaC_objbarriert(LuaState.lua_State L, Table t, Object o) {
+	public static void luaC_objbarriert(LuaState.lua_State L, LuaObject.Table t, Object o) {
 		if (iswhite(LuaState.obj2gco(o)) && isblack(LuaState.obj2gco(t))) {
 			luaC_barrierback(L, t);
 		}
@@ -249,7 +249,7 @@ public class LuaGC {
 					return;
 				}
 			case Lua.LUA_TUSERDATA: {
-					Table mt = LuaState.gco2u(o).metatable;
+					LuaObject.Table mt = LuaState.gco2u(o).metatable;
 					gray2black(o); // udata are never gray 
 					if (mt != null) {
 						markobject(g, mt);
@@ -336,7 +336,7 @@ public class LuaGC {
 		return deadmem;
 	}
 
-	private static int traversetable(LuaState.global_State g, Table h) {
+	private static int traversetable(LuaState.global_State g, LuaObject.Table h) {
 		int i;
 		int weakkey = 0;
 		int weakvalue = 0;
@@ -486,7 +486,7 @@ public class LuaGC {
 		gray2black(o);
 		switch (o.getGch().tt) {
 			case Lua.LUA_TTABLE: {
-					Table h = LuaState.gco2h(o);
+					LuaObject.Table h = LuaState.gco2h(o);
 					g.gray = h.gclist;
 					if (traversetable(g, h) != 0) { // table is weak? 
 						black2gray(o); // keep it gray 
@@ -563,7 +563,7 @@ public class LuaGC {
 //		 
 	private static void cleartable(LuaState.GCObject l) {
 		while (l != null) {
-			Table h = LuaState.gco2h(l);
+			LuaObject.Table h = LuaState.gco2h(l);
 			int i = h.sizearray;
 			LuaLimits.lua_assert(testbit(h.marked, VALUEWEAKBIT) || testbit(h.marked, KEYWEAKBIT));
 			if (testbit(h.marked, VALUEWEAKBIT)) {
@@ -914,7 +914,7 @@ public class LuaGC {
 	}
 
 
-	public static void luaC_barrierback(LuaState.lua_State L, Table t) {
+	public static void luaC_barrierback(LuaState.lua_State L, LuaObject.Table t) {
 		LuaState.global_State g = LuaState.G(L);
 		LuaState.GCObject o = LuaState.obj2gco(t);
 		LuaLimits.lua_assert(isblack(o) && !isdead(g, o));

@@ -174,7 +174,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_barriert(LuaState.lua_State L, Table t, TValue v)
+		public static void luaC_barriert(LuaState.lua_State L, LuaObject.Table t, TValue v)
 		{
 			if (valiswhite(v) && isblack(LuaState.obj2gco(t)))
 			{
@@ -190,7 +190,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_objbarriert(LuaState.lua_State L, Table t, object o)
+		public static void luaC_objbarriert(LuaState.lua_State L, LuaObject.Table t, object o)
 		{ 
 			if (iswhite(LuaState.obj2gco(o)) && isblack(LuaState.obj2gco(t))) 
 			{
@@ -298,7 +298,7 @@ namespace kurumi
 					}
 				case Lua.LUA_TUSERDATA:
 					{
-						Table mt = LuaState.gco2u(o).metatable;
+						LuaObject.Table mt = LuaState.gco2u(o).metatable;
 						gray2black(o);  /* udata are never gray */
 						if (mt != null) 
 						{
@@ -403,7 +403,7 @@ namespace kurumi
 			return deadmem;
 		}
 
-		private static int traversetable(LuaState.global_State g, Table h) 
+		private static int traversetable(LuaState.global_State g, LuaObject.Table h) 
 		{
 			int i;
 			int weakkey = 0;
@@ -592,7 +592,7 @@ namespace kurumi
 			{
 				case Lua.LUA_TTABLE:
 					{
-						Table h = LuaState.gco2h(o);
+						LuaObject.Table h = LuaState.gco2h(o);
 						g.gray = h.gclist;
 						if (traversetable(g, h) != 0)  /* table is weak? */
 						{
@@ -693,7 +693,7 @@ namespace kurumi
 		{
 			while (l != null) 
 			{
-				Table h = LuaState.gco2h(l);
+				LuaObject.Table h = LuaState.gco2h(l);
 				int i = h.sizearray;
 				LuaLimits.lua_assert(testbit(h.marked, VALUEWEAKBIT) ||
 					testbit(h.marked, KEYWEAKBIT));
@@ -1117,7 +1117,7 @@ namespace kurumi
 		}
 
 
-		public static void luaC_barrierback(LuaState.lua_State L, Table t)
+		public static void luaC_barrierback(LuaState.lua_State L, LuaObject.Table t)
 		{
 			LuaState.global_State g = LuaState.G(L);
 			LuaState.GCObject o = LuaState.obj2gco(t);

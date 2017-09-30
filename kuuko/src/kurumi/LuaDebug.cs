@@ -217,7 +217,7 @@ namespace kurumi
 			}
 			else 
 			{
-				Table t = LuaTable.luaH_new(L, 0, 0);
+				LuaObject.Table t = LuaTable.luaH_new(L, 0, 0);
 				int[] lineinfo = f.l.p.lineinfo;
 				int i;
 				for (i=0; i<f.l.p.sizelineinfo; i++)

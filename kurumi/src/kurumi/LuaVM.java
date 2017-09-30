@@ -111,7 +111,7 @@ TValue.dec(top); //ref
 			TValue tm;
 			if (LuaObject.ttistable(t)) {
 				// `t' is a table? 
-				Table h = LuaObject.hvalue(t);
+				LuaObject.Table h = LuaObject.hvalue(t);
 				TValue res = LuaTable.luaH_get(h, key); // do a primitive get 
 				if (!LuaObject.ttisnil(res) || (tm = LuaTM.fasttm(L, h.metatable, TMS.TM_INDEX)) == null) { // result is no nil? 
 					// or no TM? 
@@ -139,7 +139,7 @@ TValue.dec(top); //ref
 			TValue tm;
 			if (LuaObject.ttistable(t)) {
 				// `t' is a table? 
-				Table h = LuaObject.hvalue(t);
+				LuaObject.Table h = LuaObject.hvalue(t);
 				TValue oldval = LuaTable.luaH_set(L, h, key); // do a primitive set 
 				if (!LuaObject.ttisnil(oldval) || (tm = LuaTM.fasttm(L, h.metatable, TMS.TM_NEWINDEX)) == null) { // result is no nil? 
 					// or no TM? 
@@ -173,7 +173,7 @@ TValue.dec(top); //ref
 		return 1;
 	}
 
-	private static TValue get_compTM(LuaState.lua_State L, Table mt1, Table mt2, TMS event_) {
+	private static TValue get_compTM(LuaState.lua_State L, LuaObject.Table mt1, LuaObject.Table mt2, TMS event_) {
 		TValue tm1 = LuaTM.fasttm(L, mt1, event_);
 		TValue tm2;
 		if (tm1 == null) {
@@ -1029,7 +1029,7 @@ TValue rb = RB(L, base_, i);
 							int n = LuaOpCodes.GETARG_B(i);
 							int c = LuaOpCodes.GETARG_C(i);
 							int last;
-							Table h;
+							LuaObject.Table h;
 							if (n == 0) {
 								n = LuaLimits.cast_int(TValue.minus(L.top, ra)) - 1;
 								L.top = L.ci.top;

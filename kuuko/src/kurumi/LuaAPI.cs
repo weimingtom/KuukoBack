@@ -91,7 +91,7 @@ namespace kurumi
 			}
 		}
 
-		private static Table getcurrenv(LuaState.lua_State L)
+		private static LuaObject.Table getcurrenv(LuaState.lua_State L)
 		{
 			if (L.ci == L.base_ci[0])  /* no enclosing function? */
 			{
@@ -700,7 +700,7 @@ namespace kurumi
 		public static int lua_getmetatable(LuaState.lua_State L, int objindex) 
 		{
 			TValue obj;
-			Table mt = null;
+			LuaObject.Table mt = null;
 			int res;
 			LuaLimits.lua_lock(L);
 			obj = index2adr(L, objindex);
@@ -834,7 +834,7 @@ namespace kurumi
 		public static int lua_setmetatable(LuaState.lua_State L, int objindex) 
 		{
 			TValue obj;
-			Table mt;
+			LuaObject.Table mt;
 			LuaLimits.lua_lock(L);
 			api_checknelems(L, 1);
 			obj = index2adr(L, objindex);

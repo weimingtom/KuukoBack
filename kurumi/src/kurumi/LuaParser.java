@@ -96,7 +96,7 @@ public class LuaParser {
 	/* state needed to generate code for a given function */
 	public static class FuncState {	
 		public LuaObject.Proto f;  /* current function header */
-		public Table h;  /* table to find (and reuse) elements in `k' */
+		public LuaObject.Table h;  /* table to find (and reuse) elements in `k' */
 		public FuncState prev;  /* enclosing function */
 		public LuaLex.LexState ls;  /* lexical state */
 		public LuaState.lua_State L;  /* copy of the Lua state */

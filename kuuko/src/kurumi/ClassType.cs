@@ -241,7 +241,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_TABLE)
 	            {
-	                result = new Table();
+	                result = new LuaObject.Table();
 	            }
 	            else if (type == TYPE_GCOBJECTREF)
 	            {
@@ -961,7 +961,7 @@ namespace kurumi
             }
             else if (type == TYPE_TABLE)
             {
-                return typeof(Table);
+                return typeof(LuaObject.Table);
             }
             else if (type == TYPE_GCOBJECTREF)
             {
@@ -1083,7 +1083,7 @@ namespace kurumi
             {
                 return 16;
             }
-            else if (t == typeof(Table))
+            else if (t == typeof(LuaObject.Table))
             {
                 return 32;
             }

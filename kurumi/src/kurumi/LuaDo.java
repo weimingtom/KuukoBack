@@ -271,7 +271,7 @@ TValue.inc(top); //ref
 	private static TValue adjust_varargs(LuaState.lua_State L, LuaObject.Proto p, int actual) { //StkId
 		int i;
 		int nfixargs = p.numparams;
-		Table htab = null;
+		LuaObject.Table htab = null;
 		TValue base_, fixed_; //StkId
 		for (; actual < nfixargs; ++actual) {
 			TValue[] top = new TValue[1];

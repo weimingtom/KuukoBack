@@ -129,7 +129,7 @@ public class LuaString {
 		return res;
 	}
 
-	public static Udata luaS_newudata(LuaState.lua_State L, int s, Table e) { //uint
+	public static Udata luaS_newudata(LuaState.lua_State L, int s, LuaObject.Table e) { //uint
 		Udata u = new Udata();
 		u.uv.marked = LuaGC.luaC_white(LuaState.G(L)); // is not finalized 
 		u.uv.tt = Lua.LUA_TUSERDATA;
@@ -143,7 +143,7 @@ public class LuaString {
 		return u;
 	}
 
-	public static Udata luaS_newudata(LuaState.lua_State L, ClassType t, Table e) {
+	public static Udata luaS_newudata(LuaState.lua_State L, ClassType t, LuaObject.Table e) {
 		Udata u = new Udata();
 		u.uv.marked = LuaGC.luaC_white(LuaState.G(L)); // is not finalized 
 		u.uv.tt = Lua.LUA_TUSERDATA;

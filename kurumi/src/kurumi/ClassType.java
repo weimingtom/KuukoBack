@@ -190,7 +190,7 @@ public class ClassType {
 				//return new LClosure(null);
 			}
 			else if (type == TYPE_TABLE) {
-				result = new Table();
+				result = new LuaObject.Table();
 			}
 			else if (type == TYPE_GCOBJECTREF) {
 				//return null; //FIXME:interface!!!
