@@ -18,7 +18,7 @@ namespace kurumi
 		//#define Sizeof(x)	((int)sizeof(x))
 		//#define VOID(p)		((const void*)(p))
 
-		public static void PrintString(TString ts)
+		public static void PrintString(LuaObject.TString ts)
 		{
 			LuaConf.CharPtr s = LuaObject.getstr(ts);
 			int/*uint*/ i, n = ts.getTsv().len;

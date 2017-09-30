@@ -253,7 +253,7 @@ namespace kurumi
 			return LuaObject.l_isfalse(L.top) == 0 ? 1 : 0;
 		}
 
-		private static int l_strcmp(TString ls, TString rs) 
+		private static int l_strcmp(LuaObject.TString ls, LuaObject.TString rs) 
 		{
 			LuaConf.CharPtr l = LuaObject.getstr(ls);
             int/*uint*/ ll = ls.getTsv().len;

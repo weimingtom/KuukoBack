@@ -19,8 +19,8 @@ public class LuaMem {
 		return (TValue[])luaM_realloc__TValue(L, block, new_size, t);
 	}
 
-	public static TString[] luaM_reallocv_TString(LuaState.lua_State L, TString[] block, int new_size, ClassType t) {
-		return (TString[])luaM_realloc__TString(L, block, new_size, t);
+	public static LuaObject.TString[] luaM_reallocv_TString(LuaState.lua_State L, LuaObject.TString[] block, int new_size, ClassType t) {
+		return (LuaObject.TString[])luaM_realloc__TString(L, block, new_size, t);
 	}
 
 	public static LuaState.CallInfo[] luaM_reallocv_CallInfo(LuaState.lua_State L, LuaState.CallInfo[] block, int new_size, ClassType t) {
@@ -62,8 +62,8 @@ public class LuaMem {
 		luaM_realloc__Udata(L, new Udata[] {b}, 0, t);
 	}
 
-	public static void luaM_freemem_TString(LuaState.lua_State L, TString b, ClassType t) {
-		luaM_realloc__TString(L, new TString[] { b }, 0, t);
+	public static void luaM_freemem_TString(LuaState.lua_State L, LuaObject.TString b, ClassType t) {
+		luaM_realloc__TString(L, new LuaObject.TString[] { b }, 0, t);
 	}
 
 	//-------------------------------
@@ -102,7 +102,7 @@ public class LuaMem {
 		luaM_reallocv_LocVar(L, b, 0, t);
 	}
 
-	public static void luaM_freearray_TString(LuaState.lua_State L, TString[] b, ClassType t) {
+	public static void luaM_freearray_TString(LuaState.lua_State L, LuaObject.TString[] b, ClassType t) {
 		luaM_reallocv_TString(L, b, 0, t);
 	}
 
@@ -153,7 +153,7 @@ public class LuaMem {
 		return luaM_reallocv_long(L, null, n, t);
 	}
 
-	public static TString[] luaM_newvector_TString(LuaState.lua_State L, int n, ClassType t) {
+	public static LuaObject.TString[] luaM_newvector_TString(LuaState.lua_State L, int n, ClassType t) {
 		return luaM_reallocv_TString(L, null, n, t);
 	}
 
@@ -201,9 +201,9 @@ public class LuaMem {
 		}
 	}
 
-	public static void luaM_growvector_TString(LuaState.lua_State L, TString[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_TString(LuaState.lua_State L, LuaObject.TString[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
-			v[0] = (TString[])luaM_growaux__TString(L, v, size, limit, e, t); //ref - ref
+			v[0] = (LuaObject.TString[])luaM_growaux__TString(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
@@ -241,7 +241,7 @@ public class LuaMem {
 		return v[0];
 	}
 
-	public static TString[] luaM_reallocvector_TString(LuaState.lua_State L, TString[][] v, int oldn, int n, ClassType t) { //ref
+	public static LuaObject.TString[] luaM_reallocvector_TString(LuaState.lua_State L, LuaObject.TString[][] v, int oldn, int n, ClassType t) { //ref
 		ClassType.Assert((v[0] == null && oldn == 0) || (v[0].length == oldn));
 		v[0] = luaM_reallocv_TString(L, v[0], n, t);
 		return v[0];
@@ -342,8 +342,8 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static TString[] luaM_growaux__TString(LuaState.lua_State L, TString[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
-		TString[] newblock;
+	public static LuaObject.TString[] luaM_growaux__TString(LuaState.lua_State L, LuaObject.TString[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
+		LuaObject.TString[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
 			// cannot double it? 
@@ -638,17 +638,17 @@ public class LuaMem {
 		return new_block;
 	}
 
-	public static Object luaM_realloc__TString(LuaState.lua_State L, TString[] old_block, int new_size, ClassType t) {
+	public static Object luaM_realloc__TString(LuaState.lua_State L, LuaObject.TString[] old_block, int new_size, ClassType t) {
 		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
-		TString[] new_block = new TString[new_size];
+		LuaObject.TString[] new_block = new LuaObject.TString[new_size];
 		for (int i = 0; i < Math.min(old_size, new_size); i++) {
 			new_block[i] = old_block[i];
 		}
 		for (int i = old_size; i < new_size; i++) {
-			new_block[i] = (TString)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
+			new_block[i] = (LuaObject.TString)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {

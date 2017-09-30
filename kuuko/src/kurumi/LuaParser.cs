@@ -142,7 +142,7 @@ namespace kurumi
 		{
 			if (ls.t.token == (int)LuaLex.RESERVED.TK_NAME || ls.t.token == (int)LuaLex.RESERVED.TK_STRING) 
 			{
-				TString ts = ls.t.seminfo.ts;
+				LuaObject.TString ts = ls.t.seminfo.ts;
 				LuaLex.luaX_newstring(ls, LuaObject.getstr(ts), ts.getTsv().len);
 			}
 		}
@@ -216,9 +216,9 @@ namespace kurumi
 			}
 		}
 
-		private static TString str_checkname(LuaLex.LexState ls) 
+		private static LuaObject.TString str_checkname(LuaLex.LexState ls) 
 		{
-			TString ts;
+			LuaObject.TString ts;
 			check(ls, (int)LuaLex.RESERVED.TK_NAME);
 			ts = ls.t.seminfo.ts;
 			LuaLex.luaX_next(ls);
@@ -232,7 +232,7 @@ namespace kurumi
 			e.u.s.info = i;
 		}
 
-		private static void codestring(LuaLex.LexState ls, expdesc e, TString s) 
+		private static void codestring(LuaLex.LexState ls, expdesc e, LuaObject.TString s) 
 		{
 			init_exp(e, expkind.VK, LuaCode.luaK_stringK(ls.fs, s));
 		}
@@ -242,7 +242,7 @@ namespace kurumi
 			codestring(ls, e, str_checkname(ls));
 		}
 
-		private static int registerlocalvar (LuaLex.LexState ls, TString varname)
+		private static int registerlocalvar (LuaLex.LexState ls, LuaObject.TString varname)
 		{
 			FuncState fs = ls.fs;
 			LuaObject.Proto f = fs.f;
@@ -270,7 +270,7 @@ namespace kurumi
 			new_localvar(ls, LuaLex.luaX_newstring(ls, LuaConf.CharPtr.toCharPtr("" + v), /*(uint)*/(v.chars.Length - 1)), n);
 		}
 
-		private static void new_localvar(LuaLex.LexState ls, TString name, int n) 
+		private static void new_localvar(LuaLex.LexState ls, LuaObject.TString name, int n) 
 		{
 			FuncState fs = ls.fs;
 			luaY_checklimit(fs, fs.nactvar + n + 1, LuaConf.LUAI_MAXVARS, LuaConf.CharPtr.toCharPtr("local variables"));
@@ -296,7 +296,7 @@ namespace kurumi
 			}
 		}
 
-		private static int indexupvalue(FuncState fs, TString name, expdesc v) 
+		private static int indexupvalue(FuncState fs, LuaObject.TString name, expdesc v) 
 		{
 			int i;
 			LuaObject.Proto f = fs.f;
@@ -311,7 +311,7 @@ namespace kurumi
 			}
 			/* new one */
 			luaY_checklimit(fs, f.nups + 1, LuaConf.LUAI_MAXUPVALUES, LuaConf.CharPtr.toCharPtr("upvalues"));
-			TString[][] upvalues_ref = new TString[1][];
+			LuaObject.TString[][] upvalues_ref = new LuaObject.TString[1][];
 			upvalues_ref[0] = f.upvalues;
 			int[] sizeupvalues_ref = new int[1];
 			sizeupvalues_ref[0] = f.sizeupvalues;
@@ -330,7 +330,7 @@ namespace kurumi
 			return f.nups++;
 		}
 
-		private static int searchvar(FuncState fs, TString n) 
+		private static int searchvar(FuncState fs, LuaObject.TString n) 
 		{
 			int i;
 			for (i = fs.nactvar - 1; i >= 0; i--) 
@@ -356,7 +356,7 @@ namespace kurumi
 			}
 		}
 
-		private static expkind singlevaraux(FuncState fs, TString n, expdesc var, int base_)
+		private static expkind singlevaraux(FuncState fs, LuaObject.TString n, expdesc var, int base_)
 		{
 			if (fs == null) 
 			{  
@@ -392,7 +392,7 @@ namespace kurumi
 
 		private static void singlevar(LuaLex.LexState ls, expdesc var) 
 		{
-			TString varname = str_checkname(ls);
+			LuaObject.TString varname = str_checkname(ls);
 			FuncState fs = ls.fs;
 			if (singlevaraux(fs, varname, var, 1) == expkind.VGLOBAL)
 			{
@@ -568,7 +568,7 @@ namespace kurumi
 			LuaMem.luaM_reallocvector_LocVar(L, /*ref*/ locvars_ref, f.sizelocvars, fs.nlocvars/*, LocVar*/, new ClassType(ClassType.TYPE_LOCVAR));
 			f.locvars = locvars_ref[0];
 			f.sizelocvars = fs.nlocvars;
-			TString[][] upvalues_ref = new TString[1][];
+			LuaObject.TString[][] upvalues_ref = new LuaObject.TString[1][];
 			upvalues_ref[0] = f.upvalues;
 			LuaMem.luaM_reallocvector_TString(L, /*ref*/ upvalues_ref, f.sizeupvalues, f.nups/*, TString*/, new ClassType(ClassType.TYPE_TSTRING));
 			f.upvalues = upvalues_ref[0];
@@ -1491,7 +1491,7 @@ namespace kurumi
 			LuaCode.luaK_patchlist(fs, ((isnum != 0) ? endfor : LuaCode.luaK_jump(fs)), prep + 1);
 		}
 
-		private static void fornum(LuaLex.LexState ls, TString varname, int line) 
+		private static void fornum(LuaLex.LexState ls, LuaObject.TString varname, int line) 
 		{
 			/* fornum . NAME = exp1,exp1[,exp1] forbody */
 			FuncState fs = ls.fs;
@@ -1517,7 +1517,7 @@ namespace kurumi
 			forbody(ls, base_, line, 1, 1);
 		}
 
-		private static void forlist(LuaLex.LexState ls, TString indexname) 
+		private static void forlist(LuaLex.LexState ls, LuaObject.TString indexname) 
 		{
 			/* forlist . NAME {,NAME} IN explist1 forbody */
 			FuncState fs = ls.fs;
@@ -1546,7 +1546,7 @@ namespace kurumi
 		{
 			/* forstat . FOR (fornum | forlist) END */
 			FuncState fs = ls.fs;
-			TString varname;
+			LuaObject.TString varname;
 			BlockCnt bl = new BlockCnt();
             enterblock(fs, bl, (byte)1);  /* scope for loop and control variables */
 			LuaLex.luaX_next(ls);  /* skip `for' */

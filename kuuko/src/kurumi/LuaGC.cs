@@ -228,7 +228,7 @@ namespace kurumi
 			gcheader.marked = marked_ref[0];
 		}
 
-		public static void stringmark(TString s) 
+		public static void stringmark(LuaObject.TString s) 
 		{
 			Byte[] marked_ref = new Byte[1];
 			LuaObject.GCheader gcheader = s.getGch();

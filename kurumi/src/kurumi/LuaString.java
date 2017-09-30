@@ -9,7 +9,7 @@ package kurumi;
 //using lu_byte = System.Byte;
 
 public class LuaString {
-	public static int sizestring(TString s) {
+	public static int sizestring(LuaObject.TString s) {
 		return ((int)s.len + 1) * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)); //char
 	}
 
@@ -17,15 +17,15 @@ public class LuaString {
 		return (int)u.len;
 	}
 
-	public static TString luaS_new(LuaState.lua_State L, LuaConf.CharPtr s) {
+	public static LuaObject.TString luaS_new(LuaState.lua_State L, LuaConf.CharPtr s) {
 		return luaS_newlstr(L, s, LuaConf.strlen(s)); //(uint)
 	}
 
-	public static TString luaS_newliteral(LuaState.lua_State L, LuaConf.CharPtr s) {
+	public static LuaObject.TString luaS_newliteral(LuaState.lua_State L, LuaConf.CharPtr s) {
 		return luaS_newlstr(L, s, LuaConf.strlen(s)); //(uint)
 	}
 
-	public static void luaS_fix(TString s) {
+	public static void luaS_fix(LuaObject.TString s) {
 		byte marked = s.getTsv().marked; // can't pass properties in as ref - lu_byte
 		byte[] marked_ref = new byte[1];
 		marked_ref[0] = marked;
@@ -76,13 +76,13 @@ public class LuaString {
 		tb.hash = newhash;
 	}
 
-	public static TString newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int l, long h) { //uint - int - uint
-		TString ts;
+	public static LuaObject.TString newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int l, long h) { //uint - int - uint
+		LuaObject.TString ts;
 		LuaState.stringtable tb;
 		if (l + 1 > LuaLimits.MAX_SIZET / LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR))) { //typeof(char)
 			LuaMem.luaM_toobig(L);
 		}
-		ts = new TString(LuaConf.CharPtr.toCharPtr(new char[l + 1]));
+		ts = new LuaObject.TString(LuaConf.CharPtr.toCharPtr(new char[l + 1]));
 		LuaMem.AddTotalBytes(L, (int)(l + 1) * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TSTRING))); //typeof(TString)//typeof(char)
 		ts.getTsv().len = l;
 		ts.getTsv().hash = h;
@@ -103,7 +103,7 @@ public class LuaString {
 		return ts;
 	}
 
-	public static TString luaS_newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int l) { //uint
+	public static LuaObject.TString luaS_newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int l) { //uint
 		LuaState.GCObject o;
 		//FIXME:
 		long h = ((long)l) & 0xffffffffL; // seed  - (uint) - uint - int
@@ -115,7 +115,7 @@ public class LuaString {
 			h = (0xffffffffL) & ((long)(h ^ ((h << 5)+(h >> 2) + (byte)str.get(l1 - 1))));
 		}
 		for (o = LuaState.G(L).strt.hash[(int)LuaConf.lmod(h, LuaState.G(L).strt.size)]; o != null; o = o.getGch().next) {
-			TString ts = LuaState.rawgco2ts(o);
+			LuaObject.TString ts = LuaState.rawgco2ts(o);
 			if (ts.getTsv().len == l && (LuaConf.memcmp(str, LuaObject.getstr(ts), l) == 0)) {
 				// string may be dead 
 				if (LuaGC.isdead(LuaState.G(L), o)) {
@@ -125,7 +125,7 @@ public class LuaString {
 			}
 		}
 		//return newlstr(L, str, l, h);  /* not found */
-		TString res = newlstr(L, str, l, h);
+		LuaObject.TString res = newlstr(L, str, l, h);
 		return res;
 	}
 

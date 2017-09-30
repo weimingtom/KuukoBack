@@ -149,7 +149,7 @@ public class LuaParser {
 	
 	private static void anchor_token(LuaLex.LexState ls) {
 		if (ls.t.token == (int)LuaLex.RESERVED.TK_NAME || ls.t.token == (int)LuaLex.RESERVED.TK_STRING) {
-			TString ts = ls.t.seminfo.ts;
+			LuaObject.TString ts = ls.t.seminfo.ts;
 			LuaLex.luaX_newstring(ls, LuaObject.getstr(ts), ts.getTsv().len);
 		}
 	}
@@ -201,8 +201,8 @@ public class LuaParser {
 		}
 	}
 
-	private static TString str_checkname(LuaLex.LexState ls) {
-		TString ts;
+	private static LuaObject.TString str_checkname(LuaLex.LexState ls) {
+		LuaObject.TString ts;
 		check(ls, (int)LuaLex.RESERVED.TK_NAME);
 		ts = ls.t.seminfo.ts;
 		LuaLex.luaX_next(ls);
@@ -215,7 +215,7 @@ public class LuaParser {
 		e.u.s.info = i;
 	}
 
-	private static void codestring(LuaLex.LexState ls, expdesc e, TString s) {
+	private static void codestring(LuaLex.LexState ls, expdesc e, LuaObject.TString s) {
 		init_exp(e, expkind.VK, LuaCode.luaK_stringK(ls.fs, s));
 	}
 
@@ -223,7 +223,7 @@ public class LuaParser {
 		codestring(ls, e, str_checkname(ls));
 	}
 
-	private static int registerlocalvar(LuaLex.LexState ls, TString varname) {
+	private static int registerlocalvar(LuaLex.LexState ls, LuaObject.TString varname) {
 		FuncState fs = ls.fs;
 		LuaObject.Proto f = fs.f;
 		int oldsize = f.sizelocvars;
@@ -246,7 +246,7 @@ public class LuaParser {
 		new_localvar(ls, LuaLex.luaX_newstring(ls, LuaConf.CharPtr.toCharPtr("" + v), (v.chars.length - 1)), n); //(uint)
 	}
 
-	private static void new_localvar(LuaLex.LexState ls, TString name, int n) {
+	private static void new_localvar(LuaLex.LexState ls, LuaObject.TString name, int n) {
 		FuncState fs = ls.fs;
 		luaY_checklimit(fs, fs.nactvar + n + 1, LuaConf.LUAI_MAXVARS, LuaConf.CharPtr.toCharPtr("local variables"));
 		fs.actvar[fs.nactvar + n] = (int)registerlocalvar(ls, name); //ushort
@@ -267,7 +267,7 @@ public class LuaParser {
 		}
 	}
 
-	private static int indexupvalue(FuncState fs, TString name, expdesc v) {
+	private static int indexupvalue(FuncState fs, LuaObject.TString name, expdesc v) {
 		int i;
 		LuaObject.Proto f = fs.f;
 		int oldsize = f.sizeupvalues;
@@ -279,7 +279,7 @@ public class LuaParser {
 		}
 		// new one 
 		luaY_checklimit(fs, f.nups + 1, LuaConf.LUAI_MAXUPVALUES, LuaConf.CharPtr.toCharPtr("upvalues"));
-		TString[][] upvalues_ref = new TString[1][];
+		LuaObject.TString[][] upvalues_ref = new LuaObject.TString[1][];
 		upvalues_ref[0] = f.upvalues;
 		int[] sizeupvalues_ref = new int[1];
 		sizeupvalues_ref[0] = f.sizeupvalues;
@@ -297,7 +297,7 @@ public class LuaParser {
 		return f.nups++;
 	}
 
-	private static int searchvar(FuncState fs, TString n) {
+	private static int searchvar(FuncState fs, LuaObject.TString n) {
 		int i;
 		for (i = fs.nactvar - 1; i >= 0; i--) {
 			if (n == getlocvar(fs, i).varname) {
@@ -317,7 +317,7 @@ public class LuaParser {
 		}
 	}
 
-	private static expkind singlevaraux(FuncState fs, TString n, expdesc var, int base_) {
+	private static expkind singlevaraux(FuncState fs, LuaObject.TString n, expdesc var, int base_) {
 		if (fs == null) {
 			// no more levels? 
 			init_exp(var, expkind.VGLOBAL, LuaOpCodes.NO_REG); // default is global variable 
@@ -345,7 +345,7 @@ public class LuaParser {
 	}
 
 	private static void singlevar(LuaLex.LexState ls, expdesc var) {
-		TString varname = str_checkname(ls);
+		LuaObject.TString varname = str_checkname(ls);
 		FuncState fs = ls.fs;
 		if (singlevaraux(fs, varname, var, 1) == expkind.VGLOBAL) {
 			var.u.s.info = LuaCode.luaK_stringK(fs, varname); // info points to global name 
@@ -500,7 +500,7 @@ public class LuaParser {
 		LuaMem.luaM_reallocvector_LocVar(L, locvars_ref, f.sizelocvars, fs.nlocvars, new ClassType(ClassType.TYPE_LOCVAR)); //, LocVar - ref
 		f.locvars = locvars_ref[0];
 		f.sizelocvars = fs.nlocvars;
-		TString[][] upvalues_ref = new TString[1][];
+		LuaObject.TString[][] upvalues_ref = new LuaObject.TString[1][];
 		upvalues_ref[0] = f.upvalues;
 		LuaMem.luaM_reallocvector_TString(L, upvalues_ref, f.sizeupvalues, f.nups, new ClassType(ClassType.TYPE_TSTRING)); //, TString - ref
 		f.upvalues = upvalues_ref[0];
@@ -1282,7 +1282,7 @@ public class LuaParser {
 		LuaCode.luaK_patchlist(fs, ((isnum != 0) ? endfor : LuaCode.luaK_jump(fs)), prep + 1);
 	}
 
-	private static void fornum(LuaLex.LexState ls, TString varname, int line) {
+	private static void fornum(LuaLex.LexState ls, LuaObject.TString varname, int line) {
 		// fornum . NAME = exp1,exp1[,exp1] forbody 
 		FuncState fs = ls.fs;
 		int base_ = fs.freereg;
@@ -1305,7 +1305,7 @@ public class LuaParser {
 		forbody(ls, base_, line, 1, 1);
 	}
 
-	private static void forlist(LuaLex.LexState ls, TString indexname) {
+	private static void forlist(LuaLex.LexState ls, LuaObject.TString indexname) {
 		// forlist . NAME {,NAME} IN explist1 forbody 
 		FuncState fs = ls.fs;
 		expdesc e = new expdesc();
@@ -1331,7 +1331,7 @@ public class LuaParser {
 	private static void forstat(LuaLex.LexState ls, int line) {
 		// forstat . FOR (fornum | forlist) END 
 		FuncState fs = ls.fs;
-		TString varname;
+		LuaObject.TString varname;
 		BlockCnt bl = new BlockCnt();
 		enterblock(fs, bl, (byte)1); // scope for loop and control variables 
 		LuaLex.luaX_next(ls); // skip `for' 

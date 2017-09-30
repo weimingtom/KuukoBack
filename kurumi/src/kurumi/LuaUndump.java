@@ -101,7 +101,7 @@ public class LuaUndump {
 		return ((Double)LoadVar(S, new ClassType(ClassType.TYPE_DOUBLE))).doubleValue(); //lua_Number - lua_Number
 	}
 
-	private static TString LoadString(LoadState S) {
+	private static LuaObject.TString LoadString(LoadState S) {
 		//typeof(int/*uint*/)
 		int size = ((Integer)LoadVar(S, new ClassType(ClassType.TYPE_INT))).intValue(); //uint - uint
 		if (size == 0) {
@@ -196,7 +196,7 @@ public class LuaUndump {
 		}
 	}
 
-	private static LuaObject.Proto LoadFunction(LoadState S, TString p) {
+	private static LuaObject.Proto LoadFunction(LoadState S, LuaObject.TString p) {
 		LuaObject.Proto f;
 		if (++S.L.nCcalls > LuaConf.LUAI_MAXCCALLS) {
 			error(S, LuaConf.CharPtr.toCharPtr("code too deep"));

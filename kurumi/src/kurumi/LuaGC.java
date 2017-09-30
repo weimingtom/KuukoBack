@@ -193,7 +193,7 @@ public class LuaGC {
 		gcheader.marked = marked_ref[0];
 	}
 
-	public static void stringmark(TString s) {
+	public static void stringmark(LuaObject.TString s) {
 		byte[] marked_ref = new byte[1];
 		LuaObject.GCheader gcheader = s.getGch();
 		marked_ref[0] = gcheader.marked;

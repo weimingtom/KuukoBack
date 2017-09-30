@@ -197,7 +197,7 @@ public class ClassType {
 				throw new RuntimeException("alloc GCObjectRef error");
 			}
 			else if (type == TYPE_TSTRING) {
-				result = new TString();
+				result = new LuaObject.TString();
 			}
 			else if (type == TYPE_NODE) {
 				result = new LuaObject.Node();

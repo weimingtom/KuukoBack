@@ -250,7 +250,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_TSTRING)
 	            {
-	                result = new TString();
+	                result = new LuaObject.TString();
 	            }
 	            else if (type == TYPE_NODE)
 	            {
@@ -969,7 +969,7 @@ namespace kurumi
             }
             else if (type == TYPE_TSTRING)
             {
-                return typeof(TString);
+                return typeof(LuaObject.TString);
             }
             else if (type == TYPE_NODE)
             {
@@ -1147,7 +1147,7 @@ namespace kurumi
             {
                 return 20;
             }
-            else if (t == typeof(Token))
+            else if (t == typeof(LuaLex.Token))
             {
                 return 16;
             }
@@ -1167,7 +1167,7 @@ namespace kurumi
             {
                 return 16;
             }
-            else if (t == typeof(TString))
+            else if (t == typeof(LuaObject.TString))
             {
                 return 16;
             }

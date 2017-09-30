@@ -62,7 +62,7 @@ namespace kurumi
 		public class SemInfo
 		{
 			public double r;  /*Double*/ /*lua_Number*/
-			public TString ts;
+			public LuaObject.TString ts;
 			
 			public SemInfo() 
 			{
@@ -76,9 +76,22 @@ namespace kurumi
 			}
 		}  /* semantics information */
 		
-		
-		
-		
+		public class Token
+		{
+			public int token;
+			public LuaLex.SemInfo seminfo = new LuaLex.SemInfo();
+			
+			public Token()
+			{
+				
+			}
+			
+			public Token(Token copy)
+			{
+				this.token = copy.token;
+				this.seminfo = new LuaLex.SemInfo(copy.seminfo);
+			}
+		}
 		
 		public class LexState
 		{
@@ -91,7 +104,7 @@ namespace kurumi
 			public LuaState.lua_State L;
 			public ZIO z;  /* input stream */
 			public LuaZIO.Mbuffer buff;  /* buffer for tokens */
-			public TString source;  /* current source name */
+			public LuaObject.TString source;  /* current source name */
 			public char decpoint;  /* locale decimal point */
 		}		
 		
@@ -141,7 +154,7 @@ namespace kurumi
 			int i;
 			for (i = 0; i < NUM_RESERVED; i++) 
 			{
-				TString ts = LuaString.luaS_new(L, LuaConf.CharPtr.toCharPtr(luaX_tokens[i]));
+				LuaObject.TString ts = LuaString.luaS_new(L, LuaConf.CharPtr.toCharPtr(luaX_tokens[i]));
 				LuaString.luaS_fix(ts);  /* reserved words are never collected */
 				LuaLimits.lua_assert(luaX_tokens[i].Length + 1 <= TOKEN_LEN);
 				ts.getTsv().reserved = LuaLimits.cast_byte(i + 1);  /* reserved word */
@@ -199,10 +212,10 @@ namespace kurumi
 			luaX_lexerror(ls, msg, ls.t.token);
 		}
 
-		public static TString luaX_newstring(LexState ls, LuaConf.CharPtr str, int/*uint*/ l)
+		public static LuaObject.TString luaX_newstring(LexState ls, LuaConf.CharPtr str, int/*uint*/ l)
 		{
 			LuaState.lua_State L = ls.L;
-			TString ts = LuaString.luaS_newlstr(L, str, l);
+			LuaObject.TString ts = LuaString.luaS_newlstr(L, str, l);
 			TValue o = LuaTable.luaH_setstr(L, ls.fs.h, ts);  /* entry for `str' */
 			if (LuaObject.ttisnil(o))
 			{
@@ -226,7 +239,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaX_setinput(LuaState.lua_State L, LexState ls, ZIO z, TString source) 
+		public static void luaX_setinput(LuaState.lua_State L, LexState ls, ZIO z, LuaObject.TString source) 
 		{
 			ls.decpoint = '.';
 			ls.L = L;
@@ -689,7 +702,7 @@ namespace kurumi
 							else if (LuaConf.isalpha(ls.current) || ls.current == '_')
 							{
 								/* identifier or reserved word */
-								TString ts;
+								LuaObject.TString ts;
 								do {
 									save_and_next(ls);
 								} while (LuaConf.isalnum(ls.current) || ls.current == '_');

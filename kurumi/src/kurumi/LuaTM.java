@@ -96,7 +96,7 @@ public class LuaTM {
 //		 ** function to be used with macro "fasttm": optimized for absence of
 //		 ** tag methods
 //		 
-	public static TValue luaT_gettm(LuaObject.Table events, TMS event_, TString ename) {
+	public static TValue luaT_gettm(LuaObject.Table events, TMS event_, LuaObject.TString ename) {
 		//const
 		TValue tm = LuaTable.luaH_getstr(events, ename);
 		LuaLimits.lua_assert(TMSUtil.convertTMStoInt(event_) <= TMSUtil.convertTMStoInt(TMS.TM_EQ));

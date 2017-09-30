@@ -337,7 +337,47 @@ namespace kurumi
 		{ 
 			return (ttype(o) >= Lua.LUA_TSTRING); 
 		}
-
+		
+		//typedef TValue *StkId;  /* index to stack elements */
+	
+		/*
+		 ** String headers for string table
+		 */
+		public class TString_tsv : LuaState.GCObject
+		{
+			public byte reserved;  /*Byte*/ /*lu_byte*/
+			/*FIXME:*/
+			public long hash; /*int*//*uint*/
+			public int len; /*uint*/
+		}
+		
+		public class TString : LuaObject.TString_tsv
+		{
+			public LuaConf.CharPtr str;
+			
+			//public L_Umaxalign dummy;  /* ensures maximum alignment for strings */
+	
+	        public LuaObject.TString_tsv getTsv()
+	        {
+	            return this;
+	        }
+	
+			public TString()
+			{
+				
+			}
+			
+			public TString(LuaConf.CharPtr str) 
+			{ 
+				this.str = str; 
+			}
+			
+			public override string ToString() 
+			{ 
+				return str.ToString(); 
+			} // for debugging
+		}
+		
 		public static LuaConf.CharPtr getstr(TString ts) 
 		{ 
 			return ts.str; 

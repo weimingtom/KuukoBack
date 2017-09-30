@@ -433,7 +433,7 @@ namespace kurumi
 			}
 		}
 
-		public static int luaK_stringK(LuaParser.FuncState fs, TString s)
+		public static int luaK_stringK(LuaParser.FuncState fs, LuaObject.TString s)
 		{
 			TValue o = new TValue();
 			LuaObject.setsvalue(fs.L, o, s);

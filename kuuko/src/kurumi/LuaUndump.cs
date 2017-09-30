@@ -118,7 +118,7 @@ namespace kurumi
             return (Double/*lua_Number*/)LoadVar(S, new ClassType(ClassType.TYPE_DOUBLE));/*lua_Number*/
 		}
 
-		private static TString LoadString(LoadState S)
+		private static LuaObject.TString LoadString(LoadState S)
 		{
 			//typeof(int/*uint*/)
 			int/*uint*/ size = (int/*uint*/)LoadVar(S, new ClassType(ClassType.TYPE_INT)); 
@@ -233,7 +233,7 @@ namespace kurumi
 			}
 		}
 
-		private static LuaObject.Proto LoadFunction(LoadState S, TString p)
+		private static LuaObject.Proto LoadFunction(LoadState S, LuaObject.TString p)
 		{
 			LuaObject.Proto f;
 			if (++S.L.nCcalls > LuaConf.LUAI_MAXCCALLS) 

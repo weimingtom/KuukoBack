@@ -183,7 +183,7 @@ namespace kurumi
 			public lua_State mainthread;
 			public UpVal uvhead = new UpVal();  /* head of double-linked list of all open upvalues */
 			public LuaObject.Table[] mt = new LuaObject.Table[LuaObject.NUM_TAGS];  /* metatables for basic types */
-			public TString[] tmname = new TString[(int)LuaTM.TMS.TM_N];  /* array with tag-method names */
+			public LuaObject.TString[] tmname = new LuaObject.TString[(int)LuaTM.TMS.TM_N];  /* array with tag-method names */
 		}
 		
 		/*
@@ -253,9 +253,9 @@ namespace kurumi
 	            return (LuaObject.GCheader)this;
 	        }
 	
-	        public TString getTs()
+	        public LuaObject.TString getTs()
 	        {
-	            return (TString)this;
+	            return (LuaObject.TString)this;
 	        }
 	
 	        public Udata getU()
@@ -412,14 +412,14 @@ namespace kurumi
 		}
 	    
 		/* macros to convert a GCObject into a specific value */
-		public static TString rawgco2ts(GCObject o) 
+		public static LuaObject.TString rawgco2ts(GCObject o) 
 		{ 
-			return (TString)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TSTRING, o.getTs()); 
+			return (LuaObject.TString)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TSTRING, o.getTs()); 
 		}
 		
-		public static TString gco2ts(GCObject o) 
+		public static LuaObject.TString gco2ts(GCObject o) 
 		{ 
-			return (TString)(rawgco2ts(o).getTsv()); 
+			return (LuaObject.TString)(rawgco2ts(o).getTsv()); 
 		}
 		
 		public static Udata rawgco2u(GCObject o) 

@@ -64,7 +64,7 @@ public class LuaTable {
 		return gnode(t, (int)LuaConf.lmod(n, LuaObject.sizenode(t)));
 	}
 
-	public static LuaObject.Node hashstr(LuaObject.Table t, TString str) {
+	public static LuaObject.Node hashstr(LuaObject.Table t, LuaObject.TString str) {
 		return hashpow2(t, str.getTsv().hash);
 	}
 
@@ -500,7 +500,7 @@ public class LuaTable {
 //        
 //		 ** search function for strings
 //		 
-	public static TValue luaH_getstr(LuaObject.Table t, TString key) {
+	public static TValue luaH_getstr(LuaObject.Table t, LuaObject.TString key) {
 		LuaObject.Node n = hashstr(t, key);
 		do {
 			// check whether `key' is somewhere in the chain 
@@ -590,7 +590,7 @@ public class LuaTable {
 		}
 	}
 
-	public static TValue luaH_setstr(LuaState.lua_State L, LuaObject.Table t, TString key) {
+	public static TValue luaH_setstr(LuaState.lua_State L, LuaObject.Table t, LuaObject.TString key) {
 		TValue p = luaH_getstr(t, key);
 		if (p != LuaObject.luaO_nilobject) {
 			return (TValue)p;

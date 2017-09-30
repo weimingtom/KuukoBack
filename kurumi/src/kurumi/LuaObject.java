@@ -295,13 +295,46 @@ public class LuaObject {
 		return getstr(rawtsvalue(o));
 	}
 
+	//typedef TValue *StkId;  /* index to stack elements */
+
+	/*
+	 ** String headers for string table
+	 */
+	public static class TString_tsv extends LuaState.GCObject 
+	{
+		public byte reserved;  /*Byte*/ /*lu_byte*/
+		/*FIXME:*/
+		public long hash; /*int*//*uint*/
+		public int len; /*uint*/
+	}
 	
-	
-	
-	
-	
-	
-	
+	public static class TString extends LuaObject.TString_tsv 
+	{
+		public LuaConf.CharPtr str;
+		
+		//public L_Umaxalign dummy;  /* ensures maximum alignment for strings */
+
+        public LuaObject.TString_tsv getTsv()
+        {
+            return this;
+        }
+
+		public TString()
+		{
+			
+		}
+		
+		public TString(LuaConf.CharPtr str) 
+		{ 
+			this.str = str; 
+		}
+		
+		@Override
+		public String toString() 
+		{
+			return str.toString();
+		} // for debugging
+	}
 	
 	/*
 	 ** Function Prototypes

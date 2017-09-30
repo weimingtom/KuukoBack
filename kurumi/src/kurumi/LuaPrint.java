@@ -16,7 +16,7 @@ public class LuaPrint {
 	///#define Sizeof(x)	((int)sizeof(x))
 	///#define VOID(p)		((const void*)(p))
 
-	public static void PrintString(TString ts) {
+	public static void PrintString(LuaObject.TString ts) {
 		LuaConf.CharPtr s = LuaObject.getstr(ts);
 		int i, n = ts.getTsv().len; //uint
 		LuaConf.putchar('"');

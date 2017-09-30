@@ -41,3 +41,23 @@ lua_CFunction delegate string compare
 			this.nk = new LuaObject.TKey_nk();
 		}
 		
+(5)
+	
+		public class Token
+		{
+			public int token;
+			public LuaLex.SemInfo seminfo = new LuaLex.SemInfo(); //<------------move below
+			
+			public Token()
+			{
+				
+			}
+			
+			public Token(Token copy)
+			{
+				this.token = copy.token;
+				this.seminfo = new LuaLex.SemInfo(copy.seminfo);
+			}
+		}
+		
+		

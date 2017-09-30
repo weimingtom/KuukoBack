@@ -77,7 +77,7 @@ public class LuaDump {
 		DumpMem_long(b, n, D, t);
 	}
 
-	private static void DumpString(TString s, DumpState D) {
+	private static void DumpString(LuaObject.TString s, DumpState D) {
 		if (s == null || LuaConf.CharPtr.isEqual(LuaObject.getstr(s), null)) {
 			int size = 0; //uint
 			DumpVar(size, D, new ClassType(ClassType.TYPE_INT));
@@ -147,7 +147,7 @@ public class LuaDump {
 		}
 	}
 
-	private static void DumpFunction(LuaObject.Proto f, TString p, DumpState D) {
+	private static void DumpFunction(LuaObject.Proto f, LuaObject.TString p, DumpState D) {
 		DumpString(((f.source == p) || (D.strip != 0)) ? null : f.source, D);
 		DumpInt(f.linedefined, D);
 		DumpInt(f.lastlinedefined, D);
