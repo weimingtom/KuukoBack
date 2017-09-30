@@ -467,24 +467,49 @@ public class LuaObject {
 		return ((ttype(o) == Lua.LUA_TFUNCTION) && (clvalue(o).c.getIsC() == 0));
 	}
 
+	/*
+	 ** Tables
+	 */
+	public static class TKey_nk extends TValue 
+	{
+		public LuaObject.Node next;  /* for chaining */
+		
+		public TKey_nk() 
+		{
+			
+		}
+		
+		public TKey_nk(Value value, int tt, LuaObject.Node next)
+		{
+			super(new Value(value), tt);
+			this.next = next;
+		}
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public static class TKey
+	{
+		public LuaObject.TKey_nk nk = new LuaObject.TKey_nk();
+		
+		public TKey()
+		{
+			this.nk = new LuaObject.TKey_nk();
+		}
+		
+		public TKey(TKey copy)
+		{
+			this.nk = new LuaObject.TKey_nk(new Value(copy.nk.value), copy.nk.tt, copy.nk.next);
+		}
+		
+		public TKey(Value value, int tt, LuaObject.Node next)
+		{
+			this.nk = new LuaObject.TKey_nk(new Value(value), tt, next);
+		}
+
+        public TValue getTvk()
+        {
+            return this.nk;
+        }
+	}
 	
 	public static class Node implements LuaObject.ArrayElement {
 		private Node[] values = null;

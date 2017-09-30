@@ -528,21 +528,50 @@ namespace kurumi
 		{ 
 			return ((ttype(o) == Lua.LUA_TFUNCTION) && (clvalue(o).c.getIsC() == 0)); 
 		}
-
+	
+		/*
+		 ** Tables
+		 */
+		public class TKey_nk : TValue
+		{
+			public LuaObject.Node next;  /* for chaining */
+			
+			public TKey_nk() 
+			{
+				
+			}
+			
+			public TKey_nk(Value value, int tt, LuaObject.Node next)
+			: base(new Value(value), tt)
+			{
+				this.next = next;
+			}
+		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		public class TKey
+		{
+			public LuaObject.TKey_nk nk = new LuaObject.TKey_nk();
+			
+			public TKey()
+			{
+				this.nk = new LuaObject.TKey_nk();
+			}
+			
+			public TKey(TKey copy)
+			{
+				this.nk = new LuaObject.TKey_nk(new Value(copy.nk.value), copy.nk.tt, copy.nk.next);
+			}
+			
+			public TKey(Value value, int tt, LuaObject.Node next)
+			{
+				this.nk = new LuaObject.TKey_nk(new Value(value), tt, next);
+			}
+	
+	        public TValue getTvk()
+	        {
+	            return this.nk;
+	        }
+		}
 		
 		public class Node : LuaObject.ArrayElement
 		{

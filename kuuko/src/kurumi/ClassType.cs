@@ -1187,7 +1187,7 @@ namespace kurumi
             {
                 return 24;
             }
-            else if (t == typeof(TKey))
+            else if (t == typeof(LuaObject.TKey))
             {
                 return 16;
             }

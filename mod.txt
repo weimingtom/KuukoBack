@@ -193,3 +193,8 @@ stringtable->LuaState.stringtable
 
 Table->LuaObject.Table
 14:07 2017/9/30
+
+TKey->LuaObject.TKey
+TKey_nk->LuaObject.TKey_nk
+04:19 2017-10-01
+

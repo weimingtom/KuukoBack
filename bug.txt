@@ -30,3 +30,14 @@
 (3) 
 lua_CFunction delegate string compare
 
+(4)
+
+	public static class TKey
+	{
+		public LuaObject.TKey_nk nk = new LuaObject.TKey_nk(); //<-------not need
+		
+		public TKey()
+		{
+			this.nk = new LuaObject.TKey_nk();
+		}
+		

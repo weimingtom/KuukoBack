@@ -31,7 +31,7 @@ namespace kurumi
 			return t.node[i];
 		}
 		
-		public static TKey_nk gkey(LuaObject.Node n)
+		public static LuaObject.TKey_nk gkey(LuaObject.Node n)
 		{ 
 			return n.i_key.nk; 
 		}
@@ -106,7 +106,7 @@ namespace kurumi
 		//{{null}, LUA_TNIL},  /* value */
 		//{{{null}, LUA_TNIL, null}}  /* key */
 		//};
-		public static LuaObject.Node dummynode_ = new LuaObject.Node(new TValue(new Value(), Lua.LUA_TNIL), new TKey(new Value(), Lua.LUA_TNIL, null));
+		public static LuaObject.Node dummynode_ = new LuaObject.Node(new TValue(new Value(), Lua.LUA_TNIL), new LuaObject.TKey(new Value(), Lua.LUA_TNIL, null));
 		public static LuaObject.Node dummynode = dummynode_;
 
 		/*
@@ -538,7 +538,7 @@ namespace kurumi
 					}
 					gnext_set(othern, n);  /* redo the chain with `n' in place of `mp' */
 					n.i_val = new TValue(mp.i_val);	/* copy colliding node into free pos. (mp.next also goes) */
-					n.i_key = new TKey(mp.i_key);
+					n.i_key = new LuaObject.TKey(mp.i_key);
 					gnext_set(mp, null);  /* now `mp' is free */
 					LuaObject.setnilvalue(gval(mp));
 				}
