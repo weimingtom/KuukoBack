@@ -313,7 +313,7 @@ public class LuaGC {
 			if (!(iswhite(curr) || (all != 0)) || isfinalized(LuaState.gco2u(curr))) {
 				p = new LuaState.NextRef(curr.getGch()); // don't bother with them 
 			}
-			else if (LuaTM.fasttm(L, LuaState.gco2u(curr).metatable, TMS.TM_GC) == null) {
+			else if (LuaTM.fasttm(L, LuaState.gco2u(curr).metatable, LuaTM.TMS.TM_GC) == null) {
 				markfinalized(LuaState.gco2u(curr)); // don't need finalization 
 				p = new LuaState.NextRef(curr.getGch());
 			}
@@ -345,7 +345,7 @@ public class LuaGC {
 		if (h.metatable != null) {
 			markobject(g, h.metatable);
 		}
-		mode = LuaTM.gfasttm(g, h.metatable, TMS.TM_MODE);
+		mode = LuaTM.gfasttm(g, h.metatable, LuaTM.TMS.TM_MODE);
 		if ((mode != null) && LuaObject.ttisstring(mode)) {
 			// is there a weak mode? 
 			weakkey = (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaObject.svalue(mode), 'k'), null)) ? 1 : 0;
@@ -688,7 +688,7 @@ public class LuaGC {
 		udata.uv.next = g.mainthread.next; // return it to `root' list 
 		g.mainthread.next = o;
 		makewhite(g, o);
-		tm = LuaTM.fasttm(L, udata.uv.metatable, TMS.TM_GC);
+		tm = LuaTM.fasttm(L, udata.uv.metatable, LuaTM.TMS.TM_GC);
 		if (tm != null) {
 			byte oldah = L.allowhook; //lu_byte
 			long oldt = (long)g.GCthreshold; //lu_mem - UInt32 - lu_mem - UInt32

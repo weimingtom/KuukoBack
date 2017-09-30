@@ -96,7 +96,6 @@
     <Compile Include="src\kurumi\OpCodeUtil.cs" />
     <Compile Include="src\kurumi\Program.cs" />
     <Compile Include="src\kurumi\StreamProxy.cs" />
-    <Compile Include="src\kurumi\TMS.cs" />
     <Compile Include="src\kurumi\TMSUtil.cs" />
     <Compile Include="src\kurumi\Token.cs" />
     <Compile Include="src\kurumi\Tools.cs" />

@@ -322,7 +322,7 @@ TValue.inc(top_ref); //ref
 
 	private static TValue tryfuncTM(LuaState.lua_State L, TValue func) { //StkId - StkId
 		//const
-		TValue tm = LuaTM.luaT_gettmbyobj(L, func, TMS.TM_CALL);
+		TValue tm = LuaTM.luaT_gettmbyobj(L, func, LuaTM.TMS.TM_CALL);
 		TValue[] p = new TValue[1]; //StkId
 		p[0] = new TValue();
 		int funcr = savestack(L, func); //ptrdiff_t - Int32

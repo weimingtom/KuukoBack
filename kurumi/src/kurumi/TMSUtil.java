@@ -2,7 +2,7 @@
 //{
     public class TMSUtil
     {
-        public static int convertTMStoInt(TMS tms)
+        public static int convertTMStoInt(LuaTM.TMS tms)
         {
             switch (tms)
             {

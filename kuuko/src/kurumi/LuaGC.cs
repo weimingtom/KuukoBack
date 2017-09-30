@@ -376,7 +376,7 @@ namespace kurumi
 				{
 					p = new LuaState.NextRef(curr.getGch());  /* don't bother with them */
 				}
-				else if (LuaTM.fasttm(L, LuaState.gco2u(curr).metatable, TMS.TM_GC) == null)
+				else if (LuaTM.fasttm(L, LuaState.gco2u(curr).metatable, LuaTM.TMS.TM_GC) == null)
 				{
 					markfinalized(LuaState.gco2u(curr));  /* don't need finalization */
 					p = new LuaState.NextRef(curr.getGch());
@@ -413,7 +413,7 @@ namespace kurumi
 			{
 				markobject(g, h.metatable);
 			}
-			mode = LuaTM.gfasttm(g, h.metatable, TMS.TM_MODE);
+			mode = LuaTM.gfasttm(g, h.metatable, LuaTM.TMS.TM_MODE);
 			if ((mode != null) && LuaObject.ttisstring(mode))
 			{  
 				/* is there a weak mode? */
@@ -849,7 +849,7 @@ namespace kurumi
 			udata.uv.next = g.mainthread.next;  /* return it to `root' list */
 			g.mainthread.next = o;
 			makewhite(g, o);
-			tm = LuaTM.fasttm(L, udata.uv.metatable, TMS.TM_GC);
+			tm = LuaTM.fasttm(L, udata.uv.metatable, LuaTM.TMS.TM_GC);
 			if (tm != null) 
 			{
 				Byte/*lu_byte*/ oldah = L.allowhook;

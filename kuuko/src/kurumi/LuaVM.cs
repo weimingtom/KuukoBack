@@ -136,7 +136,7 @@ namespace kurumi
 					LuaObject.Table h = LuaObject.hvalue(t);
 					TValue res = LuaTable.luaH_get(h, key); /* do a primitive get */
 					if (!LuaObject.ttisnil(res) ||  /* result is no nil? */
-					    (tm = LuaTM.fasttm(L, h.metatable, TMS.TM_INDEX)) == null)
+					    (tm = LuaTM.fasttm(L, h.metatable, LuaTM.TMS.TM_INDEX)) == null)
 					{ 
 						/* or no TM? */
 						LuaObject.setobj2s(L, val, res);
@@ -144,7 +144,7 @@ namespace kurumi
 					}
 					/* else will try the tag method */
 				}
-				else if (LuaObject.ttisnil(tm = LuaTM.luaT_gettmbyobj(L, t, TMS.TM_INDEX)))
+				else if (LuaObject.ttisnil(tm = LuaTM.luaT_gettmbyobj(L, t, LuaTM.TMS.TM_INDEX)))
 				{
 					LuaDebug.luaG_typeerror(L, t, LuaConf.CharPtr.toCharPtr("index"));
 				}
@@ -171,7 +171,7 @@ namespace kurumi
 					LuaObject.Table h = LuaObject.hvalue(t);
 					TValue oldval = LuaTable.luaH_set(L, h, key); /* do a primitive set */
 					if (!LuaObject.ttisnil(oldval) ||  /* result is no nil? */
-					    (tm = LuaTM.fasttm(L, h.metatable, TMS.TM_NEWINDEX)) == null)
+					    (tm = LuaTM.fasttm(L, h.metatable, LuaTM.TMS.TM_NEWINDEX)) == null)
 					{ 
 						/* or no TM? */
 						LuaObject.setobj2t(L, oldval, val);
@@ -180,7 +180,7 @@ namespace kurumi
 					}
 					/* else will try the tag method */
 				}
-				else if (LuaObject.ttisnil(tm = LuaTM.luaT_gettmbyobj(L, t, TMS.TM_NEWINDEX)))
+				else if (LuaObject.ttisnil(tm = LuaTM.luaT_gettmbyobj(L, t, LuaTM.TMS.TM_NEWINDEX)))
 				{
 					LuaDebug.luaG_typeerror(L, t, LuaConf.CharPtr.toCharPtr("index"));
 				}
@@ -195,7 +195,7 @@ namespace kurumi
 		}
 
 		private static int call_binTM(LuaState.lua_State L, TValue p1, TValue p2,
-			TValue/*StkId*/ res, TMS event_) 
+			TValue/*StkId*/ res, LuaTM.TMS event_) 
 		{
 			TValue tm = LuaTM.luaT_gettmbyobj(L, p1, event_);  /* try first operand */
 			if (LuaObject.ttisnil(tm))
@@ -211,7 +211,7 @@ namespace kurumi
 		}
 
 		private static TValue get_compTM(LuaState.lua_State L, LuaObject.Table mt1, LuaObject.Table mt2,
-			TMS event_) 
+			LuaTM.TMS event_) 
 		{
 			TValue tm1 = LuaTM.fasttm(L, mt1, event_);
 			TValue tm2;
@@ -236,7 +236,7 @@ namespace kurumi
 		}
 
 		private static int call_orderTM(LuaState.lua_State L, TValue p1, TValue p2,
-			TMS event_) 
+			LuaTM.TMS event_) 
 		{
 			TValue tm1 = LuaTM.luaT_gettmbyobj(L, p1, event_);
 			TValue tm2;
@@ -304,7 +304,7 @@ namespace kurumi
 			{
 				return (l_strcmp(LuaObject.rawtsvalue(l), LuaObject.rawtsvalue(r)) < 0) ? 1 : 0;
 			}
-			else if ((res = call_orderTM(L, l, r, TMS.TM_LT)) != -1)
+			else if ((res = call_orderTM(L, l, r, LuaTM.TMS.TM_LT)) != -1)
 			{
 				return res;
 			}
@@ -327,11 +327,11 @@ namespace kurumi
 			{
 				return (l_strcmp(LuaObject.rawtsvalue(l), LuaObject.rawtsvalue(r)) <= 0) ? 1 : 0;
 			}
-			else if ((res = call_orderTM(L, l, r, TMS.TM_LE)) != -1)  /* first try `le' */
+			else if ((res = call_orderTM(L, l, r, LuaTM.TMS.TM_LE)) != -1)  /* first try `le' */
 			{
 				return res;
 			}
-			else if ((res = call_orderTM(L, r, l, TMS.TM_LT)) != -1)  /* else try `lt' */
+			else if ((res = call_orderTM(L, r, l, LuaTM.TMS.TM_LT)) != -1)  /* else try `lt' */
 			{
 				return (res == 0) ? 1 : 0;
 			}
@@ -369,7 +369,7 @@ namespace kurumi
 							return 1;
 						}
 						tm = get_compTM(L, LuaObject.uvalue(t1).metatable, LuaObject.uvalue(t2).metatable,
-							TMS.TM_EQ);
+							LuaTM.TMS.TM_EQ);
 						break;  /* will try TM */
 					}
 				case Lua.LUA_TTABLE:
@@ -378,7 +378,7 @@ namespace kurumi
 						{
 							return 1;
 						}
-						tm = get_compTM(L, LuaObject.hvalue(t1).metatable, LuaObject.hvalue(t2).metatable, TMS.TM_EQ);
+						tm = get_compTM(L, LuaObject.hvalue(t1).metatable, LuaObject.hvalue(t2).metatable, LuaTM.TMS.TM_EQ);
 						break;  /* will try TM */
 					}
 				default: 
@@ -402,7 +402,7 @@ namespace kurumi
 				int n = 2;  /* number of elements handled in this pass (at least 2) */
 				if (!(LuaObject.ttisstring(TValue.minus(top, 2)) || LuaObject.ttisnumber(TValue.minus(top, 2))) || (tostring(L, TValue.minus(top, 1)) == 0))
 				{
-					if (call_binTM(L, TValue.minus(top, 2), TValue.minus(top, 1), TValue.minus(top, 2), TMS.TM_CONCAT) == 0)
+					if (call_binTM(L, TValue.minus(top, 2), TValue.minus(top, 1), TValue.minus(top, 2), LuaTM.TMS.TM_CONCAT) == 0)
 					{
 						LuaDebug.luaG_concaterror(L, TValue.minus(top, 2), TValue.minus(top, 1));
 					}
@@ -448,7 +448,7 @@ namespace kurumi
 		}
 
 		public static void Arith(LuaState.lua_State L, TValue/*StkId*/ ra, TValue rb,
-			TValue rc, TMS op) 
+			TValue rc, LuaTM.TMS op) 
 		{
 			TValue tempb = new TValue(), tempc = new TValue();
 			TValue b, c;
@@ -458,37 +458,37 @@ namespace kurumi
 				Double/*lua_Number*/ nb = LuaObject.nvalue(b), nc = LuaObject.nvalue(c);
 				switch (op) 
 				{
-					case TMS.TM_ADD: 
+					case LuaTM.TMS.TM_ADD: 
 						{
 							LuaObject.setnvalue(ra, LuaConf.luai_numadd(nb, nc)); 
 							break;
 						}
-					case TMS.TM_SUB: 
+					case LuaTM.TMS.TM_SUB: 
 						{
 							LuaObject.setnvalue(ra, LuaConf.luai_numsub(nb, nc)); 
 							break;
 						}
-					case TMS.TM_MUL: 
+					case LuaTM.TMS.TM_MUL: 
 						{
 							LuaObject.setnvalue(ra, LuaConf.luai_nummul(nb, nc)); 
 							break;
 						}
-					case TMS.TM_DIV: 
+					case LuaTM.TMS.TM_DIV: 
 						{
 							LuaObject.setnvalue(ra, LuaConf.luai_numdiv(nb, nc)); 
 							break;
 						}
-					case TMS.TM_MOD: 
+					case LuaTM.TMS.TM_MOD: 
 						{
 							LuaObject.setnvalue(ra, LuaConf.luai_nummod(nb, nc)); 
 							break;
 						}
-					case TMS.TM_POW: 
+					case LuaTM.TMS.TM_POW: 
 						{
 							LuaObject.setnvalue(ra, LuaConf.luai_numpow(nb, nc)); 
 							break;
 						}
-					case TMS.TM_UNM: 
+					case LuaTM.TMS.TM_UNM: 
 						{
 							LuaObject.setnvalue(ra, LuaConf.luai_numunm(nb)); 
 							break;
@@ -563,7 +563,7 @@ namespace kurumi
 
 		//#define Protect(x)	{ L.savedpc = pc; {x;}; base = L.base_; }
 
-		public static void arith_op(LuaState.lua_State L, LuaConf.op_delegate op, TMS tm, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, TValue[] k, TValue/*StkId*/ ra, LuaCode.InstructionPtr pc)
+		public static void arith_op(LuaState.lua_State L, LuaConf.op_delegate op, LuaTM.TMS tm, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, TValue[] k, TValue/*StkId*/ ra, LuaCode.InstructionPtr pc)
 		{
 			TValue rb = RKB(L, base_, i, k);
 			TValue rc = RKC(L, base_, i, k);
@@ -834,32 +834,32 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_ADD: 
 							{
-								arith_op(L, new LuaConf.luai_numadd_delegate(), TMS.TM_ADD, base_, i, k, ra, pc);
+								arith_op(L, new LuaConf.luai_numadd_delegate(), LuaTM.TMS.TM_ADD, base_, i, k, ra, pc);
 								continue;
 							}
 						case LuaOpCodes.OpCode.OP_SUB: 
 							{
-								arith_op(L, new LuaConf.luai_numsub_delegate(), TMS.TM_SUB, base_, i, k, ra, pc);
+								arith_op(L, new LuaConf.luai_numsub_delegate(), LuaTM.TMS.TM_SUB, base_, i, k, ra, pc);
 								continue;
 							}
 						case LuaOpCodes.OpCode.OP_MUL: 
 							{
-								arith_op(L, new LuaConf.luai_nummul_delegate(), TMS.TM_MUL, base_, i, k, ra, pc);
+								arith_op(L, new LuaConf.luai_nummul_delegate(), LuaTM.TMS.TM_MUL, base_, i, k, ra, pc);
 								continue;
 							}
 						case LuaOpCodes.OpCode.OP_DIV: 
 							{
-								arith_op(L, new LuaConf.luai_numdiv_delegate(), TMS.TM_DIV, base_, i, k, ra, pc);
+								arith_op(L, new LuaConf.luai_numdiv_delegate(), LuaTM.TMS.TM_DIV, base_, i, k, ra, pc);
 								continue;
 							}
 						case LuaOpCodes.OpCode.OP_MOD: 
 							{
-								arith_op(L, new LuaConf.luai_nummod_delegate(), TMS.TM_MOD, base_, i, k, ra, pc);
+								arith_op(L, new LuaConf.luai_nummod_delegate(), LuaTM.TMS.TM_MOD, base_, i, k, ra, pc);
 								continue;
 							}
 						case LuaOpCodes.OpCode.OP_POW: 
 							{
-								arith_op(L, new LuaConf.luai_numpow_delegate(), TMS.TM_POW, base_, i, k, ra, pc);
+								arith_op(L, new LuaConf.luai_numpow_delegate(), LuaTM.TMS.TM_POW, base_, i, k, ra, pc);
 								continue;
 							}
 						case LuaOpCodes.OpCode.OP_UNM: 
@@ -874,7 +874,7 @@ namespace kurumi
 								{
 									//Protect(
 									L.savedpc = LuaCode.InstructionPtr.Assign(pc);
-									Arith(L, ra, rb, rb, TMS.TM_UNM);
+									Arith(L, ra, rb, rb, LuaTM.TMS.TM_UNM);
 									base_ = L.base_;
 									//);
 									L.savedpc = LuaCode.InstructionPtr.Assign(pc);
@@ -907,7 +907,7 @@ namespace kurumi
 											/* try metamethod */
 											//Protect(
 											L.savedpc = LuaCode.InstructionPtr.Assign(pc);
-											if (call_binTM(L, rb, LuaObject.luaO_nilobject, ra, TMS.TM_LEN) == 0)
+											if (call_binTM(L, rb, LuaObject.luaO_nilobject, ra, LuaTM.TMS.TM_LEN) == 0)
 											{
 												LuaDebug.luaG_typeerror(L, rb, LuaConf.CharPtr.toCharPtr("get length of"));
 											}

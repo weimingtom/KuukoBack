@@ -183,7 +183,7 @@ namespace kurumi
 			public lua_State mainthread;
 			public UpVal uvhead = new UpVal();  /* head of double-linked list of all open upvalues */
 			public LuaObject.Table[] mt = new LuaObject.Table[LuaObject.NUM_TAGS];  /* metatables for basic types */
-			public TString[] tmname = new TString[(int)TMS.TM_N];  /* array with tag-method names */
+			public TString[] tmname = new TString[(int)LuaTM.TMS.TM_N];  /* array with tag-method names */
 		}
 		
 		/*

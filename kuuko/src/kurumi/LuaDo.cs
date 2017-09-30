@@ -370,7 +370,7 @@ namespace kurumi
 		static TValue/*StkId*/ tryfuncTM(LuaState.lua_State L, TValue/*StkId*/ func)
 		{
 			/*const*/
-			TValue tm = LuaTM.luaT_gettmbyobj(L, func, TMS.TM_CALL);
+			TValue tm = LuaTM.luaT_gettmbyobj(L, func, LuaTM.TMS.TM_CALL);
 			TValue[]/*StkId*/ p = new TValue[1];
 			p[0] = new TValue();
 			int/*Int32*//*ptrdiff_t*/ funcr = savestack(L, func);

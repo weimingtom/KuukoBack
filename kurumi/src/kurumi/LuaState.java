@@ -171,7 +171,7 @@ public class LuaState {
 		public lua_State mainthread;
 		public UpVal uvhead = new UpVal();  /* head of double-linked list of all open upvalues */
 		public LuaObject.Table[] mt = new LuaObject.Table[LuaObject.NUM_TAGS];  /* metatables for basic types */
-		public TString[] tmname = new TString[TMS.TM_N.getValue()]; // array with tag-method names 
+		public TString[] tmname = new TString[LuaTM.TMS.TM_N.getValue()]; // array with tag-method names 
 	}	
 	
 	/*
