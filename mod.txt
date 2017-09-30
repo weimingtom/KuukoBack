@@ -187,3 +187,6 @@ Smain->LuaProgram.Smain
 
 SParser->LuaDo.SParser
 8:27 2017/9/30
+
+stringtable->LuaState.stringtable
+14:02 2017/9/30

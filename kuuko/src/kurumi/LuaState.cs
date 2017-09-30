@@ -36,6 +36,12 @@ namespace kurumi
 
 		public const int BASIC_STACK_SIZE = (2*Lua.LUA_MINSTACK);
 
+		public class stringtable
+		{
+			public LuaState.GCObject[] hash;
+			public long/*UInt32*//*lu_mem*/ nuse;  /* number of elements */
+			public int size;
+		}
 		
 	    /*
 	    ** informations about a call

@@ -1227,7 +1227,7 @@ namespace kurumi
             {
                 return 272;
             }
-            else if (t == typeof(stringtable))
+            else if (t == typeof(LuaState.stringtable))
             {
                 return 12;
             }

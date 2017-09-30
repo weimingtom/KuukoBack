@@ -96,7 +96,6 @@
     <Compile Include="src\kurumi\OpCodeUtil.cs" />
     <Compile Include="src\kurumi\Program.cs" />
     <Compile Include="src\kurumi\StreamProxy.cs" />
-    <Compile Include="src\kurumi\stringtable.cs" />
     <Compile Include="src\kurumi\Table.cs" />
     <Compile Include="src\kurumi\TKey.cs" />
     <Compile Include="src\kurumi\TKey_nk.cs" />

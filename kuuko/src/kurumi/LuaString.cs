@@ -44,7 +44,7 @@ namespace kurumi
 		public static void luaS_resize(LuaState.lua_State L, int newsize) 
 		{
 			LuaState.GCObject[] newhash;
-			stringtable tb;
+			LuaState.stringtable tb;
 			int i;
 			if (LuaState.G(L).gcstate == LuaGC.GCSsweepstring)
 			{
@@ -92,7 +92,7 @@ namespace kurumi
 		public static TString newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int/*uint*/ l, long/*int*//*uint*/ h) 
 		{
 			TString ts;
-			stringtable tb;
+			LuaState.stringtable tb;
             if (l + 1 > LuaLimits.MAX_SIZET / LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR))) //typeof(char)
 			{
 				LuaMem.luaM_toobig(L);
