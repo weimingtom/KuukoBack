@@ -617,6 +617,17 @@ TValue.inc(top_ref); //ref
 		return status;
 	}
 
+	/*
+	 ** Execute a protected parser.
+	 */
+	public static class SParser
+	{
+		/* data to `f_parser' */
+		public ZIO z;
+		public LuaZIO.Mbuffer buff = new LuaZIO.Mbuffer();  /* buffer to be used by the scanner */
+		public LuaConf.CharPtr name;
+	}
+	
 	public static void f_parser(LuaState.lua_State L, Object ud) {
 		int i;
 		LuaObject.Proto tf;

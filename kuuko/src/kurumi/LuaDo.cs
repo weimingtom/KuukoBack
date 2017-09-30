@@ -704,6 +704,17 @@ namespace kurumi
 			return status;
 		}
 
+		/*
+		 ** Execute a protected parser.
+		 */
+		public class SParser
+		{
+			/* data to `f_parser' */
+			public ZIO z;
+			public LuaZIO.Mbuffer buff = new LuaZIO.Mbuffer();  /* buffer to be used by the scanner */
+			public LuaConf.CharPtr name;
+		}
+			
 		public static void f_parser(LuaState.lua_State L, object ud) 
 		{
 			int i;

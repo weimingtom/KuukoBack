@@ -1143,7 +1143,7 @@ namespace kurumi
             {
                 return 72;
             }
-            else if (t == typeof(SParser))
+            else if (t == typeof(LuaDo.SParser))
             {
                 return 20;
             }
