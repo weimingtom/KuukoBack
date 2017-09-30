@@ -366,6 +366,13 @@ public class LuaProgram {
 		}
 	}
 
+    public static class Smain
+    {
+        public int argc;
+		public String[] argv;
+        public int status;
+    }
+	
 	private static int pmain(LuaState.lua_State L) {
 		Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
 		String[] argv = s.argv;
@@ -433,7 +440,6 @@ public class LuaProgram {
 			return traceback(L);
 		}
 	}
-
 
 	public static int MainLua(String[] args) {
 		// prepend the exe name to the arg list as it's done in C

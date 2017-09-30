@@ -456,6 +456,13 @@ namespace kurumi
 			}
 		}
 
+	    public class Smain
+	    {
+	        public int argc;
+	        public string[] argv;
+	        public int status;
+	    }
+		
 		static int pmain(LuaState.lua_State L)
 		{
 			Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
@@ -539,7 +546,6 @@ namespace kurumi
 				return traceback(L);
 			}
 		}
-		
 		
 		public static int MainLua(string[] args)
 		{

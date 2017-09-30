@@ -95,7 +95,6 @@
     <Compile Include="src\kurumi\LuaZIO.cs" />
     <Compile Include="src\kurumi\OpCodeUtil.cs" />
     <Compile Include="src\kurumi\Program.cs" />
-    <Compile Include="src\kurumi\Smain.cs" />
     <Compile Include="src\kurumi\SParser.cs" />
     <Compile Include="src\kurumi\StreamProxy.cs" />
     <Compile Include="src\kurumi\stringtable.cs" />

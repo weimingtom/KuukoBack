@@ -167,6 +167,13 @@ public class LuacProgram {
 		}
 	}
 
+    public static class Smain
+    {
+        public int argc;
+		public String[] argv;
+        public int status;
+    }
+	
 	private static int pmain(LuaState.lua_State L) {
 		Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
 		int argc = s.argc;
