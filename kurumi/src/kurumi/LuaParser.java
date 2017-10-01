@@ -93,6 +93,12 @@ public class LuaParser {
 		}
 	}	
 	
+	public static class upvaldesc
+	{
+		public byte k;  /*Byte*/ /*lu_byte*/
+		public byte info;  /*Byte*/ /*lu_byte*/
+	}
+	
 	/* state needed to generate code for a given function */
 	public static class FuncState {	
 		public LuaObject.Proto f;  /* current function header */

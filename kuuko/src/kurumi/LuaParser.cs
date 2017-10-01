@@ -75,6 +75,12 @@ namespace kurumi
 			}
 		}		
 		
+		public class upvaldesc
+		{
+			public byte k;  /*Byte*/ /*lu_byte*/
+			public byte info;  /*Byte*/ /*lu_byte*/
+		}
+		
 		/* state needed to generate code for a given function */
 		public class FuncState
 		{	

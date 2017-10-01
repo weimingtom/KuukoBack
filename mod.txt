@@ -220,3 +220,6 @@ UnOpr->LuaCode.UnOpr
 
 UpVal->LuaObject.UpVal
 12:42 2017-10-01
+
+upvaldesc->LuaParser.upvaldesc
+13:07 2017-10-01

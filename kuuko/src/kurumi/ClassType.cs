@@ -1203,7 +1203,7 @@ namespace kurumi
             {
                 return 24;
             }
-            else if (t == typeof(upvaldesc))
+            else if (t == typeof(LuaParser.upvaldesc))
             {
                 return 2;
             }
