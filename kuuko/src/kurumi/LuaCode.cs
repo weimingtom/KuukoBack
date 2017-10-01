@@ -121,6 +121,13 @@ namespace kurumi
 			OPR_NOBINOPR
 		}
 		
+		public enum UnOpr 
+		{ 
+			OPR_MINUS, 
+			OPR_NOT, 
+			OPR_LEN, 
+			OPR_NOUNOPR
+		}
 		
 		public static InstructionPtr getcode(LuaParser.FuncState fs, LuaParser.expdesc e)	
 		{

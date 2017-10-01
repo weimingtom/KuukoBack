@@ -547,9 +547,9 @@ namespace kurumi
 			public int len; /*uint*/
 		}
 		
-		public class Udata : Udata_uv
+		public class Udata : LuaObject.Udata_uv
 		{
-			public /*new*/ Udata_uv uv;
+			public /*new*/ LuaObject.Udata_uv uv;
 			
 			//public L_Umaxalign dummy;  /* ensures maximum alignment for `local' udata */
 			

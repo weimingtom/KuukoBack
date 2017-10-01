@@ -924,19 +924,19 @@ public class LuaParser {
 		LuaLex.luaX_next(ls);
 	}
 
-	private static UnOpr getunopr(int op) {
+	private static LuaCode.UnOpr getunopr(int op) {
 		switch (op) {
 			case (int)LuaLex.RESERVED.TK_NOT: {
-					return UnOpr.OPR_NOT;
+					return LuaCode.UnOpr.OPR_NOT;
 				}
 			case '-': {
-					return UnOpr.OPR_MINUS;
+					return LuaCode.UnOpr.OPR_MINUS;
 				}
 			case '#': {
-					return UnOpr.OPR_LEN;
+					return LuaCode.UnOpr.OPR_LEN;
 				}
 			default: {
-					return UnOpr.OPR_NOUNOPR;
+					return LuaCode.UnOpr.OPR_NOUNOPR;
 				}
 		}
 	}
@@ -1039,10 +1039,10 @@ public class LuaParser {
 //		 
 	private static LuaCode.BinOpr subexpr(LuaLex.LexState ls, expdesc v, int limit) { //uint
 		LuaCode.BinOpr op; // = new BinOpr();
-		UnOpr uop; // = new UnOpr();
+		LuaCode.UnOpr uop; // = new UnOpr();
 		enterlevel(ls);
 		uop = getunopr(ls.t.token);
-		if (uop != UnOpr.OPR_NOUNOPR) {
+		if (uop != LuaCode.UnOpr.OPR_NOUNOPR) {
 			LuaLex.luaX_next(ls);
 			subexpr(ls, v, UNARY_PRIORITY);
 			LuaCode.luaK_prefix(ls.fs, uop, v);

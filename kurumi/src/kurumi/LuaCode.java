@@ -127,6 +127,22 @@ public class LuaCode {
 		}
 	}	
 	
+	public static enum UnOpr 
+	{ 
+		OPR_MINUS, 
+		OPR_NOT, 
+		OPR_LEN, 
+		OPR_NOUNOPR;
+
+		public int getValue() {
+			return this.ordinal();
+		}
+
+		public static UnOpr forValue(int value) {
+			return values()[value];
+		}
+	}
+	
 	public static InstructionPtr getcode(LuaParser.FuncState fs, LuaParser.expdesc e) {
 		return new InstructionPtr(fs.f.code, e.u.s.info);
 	}
