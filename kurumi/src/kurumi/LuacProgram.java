@@ -167,7 +167,7 @@ public class LuacProgram {
 		}
 	}
 
-    public static class Smain
+    public static class SmainLuac
     {
         public int argc;
 		public String[] argv;
@@ -175,7 +175,7 @@ public class LuacProgram {
     }
 	
 	private static int pmain(LuaState.lua_State L) {
-		Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
+		SmainLuac s = (SmainLuac)LuaAPI.lua_touserdata(L, 1);
 		int argc = s.argc;
 		String[] argv = s.argv;
 		LuaObject.Proto f;
@@ -223,7 +223,7 @@ public class LuacProgram {
 		args = newargs;
 
 		LuaState.lua_State L;
-		Smain s = new Smain();
+		SmainLuac s = new SmainLuac();
 		int argc = args.length;
 		int i = doargs(argc, args);
 		//newargs.RemoveRange(0, i);

@@ -366,7 +366,7 @@ public class LuaProgram {
 		}
 	}
 
-    public static class Smain
+    public static class SmainLua
     {
         public int argc;
 		public String[] argv;
@@ -374,7 +374,7 @@ public class LuaProgram {
     }
 	
 	private static int pmain(LuaState.lua_State L) {
-		Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
+		SmainLua s = (SmainLua)LuaAPI.lua_touserdata(L, 1);
 		String[] argv = s.argv;
 		int script;
 		int[] has_i = new int[1];
@@ -453,7 +453,7 @@ public class LuaProgram {
 		args = newargs;
 
 		int status;
-		Smain s = new Smain();
+		SmainLua s = new SmainLua();
 		LuaState.lua_State L = Lua.lua_open(); // create state 
 		if (L == null) {
 			l_message(LuaConf.CharPtr.toCharPtr(args[0]), LuaConf.CharPtr.toCharPtr("cannot create state: not enough memory"));

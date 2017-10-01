@@ -456,7 +456,7 @@ namespace kurumi
 			}
 		}
 
-	    public class Smain
+	    public class SmainLua
 	    {
 	        public int argc;
 	        public string[] argv;
@@ -465,7 +465,7 @@ namespace kurumi
 		
 		static int pmain(LuaState.lua_State L)
 		{
-			Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
+			SmainLua s = (SmainLua)LuaAPI.lua_touserdata(L, 1);
 			string[] argv = s.argv;
 			int script;
 			int[] has_i = new int[1];
@@ -561,7 +561,7 @@ namespace kurumi
 			args = newargs;
 
 			int status;
-			Smain s = new Smain();
+			SmainLua s = new SmainLua();
 			LuaState.lua_State L = Lua.lua_open();  /* create state */
 			if (L == null)
 			{

@@ -213,7 +213,7 @@ namespace kurumi
 			}
 		}
 
-	    public class Smain
+	    public class SmainLuac
 	    {
 	        public int argc;
 	        public string[] argv;
@@ -222,7 +222,7 @@ namespace kurumi
 		
 		static int pmain(LuaState.lua_State L)
 		{
-			Smain s = (Smain)LuaAPI.lua_touserdata(L, 1);
+			SmainLuac s = (SmainLuac)LuaAPI.lua_touserdata(L, 1);
 			int argc = s.argc;
 			string[] argv = s.argv;
 			LuaObject.Proto f;
@@ -280,7 +280,7 @@ namespace kurumi
 			args = newargs;
 
 			LuaState.lua_State L;
-			Smain s = new Smain();
+			SmainLuac s = new SmainLuac();
 			int argc = args.Length;
 			int i = doargs(argc,args);
 			//newargs.RemoveRange(0, i);
