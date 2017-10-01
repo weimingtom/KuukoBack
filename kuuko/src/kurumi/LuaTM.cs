@@ -3,6 +3,8 @@
  ** Tag methods
  ** See Copyright Notice in lua.h
  */
+using System;
+ 
 namespace kurumi
 {
 	//using TValue = Lua.TValue;
@@ -34,6 +36,50 @@ namespace kurumi
 			TM_CALL,
 			TM_N		/* number of elements in the enum */
 		}
+		
+       	public static int convertTMStoInt(LuaTM.TMS tms)
+        {
+            switch (tms)
+            {
+                case LuaTM.TMS.TM_INDEX:
+                    return 0;
+                case LuaTM.TMS.TM_NEWINDEX:
+                    return 1;
+                case LuaTM.TMS.TM_GC:
+                    return 2;
+                case LuaTM.TMS.TM_MODE:
+                    return 3;
+                case LuaTM.TMS.TM_EQ:
+                    return 4;
+                case LuaTM.TMS.TM_ADD:
+                    return 5;
+                case LuaTM.TMS.TM_SUB:
+                    return 6;
+                case LuaTM.TMS.TM_MUL:
+                    return 7;
+                case LuaTM.TMS.TM_DIV:
+                    return 8;
+                case LuaTM.TMS.TM_MOD:
+                    return 9;
+                case LuaTM.TMS.TM_POW:
+                    return 10;
+                case LuaTM.TMS.TM_UNM:
+                    return 11;
+                case LuaTM.TMS.TM_LEN:
+                    return 12;
+                case LuaTM.TMS.TM_LT:
+                    return 13;
+                case LuaTM.TMS.TM_LE:
+                    return 14;
+                case LuaTM.TMS.TM_CONCAT:
+                    return 15;
+                case LuaTM.TMS.TM_CALL:
+                    return 16;
+                case LuaTM.TMS.TM_N:
+                    return 17;
+            }
+            throw new Exception("convertTMStoInt error");
+        }
 		
 		public static LuaObject.TValue gfasttm(LuaState.global_State g, LuaObject.Table et, TMS e)
 		{
@@ -99,7 +145,7 @@ namespace kurumi
 		{
 			//const
 			LuaObject.TValue tm = LuaTable.luaH_getstr(events, ename);
-			LuaLimits.lua_assert(TMSUtil.convertTMStoInt(event_) <= TMSUtil.convertTMStoInt(TMS.TM_EQ));
+			LuaLimits.lua_assert(convertTMStoInt(event_) <= convertTMStoInt(TMS.TM_EQ));
 			if (LuaObject.ttisnil(tm))
 			{  
 				/* no tag method? */

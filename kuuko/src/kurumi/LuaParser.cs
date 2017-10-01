@@ -31,8 +31,46 @@ namespace kurumi
 			VRELOCABLE,	/* info = instruction pc */
 			VNONRELOC,	/* info = result register */
 			VCALL,	/* info = instruction pc */
-			VVARARG	/* info = instruction pc */
+			VVARARG /* info = instruction pc */
 		}		
+		
+       	public static int expkindToInt(LuaParser.expkind exp)
+        {
+            switch (exp)
+            {
+                case LuaParser.expkind.VVOID:
+                    return 0;
+		        case LuaParser.expkind.VNIL:
+                    return 1;
+		        case LuaParser.expkind.VTRUE:
+                    return 2;
+		        case LuaParser.expkind.VFALSE:
+                    return 3;
+		        case LuaParser.expkind.VK:
+                    return 4;		
+		        case LuaParser.expkind.VKNUM:
+                    return 5;	
+		        case LuaParser.expkind.VLOCAL:
+                    return 6;	
+		        case LuaParser.expkind.VUPVAL:
+                    return 7;       
+		        case LuaParser.expkind.VGLOBAL:
+                    return 8;	
+		        case LuaParser.expkind.VINDEXED:
+                    return 9;	
+		        case LuaParser.expkind.VJMP:
+                    return 10;		
+		        case LuaParser.expkind.VRELOCABLE:
+                    return 11;	
+		        case LuaParser.expkind.VNONRELOC:
+                    return 12;	
+		        case LuaParser.expkind.VCALL:
+                    return 13;
+                case LuaParser.expkind.VVARARG:
+                    return 14;	
+            }
+            throw new Exception("expkindToInt error");
+        }
 		
 		public class expdesc
 		{
@@ -309,7 +347,7 @@ namespace kurumi
 			int oldsize = f.sizeupvalues;
 			for (i=0; i<f.nups; i++) 
 			{
-				if ((int)fs.upvalues[i].k == (int)expkindUtil.expkindToInt(v.k) && fs.upvalues[i].info == v.u.s.info) 
+				if ((int)fs.upvalues[i].k == (int)expkindToInt(v.k) && fs.upvalues[i].info == v.u.s.info) 
 				{
 					LuaLimits.lua_assert(f.upvalues[i] == name);
 					return i;
@@ -331,7 +369,7 @@ namespace kurumi
 			f.upvalues[f.nups] = name;
 			LuaGC.luaC_objbarrier(fs.L, f, name);
 			LuaLimits.lua_assert(v.k == expkind.VLOCAL || v.k == expkind.VUPVAL);
-            fs.upvalues[f.nups].k = LuaLimits.cast_byte(expkindUtil.expkindToInt(v.k));
+            fs.upvalues[f.nups].k = LuaLimits.cast_byte(expkindToInt(v.k));
 			fs.upvalues[f.nups].info = LuaLimits.cast_byte(v.u.s.info);
 			return f.nups++;
 		}
@@ -1341,8 +1379,8 @@ namespace kurumi
 		{
 			expdesc e = new expdesc();
             check_condition(ls, 
-                expkindUtil.expkindToInt(expkind.VLOCAL) <= expkindUtil.expkindToInt(lh.v.k) && 
-                expkindUtil.expkindToInt(lh.v.k) <= expkindUtil.expkindToInt(expkind.VINDEXED),
+                expkindToInt(expkind.VLOCAL) <= expkindToInt(lh.v.k) && 
+                expkindToInt(lh.v.k) <= expkindToInt(expkind.VINDEXED),
 				LuaConf.CharPtr.toCharPtr("syntax error"));
 			if (testnext(ls, ',') != 0) 
 			{  
@@ -1471,7 +1509,7 @@ namespace kurumi
 			expdesc e = new expdesc();
 			int k;
 			expr(ls, e);
-			k = (int)expkindUtil.expkindToInt(e.k);
+			k = (int)expkindToInt(e.k);
 			LuaCode.luaK_exp2nextreg(ls.fs, e);
 			return k;
 		}

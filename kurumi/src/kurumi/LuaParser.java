@@ -53,6 +53,44 @@ public class LuaParser {
 		}
 	}	
 	
+    public static int expkindToInt(LuaParser.expkind exp)
+    {
+        switch (exp)
+        {
+			case VVOID:
+                return 0;
+			case VNIL:
+                return 1;
+			case VTRUE:
+                return 2;
+			case VFALSE:
+                return 3;
+			case VK:
+                return 4;		
+			case VKNUM:
+                return 5;	
+			case VLOCAL:
+                return 6;	
+			case VUPVAL:
+                return 7;       
+			case VGLOBAL:
+                return 8;	
+			case VINDEXED:
+                return 9;	
+			case VJMP:
+                return 10;		
+			case VRELOCABLE:
+                return 11;	
+			case VNONRELOC:
+                return 12;	
+			case VCALL:
+                return 13;
+			case VVARARG:
+                return 14;	
+        }
+		throw new RuntimeException("expkindToInt error");
+    }
+	
 	public static class expdesc {
 		public static class _u 
 		{
@@ -278,7 +316,7 @@ public class LuaParser {
 		LuaObject.Proto f = fs.f;
 		int oldsize = f.sizeupvalues;
 		for (i=0; i<f.nups; i++) {
-			if ((int)fs.upvalues[i].k == (int)expkindUtil.expkindToInt(v.k) && fs.upvalues[i].info == v.u.s.info) {
+			if ((int)fs.upvalues[i].k == (int)expkindToInt(v.k) && fs.upvalues[i].info == v.u.s.info) {
 				LuaLimits.lua_assert(f.upvalues[i] == name);
 				return i;
 			}
@@ -298,7 +336,7 @@ public class LuaParser {
 		f.upvalues[f.nups] = name;
 		LuaGC.luaC_objbarrier(fs.L, f, name);
 		LuaLimits.lua_assert(v.k == expkind.VLOCAL || v.k == expkind.VUPVAL);
-		fs.upvalues[f.nups].k = LuaLimits.cast_byte(expkindUtil.expkindToInt(v.k));
+		fs.upvalues[f.nups].k = LuaLimits.cast_byte(expkindToInt(v.k));
 		fs.upvalues[f.nups].info = LuaLimits.cast_byte(v.u.s.info);
 		return f.nups++;
 	}
@@ -1151,7 +1189,7 @@ public class LuaParser {
 
 	private static void assignment(LuaLex.LexState ls, LHS_assign lh, int nvars) {
 		expdesc e = new expdesc();
-		check_condition(ls, expkindUtil.expkindToInt(expkind.VLOCAL) <= expkindUtil.expkindToInt(lh.v.k) && expkindUtil.expkindToInt(lh.v.k) <= expkindUtil.expkindToInt(expkind.VINDEXED), LuaConf.CharPtr.toCharPtr("syntax error"));
+		check_condition(ls, expkindToInt(expkind.VLOCAL) <= expkindToInt(lh.v.k) && expkindToInt(lh.v.k) <= expkindToInt(expkind.VINDEXED), LuaConf.CharPtr.toCharPtr("syntax error"));
 		if (testnext(ls, ',') != 0) {
 			// assignment . `,' primaryexp assignment 
 			LHS_assign nv = new LHS_assign();
@@ -1264,7 +1302,7 @@ public class LuaParser {
 		expdesc e = new expdesc();
 		int k;
 		expr(ls, e);
-		k = (int)expkindUtil.expkindToInt(e.k);
+		k = (int)expkindToInt(e.k);
 		LuaCode.luaK_exp2nextreg(ls.fs, e);
 		return k;
 	}

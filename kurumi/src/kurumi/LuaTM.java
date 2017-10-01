@@ -42,6 +42,50 @@ public class LuaTM {
 		}
 	}	
 	
+    public static int convertTMStoInt(LuaTM.TMS tms)
+    {
+        switch (tms)
+        {
+			case TM_INDEX:
+                return 0;
+			case TM_NEWINDEX:
+                return 1;
+			case TM_GC:
+                return 2;
+			case TM_MODE:
+                return 3;
+			case TM_EQ:
+                return 4;
+			case TM_ADD:
+                return 5;
+			case TM_SUB:
+                return 6;
+			case TM_MUL:
+                return 7;
+			case TM_DIV:
+                return 8;
+			case TM_MOD:
+                return 9;
+			case TM_POW:
+                return 10;
+			case TM_UNM:
+                return 11;
+			case TM_LEN:
+                return 12;
+			case TM_LT:
+                return 13;
+			case TM_LE:
+                return 14;
+			case TM_CONCAT:
+                return 15;
+			case TM_CALL:
+                return 16;
+			case TM_N:
+                return 17;
+        }
+		throw new RuntimeException("convertTMStoInt error");
+    }
+	
 	public static LuaObject.TValue gfasttm(LuaState.global_State g, LuaObject.Table et, TMS e) {
 		return (et == null) ? null : ((et.flags & (1 << e.getValue())) != 0) ? null : luaT_gettm(et, e, g.tmname[e.getValue()]);
 	}
@@ -99,7 +143,7 @@ public class LuaTM {
 	public static LuaObject.TValue luaT_gettm(LuaObject.Table events, TMS event_, LuaObject.TString ename) {
 		//const
 		LuaObject.TValue tm = LuaTable.luaH_getstr(events, ename);
-		LuaLimits.lua_assert(TMSUtil.convertTMStoInt(event_) <= TMSUtil.convertTMStoInt(TMS.TM_EQ));
+		LuaLimits.lua_assert(convertTMStoInt(event_) <= convertTMStoInt(TMS.TM_EQ));
 		if (LuaObject.ttisnil(tm)) {
 			// no tag method? 
 			events.flags |= (byte)(1 << event_.getValue()); // cache this fact 
