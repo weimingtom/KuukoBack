@@ -106,7 +106,7 @@ namespace kurumi
 		//{{null}, LUA_TNIL},  /* value */
 		//{{{null}, LUA_TNIL, null}}  /* key */
 		//};
-		public static LuaObject.Node dummynode_ = new LuaObject.Node(new LuaObject.TValue(new Value(), Lua.LUA_TNIL), new LuaObject.TKey(new Value(), Lua.LUA_TNIL, null));
+		public static LuaObject.Node dummynode_ = new LuaObject.Node(new LuaObject.TValue(new LuaObject.Value(), Lua.LUA_TNIL), new LuaObject.TKey(new LuaObject.Value(), Lua.LUA_TNIL, null));
 		public static LuaObject.Node dummynode = dummynode_;
 
 		/*

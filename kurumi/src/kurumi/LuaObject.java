@@ -49,7 +49,39 @@ public class LuaObject {
 	public static class GCheader extends LuaObject.CommonHeader {
 		
 	}    
-    
+	
+	/*
+	 ** Union of all Lua values
+	 */
+	public static class Value /*struct ValueCls*/
+	{
+		public LuaState.GCObject gc;
+		public Object p;
+		public double n;  /*Double*/ /*lua_Number*/
+		public int b;
+
+        public Value()
+        {
+
+        }
+
+        public Value(Value copy)
+        {
+            this.gc = copy.gc;
+            this.p = copy.p;
+            this.n = copy.n;
+            this.b = copy.b;
+        }
+
+        public void copyFrom(Value copy)
+        {
+            this.gc = copy.gc;
+            this.p = copy.p;
+            this.n = copy.n;
+            this.b = copy.b;
+        }
+	}
+	
 //        
 //		 ** Tagged Values
 //		 
