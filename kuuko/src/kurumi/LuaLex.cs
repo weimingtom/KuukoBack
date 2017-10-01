@@ -102,7 +102,7 @@ namespace kurumi
 			public Token lookahead = new Token();  /* look ahead token */
 			public LuaParser.FuncState fs;  /* `FuncState' is private to the parser */
 			public LuaState.lua_State L;
-			public ZIO z;  /* input stream */
+			public LuaZIO.ZIO z;  /* input stream */
 			public LuaZIO.Mbuffer buff;  /* buffer for tokens */
 			public LuaObject.TString source;  /* current source name */
 			public char decpoint;  /* locale decimal point */
@@ -239,7 +239,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaX_setinput(LuaState.lua_State L, LexState ls, ZIO z, LuaObject.TString source) 
+		public static void luaX_setinput(LuaState.lua_State L, LexState ls, LuaZIO.ZIO z, LuaObject.TString source) 
 		{
 			ls.decpoint = '.';
 			ls.L = L;

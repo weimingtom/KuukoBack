@@ -1211,7 +1211,7 @@ namespace kurumi
             {
                 return 12;
             }
-            else if (t == typeof(ZIO/*Zio*/))
+            else if (t == typeof(LuaZIO.ZIO/*Zio*/))
             {
                 return 20;
             }

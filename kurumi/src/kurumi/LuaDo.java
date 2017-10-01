@@ -623,7 +623,7 @@ LuaObject.TValue.inc(top_ref); //ref
 	public static class SParser
 	{
 		/* data to `f_parser' */
-		public ZIO z;
+		public LuaZIO.ZIO z;
 		public LuaZIO.Mbuffer buff = new LuaZIO.Mbuffer();  /* buffer to be used by the scanner */
 		public LuaConf.CharPtr name;
 	}
@@ -645,7 +645,7 @@ LuaObject.TValue.inc(top_ref); //ref
 		incr_top(L);
 	}
 
-	public static int luaD_protectedparser(LuaState.lua_State L, ZIO z, LuaConf.CharPtr name) {
+	public static int luaD_protectedparser(LuaState.lua_State L, LuaZIO.ZIO z, LuaConf.CharPtr name) {
 		SParser p = new SParser();
 		int status;
 		p.z = z;

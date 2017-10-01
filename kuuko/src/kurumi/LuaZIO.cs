@@ -80,6 +80,17 @@ namespace kurumi
 
 		/* --------- Private Part ------------------ */
 
+		public class ZIO//Zio
+		{
+			public int n;  /*uint*/			/* bytes still unread */
+			public LuaConf.CharPtr p;			/* current position in buffer */
+			public Lua.lua_Reader reader;
+			public object data;			/* additional data */
+			public LuaState.lua_State L;			/* Lua state (for reader) */
+			
+			//public class ZIO : Zio { };
+		}
+	
 		public static int luaZ_fill(ZIO z) 
 		{
 			int[]/*uint*/ size = new int[1];

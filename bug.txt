@@ -60,4 +60,8 @@ lua_CFunction delegate string compare
 			}
 		}
 		
-		
+(6)
+LuaProgram.Smain and LuacProgram.Smain not different names
+
+
+

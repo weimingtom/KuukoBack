@@ -67,6 +67,17 @@ public class LuaZIO {
 
 	// --------- Private Part ------------------ 
 
+	public static class ZIO//Zio
+	{
+		public int n;  /*uint*/			/* bytes still unread */
+		public LuaConf.CharPtr p;			/* current position in buffer */
+		public Lua.lua_Reader reader;
+		public Object data;			/* additional data */
+		public LuaState.lua_State L;			/* Lua state (for reader) */
+		
+		//public class ZIO : Zio { };
+	}	
+	
 	public static int luaZ_fill(ZIO z) {
 		int[] size = new int[1]; //uint
 		LuaState.lua_State L = z.L;

@@ -900,7 +900,7 @@ LuaObject.TValue.dec(top); //ref
 	}
 
 	public static int lua_load(LuaState.lua_State L, Lua.lua_Reader reader, Object data, LuaConf.CharPtr chunkname) {
-		ZIO z = new ZIO();
+		LuaZIO.ZIO z = new LuaZIO.ZIO();
 		int status;
 		LuaLimits.lua_lock(L);
 		if (LuaConf.CharPtr.isEqual(chunkname, null)) {
@@ -1142,7 +1142,7 @@ LuaObject.TValue.dec(top); // remove key  - ref
 			LuaObject.TValue[] top = new LuaObject.TValue[1];
 			top[0] = L.top;
 			//StkId
-LuaObject.TValue.dec(top); //ref
+			LuaObject.TValue.dec(top); //ref
 			L.top = top[0];
 			LuaObject.setobj(L, val, L.top);
 			LuaGC.luaC_barrier(L, LuaObject.clvalue(fi), L.top);

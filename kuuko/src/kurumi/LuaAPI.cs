@@ -1049,7 +1049,7 @@ namespace kurumi
 
 		public static int lua_load(LuaState.lua_State L, Lua.lua_Reader reader, object data, LuaConf.CharPtr chunkname) 
 		{
-			ZIO z = new ZIO();
+			LuaZIO.ZIO z = new LuaZIO.ZIO();
 			int status;
 			LuaLimits.lua_lock(L);
 			if (LuaConf.CharPtr.isEqual(chunkname, null)) 
