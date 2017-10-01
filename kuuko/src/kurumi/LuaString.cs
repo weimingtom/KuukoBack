@@ -16,7 +16,7 @@ namespace kurumi
 			return ((int)s.len + 1) * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)); //char 
 		}
 
-		public static int sizeudata(Udata u) 
+		public static int sizeudata(LuaObject.Udata u) 
 		{ 
 			return (int)u.len; 
 		}
@@ -152,9 +152,9 @@ namespace kurumi
 			return res;
 		}
 
-		public static Udata luaS_newudata(LuaState.lua_State L, int/*uint*/ s, LuaObject.Table e)
+		public static LuaObject.Udata luaS_newudata(LuaState.lua_State L, int/*uint*/ s, LuaObject.Table e)
 		{
-			Udata u = new Udata();
+			LuaObject.Udata u = new LuaObject.Udata();
 			u.uv.marked = LuaGC.luaC_white(LuaState.G(L));  /* is not finalized */
 			u.uv.tt = Lua.LUA_TUSERDATA;
 			u.uv.len = s;
@@ -167,9 +167,9 @@ namespace kurumi
 			return u;
 		}
 
-        public static Udata luaS_newudata(LuaState.lua_State L, ClassType t, LuaObject.Table e)
+        public static LuaObject.Udata luaS_newudata(LuaState.lua_State L, ClassType t, LuaObject.Table e)
 		{
-			Udata u = new Udata();
+			LuaObject.Udata u = new LuaObject.Udata();
 			u.uv.marked = LuaGC.luaC_white(LuaState.G(L));  /* is not finalized */
 			u.uv.tt = Lua.LUA_TUSERDATA;
 			u.uv.len = 0;

@@ -258,9 +258,9 @@ namespace kurumi
 	            return (LuaObject.TString)this;
 	        }
 	
-	        public Udata getU()
+	        public LuaObject.Udata getU()
 	        {
-	            return (Udata)this;
+	            return (LuaObject.Udata)this;
 	        }
 	
 	        public LuaObject.Closure getCl()
@@ -422,14 +422,14 @@ namespace kurumi
 			return (LuaObject.TString)(rawgco2ts(o).getTsv()); 
 		}
 		
-		public static Udata rawgco2u(GCObject o) 
+		public static LuaObject.Udata rawgco2u(GCObject o) 
 		{
-            return (Udata)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TUSERDATA, o.getU()); 
+            return (LuaObject.Udata)LuaLimits.check_exp(o.getGch().tt == Lua.LUA_TUSERDATA, o.getU()); 
 		}
 		
-		public static Udata gco2u(GCObject o) 
+		public static LuaObject.Udata gco2u(GCObject o) 
 		{ 
-			return (Udata)(rawgco2u(o).uv); 
+			return (LuaObject.Udata)(rawgco2u(o).uv); 
 		}
 		
 		public static LuaObject.Closure gco2cl(GCObject o) 

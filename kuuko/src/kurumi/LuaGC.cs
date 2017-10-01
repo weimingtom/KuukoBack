@@ -237,12 +237,12 @@ namespace kurumi
 			gcheader.marked = marked_ref[0];
 		}
 
-		public static bool isfinalized(Udata_uv u) 
+		public static bool isfinalized(LuaObject.Udata_uv u) 
 		{ 
 			return testbit(u.marked, FINALIZEDBIT); 
 		}
 		
-		public static void markfinalized(Udata_uv u)
+		public static void markfinalized(LuaObject.Udata_uv u)
 		{
 			Byte/*lu_byte*/ marked = u.marked;	// can't pass properties in as ref
 			Byte[] marked_ref = new Byte[1];
@@ -835,7 +835,7 @@ namespace kurumi
 		{
 			LuaState.global_State g = LuaState.G(L);
 			LuaState.GCObject o = g.tmudata.getGch().next;  /* get first element */
-			Udata udata = LuaState.rawgco2u(o);
+			LuaObject.Udata udata = LuaState.rawgco2u(o);
 			LuaObject.TValue tm;
 			/* remove udata from `tmudata' */
 			if (o == g.tmudata)  /* last element? */

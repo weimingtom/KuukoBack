@@ -447,6 +447,29 @@ public class LuaObject {
 		return getstr(rawtsvalue(o));
 	}
 
+	public static class Udata_uv extends LuaState.GCObject 
+	{
+		public LuaObject.Table metatable;
+		public LuaObject.Table env;
+		public int len; /*uint*/
+	}
+	
+	public static class Udata extends LuaObject.Udata_uv {
+		public /*new*/  LuaObject.Udata_uv uv;
+		
+		//public L_Umaxalign dummy;  /* ensures maximum alignment for `local' udata */
+		
+		// in the original C code this was allocated alongside the structure memory. it would probably
+		// be possible to still do that by allocating memory and pinning it down, but we can do the
+		// same thing just as easily by allocating a seperate byte array for it instead.
+		public Object user_data;
+		
+		public Udata() 
+		{ 
+			this.uv = this; 
+		}
+	}
+	
 	//typedef TValue *StkId;  /* index to stack elements */
 
 	/*

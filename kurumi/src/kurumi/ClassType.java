@@ -203,7 +203,7 @@ public class ClassType {
 				result = new LuaObject.Node();
 			}
 			else if (type == TYPE_UDATA) {
-				result = new Udata();
+				result = new LuaObject.Udata();
 			}
 			else if (type == TYPE_LUA_STATE) {
 				result = new LuaState.lua_State();

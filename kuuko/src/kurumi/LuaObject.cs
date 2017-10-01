@@ -540,14 +540,29 @@ namespace kurumi
 			return getstr(rawtsvalue(o)); 
 		}
 		
+		public class Udata_uv : LuaState.GCObject
+		{
+			public LuaObject.Table metatable;
+			public LuaObject.Table env;
+			public int len; /*uint*/
+		}
 		
-		
-		
-		
-		
-		
-		
-		
+		public class Udata : Udata_uv
+		{
+			public /*new*/ Udata_uv uv;
+			
+			//public L_Umaxalign dummy;  /* ensures maximum alignment for `local' udata */
+			
+			// in the original C code this was allocated alongside the structure memory. it would probably
+			// be possible to still do that by allocating memory and pinning it down, but we can do the
+			// same thing just as easily by allocating a seperate byte array for it instead.
+			public object user_data;
+			
+			public Udata() 
+			{ 
+				this.uv = this; 
+			}
+		}
 		
 		/*
 		 ** Function Prototypes

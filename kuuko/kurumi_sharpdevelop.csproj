@@ -98,8 +98,6 @@
     <Compile Include="src\kurumi\StreamProxy.cs" />
     <Compile Include="src\kurumi\TMSUtil.cs" />
     <Compile Include="src\kurumi\Tools.cs" />
-    <Compile Include="src\kurumi\Udata.cs" />
-    <Compile Include="src\kurumi\Udata_uv.cs" />
     <Compile Include="src\kurumi\UnOpr.cs" />
     <Compile Include="src\kurumi\UpVal.cs" />
     <Compile Include="src\kurumi\upvaldesc.cs" />

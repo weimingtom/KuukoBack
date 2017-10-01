@@ -13,7 +13,7 @@ public class LuaString {
 		return ((int)s.len + 1) * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)); //char
 	}
 
-	public static int sizeudata(Udata u) {
+	public static int sizeudata(LuaObject.Udata u) {
 		return (int)u.len;
 	}
 
@@ -129,8 +129,8 @@ public class LuaString {
 		return res;
 	}
 
-	public static Udata luaS_newudata(LuaState.lua_State L, int s, LuaObject.Table e) { //uint
-		Udata u = new Udata();
+	public static LuaObject.Udata luaS_newudata(LuaState.lua_State L, int s, LuaObject.Table e) { //uint
+		LuaObject.Udata u = new LuaObject.Udata();
 		u.uv.marked = LuaGC.luaC_white(LuaState.G(L)); // is not finalized 
 		u.uv.tt = Lua.LUA_TUSERDATA;
 		u.uv.len = s;
@@ -143,8 +143,8 @@ public class LuaString {
 		return u;
 	}
 
-	public static Udata luaS_newudata(LuaState.lua_State L, ClassType t, LuaObject.Table e) {
-		Udata u = new Udata();
+	public static LuaObject.Udata luaS_newudata(LuaState.lua_State L, ClassType t, LuaObject.Table e) {
+		LuaObject.Udata u = new LuaObject.Udata();
 		u.uv.marked = LuaGC.luaC_white(LuaState.G(L)); // is not finalized 
 		u.uv.tt = Lua.LUA_TUSERDATA;
 		u.uv.len = 0;

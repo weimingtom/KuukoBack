@@ -1067,7 +1067,7 @@ LuaObject.TValue.dec(top); // remove key  - ref
 	}
 
 	public static Object lua_newuserdata(LuaState.lua_State L, int size) { //uint
-		Udata u;
+		LuaObject.Udata u;
 		LuaLimits.lua_lock(L);
 		LuaGC.luaC_checkGC(L);
 		u = LuaString.luaS_newudata(L, size, getcurrenv(L));
@@ -1078,7 +1078,7 @@ LuaObject.TValue.dec(top); // remove key  - ref
 	}
 
 	public static Object lua_newuserdata(LuaState.lua_State L, ClassType t) {
-		Udata u;
+		LuaObject.Udata u;
 		LuaLimits.lua_lock(L);
 		LuaGC.luaC_checkGC(L);
 		u = LuaString.luaS_newudata(L, t, getcurrenv(L));

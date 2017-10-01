@@ -258,7 +258,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_UDATA)
 	            {
-	                result = new Udata();
+	                result = new LuaObject.Udata();
 	            }
 	            else if (type == TYPE_LUA_STATE)
 	            {
@@ -977,7 +977,7 @@ namespace kurumi
             }
             else if (type == TYPE_UDATA)
             {
-                return typeof(Udata);
+                return typeof(LuaObject.Udata);
             }
             else if (type == TYPE_LUA_STATE)
             {
@@ -1235,7 +1235,7 @@ namespace kurumi
             {
                 return 4;
             }
-            else if (t == typeof(Udata))
+            else if (t == typeof(LuaObject.Udata))
             {
                 return 24;
             }

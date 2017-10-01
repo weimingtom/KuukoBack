@@ -58,8 +58,8 @@ public class LuaMem {
 	//public static void luaM_freearray(lua_State L, object b, int n, Type t) { luaM_reallocv(L, b, n, 0, Marshal.SizeOf(b)); }
 
 	// C# has it's own gc, so nothing to do here...in theory...
-	public static void luaM_freemem_Udata(LuaState.lua_State L, Udata b, ClassType t) {
-		luaM_realloc__Udata(L, new Udata[] {b}, 0, t);
+	public static void luaM_freemem_Udata(LuaState.lua_State L, LuaObject.Udata b, ClassType t) {
+		luaM_realloc__Udata(L, new LuaObject.Udata[] {b}, 0, t);
 	}
 
 	public static void luaM_freemem_TString(LuaState.lua_State L, LuaObject.TString b, ClassType t) {
@@ -663,17 +663,17 @@ public class LuaMem {
 		return new_block;
 	}
 
-	public static Object luaM_realloc__Udata(LuaState.lua_State L, Udata[] old_block, int new_size, ClassType t) {
+	public static Object luaM_realloc__Udata(LuaState.lua_State L, LuaObject.Udata[] old_block, int new_size, ClassType t) {
 		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
-		Udata[] new_block = new Udata[new_size];
+		LuaObject.Udata[] new_block = new LuaObject.Udata[new_size];
 		for (int i = 0; i < Math.min(old_size, new_size); i++) {
 			new_block[i] = old_block[i];
 		}
 		for (int i = old_size; i < new_size; i++) {
-			new_block[i] = (Udata)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
+			new_block[i] = (LuaObject.Udata)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {

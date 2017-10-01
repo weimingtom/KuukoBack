@@ -1246,7 +1246,7 @@ namespace kurumi
 
 		public static object lua_newuserdata(LuaState.lua_State L, int/*uint*/ size)
 		{
-			Udata u;
+			LuaObject.Udata u;
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
 			u = LuaString.luaS_newudata(L, size, getcurrenv(L));
@@ -1258,7 +1258,7 @@ namespace kurumi
 
 		public static object lua_newuserdata(LuaState.lua_State L, ClassType t)
 		{
-			Udata u;
+			LuaObject.Udata u;
 			LuaLimits.lua_lock(L);
 			LuaGC.luaC_checkGC(L);
 			u = LuaString.luaS_newudata(L, t, getcurrenv(L));
