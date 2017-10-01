@@ -66,4 +66,5 @@ LuaProgram.Smain and LuacProgram.Smain not different names
 (7)
 remove java enum constructor
 
-
+(8)
+move CLib none c functions

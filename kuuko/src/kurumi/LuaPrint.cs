@@ -20,9 +20,9 @@ namespace kurumi
 
 		public static void PrintString(LuaObject.TString ts)
 		{
-			LuaConf.CharPtr s = LuaObject.getstr(ts);
+			CLib.CharPtr s = LuaObject.getstr(ts);
 			int/*uint*/ i, n = ts.getTsv().len;
-			LuaConf.putchar('"');
+			CLib.putchar('"');
 			for (i = 0; i < n; i++)
 			{
 				int c = s.get(i);
@@ -30,64 +30,64 @@ namespace kurumi
 				{
 					case '"': 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\\"")); 
+							CLib.printf(CLib.CharPtr.toCharPtr("\\\"")); 
 							break;
 						}
 					case '\\': 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\\\")); 
+							CLib.printf(CLib.CharPtr.toCharPtr("\\\\")); 
 							break;
 						}
 					case '\u0007': //'\a': //FIXME:
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\a")); 
+							CLib.printf(CLib.CharPtr.toCharPtr("\\a")); 
 							break;
 						}
 					case '\b': 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\b")); 
+							CLib.printf(CLib.CharPtr.toCharPtr("\\b")); 
 							break;
 						}
 					case '\f': 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\f")); 
+							CLib.printf(CLib.CharPtr.toCharPtr("\\f")); 
 							break;
 						}
 					case '\n': 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\n")); 
+							CLib.printf(CLib.CharPtr.toCharPtr("\\n")); 
 							break;
 						}
 					case '\r': 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\r")); 
+							CLib.printf(CLib.CharPtr.toCharPtr("\\r")); 
 							break;
 						}
 					case '\t': 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\t")); 
+							CLib.printf(CLib.CharPtr.toCharPtr("\\t")); 
 							break;
 						}
                     case '\u000B': //case '\v': //FIXME: 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\v")); 
+							CLib.printf(CLib.CharPtr.toCharPtr("\\v")); 
 							break;
 						}
 					default: 
 						{
-							if (LuaConf.isprint((byte)c))
+							if (CLib.isprint((byte)c))
 							{
-								LuaConf.putchar(c);
+								CLib.putchar(c);
 							}
 							else
 							{
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr("\\%03u"), (byte)c);
+								CLib.printf(CLib.CharPtr.toCharPtr("\\%03u"), (byte)c);
 							}
 							break;
 						}
 				}
 			}
-			LuaConf.putchar('"');
+			CLib.putchar('"');
 		}
 
 		private static void PrintConstant(LuaObject.Proto f, int i)
@@ -97,17 +97,17 @@ namespace kurumi
 			{
 			case Lua.LUA_TNIL:
 				{
-					LuaConf.printf(LuaConf.CharPtr.toCharPtr("nil"));
+					CLib.printf(CLib.CharPtr.toCharPtr("nil"));
 					break;
 				}
 			case Lua.LUA_TBOOLEAN:
 				{
-					LuaConf.printf(LuaObject.bvalue(o) != 0 ? LuaConf.CharPtr.toCharPtr("true") : LuaConf.CharPtr.toCharPtr("false"));
+					CLib.printf(LuaObject.bvalue(o) != 0 ? CLib.CharPtr.toCharPtr("true") : CLib.CharPtr.toCharPtr("false"));
 					break;
 				}
 			case Lua.LUA_TNUMBER:
 				{
-					LuaConf.printf(LuaConf.CharPtr.toCharPtr(LuaConf.LUA_NUMBER_FMT), LuaObject.nvalue(o));
+					CLib.printf(CLib.CharPtr.toCharPtr(LuaConf.LUA_NUMBER_FMT), LuaObject.nvalue(o));
 					break;
 				}
 			case Lua.LUA_TSTRING:
@@ -118,7 +118,7 @@ namespace kurumi
 			default:				
 				{
 					/* cannot happen */
-					LuaConf.printf(LuaConf.CharPtr.toCharPtr("? type=%d"), LuaObject.ttype(o));
+					CLib.printf(CLib.CharPtr.toCharPtr("? type=%d"), LuaObject.ttype(o));
 					break;
 				}
 			}
@@ -138,28 +138,28 @@ namespace kurumi
 				int bx = LuaOpCodes.GETARG_Bx(i);
 				int sbx = LuaOpCodes.GETARG_sBx(i);
 				int line = LuaDebug.getline(f,pc);
-				LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t%d\t"), pc + 1);
+				CLib.printf(CLib.CharPtr.toCharPtr("\t%d\t"), pc + 1);
 				if (line > 0) 
 				{
-					LuaConf.printf(LuaConf.CharPtr.toCharPtr("[%d]\t"), line);
+					CLib.printf(CLib.CharPtr.toCharPtr("[%d]\t"), line);
 				}
 				else 
 				{
-					LuaConf.printf(LuaConf.CharPtr.toCharPtr("[-]\t"));
+					CLib.printf(CLib.CharPtr.toCharPtr("[-]\t"));
 				}
-				LuaConf.printf(LuaConf.CharPtr.toCharPtr("%-9s\t"), LuaOpCodes.luaP_opnames[(int)o]);
+				CLib.printf(CLib.CharPtr.toCharPtr("%-9s\t"), LuaOpCodes.luaP_opnames[(int)o]);
 				switch (LuaOpCodes.getOpMode(o))
 				{
 					case LuaOpCodes.OpMode.iABC:
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d"), a);
+							CLib.printf(CLib.CharPtr.toCharPtr("%d"), a);
 							if (LuaOpCodes.getBMode(o) != LuaOpCodes.OpArgMask.OpArgN) 
 							{
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr(" %d"), (LuaOpCodes.ISK(b) != 0) ? (-1 - LuaOpCodes.INDEXK(b)) : b);
+								CLib.printf(CLib.CharPtr.toCharPtr(" %d"), (LuaOpCodes.ISK(b) != 0) ? (-1 - LuaOpCodes.INDEXK(b)) : b);
 							}
 							if (LuaOpCodes.getCMode(o) != LuaOpCodes.OpArgMask.OpArgN) 
 							{
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr(" %d"), (LuaOpCodes.ISK(c) != 0) ? (-1 - LuaOpCodes.INDEXK(c)) : c);
+								CLib.printf(CLib.CharPtr.toCharPtr(" %d"), (LuaOpCodes.ISK(c) != 0) ? (-1 - LuaOpCodes.INDEXK(c)) : c);
 							}
 							break;
 						}
@@ -167,22 +167,22 @@ namespace kurumi
 						{
 							if (LuaOpCodes.getBMode(o) == LuaOpCodes.OpArgMask.OpArgK) 
 							{
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d %d"), a, -1 - bx); 
+								CLib.printf(CLib.CharPtr.toCharPtr("%d %d"), a, -1 - bx); 
 							}
 							else 
 							{
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d %d"), a, bx);
+								CLib.printf(CLib.CharPtr.toCharPtr("%d %d"), a, bx);
 							}
 							break;
 						}
 					case LuaOpCodes.OpMode.iAsBx:
 						if (o == LuaOpCodes.OpCode.OP_JMP) 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d"), sbx);
+							CLib.printf(CLib.CharPtr.toCharPtr("%d"), sbx);
 						}
 						else 
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d %d"), a, sbx);
+							CLib.printf(CLib.CharPtr.toCharPtr("%d %d"), a, sbx);
 						}
 						break;
 				}
@@ -190,20 +190,20 @@ namespace kurumi
 				{
 					case LuaOpCodes.OpCode.OP_LOADK:
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; "));
+							CLib.printf(CLib.CharPtr.toCharPtr("\t; "));
 							PrintConstant(f,bx);
 							break;
 						}
 					case LuaOpCodes.OpCode.OP_GETUPVAL:
 					case LuaOpCodes.OpCode.OP_SETUPVAL:
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; %s"), (f.sizeupvalues > 0) ? LuaObject.getstr(f.upvalues[b]) : LuaConf.CharPtr.toCharPtr("-"));
+							CLib.printf(CLib.CharPtr.toCharPtr("\t; %s"), (f.sizeupvalues > 0) ? LuaObject.getstr(f.upvalues[b]) : CLib.CharPtr.toCharPtr("-"));
 							break;
 						}
 					case LuaOpCodes.OpCode.OP_GETGLOBAL:
 					case LuaOpCodes.OpCode.OP_SETGLOBAL:
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; %s"), LuaObject.svalue(f.k[bx]));
+							CLib.printf(CLib.CharPtr.toCharPtr("\t; %s"), LuaObject.svalue(f.k[bx]));
 							break;
 						}
 					case LuaOpCodes.OpCode.OP_GETTABLE:
@@ -211,7 +211,7 @@ namespace kurumi
 						{
 							if (LuaOpCodes.ISK(c) != 0)
 							{ 
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; ")); 
+								CLib.printf(CLib.CharPtr.toCharPtr("\t; ")); 
 								PrintConstant(f, LuaOpCodes.INDEXK(c)); 
 							}
 							break;
@@ -228,23 +228,23 @@ namespace kurumi
 						{
 							if (LuaOpCodes.ISK(b) != 0 || LuaOpCodes.ISK(c) != 0)
 							{
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; "));
+								CLib.printf(CLib.CharPtr.toCharPtr("\t; "));
 								if (LuaOpCodes.ISK(b) != 0) 
 								{
 									PrintConstant(f, LuaOpCodes.INDEXK(b));
 								}
 								else 
 								{
-									LuaConf.printf(LuaConf.CharPtr.toCharPtr("-"));
+									CLib.printf(CLib.CharPtr.toCharPtr("-"));
 								}
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr(" "));
+								CLib.printf(CLib.CharPtr.toCharPtr(" "));
 								if (LuaOpCodes.ISK(c) != 0) 
 								{
 									PrintConstant(f, LuaOpCodes.INDEXK(c));
 								}
 								else 
 								{
-									LuaConf.printf(LuaConf.CharPtr.toCharPtr("-"));
+									CLib.printf(CLib.CharPtr.toCharPtr("-"));
 								}
 							}
 							break;
@@ -253,23 +253,23 @@ namespace kurumi
 					case LuaOpCodes.OpCode.OP_FORLOOP:
 					case LuaOpCodes.OpCode.OP_FORPREP:
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; to %d"), sbx + pc + 2);
+							CLib.printf(CLib.CharPtr.toCharPtr("\t; to %d"), sbx + pc + 2);
 							break;
 						}
 					case LuaOpCodes.OpCode.OP_CLOSURE:
 						{
-							LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; %p"), LuaConf.VOID(f.p[bx]));
+							CLib.printf(CLib.CharPtr.toCharPtr("\t; %p"), CLib.VOID(f.p[bx]));
 							break;
 						}
 					case LuaOpCodes.OpCode.OP_SETLIST:
 						{
 							if (c == 0) 
 							{
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; %d"), (int)code[++pc]);
+								CLib.printf(CLib.CharPtr.toCharPtr("\t; %d"), (int)code[++pc]);
 							}
 							else 
 							{
-								LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t; %d"), c);
+								CLib.printf(CLib.CharPtr.toCharPtr("\t; %d"), c);
 							}
 							break;
 						}
@@ -278,7 +278,7 @@ namespace kurumi
 							break;
 						}
 				}
-				LuaConf.printf(LuaConf.CharPtr.toCharPtr("\n"));
+				CLib.printf(CLib.CharPtr.toCharPtr("\n"));
 			}
 		}
 
@@ -291,50 +291,50 @@ namespace kurumi
 
 		private static void PrintHeader(LuaObject.Proto f)
 		{
-			LuaConf.CharPtr s = LuaObject.getstr(f.source);
+			CLib.CharPtr s = LuaObject.getstr(f.source);
 			if (s.get(0) == '@' || s.get(0) == '=')
 			{
 				s = s.next();
 			}
 			else if (s.get(0) == Lua.LUA_SIGNATURE[0])
 			{
-				s = LuaConf.CharPtr.toCharPtr("(bstring)");
+				s = CLib.CharPtr.toCharPtr("(bstring)");
 			}
 			else
 			{
-				s = LuaConf.CharPtr.toCharPtr("(string)");
+				s = CLib.CharPtr.toCharPtr("(string)");
 			}
-			LuaConf.printf(LuaConf.CharPtr.toCharPtr("\n%s <%s:%d,%d> (%d Instruction%s, %d bytes at %p)\n"),
+			CLib.printf(CLib.CharPtr.toCharPtr("\n%s <%s:%d,%d> (%d Instruction%s, %d bytes at %p)\n"),
                	(f.linedefined == 0) ? "main" : "function", s,
                	f.linedefined, f.lastlinedefined,
-                f.sizecode, SS(f.sizecode), f.sizecode * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LONG)), LuaConf.VOID(f)); 
+                f.sizecode, SS(f.sizecode), f.sizecode * CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LONG)), CLib.VOID(f)); 
 			//typeof(long/*UInt32*//*Instruction*/)
-            LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d%s param%s, %d slot%s, %d upvalue%s, "),
+            CLib.printf(CLib.CharPtr.toCharPtr("%d%s param%s, %d slot%s, %d upvalue%s, "),
                	f.numparams, (f.is_vararg != 0) ? "+" : "", SS(f.numparams),
             	f.maxstacksize, SS(f.maxstacksize), f.nups, SS(f.nups));
-			LuaConf.printf(LuaConf.CharPtr.toCharPtr("%d local%s, %d constant%s, %d function%s\n"),
+			CLib.printf(CLib.CharPtr.toCharPtr("%d local%s, %d constant%s, %d function%s\n"),
 				f.sizelocvars, SS(f.sizelocvars), f.sizek, SS(f.sizek), f.sizep, SS(f.sizep));
 		}
 
 		private static void PrintConstants(LuaObject.Proto f)
 		{
 			int i, n = f.sizek;
-			LuaConf.printf(LuaConf.CharPtr.toCharPtr("constants (%d) for %p:\n"), n, LuaConf.VOID(f));
+			CLib.printf(CLib.CharPtr.toCharPtr("constants (%d) for %p:\n"), n, CLib.VOID(f));
 			for (i = 0; i < n; i++)
 			{
-				LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t%d\t"), i + 1);
+				CLib.printf(CLib.CharPtr.toCharPtr("\t%d\t"), i + 1);
 				PrintConstant(f, i);
-				LuaConf.printf(LuaConf.CharPtr.toCharPtr("\n"));
+				CLib.printf(CLib.CharPtr.toCharPtr("\n"));
 			}
 		}
 
 		private static void PrintLocals(LuaObject.Proto f)
 		{
 			int i, n = f.sizelocvars;
-			LuaConf.printf(LuaConf.CharPtr.toCharPtr("locals (%d) for %p:\n"), n, LuaConf.VOID(f));
+			CLib.printf(CLib.CharPtr.toCharPtr("locals (%d) for %p:\n"), n, CLib.VOID(f));
 			for (i = 0; i < n; i++)
 			{
-				LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t%d\t%s\t%d\t%d\n"),
+				CLib.printf(CLib.CharPtr.toCharPtr("\t%d\t%s\t%d\t%d\n"),
 					i, LuaObject.getstr(f.locvars[i].varname), f.locvars[i].startpc + 1, f.locvars[i].endpc + 1);
 			}
 		}
@@ -342,14 +342,14 @@ namespace kurumi
 		private static void PrintUpvalues(LuaObject.Proto f)
 		{
 			int i, n = f.sizeupvalues;
-			LuaConf.printf(LuaConf.CharPtr.toCharPtr("upvalues (%d) for %p:\n"), n, LuaConf.VOID(f));
+			CLib.printf(CLib.CharPtr.toCharPtr("upvalues (%d) for %p:\n"), n, CLib.VOID(f));
 			if (f.upvalues == null) 
 			{
 				return;
 			}
 			for (i = 0; i < n; i++)
 			{
-				LuaConf.printf(LuaConf.CharPtr.toCharPtr("\t%d\t%s\n"), i, LuaObject.getstr(f.upvalues[i]));
+				CLib.printf(CLib.CharPtr.toCharPtr("\t%d\t%s\n"), i, LuaObject.getstr(f.upvalues[i]));
 			}
 		}
 

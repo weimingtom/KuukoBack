@@ -16,11 +16,11 @@ public class LuaProgram {
 
 	private static LuaState.lua_State globalL = null;
 
-	private static LuaConf.CharPtr progname = LuaConf.CharPtr.toCharPtr(LuaConf.LUA_PROGNAME);
+	private static CLib.CharPtr progname = CLib.CharPtr.toCharPtr(LuaConf.LUA_PROGNAME);
 
 	private static void lstop(LuaState.lua_State L, Lua.lua_Debug ar) {
 		LuaDebug.lua_sethook(L, null, 0, 0);
-		LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("interrupted!"));
+		LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("interrupted!"));
 	}
 
 	public static class lstop_delegate implements Lua.lua_Hook {
@@ -40,19 +40,19 @@ public class LuaProgram {
 		StreamProxy.ErrorWrite("usage: " + progname.toString() + " [options] [script [args]].\n" + "Available options are:\n" + "  -e stat  execute string " + LuaConf.LUA_QL("stat").toString() + "\n" + "  -l name  require library " + LuaConf.LUA_QL("name").toString() + "\n" + "  -i       enter interactive mode after executing " + LuaConf.LUA_QL("script").toString() + "\n" + "  -v       show version information\n" + "  --       stop handling options\n" + "  -        execute stdin and stop handling options\n");
 	}
 
-	private static void l_message(LuaConf.CharPtr pname, LuaConf.CharPtr msg) {
-		if (LuaConf.CharPtr.isNotEqual(pname, null)) {
-			LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("%s: "), pname);
+	private static void l_message(CLib.CharPtr pname, CLib.CharPtr msg) {
+		if (CLib.CharPtr.isNotEqual(pname, null)) {
+			CLib.fprintf(CLib.stderr, CLib.CharPtr.toCharPtr("%s: "), pname);
 		}
-		LuaConf.fprintf(LuaConf.stderr, LuaConf.CharPtr.toCharPtr("%s\n"), msg);
-		LuaConf.fflush(LuaConf.stderr);
+		CLib.fprintf(CLib.stderr, CLib.CharPtr.toCharPtr("%s\n"), msg);
+		CLib.fflush(CLib.stderr);
 	}
 
 	private static int report(LuaState.lua_State L, int status) {
 		if ((status != 0) && !Lua.lua_isnil(L, -1)) {
-			LuaConf.CharPtr msg = Lua.lua_tostring(L, -1);
-			if (LuaConf.CharPtr.isEqual(msg, null)) {
-				msg = LuaConf.CharPtr.toCharPtr("(error object is not a string)");
+			CLib.CharPtr msg = Lua.lua_tostring(L, -1);
+			if (CLib.CharPtr.isEqual(msg, null)) {
+				msg = CLib.CharPtr.toCharPtr("(error object is not a string)");
 			}
 			l_message(progname, msg);
 			Lua.lua_pop(L, 1);
@@ -64,12 +64,12 @@ public class LuaProgram {
 		if (LuaAPI.lua_isstring(L, 1) == 0) { // 'message' not a string? 
 			return 1; // keep it intact 
 		}
-		LuaAPI.lua_getfield(L, Lua.LUA_GLOBALSINDEX, LuaConf.CharPtr.toCharPtr("debug"));
+		LuaAPI.lua_getfield(L, Lua.LUA_GLOBALSINDEX, CLib.CharPtr.toCharPtr("debug"));
 		if (!Lua.lua_istable(L, -1)) {
 			Lua.lua_pop(L, 1);
 			return 1;
 		}
-		LuaAPI.lua_getfield(L, -1, LuaConf.CharPtr.toCharPtr("traceback"));
+		LuaAPI.lua_getfield(L, -1, CLib.CharPtr.toCharPtr("traceback"));
 		if (!Lua.lua_isfunction(L, -1)) {
 			Lua.lua_pop(L, 2);
 			return 1;
@@ -97,7 +97,7 @@ public class LuaProgram {
 	}
 
 	private static void print_version() {
-		l_message(null, LuaConf.CharPtr.toCharPtr(Lua.LUA_RELEASE + "  " + Lua.LUA_COPYRIGHT));
+		l_message(null, CLib.CharPtr.toCharPtr(Lua.LUA_RELEASE + "  " + Lua.LUA_COPYRIGHT));
 	}
 
 	private static int getargs(LuaState.lua_State L, String[] argv, int n) {
@@ -105,40 +105,40 @@ public class LuaProgram {
 		int i;
 		int argc = argv.length; // count total number of arguments 
 		narg = argc - (n + 1); // number of arguments to the script 
-		LuaAuxLib.luaL_checkstack(L, narg + 3, LuaConf.CharPtr.toCharPtr("too many arguments to script"));
+		LuaAuxLib.luaL_checkstack(L, narg + 3, CLib.CharPtr.toCharPtr("too many arguments to script"));
 		for (i = n + 1; i < argc; i++) {
-			LuaAPI.lua_pushstring(L, LuaConf.CharPtr.toCharPtr(argv[i]));
+			LuaAPI.lua_pushstring(L, CLib.CharPtr.toCharPtr(argv[i]));
 		}
 		LuaAPI.lua_createtable(L, narg, n + 1);
 		for (i = 0; i < argc; i++) {
-			LuaAPI.lua_pushstring(L, LuaConf.CharPtr.toCharPtr(argv[i]));
+			LuaAPI.lua_pushstring(L, CLib.CharPtr.toCharPtr(argv[i]));
 			LuaAPI.lua_rawseti(L, -2, i - n);
 		}
 		return narg;
 	}
 
-	private static int dofile(LuaState.lua_State L, LuaConf.CharPtr name) {
+	private static int dofile(LuaState.lua_State L, CLib.CharPtr name) {
 		int status = (LuaAuxLib.luaL_loadfile(L, name) != 0) || (docall(L, 0, 1) != 0) ? 1 : 0;
 		return report(L, status);
 	}
 
-	private static int dostring(LuaState.lua_State L, LuaConf.CharPtr s, LuaConf.CharPtr name) {
-		int status = (LuaAuxLib.luaL_loadbuffer(L, s, LuaConf.strlen(s), name) != 0) || (docall(L, 0, 1) != 0) ? 1 : 0; //(uint)
+	private static int dostring(LuaState.lua_State L, CLib.CharPtr s, CLib.CharPtr name) {
+		int status = (LuaAuxLib.luaL_loadbuffer(L, s, CLib.strlen(s), name) != 0) || (docall(L, 0, 1) != 0) ? 1 : 0; //(uint)
 		return report(L, status);
 	}
 
-	private static int dolibrary(LuaState.lua_State L, LuaConf.CharPtr name) {
-		Lua.lua_getglobal(L, LuaConf.CharPtr.toCharPtr("require"));
+	private static int dolibrary(LuaState.lua_State L, CLib.CharPtr name) {
+		Lua.lua_getglobal(L, CLib.CharPtr.toCharPtr("require"));
 		LuaAPI.lua_pushstring(L, name);
 		return report(L, docall(L, 1, 1));
 	}
 
-	private static LuaConf.CharPtr get_prompt(LuaState.lua_State L, int firstline) {
-		LuaConf.CharPtr p;
-		LuaAPI.lua_getfield(L, Lua.LUA_GLOBALSINDEX, (firstline != 0) ? LuaConf.CharPtr.toCharPtr("_PROMPT") : LuaConf.CharPtr.toCharPtr("_PROMPT2"));
+	private static CLib.CharPtr get_prompt(LuaState.lua_State L, int firstline) {
+		CLib.CharPtr p;
+		LuaAPI.lua_getfield(L, Lua.LUA_GLOBALSINDEX, (firstline != 0) ? CLib.CharPtr.toCharPtr("_PROMPT") : CLib.CharPtr.toCharPtr("_PROMPT2"));
 		p = Lua.lua_tostring(L, -1);
-		if (LuaConf.CharPtr.isEqual(p, null)) {
-			p = ((firstline != 0) ? LuaConf.CharPtr.toCharPtr(LuaConf.LUA_PROMPT) : LuaConf.CharPtr.toCharPtr(LuaConf.LUA_PROMPT2));
+		if (CLib.CharPtr.isEqual(p, null)) {
+			p = ((firstline != 0) ? CLib.CharPtr.toCharPtr(LuaConf.LUA_PROMPT) : CLib.CharPtr.toCharPtr(LuaConf.LUA_PROMPT2));
 		}
 		Lua.lua_pop(L, 1); // remove global 
 		return p;
@@ -147,9 +147,9 @@ public class LuaProgram {
 	private static int incomplete(LuaState.lua_State L, int status) {
 		if (status == Lua.LUA_ERRSYNTAX) {
 			int[] lmsg = new int[1]; //uint
-			LuaConf.CharPtr msg = LuaAPI.lua_tolstring(L, -1, lmsg); //out
-			LuaConf.CharPtr tp = LuaConf.CharPtr.plus(msg, lmsg[0] - (LuaConf.strlen(LuaConf.LUA_QL("<eof>"))));
-			if (LuaConf.CharPtr.isEqual(LuaConf.strstr(msg, LuaConf.LUA_QL("<eof>")), tp)) {
+			CLib.CharPtr msg = LuaAPI.lua_tolstring(L, -1, lmsg); //out
+			CLib.CharPtr tp = CLib.CharPtr.plus(msg, lmsg[0] - (CLib.strlen(LuaConf.LUA_QL("<eof>"))));
+			if (CLib.CharPtr.isEqual(CLib.strstr(msg, LuaConf.LUA_QL("<eof>")), tp)) {
 				Lua.lua_pop(L, 1);
 				return 1;
 			}
@@ -158,19 +158,19 @@ public class LuaProgram {
 	}
 
 	private static int pushline(LuaState.lua_State L, int firstline) {
-		LuaConf.CharPtr buffer = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUA_MAXINPUT]);
-		LuaConf.CharPtr b = new LuaConf.CharPtr(buffer);
+		CLib.CharPtr buffer = CLib.CharPtr.toCharPtr(new char[LuaConf.LUA_MAXINPUT]);
+		CLib.CharPtr b = new CLib.CharPtr(buffer);
 		int l;
-		LuaConf.CharPtr prmt = get_prompt(L, firstline);
+		CLib.CharPtr prmt = get_prompt(L, firstline);
 		if (!LuaConf.lua_readline(L, b, prmt)) {
 			return 0; // no input 
 		}
-		l = LuaConf.strlen(b);
+		l = CLib.strlen(b);
 		if (l > 0 && b.get(l - 1) == '\n') { // line ends with newline? 
 			b.set(l - 1, '\0'); // remove it 
 		}
 		if ((firstline != 0) && (b.get(0) == '=')) { // first line starts with `=' ? 
-			LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("return %s"), LuaConf.CharPtr.plus(b, 1)); // change it to `return' 
+			LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr("return %s"), CLib.CharPtr.plus(b, 1)); // change it to `return' 
 		}
 		else {
 			LuaAPI.lua_pushstring(L, b);
@@ -187,14 +187,14 @@ public class LuaProgram {
 		}
 		for (;;) {
 			// repeat until gets a complete line 
-			status = LuaAuxLib.luaL_loadbuffer(L, Lua.lua_tostring(L, 1), Lua.lua_strlen(L, 1), LuaConf.CharPtr.toCharPtr("=stdin"));
+			status = LuaAuxLib.luaL_loadbuffer(L, Lua.lua_tostring(L, 1), Lua.lua_strlen(L, 1), CLib.CharPtr.toCharPtr("=stdin"));
 			if (incomplete(L, status) == 0) {
 				break; // cannot try to add lines? 
 			}
 			if (pushline(L, 0)==0) { // no more input? 
 				return -1;
 			}
-			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("\n")); // add a new line... 
+			Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("\n")); // add a new line... 
 			LuaAPI.lua_insert(L, -2); //...between the two lines 
 			LuaAPI.lua_concat(L, 3); // join them 
 		}
@@ -205,7 +205,7 @@ public class LuaProgram {
 
 	private static void dotty(LuaState.lua_State L) {
 		int status;
-		LuaConf.CharPtr oldprogname = progname;
+		CLib.CharPtr oldprogname = progname;
 		progname = null;
 		while ((status = loadline(L)) != -1) {
 			if (status == 0) {
@@ -214,26 +214,26 @@ public class LuaProgram {
 			report(L, status);
 			if (status == 0 && LuaAPI.lua_gettop(L) > 0) {
 				// any result to print? 
-				Lua.lua_getglobal(L, LuaConf.CharPtr.toCharPtr("print"));
+				Lua.lua_getglobal(L, CLib.CharPtr.toCharPtr("print"));
 				LuaAPI.lua_insert(L, 1);
 				if (LuaAPI.lua_pcall(L, LuaAPI.lua_gettop(L) - 1, 0, 0) != 0) {
-					l_message(progname, LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("error calling " + LuaConf.LUA_QL("print").toString() + " (%s)"), Lua.lua_tostring(L, -1)));
+					l_message(progname, LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr("error calling " + LuaConf.LUA_QL("print").toString() + " (%s)"), Lua.lua_tostring(L, -1)));
 				}
 			}
 		}
 		LuaAPI.lua_settop(L, 0); // clear stack 
-		LuaConf.fputs(LuaConf.CharPtr.toCharPtr("\n"), LuaConf.stdout);
-		LuaConf.fflush(LuaConf.stdout);
+		CLib.fputs(CLib.CharPtr.toCharPtr("\n"), CLib.stdout);
+		CLib.fflush(CLib.stdout);
 		progname = oldprogname;
 	}
 
 	private static int handle_script(LuaState.lua_State L, String[] argv, int n) {
 		int status;
-		LuaConf.CharPtr fname;
+		CLib.CharPtr fname;
 		int narg = getargs(L, argv, n); // collect arguments 
-		Lua.lua_setglobal(L, LuaConf.CharPtr.toCharPtr("arg"));
-		fname = LuaConf.CharPtr.toCharPtr(argv[n]);
-		if (LuaConf.strcmp(fname, LuaConf.CharPtr.toCharPtr("-")) == 0 && LuaConf.strcmp(LuaConf.CharPtr.toCharPtr(argv[n - 1]), LuaConf.CharPtr.toCharPtr("--")) != 0) {
+		Lua.lua_setglobal(L, CLib.CharPtr.toCharPtr("arg"));
+		fname = CLib.CharPtr.toCharPtr(argv[n]);
+		if (CLib.strcmp(fname, CLib.CharPtr.toCharPtr("-")) == 0 && CLib.strcmp(CLib.CharPtr.toCharPtr(argv[n - 1]), CLib.CharPtr.toCharPtr("--")) != 0) {
 			fname = null; // stdin 
 		}
 		status = LuaAuxLib.luaL_loadfile(L, fname);
@@ -329,7 +329,7 @@ public class LuaProgram {
 							chunk = argv[++i];
 						}
 						LuaLimits.lua_assert(chunk != null);
-						if (dostring(L, LuaConf.CharPtr.toCharPtr(chunk), LuaConf.CharPtr.toCharPtr("=(command line)")) != 0) {
+						if (dostring(L, CLib.CharPtr.toCharPtr(chunk), CLib.CharPtr.toCharPtr("=(command line)")) != 0) {
 							return 1;
 						}
 						break;
@@ -340,7 +340,7 @@ public class LuaProgram {
 							filename = argv[++i];
 						}
 						LuaLimits.lua_assert(filename != null);
-						if (dolibrary(L, LuaConf.CharPtr.toCharPtr(filename)) != 0) {
+						if (dolibrary(L, CLib.CharPtr.toCharPtr(filename)) != 0) {
 							return 1; // stop if file fails 
 						}
 						break;
@@ -354,15 +354,15 @@ public class LuaProgram {
 	}
 
 	private static int handle_luainit(LuaState.lua_State L) {
-		LuaConf.CharPtr init = LuaConf.getenv(LuaConf.CharPtr.toCharPtr(LuaConf.LUA_INIT));
-		if (LuaConf.CharPtr.isEqual(init, null)) {
+		CLib.CharPtr init = CLib.getenv(CLib.CharPtr.toCharPtr(LuaConf.LUA_INIT));
+		if (CLib.CharPtr.isEqual(init, null)) {
 			return 0; // status OK 
 		}
 		else if (init.get(0) == '@') {
-			return dofile(L, LuaConf.CharPtr.plus(init, 1));
+			return dofile(L, CLib.CharPtr.plus(init, 1));
 		}
 		else {
-			return dostring(L, init, LuaConf.CharPtr.toCharPtr("=" + LuaConf.LUA_INIT));
+			return dostring(L, init, CLib.CharPtr.toCharPtr("=" + LuaConf.LUA_INIT));
 		}
 	}
 
@@ -385,7 +385,7 @@ public class LuaProgram {
 		has_e[0] = 0;
 		globalL = L;
 		if ((argv.length > 0) && (!argv[0].equals(""))) {
-			progname = LuaConf.CharPtr.toCharPtr(argv[0]);
+			progname = CLib.CharPtr.toCharPtr(argv[0]);
 		}
 		LuaAPI.lua_gc(L, Lua.LUA_GCSTOP, 0); // stop collector during initialization 
 		LuaInit.luaL_openlibs(L); // open libraries 
@@ -456,14 +456,14 @@ public class LuaProgram {
 		SmainLua s = new SmainLua();
 		LuaState.lua_State L = Lua.lua_open(); // create state 
 		if (L == null) {
-			l_message(LuaConf.CharPtr.toCharPtr(args[0]), LuaConf.CharPtr.toCharPtr("cannot create state: not enough memory"));
-			return LuaConf.EXIT_FAILURE;
+			l_message(CLib.CharPtr.toCharPtr(args[0]), CLib.CharPtr.toCharPtr("cannot create state: not enough memory"));
+			return CLib.EXIT_FAILURE;
 		}
 		s.argc = args.length;
 		s.argv = args;
 		status = LuaAPI.lua_cpcall(L, new pmain_delegate(), s);
 		report(L, status);
 		LuaState.lua_close(L);
-		return (status != 0) || (s.status != 0) ? LuaConf.EXIT_FAILURE : LuaConf.EXIT_SUCCESS;
+		return (status != 0) || (s.status != 0) ? CLib.EXIT_FAILURE : CLib.EXIT_SUCCESS;
 	}
 }

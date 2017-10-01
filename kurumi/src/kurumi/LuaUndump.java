@@ -26,7 +26,7 @@ public class LuaUndump {
 		public LuaState.lua_State L;
 		public LuaZIO.ZIO Z;
 		public LuaZIO.Mbuffer b;
-		public LuaConf.CharPtr name;
+		public CLib.CharPtr name;
 	}	
 	
 	///#ifdef LUAC_TRUST_BINARIES
@@ -43,15 +43,15 @@ public class LuaUndump {
 
 	}
 
-	private static void error(LoadState S, LuaConf.CharPtr why) {
-		LuaObject.luaO_pushfstring(S.L, LuaConf.CharPtr.toCharPtr("%s: %s in precompiled chunk"), S.name, why);
+	private static void error(LoadState S, CLib.CharPtr why) {
+		LuaObject.luaO_pushfstring(S.L, CLib.CharPtr.toCharPtr("%s: %s in precompiled chunk"), S.name, why);
 		LuaDo.luaD_throw(S.L, Lua.LUA_ERRSYNTAX);
 	}
 	///#endif
 
 	public static Object LoadMem(LoadState S, ClassType t) {
 		int size = t.GetMarshalSizeOf();
-		LuaConf.CharPtr str = LuaConf.CharPtr.toCharPtr(new char[size]);
+		CLib.CharPtr str = CLib.CharPtr.toCharPtr(new char[size]);
 		LoadBlock(S, str, size);
 		byte[] bytes = new byte[str.chars.length];
 		for (int i = 0; i < str.chars.length; i++) {
@@ -82,7 +82,7 @@ public class LuaUndump {
 		return LoadMem(S, t, n);
 	}
 
-	private static void LoadBlock(LoadState S, LuaConf.CharPtr b, int size) {
+	private static void LoadBlock(LoadState S, CLib.CharPtr b, int size) {
 		int r = LuaZIO.luaZ_read(S.Z, b, size); //(uint) - uint
 		IF(r != 0, "unexpected end");
 	}
@@ -108,7 +108,7 @@ public class LuaUndump {
 			return null;
 		}
 		else {
-			LuaConf.CharPtr s = LuaZIO.luaZ_openspace(S.L, S.b, size);
+			CLib.CharPtr s = LuaZIO.luaZ_openspace(S.L, S.b, size);
 			LoadBlock(S, s, (int)size);
 			return LuaString.luaS_newlstr(S.L, s, size - 1); // remove trailing '\0' 
 		}
@@ -152,7 +152,7 @@ public class LuaUndump {
 						break;
 					}
 				default: {
-						error(S, LuaConf.CharPtr.toCharPtr("bad constant"));
+						error(S, CLib.CharPtr.toCharPtr("bad constant"));
 						break;
 					}
 			}
@@ -199,7 +199,7 @@ public class LuaUndump {
 	private static LuaObject.Proto LoadFunction(LoadState S, LuaObject.TString p) {
 		LuaObject.Proto f;
 		if (++S.L.nCcalls > LuaConf.LUAI_MAXCCALLS) {
-			error(S, LuaConf.CharPtr.toCharPtr("code too deep"));
+			error(S, CLib.CharPtr.toCharPtr("code too deep"));
 		}
 		f = LuaFunc.luaF_newproto(S.L);
 		LuaObject.setptvalue2s(S.L, S.L.top, f);
@@ -228,23 +228,23 @@ public class LuaUndump {
 	}
 
 	private static void LoadHeader(LoadState S) {
-		LuaConf.CharPtr h = LuaConf.CharPtr.toCharPtr(new char[LUAC_HEADERSIZE]);
-		LuaConf.CharPtr s = LuaConf.CharPtr.toCharPtr(new char[LUAC_HEADERSIZE]);
+		CLib.CharPtr h = CLib.CharPtr.toCharPtr(new char[LUAC_HEADERSIZE]);
+		CLib.CharPtr s = CLib.CharPtr.toCharPtr(new char[LUAC_HEADERSIZE]);
 		luaU_header(h);
 		LoadBlock(S, s, LUAC_HEADERSIZE);
-		IF(LuaConf.memcmp(h, s, LUAC_HEADERSIZE) != 0, "bad header");
+		IF(CLib.memcmp(h, s, LUAC_HEADERSIZE) != 0, "bad header");
 	}
 
 //        
 //		 ** load precompiled chunk
 //		 
-	public static LuaObject.Proto luaU_undump(LuaState.lua_State L, LuaZIO.ZIO Z, LuaZIO.Mbuffer buff, LuaConf.CharPtr name) {
+	public static LuaObject.Proto luaU_undump(LuaState.lua_State L, LuaZIO.ZIO Z, LuaZIO.Mbuffer buff, CLib.CharPtr name) {
 		LoadState S = new LoadState();
 		if (name.get(0) == '@' || name.get(0) == '=') {
-			S.name = LuaConf.CharPtr.plus(name, 1);
+			S.name = CLib.CharPtr.plus(name, 1);
 		}
 		else if (name.get(0) == Lua.LUA_SIGNATURE.charAt(0)) {
-			S.name = LuaConf.CharPtr.toCharPtr("binary string");
+			S.name = CLib.CharPtr.toCharPtr("binary string");
 		}
 		else {
 			S.name = name;
@@ -253,16 +253,16 @@ public class LuaUndump {
 		S.Z = Z;
 		S.b = buff;
 		LoadHeader(S);
-		return LoadFunction(S, LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("=?")));
+		return LoadFunction(S, LuaString.luaS_newliteral(L, CLib.CharPtr.toCharPtr("=?")));
 	}
 
 //        
 //		 * make header
 //		 
-	public static void luaU_header(LuaConf.CharPtr h) {
-		h = new LuaConf.CharPtr(h);
+	public static void luaU_header(CLib.CharPtr h) {
+		h = new CLib.CharPtr(h);
 		int x = 1;
-		LuaConf.memcpy(h, LuaConf.CharPtr.toCharPtr(Lua.LUA_SIGNATURE), Lua.LUA_SIGNATURE.length());
+		CLib.memcpy(h, CLib.CharPtr.toCharPtr(Lua.LUA_SIGNATURE), Lua.LUA_SIGNATURE.length());
 		h = h.add(Lua.LUA_SIGNATURE.length());
 		h.set(0, (char)LUAC_VERSION);
 		h.inc();

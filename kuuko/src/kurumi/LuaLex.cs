@@ -141,7 +141,7 @@ namespace kurumi
 				int/*uint*/ newsize;
 				if (b.buffsize >= LuaLimits.MAX_SIZET / 2)
 				{
-					luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("lexical element too long"), 0);
+					luaX_lexerror(ls, CLib.CharPtr.toCharPtr("lexical element too long"), 0);
 				}
 				newsize = b.buffsize * 2;
 				LuaZIO.luaZ_resizebuffer(ls.L, b, (int)newsize);
@@ -154,7 +154,7 @@ namespace kurumi
 			int i;
 			for (i = 0; i < NUM_RESERVED; i++) 
 			{
-				LuaObject.TString ts = LuaString.luaS_new(L, LuaConf.CharPtr.toCharPtr(luaX_tokens[i]));
+				LuaObject.TString ts = LuaString.luaS_new(L, CLib.CharPtr.toCharPtr(luaX_tokens[i]));
 				LuaString.luaS_fix(ts);  /* reserved words are never collected */
 				LuaLimits.lua_assert(luaX_tokens[i].Length + 1 <= TOKEN_LEN);
 				ts.getTsv().reserved = LuaLimits.cast_byte(i + 1);  /* reserved word */
@@ -163,21 +163,21 @@ namespace kurumi
 
 		public const int MAXSRC = 80;
 
-		public static LuaConf.CharPtr luaX_token2str(LexState ls, int token) 
+		public static CLib.CharPtr luaX_token2str(LexState ls, int token) 
 		{
 			if (token < FIRST_RESERVED) 
 			{
 				LuaLimits.lua_assert(token == (byte)token);
-				return (LuaConf.iscntrl(token)) ? LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr("char(%d)"), token) :
-					LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr("%c"), token);
+				return (CLib.iscntrl(token)) ? LuaObject.luaO_pushfstring(ls.L, CLib.CharPtr.toCharPtr("char(%d)"), token) :
+					LuaObject.luaO_pushfstring(ls.L, CLib.CharPtr.toCharPtr("%c"), token);
 			}
 			else
 			{
-				return LuaConf.CharPtr.toCharPtr(luaX_tokens[(int)token - FIRST_RESERVED]);
+				return CLib.CharPtr.toCharPtr(luaX_tokens[(int)token - FIRST_RESERVED]);
 			}
 		}
 
-		public static LuaConf.CharPtr txtToken(LexState ls, int token) 
+		public static CLib.CharPtr txtToken(LexState ls, int token) 
 		{
 			switch (token) 
 			{
@@ -195,24 +195,24 @@ namespace kurumi
 			}
 		}
 
-		public static void luaX_lexerror(LexState ls, LuaConf.CharPtr msg, int token) 
+		public static void luaX_lexerror(LexState ls, CLib.CharPtr msg, int token) 
 		{
-			LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[MAXSRC]);
+			CLib.CharPtr buff = CLib.CharPtr.toCharPtr(new char[MAXSRC]);
 			LuaObject.luaO_chunkid(buff, LuaObject.getstr(ls.source), MAXSRC);
-			msg = LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr("%s:%d: %s"), buff, ls.linenumber, msg);
+			msg = LuaObject.luaO_pushfstring(ls.L, CLib.CharPtr.toCharPtr("%s:%d: %s"), buff, ls.linenumber, msg);
 			if (token != 0)
 			{
-				LuaObject.luaO_pushfstring(ls.L, LuaConf.CharPtr.toCharPtr("%s near " + LuaConf.getLUA_QS()), msg, txtToken(ls, token));
+				LuaObject.luaO_pushfstring(ls.L, CLib.CharPtr.toCharPtr("%s near " + LuaConf.getLUA_QS()), msg, txtToken(ls, token));
 			}
 			LuaDo.luaD_throw(ls.L, Lua.LUA_ERRSYNTAX);
 		}
 
-		public static void luaX_syntaxerror(LexState ls, LuaConf.CharPtr msg) 
+		public static void luaX_syntaxerror(LexState ls, CLib.CharPtr msg) 
 		{
 			luaX_lexerror(ls, msg, ls.t.token);
 		}
 
-		public static LuaObject.TString luaX_newstring(LexState ls, LuaConf.CharPtr str, int/*uint*/ l)
+		public static LuaObject.TString luaX_newstring(LexState ls, CLib.CharPtr str, int/*uint*/ l)
 		{
 			LuaState.lua_State L = ls.L;
 			LuaObject.TString ts = LuaString.luaS_newlstr(L, str, l);
@@ -235,7 +235,7 @@ namespace kurumi
 			}
 			if (++ls.linenumber >= LuaLimits.MAX_INT)
 			{
-				luaX_syntaxerror(ls, LuaConf.CharPtr.toCharPtr("chunk has too many lines"));
+				luaX_syntaxerror(ls, CLib.CharPtr.toCharPtr("chunk has too many lines"));
 			}
 		}
 
@@ -258,9 +258,9 @@ namespace kurumi
 		 ** LEXICAL ANALYZER
 		 ** =======================================================
 		 */
-		private static int check_next(LexState ls, LuaConf.CharPtr set) 
+		private static int check_next(LexState ls, CLib.CharPtr set) 
 		{
-			if (LuaConf.CharPtr.isEqual(LuaConf.strchr(set, (char)ls.current), null))
+			if (CLib.CharPtr.isEqual(CLib.strchr(set, (char)ls.current), null))
 			{
 				return 0;
 			}
@@ -271,7 +271,7 @@ namespace kurumi
 		private static void buffreplace(LexState ls, char from, char to) 
 		{
 			int/*uint*/ n = LuaZIO.luaZ_bufflen(ls.buff);
-			LuaConf.CharPtr p = LuaZIO.luaZ_buffer(ls.buff);
+			CLib.CharPtr p = LuaZIO.luaZ_buffer(ls.buff);
 			while ((n--) != 0)
 			{
 				if (p.get(n) == from) 
@@ -297,23 +297,23 @@ namespace kurumi
 			{
 				/* format error with correct decimal point: no more options */
 				buffreplace(ls, ls.decpoint, '.');  /* undo change (for error message) */
-				luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("malformed number"), (int)RESERVED.TK_NUMBER);
+				luaX_lexerror(ls, CLib.CharPtr.toCharPtr("malformed number"), (int)RESERVED.TK_NUMBER);
 			}
 		}
 
 		/* LUA_NUMBER */
 		private static void read_numeral(LexState ls, SemInfo seminfo) 
 		{
-			LuaLimits.lua_assert(LuaConf.isdigit(ls.current));
+			LuaLimits.lua_assert(CLib.isdigit(ls.current));
 			do 
 			{
 				save_and_next(ls);
-			} while (LuaConf.isdigit(ls.current) || ls.current == '.');
-			if (check_next(ls, LuaConf.CharPtr.toCharPtr("Ee")) != 0)  /* `E'? */
+			} while (CLib.isdigit(ls.current) || ls.current == '.');
+			if (check_next(ls, CLib.CharPtr.toCharPtr("Ee")) != 0)  /* `E'? */
 			{
-				check_next(ls, LuaConf.CharPtr.toCharPtr("+-"));  /* optional exponent sign */
+				check_next(ls, CLib.CharPtr.toCharPtr("+-"));  /* optional exponent sign */
 			}
-			while (LuaConf.isalnum(ls.current) || ls.current == '_')
+			while (CLib.isalnum(ls.current) || ls.current == '_')
 			{
 				save_and_next(ls);
 			}
@@ -359,8 +359,8 @@ namespace kurumi
 				{
 					case LuaZIO.EOZ:
 						{
-							luaX_lexerror(ls, (seminfo != null) ? LuaConf.CharPtr.toCharPtr("unfinished long string") :
-								LuaConf.CharPtr.toCharPtr("unfinished long comment"), (int)RESERVED.TK_EOS);
+							luaX_lexerror(ls, (seminfo != null) ? CLib.CharPtr.toCharPtr("unfinished long string") :
+								CLib.CharPtr.toCharPtr("unfinished long comment"), (int)RESERVED.TK_EOS);
 							break;  /* to avoid warnings */
 						}
 					//#if LUA_COMPAT_LSTR
@@ -426,7 +426,7 @@ namespace kurumi
 //endloop:
 			if (seminfo != null)
 			{
-				seminfo.ts = luaX_newstring(ls, LuaConf.CharPtr.plus(LuaZIO.luaZ_buffer(ls.buff), (2 + sep)),
+				seminfo.ts = luaX_newstring(ls, CLib.CharPtr.plus(LuaZIO.luaZ_buffer(ls.buff), (2 + sep)),
 					/*(uint)*/(LuaZIO.luaZ_bufflen(ls.buff) - 2 * (2 + sep)));
 			}
 		}
@@ -441,13 +441,13 @@ namespace kurumi
 				{
 					case LuaZIO.EOZ:
 						{
-							luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("unfinished string"), (int)RESERVED.TK_EOS);
+							luaX_lexerror(ls, CLib.CharPtr.toCharPtr("unfinished string"), (int)RESERVED.TK_EOS);
 							continue;  /* to avoid warnings */
 						}
 					case '\n':
 					case '\r':
 						{
-							luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("unfinished string"), (int)RESERVED.TK_STRING);
+							luaX_lexerror(ls, CLib.CharPtr.toCharPtr("unfinished string"), (int)RESERVED.TK_STRING);
 							continue;  /* to avoid warnings */
 						}
 					case '\\': 
@@ -502,7 +502,7 @@ namespace kurumi
 									}
 								default: 
 									{
-										if (!LuaConf.isdigit(ls.current))
+										if (!CLib.isdigit(ls.current))
 										{
 											save_and_next(ls);  /* handles \\, \", \', and \? */
 										}
@@ -515,11 +515,11 @@ namespace kurumi
 											{
 												c = 10*c + (ls.current-'0');
 												next(ls);
-											} while (++i < 3 && LuaConf.isdigit(ls.current));
+											} while (++i < 3 && CLib.isdigit(ls.current));
 											//System.Byte.MaxValue
 											if (c > byte.MaxValue)
 											{
-												luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("escape sequence too large"), (int)RESERVED.TK_STRING);
+												luaX_lexerror(ls, CLib.CharPtr.toCharPtr("escape sequence too large"), (int)RESERVED.TK_STRING);
 											}
 											save(ls, c);
 										}
@@ -538,7 +538,7 @@ namespace kurumi
 				}
 			}
 			save_and_next(ls);  /* skip delimiter */
-			seminfo.ts = luaX_newstring(ls, LuaConf.CharPtr.plus(LuaZIO.luaZ_buffer(ls.buff), 1),
+			seminfo.ts = luaX_newstring(ls, CLib.CharPtr.plus(LuaZIO.luaZ_buffer(ls.buff), 1),
 				LuaZIO.luaZ_bufflen(ls.buff) - 2);
 		}
 
@@ -596,7 +596,7 @@ namespace kurumi
 							}
 							else 
 							{
-								luaX_lexerror(ls, LuaConf.CharPtr.toCharPtr("invalid long string delimiter"), (int)RESERVED.TK_STRING);
+								luaX_lexerror(ls, CLib.CharPtr.toCharPtr("invalid long string delimiter"), (int)RESERVED.TK_STRING);
 							}
 						}
 						break;
@@ -661,9 +661,9 @@ namespace kurumi
 					case '.': 
 						{
 							save_and_next(ls);
-							if (check_next(ls, LuaConf.CharPtr.toCharPtr(".")) != 0) 
+							if (check_next(ls, CLib.CharPtr.toCharPtr(".")) != 0) 
 							{
-								if (check_next(ls, LuaConf.CharPtr.toCharPtr(".")) != 0)
+								if (check_next(ls, CLib.CharPtr.toCharPtr(".")) != 0)
 								{
 									return (int)RESERVED.TK_DOTS;   /* ... */
 								}
@@ -672,7 +672,7 @@ namespace kurumi
 									return (int)RESERVED.TK_CONCAT;   /* .. */
 								}
 							}
-							else if (!LuaConf.isdigit(ls.current)) 
+							else if (!CLib.isdigit(ls.current)) 
 							{
 								return '.';
 							}
@@ -688,24 +688,24 @@ namespace kurumi
 						}
 					default: 
 						{
-							if (LuaConf.isspace(ls.current))
+							if (CLib.isspace(ls.current))
 							{
 								LuaLimits.lua_assert(!currIsNewline(ls));
 								next(ls);
 								continue;
 							}
-							else if (LuaConf.isdigit(ls.current))
+							else if (CLib.isdigit(ls.current))
 							{
 								read_numeral(ls, seminfo);
 								return (int)RESERVED.TK_NUMBER;
 							}
-							else if (LuaConf.isalpha(ls.current) || ls.current == '_')
+							else if (CLib.isalpha(ls.current) || ls.current == '_')
 							{
 								/* identifier or reserved word */
 								LuaObject.TString ts;
 								do {
 									save_and_next(ls);
-								} while (LuaConf.isalnum(ls.current) || ls.current == '_');
+								} while (CLib.isalnum(ls.current) || ls.current == '_');
 								ts = luaX_newstring(ls, LuaZIO.luaZ_buffer(ls.buff),
 									LuaZIO.luaZ_bufflen(ls.buff));
 								if (ts.getTsv().reserved > 0)  /* reserved word? */

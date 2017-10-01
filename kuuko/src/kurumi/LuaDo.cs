@@ -96,12 +96,12 @@ namespace kurumi
 			{
 				case Lua.LUA_ERRMEM:
 					{
-						LuaObject.setsvalue2s(L, oldtop, LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr(LuaMem.MEMERRMSG)));
+						LuaObject.setsvalue2s(L, oldtop, LuaString.luaS_newliteral(L, CLib.CharPtr.toCharPtr(LuaMem.MEMERRMSG)));
 						break;
 					}
 				case Lua.LUA_ERRERR:
 					{
-						LuaObject.setsvalue2s(L, oldtop, LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("error in error handling")));
+						LuaObject.setsvalue2s(L, oldtop, LuaString.luaS_newliteral(L, CLib.CharPtr.toCharPtr("error in error handling")));
 						break;
 					}
 				case Lua.LUA_ERRSYNTAX:
@@ -157,7 +157,7 @@ namespace kurumi
 					LuaLimits.lua_unlock(L);
 					LuaState.G(L).panic.exec(L);
 				}
-				Environment.Exit(LuaConf.EXIT_FAILURE);
+				Environment.Exit(CLib.EXIT_FAILURE);
 			}
 		}
 
@@ -270,7 +270,7 @@ namespace kurumi
 				luaD_reallocCI(L, 2*L.size_ci);
 				if (L.size_ci > LuaConf.LUAI_MAXCALLS)
 				{
-					LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("stack overflow"));
+					LuaDebug.luaG_runerror(L, CLib.CharPtr.toCharPtr("stack overflow"));
 				}
 			}
 			LuaState.CallInfo[] ci_ref = new LuaState.CallInfo[1];
@@ -337,7 +337,7 @@ namespace kurumi
 				for (i=0; i<nvar; i++)  /* put extra arguments into `arg' table */
 				LuaObject.setobj2n(L, LuaTable.luaH_setnum(L, htab, i + 1), LuaObject.TValue.plus(LuaObject.TValue.minus(L.top, nvar), i)); //FIXME:
 				/* store counter in field `n' */
-				LuaObject.setnvalue(LuaTable.luaH_setstr(L, htab, LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("n"))), LuaLimits.cast_num(nvar));
+				LuaObject.setnvalue(LuaTable.luaH_setstr(L, htab, LuaString.luaS_newliteral(L, CLib.CharPtr.toCharPtr("n"))), LuaLimits.cast_num(nvar));
 			}
 			//#endif
 			/* move fixed parameters to final position */
@@ -376,7 +376,7 @@ namespace kurumi
 			int/*Int32*//*ptrdiff_t*/ funcr = savestack(L, func);
             if (!LuaObject.ttisfunction(tm))
             {
-                LuaDebug.luaG_typeerror(L, func, LuaConf.CharPtr.toCharPtr("call"));
+                LuaDebug.luaG_typeerror(L, func, CLib.CharPtr.toCharPtr("call"));
             }
             /* Open a hole inside the stack at `func' */
             for (p[0] = L.top; LuaObject.TValue.greaterThan(p[0], func); /*StkId*/LuaObject.TValue.dec(/*ref*/ p))
@@ -560,7 +560,7 @@ namespace kurumi
 			{
                 if (L.nCcalls == LuaConf.LUAI_MAXCCALLS)
                 {
-                    LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("C stack overflow"));
+                    LuaDebug.luaG_runerror(L, CLib.CharPtr.toCharPtr("C stack overflow"));
                 }
                 else if (L.nCcalls >= (LuaConf.LUAI_MAXCCALLS + (LuaConf.LUAI_MAXCCALLS >> 3)))
                 {
@@ -612,7 +612,7 @@ namespace kurumi
 			LuaVM.luaV_execute(L, LuaState.CallInfo.minus(L.ci, L.base_ci));
 		}
 		
-		private static int resume_error(LuaState.lua_State L, LuaConf.CharPtr msg) 
+		private static int resume_error(LuaState.lua_State L, CLib.CharPtr msg) 
         {
 			L.top = L.ci.base_;
 			LuaObject.setsvalue2s(L, L.top, LuaString.luaS_new(L, msg));
@@ -628,11 +628,11 @@ namespace kurumi
 			LuaLimits.lua_lock(L);
             if (L.status != Lua.LUA_YIELD && (L.status != 0 || (L.ci != L.base_ci[0])))
             {
-                return resume_error(L, LuaConf.CharPtr.toCharPtr("cannot resume non-suspended coroutine"));
+                return resume_error(L, CLib.CharPtr.toCharPtr("cannot resume non-suspended coroutine"));
             }
             if (L.nCcalls >= LuaConf.LUAI_MAXCCALLS)
             {
-                return resume_error(L, LuaConf.CharPtr.toCharPtr("C stack overflow"));
+                return resume_error(L, CLib.CharPtr.toCharPtr("C stack overflow"));
             }
             LuaConf.luai_userstateresume(L, nargs);
 			LuaLimits.lua_assert(L.errfunc == 0);
@@ -669,7 +669,7 @@ namespace kurumi
 			LuaLimits.lua_lock(L);
             if (L.nCcalls > L.baseCcalls)
             {
-                LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("attempt to yield across metamethod/C-call boundary"));
+                LuaDebug.luaG_runerror(L, CLib.CharPtr.toCharPtr("attempt to yield across metamethod/C-call boundary"));
             }
             L.base_ = LuaObject.TValue.minus(L.top, nresults);  /* protect stack slots below */
 			L.status = Lua.LUA_YIELD;
@@ -712,7 +712,7 @@ namespace kurumi
 			/* data to `f_parser' */
 			public LuaZIO.ZIO z;
 			public LuaZIO.Mbuffer buff = new LuaZIO.Mbuffer();  /* buffer to be used by the scanner */
-			public LuaConf.CharPtr name;
+			public CLib.CharPtr name;
 		}
 			
 		public static void f_parser(LuaState.lua_State L, object ud) 
@@ -736,12 +736,12 @@ namespace kurumi
 			incr_top(L);
 		}
 
-		public static int luaD_protectedparser(LuaState.lua_State L, LuaZIO.ZIO z, LuaConf.CharPtr name) 
+		public static int luaD_protectedparser(LuaState.lua_State L, LuaZIO.ZIO z, CLib.CharPtr name) 
 		{
 			SParser p = new SParser();
 			int status;
 			p.z = z; 
-			p.name = new LuaConf.CharPtr(name);
+			p.name = new CLib.CharPtr(name);
 			LuaZIO.luaZ_initbuffer(L, p.buff);
 			status = luaD_pcall(L, new f_parser_delegate(), p, savestack(L, L.top), L.errfunc);
 			LuaZIO.luaZ_freebuffer(L, p.buff);

@@ -228,7 +228,7 @@ namespace kurumi
 
 
 
-		public static void luaM_growvector_long(LuaState.lua_State L, /*ref*/ long[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
+		public static void luaM_growvector_long(LuaState.lua_State L, /*ref*/ long[][] v, int nelems, /*ref*/ int[] size, int limit, CLib.CharPtr e, ClassType t)
 		{
 			if (nelems + 1 > size[0])
 			{
@@ -236,7 +236,7 @@ namespace kurumi
 			}
 		}
 
-        public static void luaM_growvector_Proto(LuaState.lua_State L, /*ref*/ LuaObject.Proto[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
+        public static void luaM_growvector_Proto(LuaState.lua_State L, /*ref*/ LuaObject.Proto[][] v, int nelems, /*ref*/ int[] size, int limit, CLib.CharPtr e, ClassType t)
 		{
 			if (nelems + 1 > size[0])
 			{
@@ -244,7 +244,7 @@ namespace kurumi
 			}
 		}
 
-        public static void luaM_growvector_TString(LuaState.lua_State L, /*ref*/ LuaObject.TString[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
+        public static void luaM_growvector_TString(LuaState.lua_State L, /*ref*/ LuaObject.TString[][] v, int nelems, /*ref*/ int[] size, int limit, CLib.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
@@ -252,7 +252,7 @@ namespace kurumi
             }
         }
 
-        public static void luaM_growvector_TValue(LuaState.lua_State L, /*ref*/ LuaObject.TValue[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
+        public static void luaM_growvector_TValue(LuaState.lua_State L, /*ref*/ LuaObject.TValue[][] v, int nelems, /*ref*/ int[] size, int limit, CLib.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
@@ -260,7 +260,7 @@ namespace kurumi
             }
         }
 
-        public static void luaM_growvector_LocVar(LuaState.lua_State L, /*ref*/ LuaObject.LocVar[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
+        public static void luaM_growvector_LocVar(LuaState.lua_State L, /*ref*/ LuaObject.LocVar[][] v, int nelems, /*ref*/ int[] size, int limit, CLib.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
@@ -268,7 +268,7 @@ namespace kurumi
             }
         }
 
-        public static void luaM_growvector_int(LuaState.lua_State L, /*ref*/ int[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
+        public static void luaM_growvector_int(LuaState.lua_State L, /*ref*/ int[][] v, int nelems, /*ref*/ int[] size, int limit, CLib.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
@@ -360,7 +360,7 @@ namespace kurumi
 
 
 		public static long[] luaM_growaux__long(LuaState.lua_State L, /*ref*/ long[][] block, /*ref*/ int[] size,
-			int limit, LuaConf.CharPtr errormsg, ClassType t)
+			int limit, CLib.CharPtr errormsg, ClassType t)
 		{
 			long[] newblock;
 			int newsize;
@@ -387,7 +387,7 @@ namespace kurumi
 		}
 
         public static LuaObject.Proto[] luaM_growaux__Proto(LuaState.lua_State L, /*ref*/ LuaObject.Proto[][] block, /*ref*/ int[] size,
-                    int limit, LuaConf.CharPtr errormsg, ClassType t)
+                    int limit, CLib.CharPtr errormsg, ClassType t)
         {
             LuaObject.Proto[] newblock;
             int newsize;
@@ -414,7 +414,7 @@ namespace kurumi
         }
 
         public static LuaObject.TString[] luaM_growaux__TString(LuaState.lua_State L, /*ref*/ LuaObject.TString[][] block, /*ref*/ int[] size,
-                            int limit, LuaConf.CharPtr errormsg, ClassType t)
+                            int limit, CLib.CharPtr errormsg, ClassType t)
         {
             LuaObject.TString[] newblock;
             int newsize;
@@ -441,7 +441,7 @@ namespace kurumi
         }
 
         public static LuaObject.TValue[] luaM_growaux__TValue(LuaState.lua_State L, /*ref*/ LuaObject.TValue[][] block, /*ref*/ int[] size,
-                            int limit, LuaConf.CharPtr errormsg, ClassType t)
+                            int limit, CLib.CharPtr errormsg, ClassType t)
         {
             LuaObject.TValue[] newblock;
             int newsize;
@@ -468,7 +468,7 @@ namespace kurumi
         }
 
         public static LuaObject.LocVar[] luaM_growaux__LocVar(LuaState.lua_State L, /*ref*/ LuaObject.LocVar[][] block, /*ref*/ int[] size,
-                              int limit, LuaConf.CharPtr errormsg, ClassType t)
+                              int limit, CLib.CharPtr errormsg, ClassType t)
         {
             LuaObject.LocVar[] newblock;
             int newsize;
@@ -495,7 +495,7 @@ namespace kurumi
         }
 
         public static int[] luaM_growaux__int(LuaState.lua_State L, /*ref*/ int[][] block, /*ref*/ int[] size,
-                              int limit, LuaConf.CharPtr errormsg, ClassType t)
+                              int limit, CLib.CharPtr errormsg, ClassType t)
         {
             int[] newblock;
             int newsize;
@@ -525,7 +525,7 @@ namespace kurumi
 
 		public static object luaM_toobig(LuaState.lua_State L) 
 		{
-			LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("memory allocation error: block too big"));
+			LuaDebug.luaG_runerror(L, CLib.CharPtr.toCharPtr("memory allocation error: block too big"));
 			return null;  /* to avoid warnings */
 		}
 
@@ -534,7 +534,7 @@ namespace kurumi
 		 */
 		public static object luaM_realloc_(LuaState.lua_State L, ClassType t)
 		{
-			int unmanaged_size = (int)LuaConf.GetUnmanagedSize(t);
+			int unmanaged_size = (int)CLib.GetUnmanagedSize(t);
 			int nsize = unmanaged_size;
 			object new_obj = t.Alloc();
 			AddTotalBytes(L, nsize);
@@ -543,7 +543,7 @@ namespace kurumi
 
 		public static object luaM_realloc__Proto(LuaState.lua_State L, ClassType t)
 		{
-			int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+			int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
 			int nsize = unmanaged_size;
             LuaObject.Proto new_obj = (LuaObject.Proto)t.Alloc();//System.Activator.CreateInstance(typeof(T));
 			AddTotalBytes(L, nsize);
@@ -552,7 +552,7 @@ namespace kurumi
 
         public static object luaM_realloc__Closure(LuaState.lua_State L, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int nsize = unmanaged_size;
             LuaObject.Closure new_obj = (LuaObject.Closure)t.Alloc();//System.Activator.CreateInstance(typeof(T));
             AddTotalBytes(L, nsize);
@@ -561,7 +561,7 @@ namespace kurumi
 
         public static object luaM_realloc__UpVal(LuaState.lua_State L, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int nsize = unmanaged_size;
             LuaObject.UpVal new_obj = (LuaObject.UpVal)t.Alloc();//System.Activator.CreateInstance(typeof(T));
             AddTotalBytes(L, nsize);
@@ -570,7 +570,7 @@ namespace kurumi
 
         public static object luaM_realloc__lua_State(LuaState.lua_State L, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int nsize = unmanaged_size;
             LuaState.lua_State new_obj = (LuaState.lua_State)t.Alloc();//System.Activator.CreateInstance(typeof(T));
             AddTotalBytes(L, nsize);
@@ -579,7 +579,7 @@ namespace kurumi
 
         public static object luaM_realloc__Table(LuaState.lua_State L, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int nsize = unmanaged_size;
             LuaObject.Table new_obj = (LuaObject.Table)t.Alloc();//System.Activator.CreateInstance(typeof(T));
             AddTotalBytes(L, nsize);
@@ -597,7 +597,7 @@ namespace kurumi
 
 		//public static object luaM_realloc_<T>(lua_State L, T obj, ClassType t)
 		//{
-		//	int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T))
+		//	int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T))
 		//	int old_size = (obj == null) ? 0 : unmanaged_size;
 		//	int osize = old_size * unmanaged_size;
 		//	int nsize = unmanaged_size;
@@ -609,7 +609,7 @@ namespace kurumi
 
 		//public static object luaM_realloc_<T>(lua_State L, T[] old_block, int new_size, ClassType t)
 		//{
-		//	int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+		//	int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
 		//	int old_size = (old_block == null) ? 0 : old_block.Length;
 		//	int osize = old_size * unmanaged_size;
 		//	int nsize = new_size * unmanaged_size;
@@ -639,7 +639,7 @@ namespace kurumi
 
         public static object luaM_realloc__Table(LuaState.lua_State L, LuaObject.Table[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -669,7 +669,7 @@ namespace kurumi
 
         public static object luaM_realloc__UpVal(LuaState.lua_State L, LuaObject.UpVal[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -699,7 +699,7 @@ namespace kurumi
 
         public static object luaM_realloc__char(LuaState.lua_State L, char[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -731,7 +731,7 @@ namespace kurumi
 
         public static object luaM_realloc__TValue(LuaState.lua_State L, LuaObject.TValue[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -761,7 +761,7 @@ namespace kurumi
 
         public static object luaM_realloc__TString(LuaState.lua_State L, LuaObject.TString[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -791,7 +791,7 @@ namespace kurumi
 
         public static object luaM_realloc__Udata(LuaState.lua_State L, LuaObject.Udata[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -821,7 +821,7 @@ namespace kurumi
 
         public static object luaM_realloc__CallInfo(LuaState.lua_State L, LuaState.CallInfo[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -851,7 +851,7 @@ namespace kurumi
 
         public static object luaM_realloc__long(LuaState.lua_State L, long[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -883,7 +883,7 @@ namespace kurumi
 
         public static object luaM_realloc__int(LuaState.lua_State L, int[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -915,7 +915,7 @@ namespace kurumi
 
         public static object luaM_realloc__Proto(LuaState.lua_State L, LuaObject.Proto[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -945,7 +945,7 @@ namespace kurumi
 
         public static object luaM_realloc__LocVar(LuaState.lua_State L, LuaObject.LocVar[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -975,7 +975,7 @@ namespace kurumi
 
         public static object luaM_realloc__Node(LuaState.lua_State L, LuaObject.Node[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
@@ -1005,7 +1005,7 @@ namespace kurumi
 
         public static object luaM_realloc__GCObject(LuaState.lua_State L, LuaState.GCObject[] old_block, int new_size, ClassType t)
         {
-            int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+            int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;

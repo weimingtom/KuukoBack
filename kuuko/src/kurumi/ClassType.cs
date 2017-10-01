@@ -294,7 +294,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_CHARPTR)
 	            {
-	                result = new LuaConf.CharPtr();
+	                result = new CLib.CharPtr();
 	            }
 	            //return null;
 	            if (result == null)
@@ -1013,7 +1013,7 @@ namespace kurumi
             }
             else if (type == TYPE_CHARPTR)
             {
-                return typeof(LuaConf.CharPtr);
+                return typeof(CLib.CharPtr);
             }
             return null;
         }

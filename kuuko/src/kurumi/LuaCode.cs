@@ -219,7 +219,7 @@ namespace kurumi
 			LuaLimits.lua_assert(dest != NO_JUMP);
 			if (Math.Abs(offset) > LuaOpCodes.MAXARG_sBx)
 			{
-				LuaLex.luaX_syntaxerror(fs.ls, LuaConf.CharPtr.toCharPtr("control structure too long"));
+				LuaLex.luaX_syntaxerror(fs.ls, CLib.CharPtr.toCharPtr("control structure too long"));
 			}
 			LuaOpCodes.SETARG_sBx(jmp, offset);
 		}
@@ -378,7 +378,7 @@ namespace kurumi
 			{
 				if (newstack >= LuaLimits.MAXSTACK)
 				{
-					LuaLex.luaX_syntaxerror(fs.ls, LuaConf.CharPtr.toCharPtr("function or expression too complex"));
+					LuaLex.luaX_syntaxerror(fs.ls, CLib.CharPtr.toCharPtr("function or expression too complex"));
 				}
 				fs.f.maxstacksize = LuaLimits.cast_byte(newstack);
 			}
@@ -427,7 +427,7 @@ namespace kurumi
 				int[] sizek_ref = new int[1];
 				sizek_ref[0] = f.sizek;
 				LuaMem.luaM_growvector_TValue(L, /*ref*/ k_ref, fs.nk, /*ref*/ sizek_ref,
-					LuaOpCodes.MAXARG_Bx, LuaConf.CharPtr.toCharPtr("constant table overflow"), new ClassType(ClassType.TYPE_TVALUE));
+					LuaOpCodes.MAXARG_Bx, CLib.CharPtr.toCharPtr("constant table overflow"), new ClassType(ClassType.TYPE_TVALUE));
 				f.sizek = sizek_ref[0];
 				f.k = k_ref[0];
 				while (oldsize < f.sizek)
@@ -1253,7 +1253,7 @@ namespace kurumi
 			int[] sizecode_ref = new int[1];
 			sizecode_ref[0] = f.sizecode;
 			LuaMem.luaM_growvector_long(fs.L, /*ref*/ code_ref, fs.pc, /*ref*/ sizecode_ref,
-				LuaLimits.MAX_INT, LuaConf.CharPtr.toCharPtr("code size overflow"), new ClassType(ClassType.TYPE_LONG));
+				LuaLimits.MAX_INT, CLib.CharPtr.toCharPtr("code size overflow"), new ClassType(ClassType.TYPE_LONG));
 			f.sizecode = sizecode_ref[0];
 			f.code = code_ref[0];
 			f.code[fs.pc] = (long/*uint*/)i;
@@ -1263,7 +1263,7 @@ namespace kurumi
 			int[] sizelineinfo_ref = new int[1];
 			sizelineinfo_ref[0] = f.sizelineinfo;
 			LuaMem.luaM_growvector_int(fs.L, /*ref*/ lineinfo_ref, fs.pc, /*ref*/ sizelineinfo_ref,
-				LuaLimits.MAX_INT, LuaConf.CharPtr.toCharPtr("code size overflow"), new ClassType(ClassType.TYPE_INT));
+				LuaLimits.MAX_INT, CLib.CharPtr.toCharPtr("code size overflow"), new ClassType(ClassType.TYPE_INT));
 			f.sizelineinfo = sizelineinfo_ref[0];
 			f.lineinfo = lineinfo_ref[0];
 			f.lineinfo[fs.pc] = line;

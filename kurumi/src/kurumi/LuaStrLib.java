@@ -28,7 +28,7 @@ public class LuaStrLib {
 
 	public static int str_sub(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
-		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
+		CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		int start = posrelat(LuaAuxLib.luaL_checkinteger(L, 2), l[0]); //ptrdiff_t - Int32
 		int end = posrelat(LuaAuxLib.luaL_optinteger(L, 3, -1), l[0]); //ptrdiff_t - Int32
 		if (start < 1) {
@@ -38,10 +38,10 @@ public class LuaStrLib {
 			end = (int)l[0]; //ptrdiff_t - Int32
 		}
 		if (start <= end) {
-			LuaAPI.lua_pushlstring(L, LuaConf.CharPtr.plus(s, start - 1), (end - start + 1)); //(uint)
+			LuaAPI.lua_pushlstring(L, CLib.CharPtr.plus(s, start - 1), (end - start + 1)); //(uint)
 		}
 		else {
-			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(""));
+			Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr(""));
 		}
 		return 1;
 	}
@@ -49,7 +49,7 @@ public class LuaStrLib {
 	public static int str_reverse(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
-		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
+		CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		LuaAuxLib.luaL_buffinit(L, b);
 		while ((l[0]--) != 0) {
 			LuaAuxLib.luaL_addchar(b, s.get(l[0]));
@@ -62,10 +62,10 @@ public class LuaStrLib {
 		int[] l = new int[1]; //uint
 		int i; //uint
 		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
-		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
+		CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		LuaAuxLib.luaL_buffinit(L, b);
 		for (i = 0; i < l[0]; i++) {
-			LuaAuxLib.luaL_addchar(b, LuaConf.tolower(s.get(i)));
+			LuaAuxLib.luaL_addchar(b, CLib.tolower(s.get(i)));
 		}
 		LuaAuxLib.luaL_pushresult(b);
 		return 1;
@@ -75,10 +75,10 @@ public class LuaStrLib {
 		int[] l = new int[1]; //uint
 		int i; //uint
 		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
-		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
+		CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		LuaAuxLib.luaL_buffinit(L, b);
 		for (i = 0; i < l[0]; i++) {
-			LuaAuxLib.luaL_addchar(b, LuaConf.toupper(s.get(i)));
+			LuaAuxLib.luaL_addchar(b, CLib.toupper(s.get(i)));
 		}
 		LuaAuxLib.luaL_pushresult(b);
 		return 1;
@@ -87,7 +87,7 @@ public class LuaStrLib {
 	public static int str_rep(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
 		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
-		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
+		CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		int n = LuaAuxLib.luaL_checkint(L, 2);
 		LuaAuxLib.luaL_buffinit(L, b);
 		while (n-- > 0) {
@@ -99,7 +99,7 @@ public class LuaStrLib {
 
 	public static int str_byte(LuaState.lua_State L) {
 		int[] l = new int[1]; //uint
-		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
+		CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
 		int posi = posrelat(LuaAuxLib.luaL_optinteger(L, 2, 1), l[0]); //ptrdiff_t - Int32
 		int pose = posrelat(LuaAuxLib.luaL_optinteger(L, 3, posi), l[0]); //ptrdiff_t - Int32
 		int n, i;
@@ -114,9 +114,9 @@ public class LuaStrLib {
 		}
 		n = (int)(pose - posi + 1);
 		if (posi + n <= pose) { // overflow? 
-			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("string slice too long"));
+			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("string slice too long"));
 		}
-		LuaAuxLib.luaL_checkstack(L, n, LuaConf.CharPtr.toCharPtr("string slice too long"));
+		LuaAuxLib.luaL_checkstack(L, n, CLib.CharPtr.toCharPtr("string slice too long"));
 		for (i = 0; i < n; i++) {
 			LuaAPI.lua_pushinteger(L, (byte)(s.get(posi + i - 1)));
 		}
@@ -146,14 +146,14 @@ public class LuaStrLib {
 			for (int i = 0; i < bytes.length; i++) {
 				chars[i] = (char)bytes[i];
 			}
-			b = new LuaConf.CharPtr(chars);
+			b = new CLib.CharPtr(chars);
 		}
-		LuaAuxLib.luaL_addlstring((LuaAuxLib.luaL_Buffer)B, (LuaConf.CharPtr)b, size);
+		LuaAuxLib.luaL_addlstring((LuaAuxLib.luaL_Buffer)B, (CLib.CharPtr)b, size);
 		return 0;
 	}
 
 	public static class writer_delegate implements Lua.lua_Writer {
-		public final int exec(LuaState.lua_State L, LuaConf.CharPtr p, int sz, Object ud) { //uint
+		public final int exec(LuaState.lua_State L, CLib.CharPtr p, int sz, Object ud) { //uint
 			return writer(L, p, sz, ud, new ClassType(ClassType.TYPE_CHARPTR));
 		}
 	}
@@ -164,7 +164,7 @@ public class LuaStrLib {
 		LuaAPI.lua_settop(L, 1);
 		LuaAuxLib.luaL_buffinit(L, b);
 		if (LuaAPI.lua_dump(L, new writer_delegate(), b) != 0) {
-			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("unable to dump given function"));
+			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("unable to dump given function"));
 		}
 		LuaAuxLib.luaL_pushresult(b);
 		return 1;
@@ -182,12 +182,12 @@ public class LuaStrLib {
 	public static class MatchState {
 		public static class capture_ 
 		{
-			public LuaConf.CharPtr init;
+			public CLib.CharPtr init;
             public int/*Int32*//*ptrdiff_t*/ len;
 		}
 		
-		public LuaConf.CharPtr src_init;  /* init of source string */
-		public LuaConf.CharPtr src_end;  /* end (`\0') of source string */
+		public CLib.CharPtr src_init;  /* init of source string */
+		public CLib.CharPtr src_end;  /* end (`\0') of source string */
 		public LuaState.lua_State L;
 		public int level;  /* total number of captures (finished or unfinished) */
 
@@ -208,7 +208,7 @@ public class LuaStrLib {
 	private static int check_capture(MatchState ms, int l) {
 		l -= '1';
 		if (l < 0 || l >= ms.level || ms.capture[l].len == CAP_UNFINISHED) {
-			return LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("invalid capture index"));
+			return LuaAuxLib.luaL_error(ms.L, CLib.CharPtr.toCharPtr("invalid capture index"));
 		}
 		return l;
 	}
@@ -220,19 +220,19 @@ public class LuaStrLib {
 				return level;
 			}
 		}
-		return LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("invalid pattern capture"));
+		return LuaAuxLib.luaL_error(ms.L, CLib.CharPtr.toCharPtr("invalid pattern capture"));
 	}
 
-	private static LuaConf.CharPtr classend(MatchState ms, LuaConf.CharPtr p) {
-		p = new LuaConf.CharPtr(p);
+	private static CLib.CharPtr classend(MatchState ms, CLib.CharPtr p) {
+		p = new CLib.CharPtr(p);
 		char c = p.get(0);
 		p = p.next();
 		switch (c) {
 			case L_ESC: {
 					if (p.get(0) == '\0') {
-						LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("malformed pattern (ends with " + LuaConf.LUA_QL("%%") + ")"));
+						LuaAuxLib.luaL_error(ms.L, CLib.CharPtr.toCharPtr("malformed pattern (ends with " + LuaConf.LUA_QL("%%") + ")"));
 					}
-					return LuaConf.CharPtr.plus(p, 1);
+					return CLib.CharPtr.plus(p, 1);
 				}
 			case '[': {
 					if (p.get(0) == '^') {
@@ -241,7 +241,7 @@ public class LuaStrLib {
 					do {
 						// look for a `]' 
 						if (p.get(0) == '\0') {
-							LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("malformed pattern (missing " + LuaConf.LUA_QL("]") + ")"));
+							LuaAuxLib.luaL_error(ms.L, CLib.CharPtr.toCharPtr("malformed pattern (missing " + LuaConf.LUA_QL("]") + ")"));
 						}
 						c = p.get(0);
 						p = p.next();
@@ -249,7 +249,7 @@ public class LuaStrLib {
 							p = p.next(); // skip escapes (e.g. `%]') 
 						}
 					} while (p.get(0) != ']');
-					return LuaConf.CharPtr.plus(p, 1);
+					return CLib.CharPtr.plus(p, 1);
 				}
 			default: {
 					return p;
@@ -260,41 +260,41 @@ public class LuaStrLib {
 
 	private static int match_class(int c, int cl) {
 		boolean res;
-		switch (LuaConf.tolower(cl)) {
+		switch (CLib.tolower(cl)) {
 			case 'a': {
-					res = LuaConf.isalpha(c);
+					res = CLib.isalpha(c);
 					break;
 				}
 			case 'c': {
-					res = LuaConf.iscntrl(c);
+					res = CLib.iscntrl(c);
 					break;
 				}
 			case 'd': {
-					res = LuaConf.isdigit(c);
+					res = CLib.isdigit(c);
 					break;
 				}
 			case 'l': {
-					res = LuaConf.islower(c);
+					res = CLib.islower(c);
 					break;
 				}
 			case 'p': {
-					res = LuaConf.ispunct(c);
+					res = CLib.ispunct(c);
 					break;
 				}
 			case 's': {
-					res = LuaConf.isspace(c);
+					res = CLib.isspace(c);
 					break;
 				}
 			case 'u': {
-					res = LuaConf.isupper(c);
+					res = CLib.isupper(c);
 					break;
 				}
 			case 'w': {
-					res = LuaConf.isalnum(c);
+					res = CLib.isalnum(c);
 					break;
 				}
 			case 'x': {
-					res = LuaConf.isxdigit((char)c);
+					res = CLib.isxdigit((char)c);
 					break;
 				}
 			case 'z' : {
@@ -305,24 +305,24 @@ public class LuaStrLib {
 					return (cl == c) ? 1 : 0;
 				}
 		}
-		return (LuaConf.islower(cl) ? (res ? 1 : 0) : ((!res) ? 1 : 0));
+		return (CLib.islower(cl) ? (res ? 1 : 0) : ((!res) ? 1 : 0));
 	}
 
-	private static int matchbracketclass(int c, LuaConf.CharPtr p, LuaConf.CharPtr ec) {
+	private static int matchbracketclass(int c, CLib.CharPtr p, CLib.CharPtr ec) {
 		int sig = 1;
 		if (p.get(1) == '^') {
 			sig = 0;
 			p = p.next(); // skip the `^' 
 		}
-		while (LuaConf.CharPtr.lessThan((p = p.next()), ec)) {
-			if (LuaConf.CharPtr.isEqualChar(p, L_ESC)) {
+		while (CLib.CharPtr.lessThan((p = p.next()), ec)) {
+			if (CLib.CharPtr.isEqualChar(p, L_ESC)) {
 				p = p.next();
 				if (match_class(c, (byte)(p.get(0))) != 0) {
 					return sig;
 				}
 			}
-			else if ((p.get(1) == '-') && (LuaConf.CharPtr.lessThan(LuaConf.CharPtr.plus(p, 2), ec))) {
-				p = LuaConf.CharPtr.plus(p, 2);
+			else if ((p.get(1) == '-') && (CLib.CharPtr.lessThan(CLib.CharPtr.plus(p, 2), ec))) {
+				p = CLib.CharPtr.plus(p, 2);
 				if ((byte)((p.get(-2))) <= c && (c <= (byte)p.get(0))) {
 					return sig;
 				}
@@ -334,7 +334,7 @@ public class LuaStrLib {
 		return (sig == 0) ? 1 : 0;
 	}
 
-	private static int singlematch(int c, LuaConf.CharPtr p, LuaConf.CharPtr ep) {
+	private static int singlematch(int c, CLib.CharPtr p, CLib.CharPtr ep) {
 		switch (p.get(0)) {
 			case '.': {
 					return 1; // matches any char 
@@ -343,7 +343,7 @@ public class LuaStrLib {
 					return match_class(c, (byte)(p.get(1)));
 				}
 			case '[': {
-					return matchbracketclass(c, p, LuaConf.CharPtr.minus(ep, 1));
+					return matchbracketclass(c, p, CLib.CharPtr.minus(ep, 1));
 				}
 			default: {
 					return ((byte)(p.get(0)) == c) ? 1 : 0;
@@ -351,9 +351,9 @@ public class LuaStrLib {
 		}
 	}
 
-	private static LuaConf.CharPtr matchbalance(MatchState ms, LuaConf.CharPtr s, LuaConf.CharPtr p) {
+	private static CLib.CharPtr matchbalance(MatchState ms, CLib.CharPtr s, CLib.CharPtr p) {
 		if ((p.get(0) == 0) || (p.get(1) == 0)) {
-			LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("unbalanced pattern"));
+			LuaAuxLib.luaL_error(ms.L, CLib.CharPtr.toCharPtr("unbalanced pattern"));
 		}
 		if (s.get(0) != p.get(0)) {
 			return null;
@@ -362,10 +362,10 @@ public class LuaStrLib {
 			int b = p.get(0);
 			int e = p.get(1);
 			int cont = 1;
-			while (LuaConf.CharPtr.lessThan((s = s.next()), ms.src_end)) {
+			while (CLib.CharPtr.lessThan((s = s.next()), ms.src_end)) {
 				if (s.get(0) == e) {
 					if (--cont == 0) {
-						return LuaConf.CharPtr.plus(s, 1);
+						return CLib.CharPtr.plus(s, 1);
 					}
 				}
 				else if (s.get(0) == b) {
@@ -376,15 +376,15 @@ public class LuaStrLib {
 		return null; // string ends out of balance 
 	}
 
-	private static LuaConf.CharPtr max_expand(MatchState ms, LuaConf.CharPtr s, LuaConf.CharPtr p, LuaConf.CharPtr ep) {
+	private static CLib.CharPtr max_expand(MatchState ms, CLib.CharPtr s, CLib.CharPtr p, CLib.CharPtr ep) {
 		int i = 0; // counts maximum expand for item  - ptrdiff_t - Int32
-		while ((LuaConf.CharPtr.lessThan(LuaConf.CharPtr.plus(s, i), ms.src_end)) && (singlematch((byte)(s.get(i)), p, ep) != 0)) {
+		while ((CLib.CharPtr.lessThan(CLib.CharPtr.plus(s, i), ms.src_end)) && (singlematch((byte)(s.get(i)), p, ep) != 0)) {
 			i++;
 		}
 		// keeps trying to match with the maximum repetitions 
 		while (i >= 0) {
-			LuaConf.CharPtr res = match(ms, LuaConf.CharPtr.plus(s, i), LuaConf.CharPtr.plus(ep, 1));
-			if (LuaConf.CharPtr.isNotEqual(res, null)) {
+			CLib.CharPtr res = match(ms, CLib.CharPtr.plus(s, i), CLib.CharPtr.plus(ep, 1));
+			if (CLib.CharPtr.isNotEqual(res, null)) {
 				return res;
 			}
 			i--; // else didn't match; reduce 1 repetition to try again 
@@ -392,13 +392,13 @@ public class LuaStrLib {
 		return null;
 	}
 
-	private static LuaConf.CharPtr min_expand(MatchState ms, LuaConf.CharPtr s, LuaConf.CharPtr p, LuaConf.CharPtr ep) {
+	private static CLib.CharPtr min_expand(MatchState ms, CLib.CharPtr s, CLib.CharPtr p, CLib.CharPtr ep) {
 		for (;;) {
-			LuaConf.CharPtr res = match(ms, s, LuaConf.CharPtr.plus(ep, 1));
-			if (LuaConf.CharPtr.isNotEqual(res, null)) {
+			CLib.CharPtr res = match(ms, s, CLib.CharPtr.plus(ep, 1));
+			if (CLib.CharPtr.isNotEqual(res, null)) {
 				return res;
 			}
-			else if ((LuaConf.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0)) {
+			else if ((CLib.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0)) {
 				s = s.next(); // try with one more repetition 
 			}
 			else {
@@ -407,46 +407,46 @@ public class LuaStrLib {
 		}
 	}
 
-	private static LuaConf.CharPtr start_capture(MatchState ms, LuaConf.CharPtr s, LuaConf.CharPtr p, int what) {
-		LuaConf.CharPtr res;
+	private static CLib.CharPtr start_capture(MatchState ms, CLib.CharPtr s, CLib.CharPtr p, int what) {
+		CLib.CharPtr res;
 		int level = ms.level;
 		if (level >= LuaConf.LUA_MAXCAPTURES) {
-			LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("too many captures"));
+			LuaAuxLib.luaL_error(ms.L, CLib.CharPtr.toCharPtr("too many captures"));
 		}
 		ms.capture[level].init = s;
 		ms.capture[level].len = what;
 		ms.level = level+1;
-		if (LuaConf.CharPtr.isEqual((res = match(ms, s, p)), null)) { // match failed? 
+		if (CLib.CharPtr.isEqual((res = match(ms, s, p)), null)) { // match failed? 
 			ms.level--; // undo capture 
 		}
 		return res;
 	}
 
-	private static LuaConf.CharPtr end_capture(MatchState ms, LuaConf.CharPtr s, LuaConf.CharPtr p) {
+	private static CLib.CharPtr end_capture(MatchState ms, CLib.CharPtr s, CLib.CharPtr p) {
 		int l = capture_to_close(ms);
-		LuaConf.CharPtr res;
-		ms.capture[l].len = LuaConf.CharPtr.minus(s, ms.capture[l].init); // close capture 
-		if (LuaConf.CharPtr.isEqual((res = match(ms, s, p)), null)) { // match failed? 
+		CLib.CharPtr res;
+		ms.capture[l].len = CLib.CharPtr.minus(s, ms.capture[l].init); // close capture 
+		if (CLib.CharPtr.isEqual((res = match(ms, s, p)), null)) { // match failed? 
 			ms.capture[l].len = CAP_UNFINISHED; // undo capture 
 		}
 		return res;
 	}
 
-	private static LuaConf.CharPtr match_capture(MatchState ms, LuaConf.CharPtr s, int l) {
+	private static CLib.CharPtr match_capture(MatchState ms, CLib.CharPtr s, int l) {
 		int len; //uint
 		l = check_capture(ms, l);
 		len = ms.capture[l].len; //(uint)
-		if ((int)LuaConf.CharPtr.minus(ms.src_end, s) >= len && LuaConf.memcmp(ms.capture[l].init, s, len) == 0) { //uint
-			return LuaConf.CharPtr.plus(s, len);
+		if ((int)CLib.CharPtr.minus(ms.src_end, s) >= len && CLib.memcmp(ms.capture[l].init, s, len) == 0) { //uint
+			return CLib.CharPtr.plus(s, len);
 		}
 		else {
 			return null;
 		}
 	}
 
-	private static LuaConf.CharPtr match(MatchState ms, LuaConf.CharPtr s, LuaConf.CharPtr p) {
-		s = new LuaConf.CharPtr(s);
-		p = new LuaConf.CharPtr(p);
+	private static CLib.CharPtr match(MatchState ms, CLib.CharPtr s, CLib.CharPtr p) {
+		s = new CLib.CharPtr(s);
+		p = new CLib.CharPtr(p);
 		//init: /* using goto's to optimize tail recursion */
 		while (true) {
 			boolean init = false;
@@ -454,41 +454,41 @@ public class LuaStrLib {
 				case '(': {
 						// start capture 
 						if (p.get(1) == ')') { // position capture? 
-							return start_capture(ms, s, LuaConf.CharPtr.plus(p, 2), CAP_POSITION);
+							return start_capture(ms, s, CLib.CharPtr.plus(p, 2), CAP_POSITION);
 						}
 						else {
-							return start_capture(ms, s, LuaConf.CharPtr.plus(p, 1), CAP_UNFINISHED);
+							return start_capture(ms, s, CLib.CharPtr.plus(p, 1), CAP_UNFINISHED);
 						}
 					}
 				case ')': {
 						// end capture 
-						return end_capture(ms, s, LuaConf.CharPtr.plus(p, 1));
+						return end_capture(ms, s, CLib.CharPtr.plus(p, 1));
 					}
 				case L_ESC: {
 						boolean init2 = false;
 						switch (p.get(1)) {
 							case 'b': {
 									// balanced string? 
-									s = matchbalance(ms, s, LuaConf.CharPtr.plus(p, 2));
-									if (LuaConf.CharPtr.isEqual(s, null)) {
+									s = matchbalance(ms, s, CLib.CharPtr.plus(p, 2));
+									if (CLib.CharPtr.isEqual(s, null)) {
 										return null;
 									}
-									p = LuaConf.CharPtr.plus(p, 4);
+									p = CLib.CharPtr.plus(p, 4);
 									//goto init;  /* else return match(ms, s, p+4); */
 									init2 = true;
 									break;
 								}
 							case 'f': {
 									// frontier? 
-									LuaConf.CharPtr ep;
+									CLib.CharPtr ep;
 									char previous;
-									p = LuaConf.CharPtr.plus(p, 2);
+									p = CLib.CharPtr.plus(p, 2);
 									if (p.get(0) != '[') {
-										LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("missing " + LuaConf.LUA_QL("[") + " after " + LuaConf.LUA_QL("%%f") + " in pattern"));
+										LuaAuxLib.luaL_error(ms.L, CLib.CharPtr.toCharPtr("missing " + LuaConf.LUA_QL("[") + " after " + LuaConf.LUA_QL("%%f") + " in pattern"));
 									}
 									ep = classend(ms, p); // points to what is next 
-									previous = (LuaConf.CharPtr.isEqual(s, ms.src_init)) ? '\0' : s.get(-1);
-									if ((matchbracketclass((byte)(previous), p, LuaConf.CharPtr.minus(ep, 1)) != 0) || (matchbracketclass((byte)(s.get(0)), p, LuaConf.CharPtr.minus(ep, 1)) == 0)) {
+									previous = (CLib.CharPtr.isEqual(s, ms.src_init)) ? '\0' : s.get(-1);
+									if ((matchbracketclass((byte)(previous), p, CLib.CharPtr.minus(ep, 1)) != 0) || (matchbracketclass((byte)(s.get(0)), p, CLib.CharPtr.minus(ep, 1)) == 0)) {
 										return null;
 									}
 									p = ep;
@@ -497,13 +497,13 @@ public class LuaStrLib {
 									break;
 								}
 							default: {
-									if (LuaConf.isdigit((byte)(p.get(1)))) {
+									if (CLib.isdigit((byte)(p.get(1)))) {
 										// capture results (%0-%9)? 
 										s = match_capture(ms, s, (byte)(p.get(1)));
-										if (LuaConf.CharPtr.isEqual(s, null)) {
+										if (CLib.CharPtr.isEqual(s, null)) {
 											return null;
 										}
-										p = LuaConf.CharPtr.plus(p, 2);
+										p = CLib.CharPtr.plus(p, 2);
 										//goto init;  
 										// else return match(ms, s, p+2)
 										init2 = true;
@@ -514,17 +514,17 @@ public class LuaStrLib {
 									if (true) {
 										//------------------dflt start--------------		                        
 										// it is a pattern item 
-										LuaConf.CharPtr ep = classend(ms, p); // points to what is next 
-										int m = (LuaConf.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
+										CLib.CharPtr ep = classend(ms, p); // points to what is next 
+										int m = (CLib.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
 										boolean init3 = false;
 										switch (ep.get(0)) {
 											case '?': {
 													// optional 
-													LuaConf.CharPtr res;
-													if ((m != 0) && LuaConf.CharPtr.isNotEqual((res = match(ms, LuaConf.CharPtr.plus(s, 1), LuaConf.CharPtr.plus(ep, 1))), null)) {
+													CLib.CharPtr res;
+													if ((m != 0) && CLib.CharPtr.isNotEqual((res = match(ms, CLib.CharPtr.plus(s, 1), CLib.CharPtr.plus(ep, 1))), null)) {
 														return res;
 													}
-													p = LuaConf.CharPtr.plus(ep, 1);
+													p = CLib.CharPtr.plus(ep, 1);
 													//goto init;  /* else return match(ms, s, ep+1); */
 													init3 = true;
 													break;
@@ -535,7 +535,7 @@ public class LuaStrLib {
 												}
 											case '+': {
 													// 1 or more repetitions 
-													return ((m!=0) ? max_expand(ms, LuaConf.CharPtr.plus(s, 1), p, ep) : null);
+													return ((m!=0) ? max_expand(ms, CLib.CharPtr.plus(s, 1), p, ep) : null);
 												}
 											case '-': {
 													// 0 or more repetitions (minimum) 
@@ -577,23 +577,23 @@ public class LuaStrLib {
 					}
 				case '$': {
 						if (p.get(1) == '\0') { // is the `$' the last char in pattern? 
-							return (LuaConf.CharPtr.isEqual(s, ms.src_end)) ? s : null; // check end of string 
+							return (CLib.CharPtr.isEqual(s, ms.src_end)) ? s : null; // check end of string 
 						}
 						else {
 							//goto dflt;
 							//------------------dflt start--------------		                        
 							// it is a pattern item 
-							LuaConf.CharPtr ep = classend(ms, p); // points to what is next 
-							int m = (LuaConf.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
+							CLib.CharPtr ep = classend(ms, p); // points to what is next 
+							int m = (CLib.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
 							boolean init2 = false;
 							switch (ep.get(0)) {
 								case '?': {
 										// optional 
-										LuaConf.CharPtr res;
-										if ((m != 0) && LuaConf.CharPtr.isNotEqual((res = match(ms, LuaConf.CharPtr.plus(s, 1), LuaConf.CharPtr.plus(ep, 1))), null)) {
+										CLib.CharPtr res;
+										if ((m != 0) && CLib.CharPtr.isNotEqual((res = match(ms, CLib.CharPtr.plus(s, 1), CLib.CharPtr.plus(ep, 1))), null)) {
 											return res;
 										}
-										p = LuaConf.CharPtr.plus(ep, 1);
+										p = CLib.CharPtr.plus(ep, 1);
 										//goto init;  /* else return match(ms, s, ep+1); */
 										init2 = true;
 										break;
@@ -604,7 +604,7 @@ public class LuaStrLib {
 									}
 								case '+': {
 										// 1 or more repetitions 
-										return ((m!=0) ? max_expand(ms, LuaConf.CharPtr.plus(s, 1), p, ep) : null);
+										return ((m!=0) ? max_expand(ms, CLib.CharPtr.plus(s, 1), p, ep) : null);
 									}
 								case '-': {
 										// 0 or more repetitions (minimum) 
@@ -635,17 +635,17 @@ public class LuaStrLib {
 				default: {
 						//dflt: 
 						// it is a pattern item
-					LuaConf.CharPtr ep = classend(ms, p); // points to what is next 
-						int m = (LuaConf.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
+					CLib.CharPtr ep = classend(ms, p); // points to what is next 
+						int m = (CLib.CharPtr.lessThan(s, ms.src_end)) && (singlematch((byte)(s.get(0)), p, ep) != 0) ? 1 : 0;
 						boolean init2 = false;
 						switch (ep.get(0)) {
 							case '?': {
 									// optional 
-								LuaConf.CharPtr res;
-									if ((m != 0) && LuaConf.CharPtr.isNotEqual((res = match(ms, LuaConf.CharPtr.plus(s, 1), LuaConf.CharPtr.plus(ep, 1))), null)) {
+								CLib.CharPtr res;
+									if ((m != 0) && CLib.CharPtr.isNotEqual((res = match(ms, CLib.CharPtr.plus(s, 1), CLib.CharPtr.plus(ep, 1))), null)) {
 										return res;
 									}
-									p = LuaConf.CharPtr.plus(ep, 1);
+									p = CLib.CharPtr.plus(ep, 1);
 									//goto init;  /* else return match(ms, s, ep+1); */
 									init2 = true;
 									break;
@@ -656,7 +656,7 @@ public class LuaStrLib {
 								}
 							case '+': {
 									// 1 or more repetitions 
-									return ((m!=0) ? max_expand(ms, LuaConf.CharPtr.plus(s, 1), p, ep) : null);
+									return ((m!=0) ? max_expand(ms, CLib.CharPtr.plus(s, 1), p, ep) : null);
 								}
 							case '-': {
 									// 0 or more repetitions (minimum) 
@@ -692,7 +692,7 @@ public class LuaStrLib {
 		return null; //FIXME:unreachable
 	}
 
-	private static LuaConf.CharPtr lmemfind(LuaConf.CharPtr s1, int l1, LuaConf.CharPtr s2, int l2) { //uint - uint
+	private static CLib.CharPtr lmemfind(CLib.CharPtr s1, int l1, CLib.CharPtr s2, int l2) { //uint - uint
 		if (l2 == 0) {
 			return s1; // empty strings are everywhere 
 		}
@@ -700,17 +700,17 @@ public class LuaStrLib {
 			return null; // avoids a negative `l1' 
 		}
 		else {
-			LuaConf.CharPtr init; // to search for a `*s2' inside `s1' 
+			CLib.CharPtr init; // to search for a `*s2' inside `s1' 
 			l2--; // 1st char will be checked by `memchr' 
 			l1 = l1 - l2; // `s2' cannot be found after that 
-			while (l1 > 0 && LuaConf.CharPtr.isNotEqual((init = LuaConf.memchr(s1, s2.get(0), l1)), null)) {
+			while (l1 > 0 && CLib.CharPtr.isNotEqual((init = CLib.memchr(s1, s2.get(0), l1)), null)) {
 				init = init.next(); // 1st char is already checked 
-				if (LuaConf.memcmp(init, LuaConf.CharPtr.plus(s2, 1), l2) == 0) {
-					return LuaConf.CharPtr.minus(init, 1);
+				if (CLib.memcmp(init, CLib.CharPtr.plus(s2, 1), l2) == 0) {
+					return CLib.CharPtr.minus(init, 1);
 				}
 				else {
 					// correct `l1' and `s1' to try again 
-					l1 -= (int)LuaConf.CharPtr.minus(init, s1); //uint
+					l1 -= (int)CLib.CharPtr.minus(init, s1); //uint
 					s1 = init;
 				}
 			}
@@ -718,22 +718,22 @@ public class LuaStrLib {
 		}
 	}
 
-	private static void push_onecapture(MatchState ms, int i, LuaConf.CharPtr s, LuaConf.CharPtr e) {
+	private static void push_onecapture(MatchState ms, int i, CLib.CharPtr s, CLib.CharPtr e) {
 		if (i >= ms.level) {
 			if (i == 0) { // ms.level == 0, too 
-				LuaAPI.lua_pushlstring(ms.L, s, LuaConf.CharPtr.minus(e, s)); // add whole match  - (uint)
+				LuaAPI.lua_pushlstring(ms.L, s, CLib.CharPtr.minus(e, s)); // add whole match  - (uint)
 			}
 			else {
-				LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("invalid capture index"));
+				LuaAuxLib.luaL_error(ms.L, CLib.CharPtr.toCharPtr("invalid capture index"));
 			}
 		}
 		else {
 			int l = ms.capture[i].len; //ptrdiff_t - Int32
 			if (l == CAP_UNFINISHED) {
-				LuaAuxLib.luaL_error(ms.L, LuaConf.CharPtr.toCharPtr("unfinished capture"));
+				LuaAuxLib.luaL_error(ms.L, CLib.CharPtr.toCharPtr("unfinished capture"));
 			}
 			if (l == CAP_POSITION) {
-				LuaAPI.lua_pushinteger(ms.L, LuaConf.CharPtr.minus(ms.capture[i].init, ms.src_init) + 1);
+				LuaAPI.lua_pushinteger(ms.L, CLib.CharPtr.minus(ms.capture[i].init, ms.src_init) + 1);
 			}
 			else {
 				LuaAPI.lua_pushlstring(ms.L, ms.capture[i].init, l); //(uint)
@@ -741,10 +741,10 @@ public class LuaStrLib {
 		}
 	}
 
-	private static int push_captures(MatchState ms, LuaConf.CharPtr s, LuaConf.CharPtr e) {
+	private static int push_captures(MatchState ms, CLib.CharPtr s, CLib.CharPtr e) {
 		int i;
-		int nlevels = ((ms.level == 0) && (LuaConf.CharPtr.isNotEqual(s, null))) ? 1 : ms.level;
-		LuaAuxLib.luaL_checkstack(ms.L, nlevels, LuaConf.CharPtr.toCharPtr("too many captures"));
+		int nlevels = ((ms.level == 0) && (CLib.CharPtr.isNotEqual(s, null))) ? 1 : ms.level;
+		LuaAuxLib.luaL_checkstack(ms.L, nlevels, CLib.CharPtr.toCharPtr("too many captures"));
 		for (i = 0; i < nlevels; i++) {
 			push_onecapture(ms, i, s, e);
 		}
@@ -754,8 +754,8 @@ public class LuaStrLib {
 	private static int str_find_aux(LuaState.lua_State L, int find) {
 		int[] l1 = new int[1]; //uint
 		int[] l2 = new int[1]; //uint
-		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l1); //out
-		LuaConf.CharPtr p = LuaAuxLib.luaL_checklstring(L, 2, l2); //out
+		CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l1); //out
+		CLib.CharPtr p = LuaAuxLib.luaL_checklstring(L, 2, l2); //out
 		int init = posrelat(LuaAuxLib.luaL_optinteger(L, 3, 1), l1[0]) - 1; //ptrdiff_t - Int32
 		if (init < 0) {
 			init = 0;
@@ -763,13 +763,13 @@ public class LuaStrLib {
 		else if ((int)(init) > l1[0]) { //uint
 			init = (int)l1[0]; //ptrdiff_t - Int32
 		}
-		if ((find != 0) && ((LuaAPI.lua_toboolean(L, 4) != 0) || LuaConf.CharPtr.isEqual(LuaConf.strpbrk(p, LuaConf.CharPtr.toCharPtr(SPECIALS)), null))) { // explicit request? 
+		if ((find != 0) && ((LuaAPI.lua_toboolean(L, 4) != 0) || CLib.CharPtr.isEqual(CLib.strpbrk(p, CLib.CharPtr.toCharPtr(SPECIALS)), null))) { // explicit request? 
 			// or no special characters? 
 			// do a plain search 
-			LuaConf.CharPtr s2 = lmemfind(LuaConf.CharPtr.plus(s, init), (int)(l1[0] - init), p, (int)(l2[0])); //uint - uint
-			if (LuaConf.CharPtr.isNotEqual(s2, null)) {
-				LuaAPI.lua_pushinteger(L, LuaConf.CharPtr.minus(s2, s) + 1);
-				LuaAPI.lua_pushinteger(L, (int)(LuaConf.CharPtr.minus(s2, s) + l2[0]));
+			CLib.CharPtr s2 = lmemfind(CLib.CharPtr.plus(s, init), (int)(l1[0] - init), p, (int)(l2[0])); //uint - uint
+			if (CLib.CharPtr.isNotEqual(s2, null)) {
+				LuaAPI.lua_pushinteger(L, CLib.CharPtr.minus(s2, s) + 1);
+				LuaAPI.lua_pushinteger(L, (int)(CLib.CharPtr.minus(s2, s) + l2[0]));
 				return 2;
 			}
 		}
@@ -780,24 +780,24 @@ public class LuaStrLib {
 				p = p.next();
 				anchor = 1;
 			}
-			LuaConf.CharPtr s1 = LuaConf.CharPtr.plus(s, init);
+			CLib.CharPtr s1 = CLib.CharPtr.plus(s, init);
 			ms.L = L;
 			ms.src_init = s;
-			ms.src_end = LuaConf.CharPtr.plus(s, l1[0]);
+			ms.src_end = CLib.CharPtr.plus(s, l1[0]);
 			do {
-				LuaConf.CharPtr res;
+				CLib.CharPtr res;
 				ms.level = 0;
-				if (LuaConf.CharPtr.isNotEqual((res = match(ms, s1, p)), null)) {
+				if (CLib.CharPtr.isNotEqual((res = match(ms, s1, p)), null)) {
 					if (find != 0) {
-						LuaAPI.lua_pushinteger(L, LuaConf.CharPtr.minus(s1, s) + 1); // start 
-						LuaAPI.lua_pushinteger(L, LuaConf.CharPtr.minus(res, s)); // end 
+						LuaAPI.lua_pushinteger(L, CLib.CharPtr.minus(s1, s) + 1); // start 
+						LuaAPI.lua_pushinteger(L, CLib.CharPtr.minus(res, s)); // end 
 						return push_captures(ms, null, null) + 2;
 					}
 					else {
 						return push_captures(ms, s1, res);
 					}
 				}
-			} while ((LuaConf.CharPtr.lessEqual((s1 = s1.next()), ms.src_end)) && (anchor == 0));
+			} while ((CLib.CharPtr.lessEqual((s1 = s1.next()), ms.src_end)) && (anchor == 0));
 		}
 		LuaAPI.lua_pushnil(L); // not found 
 		return 1;
@@ -814,18 +814,18 @@ public class LuaStrLib {
 	public static int gmatch_aux(LuaState.lua_State L) {
 		MatchState ms = new MatchState();
 		int[] ls = new int[1]; //uint
-		LuaConf.CharPtr s = LuaAPI.lua_tolstring(L, Lua.lua_upvalueindex(1), ls); //out
-		LuaConf.CharPtr p = Lua.lua_tostring(L, Lua.lua_upvalueindex(2));
-		LuaConf.CharPtr src;
+		CLib.CharPtr s = LuaAPI.lua_tolstring(L, Lua.lua_upvalueindex(1), ls); //out
+		CLib.CharPtr p = Lua.lua_tostring(L, Lua.lua_upvalueindex(2));
+		CLib.CharPtr src;
 		ms.L = L;
 		ms.src_init = s;
-		ms.src_end = LuaConf.CharPtr.plus(s, ls[0]);
-		for (src = LuaConf.CharPtr.plus(s, LuaAPI.lua_tointeger(L, Lua.lua_upvalueindex(3))); LuaConf.CharPtr.lessEqual(src, ms.src_end); src = src.next()) { //(uint)
-			LuaConf.CharPtr e;
+		ms.src_end = CLib.CharPtr.plus(s, ls[0]);
+		for (src = CLib.CharPtr.plus(s, LuaAPI.lua_tointeger(L, Lua.lua_upvalueindex(3))); CLib.CharPtr.lessEqual(src, ms.src_end); src = src.next()) { //(uint)
+			CLib.CharPtr e;
 			ms.level = 0;
-			if (LuaConf.CharPtr.isNotEqual((e = match(ms, src, p)), null)) {
-				int newstart = LuaConf.CharPtr.minus(e, s); //lua_Integer - Int32
-				if (LuaConf.CharPtr.isEqual(e, src)) {
+			if (CLib.CharPtr.isNotEqual((e = match(ms, src, p)), null)) {
+				int newstart = CLib.CharPtr.minus(e, s); //lua_Integer - Int32
+				if (CLib.CharPtr.isEqual(e, src)) {
 					newstart++; // empty match? go at least one position 
 				}
 				LuaAPI.lua_pushinteger(L, newstart);
@@ -846,24 +846,24 @@ public class LuaStrLib {
 	}
 
 	public static int gfind_nodef(LuaState.lua_State L) {
-		return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("string.gfind") + " was renamed to " + LuaConf.LUA_QL("string.gmatch")));
+		return LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr(LuaConf.LUA_QL("string.gfind") + " was renamed to " + LuaConf.LUA_QL("string.gmatch")));
 	}
 
-	private static void add_s(MatchState ms, LuaAuxLib.luaL_Buffer b, LuaConf.CharPtr s, LuaConf.CharPtr e) {
+	private static void add_s(MatchState ms, LuaAuxLib.luaL_Buffer b, CLib.CharPtr s, CLib.CharPtr e) {
 		int[] l = new int[1]; //uint
 		int i;
-		LuaConf.CharPtr news = LuaAPI.lua_tolstring(ms.L, 3, l); //out
+		CLib.CharPtr news = LuaAPI.lua_tolstring(ms.L, 3, l); //out
 		for (i = 0; i < l[0]; i++) {
 			if (news.get(i) != L_ESC) {
 				LuaAuxLib.luaL_addchar(b, news.get(i));
 			}
 			else {
 				i++; // skip ESC 
-				if (!LuaConf.isdigit((byte)(news.get(i)))) {
+				if (!CLib.isdigit((byte)(news.get(i)))) {
 					LuaAuxLib.luaL_addchar(b, news.get(i));
 				}
 				else if (news.get(i) == '0') {
-					LuaAuxLib.luaL_addlstring(b, s, LuaConf.CharPtr.minus(e, s)); //(uint)
+					LuaAuxLib.luaL_addlstring(b, s, CLib.CharPtr.minus(e, s)); //(uint)
 				}
 				else {
 					push_onecapture(ms, news.get(i) - '1', s, e);
@@ -874,7 +874,7 @@ public class LuaStrLib {
 	}
 
 
-	private static void add_value(MatchState ms, LuaAuxLib.luaL_Buffer b, LuaConf.CharPtr s, LuaConf.CharPtr e) {
+	private static void add_value(MatchState ms, LuaAuxLib.luaL_Buffer b, CLib.CharPtr s, CLib.CharPtr e) {
 		LuaState.lua_State L = ms.L;
 		switch (LuaAPI.lua_type(L, 3)) {
 			case Lua.LUA_TNUMBER:
@@ -898,18 +898,18 @@ public class LuaStrLib {
 		if (LuaAPI.lua_toboolean(L, -1) == 0) {
 			// nil or false? 
 			Lua.lua_pop(L, 1);
-			LuaAPI.lua_pushlstring(L, s, LuaConf.CharPtr.minus(e, s)); // keep original text  - (uint)
+			LuaAPI.lua_pushlstring(L, s, CLib.CharPtr.minus(e, s)); // keep original text  - (uint)
 		}
 		else if (LuaAPI.lua_isstring(L, -1) == 0) {
-			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid replacement value (a %s)"), LuaAuxLib.luaL_typename(L, -1));
+			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("invalid replacement value (a %s)"), LuaAuxLib.luaL_typename(L, -1));
 		}
 		LuaAuxLib.luaL_addvalue(b); // add result to accumulator 
 	}
 
 	public static int str_gsub(LuaState.lua_State L) {
 		int[] srcl = new int[1]; //uint
-		LuaConf.CharPtr src = LuaAuxLib.luaL_checklstring(L, 1, srcl); //out
-		LuaConf.CharPtr p = LuaAuxLib.luaL_checkstring(L, 2);
+		CLib.CharPtr src = LuaAuxLib.luaL_checklstring(L, 1, srcl); //out
+		CLib.CharPtr p = LuaAuxLib.luaL_checkstring(L, 2);
 		int tr = LuaAPI.lua_type(L, 3);
 		int max_s = LuaAuxLib.luaL_optint(L, 4, (int)(srcl[0] + 1));
 		int anchor = 0;
@@ -924,19 +924,19 @@ public class LuaStrLib {
 		LuaAuxLib.luaL_buffinit(L, b);
 		ms.L = L;
 		ms.src_init = src;
-		ms.src_end = LuaConf.CharPtr.plus(src, srcl[0]);
+		ms.src_end = CLib.CharPtr.plus(src, srcl[0]);
 		while (n < max_s) {
-			LuaConf.CharPtr e;
+			CLib.CharPtr e;
 			ms.level = 0;
 			e = match(ms, src, p);
-			if (LuaConf.CharPtr.isNotEqual(e, null)) {
+			if (CLib.CharPtr.isNotEqual(e, null)) {
 				n++;
 				add_value(ms, b, src, e);
 			}
-			if ((LuaConf.CharPtr.isNotEqual(e, null)) && LuaConf.CharPtr.greaterThan(e, src)) { // non empty match? 
+			if ((CLib.CharPtr.isNotEqual(e, null)) && CLib.CharPtr.greaterThan(e, src)) { // non empty match? 
 				src = e; // skip it 
 			}
-			else if (LuaConf.CharPtr.lessThan(src, ms.src_end)) {
+			else if (CLib.CharPtr.lessThan(src, ms.src_end)) {
 				char c = src.get(0);
 				src = src.next();
 				LuaAuxLib.luaL_addchar(b, c);
@@ -948,7 +948,7 @@ public class LuaStrLib {
 				break;
 			}
 		}
-		LuaAuxLib.luaL_addlstring(b, src, LuaConf.CharPtr.minus(ms.src_end, src)); //(uint)
+		LuaAuxLib.luaL_addlstring(b, src, CLib.CharPtr.minus(ms.src_end, src)); //(uint)
 		LuaAuxLib.luaL_pushresult(b);
 		LuaAPI.lua_pushinteger(L, n); // number of substitutions 
 		return 2;
@@ -968,7 +968,7 @@ public class LuaStrLib {
 
 	private static void addquoted(LuaState.lua_State L, LuaAuxLib.luaL_Buffer b, int arg) {
 		int[] l = new int[1]; //uint
-		LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, l); //out
+		CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, l); //out
 		LuaAuxLib.luaL_addchar(b, '"');
 		while ((l[0]--) != 0) {
 			switch (s.get(0)) {
@@ -980,11 +980,11 @@ public class LuaStrLib {
 						break;
 					}
 				case '\r': {
-						LuaAuxLib.luaL_addlstring(b, LuaConf.CharPtr.toCharPtr("\\r"), 2);
+						LuaAuxLib.luaL_addlstring(b, CLib.CharPtr.toCharPtr("\\r"), 2);
 						break;
 					}
 				case '\0': {
-						LuaAuxLib.luaL_addlstring(b, LuaConf.CharPtr.toCharPtr("\\000"), 4);
+						LuaAuxLib.luaL_addlstring(b, CLib.CharPtr.toCharPtr("\\000"), 4);
 						break;
 					}
 				default: {
@@ -997,44 +997,44 @@ public class LuaStrLib {
 		LuaAuxLib.luaL_addchar(b, '"');
 	}
 
-	private static LuaConf.CharPtr scanformat(LuaState.lua_State L, LuaConf.CharPtr strfrmt, LuaConf.CharPtr form) {
-		LuaConf.CharPtr p = strfrmt;
-		while (p.get(0) != '\0' && LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaConf.CharPtr.toCharPtr(FLAGS), p.get(0)), null)) {
+	private static CLib.CharPtr scanformat(LuaState.lua_State L, CLib.CharPtr strfrmt, CLib.CharPtr form) {
+		CLib.CharPtr p = strfrmt;
+		while (p.get(0) != '\0' && CLib.CharPtr.isNotEqual(CLib.strchr(CLib.CharPtr.toCharPtr(FLAGS), p.get(0)), null)) {
 			p = p.next(); // skip flags 
 		}
-		if ((int)(LuaConf.CharPtr.minus(p, strfrmt)) >= (FLAGS.length() + 1)) { //uint
-			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid format (repeated flags)"));
+		if ((int)(CLib.CharPtr.minus(p, strfrmt)) >= (FLAGS.length() + 1)) { //uint
+			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("invalid format (repeated flags)"));
 		}
-		if (LuaConf.isdigit((byte)(p.get(0)))) {
+		if (CLib.isdigit((byte)(p.get(0)))) {
 			p = p.next(); // skip width 
 		}
-		if (LuaConf.isdigit((byte)(p.get(0)))) {
+		if (CLib.isdigit((byte)(p.get(0)))) {
 			p = p.next(); // (2 digits at most) 
 		}
 		if (p.get(0) == '.') {
 			p = p.next();
-			if (LuaConf.isdigit((byte)(p.get(0)))) {
+			if (CLib.isdigit((byte)(p.get(0)))) {
 				p = p.next(); // skip precision 
 			}
-			if (LuaConf.isdigit((byte)(p.get(0)))) {
+			if (CLib.isdigit((byte)(p.get(0)))) {
 				p = p.next(); // (2 digits at most) 
 			}
 		}
-		if (LuaConf.isdigit((byte)(p.get(0)))) {
-			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid format (width or precision too long)"));
+		if (CLib.isdigit((byte)(p.get(0)))) {
+			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("invalid format (width or precision too long)"));
 		}
 		form.set(0, '%');
 		form = form.next();
-		LuaConf.strncpy(form, strfrmt, LuaConf.CharPtr.minus(p, strfrmt) + 1);
-		form = LuaConf.CharPtr.plus(form, LuaConf.CharPtr.minus(p, strfrmt) + 1);
+		CLib.strncpy(form, strfrmt, CLib.CharPtr.minus(p, strfrmt) + 1);
+		form = CLib.CharPtr.plus(form, CLib.CharPtr.minus(p, strfrmt) + 1);
 		form.set(0, '\0');
 		return p;
 	}
 
-	private static void addintlen(LuaConf.CharPtr form) {
-		int l = LuaConf.strlen(form); //(uint) - uint
+	private static void addintlen(CLib.CharPtr form) {
+		int l = CLib.strlen(form); //(uint) - uint
 		char spec = form.get(l - 1);
-		LuaConf.strcpy(LuaConf.CharPtr.plus(form, l - 1), LuaConf.CharPtr.toCharPtr(LuaConf.LUA_INTFRMLEN));
+		CLib.strcpy(CLib.CharPtr.plus(form, l - 1), CLib.CharPtr.toCharPtr(LuaConf.LUA_INTFRMLEN));
 		form.set(l + (LuaConf.LUA_INTFRMLEN.length() + 1) - 2, spec);
 		form.set(l + (LuaConf.LUA_INTFRMLEN.length() + 1) - 1, '\0');
 	}
@@ -1042,37 +1042,37 @@ public class LuaStrLib {
 	public static int str_format(LuaState.lua_State L) {
 		int arg = 1;
 		int[] sfl = new int[1]; //uint
-		LuaConf.CharPtr strfrmt = LuaAuxLib.luaL_checklstring(L, arg, sfl); //out
-		LuaConf.CharPtr strfrmt_end = LuaConf.CharPtr.plus(strfrmt, sfl[0]);
+		CLib.CharPtr strfrmt = LuaAuxLib.luaL_checklstring(L, arg, sfl); //out
+		CLib.CharPtr strfrmt_end = CLib.CharPtr.plus(strfrmt, sfl[0]);
 		LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
 		LuaAuxLib.luaL_buffinit(L, b);
-		while (LuaConf.CharPtr.lessThan(strfrmt, strfrmt_end)) {
+		while (CLib.CharPtr.lessThan(strfrmt, strfrmt_end)) {
 			if (strfrmt.get(0) != L_ESC) {
 				LuaAuxLib.luaL_addchar(b, strfrmt.get(0));
 				strfrmt = strfrmt.next();
 			}
 			else if (strfrmt.get(1) == L_ESC) {
 				LuaAuxLib.luaL_addchar(b, strfrmt.get(0)); // %% 
-				strfrmt = LuaConf.CharPtr.plus(strfrmt, 2);
+				strfrmt = CLib.CharPtr.plus(strfrmt, 2);
 			}
 			else {
 				// format item 
 				strfrmt = strfrmt.next();
-				LuaConf.CharPtr form = LuaConf.CharPtr.toCharPtr(new char[MAX_FORMAT]); // to store the format (`%...') 
-				LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[MAX_ITEM]); // to store the formatted item 
+				CLib.CharPtr form = CLib.CharPtr.toCharPtr(new char[MAX_FORMAT]); // to store the format (`%...') 
+				CLib.CharPtr buff = CLib.CharPtr.toCharPtr(new char[MAX_ITEM]); // to store the formatted item 
 				arg++;
 				strfrmt = scanformat(L, strfrmt, form);
 				char ch = strfrmt.get(0);
 				strfrmt = strfrmt.next();
 				switch (ch) {
 					case 'c': {
-							LuaConf.sprintf(buff, form, (int)LuaAuxLib.luaL_checknumber(L, arg));
+							CLib.sprintf(buff, form, (int)LuaAuxLib.luaL_checknumber(L, arg));
 							break;
 						}
 					case 'd':
 					case 'i': {
 							addintlen(form);
-							LuaConf.sprintf(buff, form, (long)LuaAuxLib.luaL_checknumber(L, arg)); //LUA_INTFRM_T - Int64
+							CLib.sprintf(buff, form, (long)LuaAuxLib.luaL_checknumber(L, arg)); //LUA_INTFRM_T - Int64
 							break;
 						}
 					case 'o':
@@ -1080,7 +1080,7 @@ public class LuaStrLib {
 					case 'x':
 					case 'X': {
 							addintlen(form);
-							LuaConf.sprintf(buff, form, (long)LuaAuxLib.luaL_checknumber(L, arg)); //UNSIGNED_LUA_INTFRM_T - UInt64
+							CLib.sprintf(buff, form, (long)LuaAuxLib.luaL_checknumber(L, arg)); //UNSIGNED_LUA_INTFRM_T - UInt64
 							break;
 						}
 					case 'e':
@@ -1088,7 +1088,7 @@ public class LuaStrLib {
 					case 'f':
 					case 'g':
 					case 'G': {
-							LuaConf.sprintf(buff, form, (double)LuaAuxLib.luaL_checknumber(L, arg));
+							CLib.sprintf(buff, form, (double)LuaAuxLib.luaL_checknumber(L, arg));
 							break;
 						}
 					case 'q': {
@@ -1097,8 +1097,8 @@ public class LuaStrLib {
 						}
 					case 's': {
 							int[] l = new int[1]; //uint
-							LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, l); //out
-							if (LuaConf.CharPtr.isEqual(LuaConf.strchr(form, '.'), null) && l[0] >= 100) {
+							CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, l); //out
+							if (CLib.CharPtr.isEqual(CLib.strchr(form, '.'), null) && l[0] >= 100) {
 //                                     no precision and string is too long to be formatted;
 //									 keep original string 
 								LuaAPI.lua_pushvalue(L, arg);
@@ -1106,16 +1106,16 @@ public class LuaStrLib {
 								continue; // skip the `addsize' at the end 
 							}
 							else {
-								LuaConf.sprintf(buff, form, s);
+								CLib.sprintf(buff, form, s);
 								break;
 							}
 						}
 					default:
 						{ // also treat cases `pnLlh' 
-							return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("invalid option " + LuaConf.LUA_QL("%%%c") + " to " + LuaConf.LUA_QL("format")), strfrmt.get(-1));
+							return LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("invalid option " + LuaConf.LUA_QL("%%%c") + " to " + LuaConf.LUA_QL("format")), strfrmt.get(-1));
 						}
 				}
-				LuaAuxLib.luaL_addlstring(b, buff, LuaConf.strlen(buff)); //(uint)
+				LuaAuxLib.luaL_addlstring(b, buff, CLib.strlen(buff)); //(uint)
 			}
 		}
 		LuaAuxLib.luaL_pushresult(b);
@@ -1123,21 +1123,21 @@ public class LuaStrLib {
 	}
 
 	private final static LuaAuxLib.luaL_Reg[] strlib = { 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("byte"), new LuaStrLib_delegate("str_byte")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("char"), new LuaStrLib_delegate("str_char")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("dump"), new LuaStrLib_delegate("str_dump")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("find"), new LuaStrLib_delegate("str_find")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("format"), new LuaStrLib_delegate("str_format")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("gfind"), new LuaStrLib_delegate("gfind_nodef")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("gmatch"), new LuaStrLib_delegate("gmatch")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("gsub"), new LuaStrLib_delegate("str_gsub")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("len"), new LuaStrLib_delegate("str_len")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("lower"), new LuaStrLib_delegate("str_lower")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("match"), new LuaStrLib_delegate("str_match")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("rep"), new LuaStrLib_delegate("str_rep")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("reverse"), new LuaStrLib_delegate("str_reverse")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("sub"), new LuaStrLib_delegate("str_sub")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("upper"), new LuaStrLib_delegate("str_upper")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("byte"), new LuaStrLib_delegate("str_byte")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("char"), new LuaStrLib_delegate("str_char")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("dump"), new LuaStrLib_delegate("str_dump")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("find"), new LuaStrLib_delegate("str_find")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("format"), new LuaStrLib_delegate("str_format")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("gfind"), new LuaStrLib_delegate("gfind_nodef")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("gmatch"), new LuaStrLib_delegate("gmatch")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("gsub"), new LuaStrLib_delegate("str_gsub")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("len"), new LuaStrLib_delegate("str_len")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("lower"), new LuaStrLib_delegate("str_lower")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("match"), new LuaStrLib_delegate("str_match")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("rep"), new LuaStrLib_delegate("str_rep")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("reverse"), new LuaStrLib_delegate("str_reverse")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("sub"), new LuaStrLib_delegate("str_sub")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("upper"), new LuaStrLib_delegate("str_upper")), 
 		new LuaAuxLib.luaL_Reg(null, null) 
 	};
 
@@ -1225,12 +1225,12 @@ public class LuaStrLib {
 	
 	private static void createmetatable(LuaState.lua_State L) {
 		LuaAPI.lua_createtable(L, 0, 1); // create metatable for strings 
-		Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("")); // dummy string 
+		Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("")); // dummy string 
 		LuaAPI.lua_pushvalue(L, -2);
 		LuaAPI.lua_setmetatable(L, -2); // set string metatable 
 		Lua.lua_pop(L, 1); // pop dummy string 
 		LuaAPI.lua_pushvalue(L, -2); // string library... 
-		LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("__index")); //...is the __index metamethod 
+		LuaAPI.lua_setfield(L, -2, CLib.CharPtr.toCharPtr("__index")); //...is the __index metamethod 
 		Lua.lua_pop(L, 1); // pop metatable 
 	}
 
@@ -1238,10 +1238,10 @@ public class LuaStrLib {
 //		 ** Open string library
 //		 
 	public static int luaopen_string(LuaState.lua_State L) {
-		LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_STRLIBNAME), strlib);
+		LuaAuxLib.luaL_register(L, CLib.CharPtr.toCharPtr(LuaLib.LUA_STRLIBNAME), strlib);
 		///#if LUA_COMPAT_GFIND
-		LuaAPI.lua_getfield(L, -1, LuaConf.CharPtr.toCharPtr("gmatch"));
-		LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("gfind"));
+		LuaAPI.lua_getfield(L, -1, CLib.CharPtr.toCharPtr("gmatch"));
+		LuaAPI.lua_setfield(L, -2, CLib.CharPtr.toCharPtr("gfind"));
 		///#endif
 		createmetatable(L);
 		return 1;

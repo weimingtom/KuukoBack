@@ -417,8 +417,8 @@ namespace kurumi
 			if ((mode != null) && LuaObject.ttisstring(mode))
 			{  
 				/* is there a weak mode? */
-				weakkey = (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaObject.svalue(mode), 'k'), null)) ? 1 : 0;
-				weakvalue = (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaObject.svalue(mode), 'v'), null)) ? 1 : 0;
+				weakkey = (CLib.CharPtr.isNotEqual(CLib.strchr(LuaObject.svalue(mode), 'k'), null)) ? 1 : 0;
+				weakvalue = (CLib.CharPtr.isNotEqual(CLib.strchr(LuaObject.svalue(mode), 'v'), null)) ? 1 : 0;
 				if ((weakkey != 0) || (weakvalue != 0)) 
 				{  
 					/* is really weak? */
@@ -598,9 +598,9 @@ namespace kurumi
 						{
 							black2gray(o);  /* keep it gray */
 						}
-                        return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TABLE)) + //typeof(Table)
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * h.sizearray + //typeof(TValue)
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_NODE)) * LuaObject.sizenode(h); //typeof(Node)
+                        return CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TABLE)) + //typeof(Table)
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * h.sizearray + //typeof(TValue)
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_NODE)) * LuaObject.sizenode(h); //typeof(Node)
 					}
 				case Lua.LUA_TFUNCTION:
 					{
@@ -621,9 +621,9 @@ namespace kurumi
                         //typeof(lua_State)
                         //typeof(TValue)
                         //typeof(CallInfo)
-                        return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LUA_STATE)) + 
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * th.stacksize + 
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CALLINFO)) * th.size_ci; 
+                        return CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LUA_STATE)) + 
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * th.stacksize + 
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_CALLINFO)) * th.size_ci; 
 					}
 				case LuaObject.LUA_TPROTO:
 					{
@@ -637,13 +637,13 @@ namespace kurumi
                         //typeof(int)
                         //typeof(LocVar)
                         //typeof(TString)
-                        return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_PROTO)) + 
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LONG)) * p.sizecode + 
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_PROTO)) * p.sizep + 
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * p.sizek + 
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_INT)) * p.sizelineinfo + 
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LOCVAR)) * p.sizelocvars + 
-                            LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TSTRING)) * p.sizeupvalues; 
+                        return CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_PROTO)) + 
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LONG)) * p.sizecode + 
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_PROTO)) * p.sizep + 
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * p.sizek + 
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_INT)) * p.sizelineinfo + 
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LOCVAR)) * p.sizelocvars + 
+                            CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TSTRING)) * p.sizeupvalues; 
 					}
 				default: 
 					{

@@ -11,11 +11,11 @@ package kurumi;
 
 public class LuaFunc {
 	public static int sizeCclosure(int n) {
-		return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CCLOSURE)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * (n - 1); //typeof(CClosure)//typeof(TValue)
+		return CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_CCLOSURE)) + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * (n - 1); //typeof(CClosure)//typeof(TValue)
 	}
 
 	public static int sizeLclosure(int n) {
-		return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LCLOSURE)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * (n - 1); //typeof(LClosure)//typeof(TValue)
+		return CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LCLOSURE)) + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * (n - 1); //typeof(LClosure)//typeof(TValue)
 	}
 
 	public static LuaObject.Closure luaF_newCclosure(LuaState.lua_State L, int nelems, LuaObject.Table e) {
@@ -170,7 +170,7 @@ public class LuaFunc {
 //		 ** Look for n-th local variable at line `line' in function `func'.
 //		 ** Returns null if not found.
 //		 
-	public static LuaConf.CharPtr luaF_getlocalname(LuaObject.Proto f, int local_number, int pc) {
+	public static CLib.CharPtr luaF_getlocalname(LuaObject.Proto f, int local_number, int pc) {
 		int i;
 		for (i = 0; i<f.sizelocvars && f.locvars[i].startpc <= pc; i++) {
 			if (pc < f.locvars[i].endpc) {

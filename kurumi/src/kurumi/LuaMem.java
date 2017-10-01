@@ -189,37 +189,37 @@ public class LuaMem {
 
 
 
-	public static void luaM_growvector_long(LuaState.lua_State L, long[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_long(LuaState.lua_State L, long[][] v, int nelems, int[] size, int limit, CLib.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (long[])luaM_growaux__long(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_Proto(LuaState.lua_State L, LuaObject.Proto[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_Proto(LuaState.lua_State L, LuaObject.Proto[][] v, int nelems, int[] size, int limit, CLib.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (LuaObject.Proto[])luaM_growaux__Proto(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_TString(LuaState.lua_State L, LuaObject.TString[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_TString(LuaState.lua_State L, LuaObject.TString[][] v, int nelems, int[] size, int limit, CLib.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (LuaObject.TString[])luaM_growaux__TString(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_TValue(LuaState.lua_State L, LuaObject.TValue[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_TValue(LuaState.lua_State L, LuaObject.TValue[][] v, int nelems, int[] size, int limit, CLib.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (LuaObject.TValue[])luaM_growaux__TValue(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_LocVar(LuaState.lua_State L, LuaObject.LocVar[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_LocVar(LuaState.lua_State L, LuaObject.LocVar[][] v, int nelems, int[] size, int limit, CLib.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (LuaObject.LocVar[])luaM_growaux__LocVar(L, v, size, limit, e, t); //ref - ref
 		}
 	}
 
-	public static void luaM_growvector_int(LuaState.lua_State L, int[][] v, int nelems, int[] size, int limit, LuaConf.CharPtr e, ClassType t) { //ref - ref
+	public static void luaM_growvector_int(LuaState.lua_State L, int[][] v, int nelems, int[] size, int limit, CLib.CharPtr e, ClassType t) { //ref - ref
 		if (nelems + 1 > size[0]) {
 			v[0] = (int[])luaM_growaux__int(L, v, size, limit, e, t); //ref - ref
 		}
@@ -300,7 +300,7 @@ public class LuaMem {
 	public static final int MINSIZEARRAY = 4;
 
 
-	public static long[] luaM_growaux__long(LuaState.lua_State L, long[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
+	public static long[] luaM_growaux__long(LuaState.lua_State L, long[][] block, int[] size, int limit, CLib.CharPtr errormsg, ClassType t) { //ref - ref
 		long[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -321,7 +321,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static LuaObject.Proto[] luaM_growaux__Proto(LuaState.lua_State L, LuaObject.Proto[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
+	public static LuaObject.Proto[] luaM_growaux__Proto(LuaState.lua_State L, LuaObject.Proto[][] block, int[] size, int limit, CLib.CharPtr errormsg, ClassType t) { //ref - ref
 		LuaObject.Proto[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -342,7 +342,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static LuaObject.TString[] luaM_growaux__TString(LuaState.lua_State L, LuaObject.TString[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
+	public static LuaObject.TString[] luaM_growaux__TString(LuaState.lua_State L, LuaObject.TString[][] block, int[] size, int limit, CLib.CharPtr errormsg, ClassType t) { //ref - ref
 		LuaObject.TString[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -363,7 +363,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static LuaObject.TValue[] luaM_growaux__TValue(LuaState.lua_State L, LuaObject.TValue[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
+	public static LuaObject.TValue[] luaM_growaux__TValue(LuaState.lua_State L, LuaObject.TValue[][] block, int[] size, int limit, CLib.CharPtr errormsg, ClassType t) { //ref - ref
 		LuaObject.TValue[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -384,7 +384,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static LuaObject.LocVar[] luaM_growaux__LocVar(LuaState.lua_State L, LuaObject.LocVar[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
+	public static LuaObject.LocVar[] luaM_growaux__LocVar(LuaState.lua_State L, LuaObject.LocVar[][] block, int[] size, int limit, CLib.CharPtr errormsg, ClassType t) { //ref - ref
 		LuaObject.LocVar[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -405,7 +405,7 @@ public class LuaMem {
 		return newblock;
 	}
 
-	public static int[] luaM_growaux__int(LuaState.lua_State L, int[][] block, int[] size, int limit, LuaConf.CharPtr errormsg, ClassType t) { //ref - ref
+	public static int[] luaM_growaux__int(LuaState.lua_State L, int[][] block, int[] size, int limit, CLib.CharPtr errormsg, ClassType t) { //ref - ref
 		int[] newblock;
 		int newsize;
 		if (size[0] >= limit / 2) {
@@ -429,7 +429,7 @@ public class LuaMem {
 	//-------------------------------
 
 	public static Object luaM_toobig(LuaState.lua_State L) {
-		LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("memory allocation error: block too big"));
+		LuaDebug.luaG_runerror(L, CLib.CharPtr.toCharPtr("memory allocation error: block too big"));
 		return null; // to avoid warnings 
 	}
 
@@ -437,7 +437,7 @@ public class LuaMem {
 //		 ** generic allocation routine.
 //		 
 	public static Object luaM_realloc_(LuaState.lua_State L, ClassType t) {
-		int unmanaged_size = (int)LuaConf.GetUnmanagedSize(t);
+		int unmanaged_size = (int)CLib.GetUnmanagedSize(t);
 		int nsize = unmanaged_size;
 		Object new_obj = t.Alloc();
 		AddTotalBytes(L, nsize);
@@ -445,7 +445,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__Proto(LuaState.lua_State L, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int nsize = unmanaged_size;
 		LuaObject.Proto new_obj = (LuaObject.Proto)t.Alloc(); //System.Activator.CreateInstance(typeof(T));
 		AddTotalBytes(L, nsize);
@@ -453,7 +453,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__Closure(LuaState.lua_State L, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int nsize = unmanaged_size;
 		LuaObject.Closure new_obj = (LuaObject.Closure)t.Alloc(); //System.Activator.CreateInstance(typeof(T));
 		AddTotalBytes(L, nsize);
@@ -461,7 +461,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__UpVal(LuaState.lua_State L, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int nsize = unmanaged_size;
 		LuaObject.UpVal new_obj = (LuaObject.UpVal)t.Alloc(); //System.Activator.CreateInstance(typeof(T));
 		AddTotalBytes(L, nsize);
@@ -469,7 +469,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__lua_State(LuaState.lua_State L, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int nsize = unmanaged_size;
 		LuaState.lua_State new_obj = (LuaState.lua_State)t.Alloc(); //System.Activator.CreateInstance(typeof(T));
 		AddTotalBytes(L, nsize);
@@ -477,7 +477,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__Table(LuaState.lua_State L, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int nsize = unmanaged_size;
 		LuaObject.Table new_obj = (LuaObject.Table)t.Alloc(); //System.Activator.CreateInstance(typeof(T));
 		AddTotalBytes(L, nsize);
@@ -495,7 +495,7 @@ public class LuaMem {
 
 	//public static object luaM_realloc_<T>(lua_State L, T obj, ClassType t)
 	//{
-	//	int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T))
+	//	int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T))
 	//	int old_size = (obj == null) ? 0 : unmanaged_size;
 	//	int osize = old_size * unmanaged_size;
 	//	int nsize = unmanaged_size;
@@ -507,7 +507,7 @@ public class LuaMem {
 
 	//public static object luaM_realloc_<T>(lua_State L, T[] old_block, int new_size, ClassType t)
 	//{
-	//	int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
+	//	int unmanaged_size = (int)t.GetUnmanagedSize();//CLib.GetUnmanagedSize(typeof(T));
 	//	int old_size = (old_block == null) ? 0 : old_block.Length;
 	//	int osize = old_size * unmanaged_size;
 	//	int nsize = new_size * unmanaged_size;
@@ -536,7 +536,7 @@ public class LuaMem {
 	//}
 
 	public static Object luaM_realloc__Table(LuaState.lua_State L, LuaObject.Table[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -561,7 +561,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__UpVal(LuaState.lua_State L, LuaObject.UpVal[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -586,7 +586,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__char(LuaState.lua_State L, char[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -614,7 +614,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__TValue(LuaState.lua_State L, LuaObject.TValue[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -639,7 +639,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__TString(LuaState.lua_State L, LuaObject.TString[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -664,7 +664,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__Udata(LuaState.lua_State L, LuaObject.Udata[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -689,7 +689,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__CallInfo(LuaState.lua_State L, LuaState.CallInfo[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -714,7 +714,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__long(LuaState.lua_State L, long[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -742,7 +742,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__int(LuaState.lua_State L, int[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -770,7 +770,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__Proto(LuaState.lua_State L, LuaObject.Proto[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -795,7 +795,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__LocVar(LuaState.lua_State L, LuaObject.LocVar[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -820,7 +820,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__Node(LuaState.lua_State L, LuaObject.Node[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
@@ -845,7 +845,7 @@ public class LuaMem {
 	}
 
 	public static Object luaM_realloc__GCObject(LuaState.lua_State L, LuaState.GCObject[] old_block, int new_size, ClassType t) {
-		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
+		int unmanaged_size = (int)t.GetUnmanagedSize(); //CLib.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;

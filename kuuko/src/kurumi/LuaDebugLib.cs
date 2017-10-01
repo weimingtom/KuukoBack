@@ -46,19 +46,19 @@ namespace kurumi
 			LuaAPI.lua_settop(L, 2);
 			if (LuaAPI.lua_setfenv(L, 1) == 0)
 			{	
-				LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("setfenv") +
+				LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr(LuaConf.LUA_QL("setfenv") +
 					" cannot change environment of given object"));
 			}
 			return 1;
 		}
 
-		private static void settabss(LuaState.lua_State L, LuaConf.CharPtr i, LuaConf.CharPtr v) 
+		private static void settabss(LuaState.lua_State L, CLib.CharPtr i, CLib.CharPtr v) 
 		{
 			LuaAPI.lua_pushstring(L, v);
 			LuaAPI.lua_setfield(L, -2, i);
 		}
 
-		private static void settabsi(LuaState.lua_State L, LuaConf.CharPtr i, int v) 
+		private static void settabsi(LuaState.lua_State L, CLib.CharPtr i, int v) 
 		{
 			LuaAPI.lua_pushinteger(L, v);
 			LuaAPI.lua_setfield(L, -2, i);
@@ -78,7 +78,7 @@ namespace kurumi
 			}
 		}
 
-		private static void treatstackoption(LuaState.lua_State L, LuaState.lua_State L1, LuaConf.CharPtr fname) 
+		private static void treatstackoption(LuaState.lua_State L, LuaState.lua_State L1, CLib.CharPtr fname) 
 		{
 			if (L == L1) 
 			{
@@ -97,7 +97,7 @@ namespace kurumi
 			Lua.lua_Debug ar = new Lua.lua_Debug();
 			int[] arg = new int[1];
 			LuaState.lua_State L1 = getthread(L, /*out*/ arg);
-			LuaConf.CharPtr options = LuaAuxLib.luaL_optstring(L, arg[0] + 2, LuaConf.CharPtr.toCharPtr("flnSu"));
+			CLib.CharPtr options = LuaAuxLib.luaL_optstring(L, arg[0] + 2, CLib.CharPtr.toCharPtr("flnSu"));
 			if (LuaAPI.lua_isnumber(L, arg[0] + 1) != 0)
 			{
 				if (LuaDebug.lua_getstack(L1, (int)LuaAPI.lua_tointeger(L, arg[0] + 1), ar) == 0)
@@ -108,48 +108,48 @@ namespace kurumi
 			}
 			else if (Lua.lua_isfunction(L, arg[0] + 1))
 			{
-				LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr(">%s"), options);
+				LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr(">%s"), options);
 				options = Lua.lua_tostring(L, -1);
 				LuaAPI.lua_pushvalue(L, arg[0] + 1);
 				LuaAPI.lua_xmove(L, L1, 1);
 			}
 			else
 			{
-				return LuaAuxLib.luaL_argerror(L, arg[0] + 1, LuaConf.CharPtr.toCharPtr("function or level expected"));
+				return LuaAuxLib.luaL_argerror(L, arg[0] + 1, CLib.CharPtr.toCharPtr("function or level expected"));
 			}
 			if (LuaDebug.lua_getinfo(L1, options, ar) == 0)
 			{
-				return LuaAuxLib.luaL_argerror(L, arg[0] + 2, LuaConf.CharPtr.toCharPtr("invalid option"));
+				return LuaAuxLib.luaL_argerror(L, arg[0] + 2, CLib.CharPtr.toCharPtr("invalid option"));
 			}
 			LuaAPI.lua_createtable(L, 0, 2);
-			if (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(options, 'S'), null))
+			if (CLib.CharPtr.isNotEqual(CLib.strchr(options, 'S'), null))
 			{
-				settabss(L, LuaConf.CharPtr.toCharPtr("source"), ar.source);
-				settabss(L, LuaConf.CharPtr.toCharPtr("short_src"), ar.short_src);
-				settabsi(L, LuaConf.CharPtr.toCharPtr("linedefined"), ar.linedefined);
-				settabsi(L, LuaConf.CharPtr.toCharPtr("lastlinedefined"), ar.lastlinedefined);
-				settabss(L, LuaConf.CharPtr.toCharPtr("what"), ar.what);
+				settabss(L, CLib.CharPtr.toCharPtr("source"), ar.source);
+				settabss(L, CLib.CharPtr.toCharPtr("short_src"), ar.short_src);
+				settabsi(L, CLib.CharPtr.toCharPtr("linedefined"), ar.linedefined);
+				settabsi(L, CLib.CharPtr.toCharPtr("lastlinedefined"), ar.lastlinedefined);
+				settabss(L, CLib.CharPtr.toCharPtr("what"), ar.what);
 			}
-			if (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(options, 'l'), null))
+			if (CLib.CharPtr.isNotEqual(CLib.strchr(options, 'l'), null))
 			{
-				settabsi(L, LuaConf.CharPtr.toCharPtr("currentline"), ar.currentline);
+				settabsi(L, CLib.CharPtr.toCharPtr("currentline"), ar.currentline);
 			}
-			if (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(options, 'u'), null))
+			if (CLib.CharPtr.isNotEqual(CLib.strchr(options, 'u'), null))
 			{
-				settabsi(L, LuaConf.CharPtr.toCharPtr("nups"), ar.nups);
+				settabsi(L, CLib.CharPtr.toCharPtr("nups"), ar.nups);
 			}
-			if (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(options, 'n'), null))
+			if (CLib.CharPtr.isNotEqual(CLib.strchr(options, 'n'), null))
 			{
-				settabss(L, LuaConf.CharPtr.toCharPtr("name"), ar.name);
-				settabss(L, LuaConf.CharPtr.toCharPtr("namewhat"), ar.namewhat);
+				settabss(L, CLib.CharPtr.toCharPtr("name"), ar.name);
+				settabss(L, CLib.CharPtr.toCharPtr("namewhat"), ar.namewhat);
 			}
-			if (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(options, 'L'), null))
+			if (CLib.CharPtr.isNotEqual(CLib.strchr(options, 'L'), null))
 			{
-				treatstackoption(L, L1, LuaConf.CharPtr.toCharPtr("activelines"));
+				treatstackoption(L, L1, CLib.CharPtr.toCharPtr("activelines"));
 			}
-			if (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(options, 'f'), null))
+			if (CLib.CharPtr.isNotEqual(CLib.strchr(options, 'f'), null))
 			{
-				treatstackoption(L, L1, LuaConf.CharPtr.toCharPtr("func"));
+				treatstackoption(L, L1, CLib.CharPtr.toCharPtr("func"));
 			}
 			return 1;  /* return table */
 		}
@@ -159,13 +159,13 @@ namespace kurumi
 			int[] arg = new int[1];
 			LuaState.lua_State L1 = getthread(L, /*out*/ arg);
 			Lua.lua_Debug ar = new Lua.lua_Debug();
-			LuaConf.CharPtr name;
+			CLib.CharPtr name;
 			if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0)  /* out of range? */
 			{
-				return LuaAuxLib.luaL_argerror(L, arg[0] + 1, LuaConf.CharPtr.toCharPtr("level out of range"));
+				return LuaAuxLib.luaL_argerror(L, arg[0] + 1, CLib.CharPtr.toCharPtr("level out of range"));
 			}
 			name = LuaDebug.lua_getlocal(L1, ar, LuaAuxLib.luaL_checkint(L, arg[0] + 2));
-			if (LuaConf.CharPtr.isNotEqual(name, null)) 
+			if (CLib.CharPtr.isNotEqual(name, null)) 
 			{
 				LuaAPI.lua_xmove(L1, L, 1);
 				LuaAPI.lua_pushstring(L, name);
@@ -186,7 +186,7 @@ namespace kurumi
 			Lua.lua_Debug ar = new Lua.lua_Debug();
 			if (LuaDebug.lua_getstack(L1, LuaAuxLib.luaL_checkint(L, arg[0] + 1), ar) == 0)  /* out of range? */
 			{
-				return LuaAuxLib.luaL_argerror(L, arg[0] + 1, LuaConf.CharPtr.toCharPtr("level out of range"));
+				return LuaAuxLib.luaL_argerror(L, arg[0] + 1, CLib.CharPtr.toCharPtr("level out of range"));
 			}
 			LuaAuxLib.luaL_checkany(L, arg[0] + 3);
 			LuaAPI.lua_settop(L, arg[0] + 3);
@@ -197,14 +197,14 @@ namespace kurumi
 
 		private static int auxupvalue(LuaState.lua_State L, int get) 
 		{
-			LuaConf.CharPtr name;
+			CLib.CharPtr name;
 			int n = LuaAuxLib.luaL_checkint(L, 2);
 			LuaAuxLib.luaL_checktype(L, 1, Lua.LUA_TFUNCTION);
 			if (LuaAPI.lua_iscfunction(L, 1)) return 0;  /* cannot touch C upvalues from Lua */
 			{
 				name = (get != 0) ? LuaAPI.lua_getupvalue(L, 1, n) : LuaAPI.lua_setupvalue(L, 1, n);
 			}
-			if (LuaConf.CharPtr.isEqual(name, null)) 
+			if (CLib.CharPtr.isEqual(name, null)) 
 			{
 				return 0;
 			}
@@ -242,7 +242,7 @@ namespace kurumi
 			LuaAPI.lua_rawget(L, -2);
 			if (Lua.lua_isfunction(L, -1))
 			{
-				LuaAPI.lua_pushstring(L, LuaConf.CharPtr.toCharPtr(hooknames[(int)ar.event_]));
+				LuaAPI.lua_pushstring(L, CLib.CharPtr.toCharPtr(hooknames[(int)ar.event_]));
 				if (ar.currentline >= 0)
 				{
 					LuaAPI.lua_pushinteger(L, ar.currentline);
@@ -251,7 +251,7 @@ namespace kurumi
 				{
 					LuaAPI.lua_pushnil(L);
 				}
-				LuaLimits.lua_assert(LuaDebug.lua_getinfo(L, LuaConf.CharPtr.toCharPtr("lS"), ar));
+				LuaLimits.lua_assert(LuaDebug.lua_getinfo(L, CLib.CharPtr.toCharPtr("lS"), ar));
 				LuaAPI.lua_call(L, 2, 0);
 			}
 		}
@@ -264,18 +264,18 @@ namespace kurumi
 			}
 		}
 		
-		private static int makemask(LuaConf.CharPtr smask, int count) 
+		private static int makemask(CLib.CharPtr smask, int count) 
 		{
 			int mask = 0;
-			if (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(smask, 'c'), null)) 
+			if (CLib.CharPtr.isNotEqual(CLib.strchr(smask, 'c'), null)) 
 			{
 				mask |= Lua.LUA_MASKCALL;
 			}
-			if (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(smask, 'r'), null)) 
+			if (CLib.CharPtr.isNotEqual(CLib.strchr(smask, 'r'), null)) 
 			{
 				mask |= Lua.LUA_MASKRET;
 			}
-			if (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(smask, 'l'), null)) 
+			if (CLib.CharPtr.isNotEqual(CLib.strchr(smask, 'l'), null)) 
 			{
 				mask |= Lua.LUA_MASKLINE;
 			}
@@ -286,7 +286,7 @@ namespace kurumi
 			return mask;
 		}
 
-		private static LuaConf.CharPtr unmakemask (int mask, LuaConf.CharPtr smask) 
+		private static CLib.CharPtr unmakemask (int mask, CLib.CharPtr smask) 
 		{
 			int i = 0;
 			if ((mask & Lua.LUA_MASKCALL) != 0) 
@@ -334,7 +334,7 @@ namespace kurumi
 			}
 			else 
 			{
-				LuaConf.CharPtr smask = LuaAuxLib.luaL_checkstring(L, arg[0] + 2);
+				CLib.CharPtr smask = LuaAuxLib.luaL_checkstring(L, arg[0] + 2);
 				LuaAuxLib.luaL_checktype(L, arg[0] + 1, Lua.LUA_TFUNCTION);
 				count = LuaAuxLib.luaL_optint(L, arg[0] + 3, 0);
 				func = new hookf_delegate();
@@ -353,12 +353,12 @@ namespace kurumi
 		{
 			int[] arg = new int[1];
 			LuaState.lua_State L1 = getthread(L, /*out*/ arg);
-			LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[5]);
+			CLib.CharPtr buff = CLib.CharPtr.toCharPtr(new char[5]);
 			int mask = LuaDebug.lua_gethookmask(L1);
 			Lua.lua_Hook hook = LuaDebug.lua_gethook(L1);
 			if (hook != null && (hook is hookf_delegate))  /* external hook? */
 			{
-				Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("external hook"));
+				Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("external hook"));
 			}
 			else 
 			{
@@ -376,18 +376,18 @@ namespace kurumi
 		{
 			for (;;) 
 			{
-				LuaConf.CharPtr buffer = LuaConf.CharPtr.toCharPtr(new char[250]);
-				LuaConf.fputs(LuaConf.CharPtr.toCharPtr("lua_debug> "), LuaConf.stderr);
-				if (LuaConf.CharPtr.isEqual(LuaConf.fgets(buffer, LuaConf.stdin), null) ||
-				    LuaConf.strcmp(buffer, LuaConf.CharPtr.toCharPtr("cont\n")) == 0)
+				CLib.CharPtr buffer = CLib.CharPtr.toCharPtr(new char[250]);
+				CLib.fputs(CLib.CharPtr.toCharPtr("lua_debug> "), CLib.stderr);
+				if (CLib.CharPtr.isEqual(CLib.fgets(buffer, CLib.stdin), null) ||
+				    CLib.strcmp(buffer, CLib.CharPtr.toCharPtr("cont\n")) == 0)
 				{
 					return 0;
 				}
-				if (LuaAuxLib.luaL_loadbuffer(L, buffer, /*(uint)*/LuaConf.strlen(buffer), LuaConf.CharPtr.toCharPtr("=(debug command)")) != 0 ||
+				if (LuaAuxLib.luaL_loadbuffer(L, buffer, /*(uint)*/CLib.strlen(buffer), CLib.CharPtr.toCharPtr("=(debug command)")) != 0 ||
 				    LuaAPI.lua_pcall(L, 0, 0, 0) != 0)
 				{
-					LuaConf.fputs(Lua.lua_tostring(L, -1), LuaConf.stderr);
-					LuaConf.fputs(LuaConf.CharPtr.toCharPtr("\n"), LuaConf.stderr);
+					CLib.fputs(Lua.lua_tostring(L, -1), CLib.stderr);
+					CLib.fputs(CLib.CharPtr.toCharPtr("\n"), CLib.stderr);
 				}
 				LuaAPI.lua_settop(L, 0);  /* remove eventual returns */
 			}
@@ -414,7 +414,7 @@ namespace kurumi
 			}
 			if (LuaAPI.lua_gettop(L) == arg[0])
 			{
-				Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(""));
+				Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr(""));
 			}
 			else if (LuaAPI.lua_isstring(L, arg[0] + 1) == 0) 
 			{
@@ -422,9 +422,9 @@ namespace kurumi
 			}
 			else 
 			{
-				Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("\n"));
+				Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("\n"));
 			}
-			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("stack traceback:"));
+			Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("stack traceback:"));
 			while (LuaDebug.lua_getstack(L1, level++, ar) != 0)
 			{
 				if (level > LEVELS1 && firstpart) 
@@ -436,7 +436,7 @@ namespace kurumi
 					}
 					else 
 					{
-						Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("\n\t..."));  /* too many levels */
+						Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("\n\t..."));  /* too many levels */
 						while (LuaDebug.lua_getstack(L1, level + LEVELS2, ar) != 0)  /* find last levels */
 						{
 							level++;
@@ -445,30 +445,30 @@ namespace kurumi
 					firstpart = false;
 					continue;
 				}
-				Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("\n\t"));
-				LuaDebug.lua_getinfo(L1, LuaConf.CharPtr.toCharPtr("Snl"), ar);
-				LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("%s:"), ar.short_src);
+				Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("\n\t"));
+				LuaDebug.lua_getinfo(L1, CLib.CharPtr.toCharPtr("Snl"), ar);
+				LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr("%s:"), ar.short_src);
 				if (ar.currentline > 0)
 				{
-					LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("%d:"), ar.currentline);
+					LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr("%d:"), ar.currentline);
 				}
-				if (LuaConf.CharPtr.isNotEqualChar(ar.namewhat, '\0'))  /* is there a name? */
+				if (CLib.CharPtr.isNotEqualChar(ar.namewhat, '\0'))  /* is there a name? */
 				{
-					LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr(" in function " + LuaConf.getLUA_QS()), ar.name);
+					LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr(" in function " + LuaConf.getLUA_QS()), ar.name);
 				}
 				else 
 				{
-					if (LuaConf.CharPtr.isEqualChar(ar.what, 'm'))  /* main? */
+					if (CLib.CharPtr.isEqualChar(ar.what, 'm'))  /* main? */
 					{
-						LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr(" in main chunk"));
+						LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr(" in main chunk"));
 					}
-					else if (LuaConf.CharPtr.isEqualChar(ar.what, 'C') || LuaConf.CharPtr.isEqualChar(ar.what, 't'))
+					else if (CLib.CharPtr.isEqualChar(ar.what, 'C') || CLib.CharPtr.isEqualChar(ar.what, 't'))
 					{
-						Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr(" ?"));  /* C function or tail call */
+						Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr(" ?"));  /* C function or tail call */
 					}
 					else
 					{
-						LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr(" in function <%s:%d>"),
+						LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr(" in function <%s:%d>"),
 							ar.short_src, ar.linedefined);
 					}
 				}
@@ -479,20 +479,20 @@ namespace kurumi
 		}
 
 		private readonly static LuaAuxLib.luaL_Reg[] dblib = {
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("debug"), new LuaDebugLib_delegate("db_debug")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getfenv"), new LuaDebugLib_delegate("db_getfenv")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("gethook"), new LuaDebugLib_delegate("db_gethook")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getinfo"), new LuaDebugLib_delegate("db_getinfo")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getlocal"), new LuaDebugLib_delegate("db_getlocal")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getregistry"), new LuaDebugLib_delegate("db_getregistry")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getmetatable"), new LuaDebugLib_delegate("db_getmetatable")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("getupvalue"), new LuaDebugLib_delegate("db_getupvalue")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setfenv"), new LuaDebugLib_delegate("db_setfenv")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("sethook"), new LuaDebugLib_delegate("db_sethook")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setlocal"), new LuaDebugLib_delegate("db_setlocal")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setmetatable"), new LuaDebugLib_delegate("db_setmetatable")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setupvalue"), new LuaDebugLib_delegate("db_setupvalue")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("traceback"), new LuaDebugLib_delegate("db_errorfb")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("debug"), new LuaDebugLib_delegate("db_debug")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("getfenv"), new LuaDebugLib_delegate("db_getfenv")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("gethook"), new LuaDebugLib_delegate("db_gethook")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("getinfo"), new LuaDebugLib_delegate("db_getinfo")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("getlocal"), new LuaDebugLib_delegate("db_getlocal")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("getregistry"), new LuaDebugLib_delegate("db_getregistry")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("getmetatable"), new LuaDebugLib_delegate("db_getmetatable")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("getupvalue"), new LuaDebugLib_delegate("db_getupvalue")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("setfenv"), new LuaDebugLib_delegate("db_setfenv")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("sethook"), new LuaDebugLib_delegate("db_sethook")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("setlocal"), new LuaDebugLib_delegate("db_setlocal")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("setmetatable"), new LuaDebugLib_delegate("db_setmetatable")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("setupvalue"), new LuaDebugLib_delegate("db_setupvalue")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("traceback"), new LuaDebugLib_delegate("db_errorfb")),
 			new LuaAuxLib.luaL_Reg(null, null)
 		};
 		
@@ -572,7 +572,7 @@ namespace kurumi
 
 
 		public static int luaopen_debug (LuaState.lua_State L) {
-			LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_DBLIBNAME), dblib);
+			LuaAuxLib.luaL_register(L, CLib.CharPtr.toCharPtr(LuaLib.LUA_DBLIBNAME), dblib);
 			return 1;
 		}
 

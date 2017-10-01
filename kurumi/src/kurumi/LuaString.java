@@ -10,19 +10,19 @@ package kurumi;
 
 public class LuaString {
 	public static int sizestring(LuaObject.TString s) {
-		return ((int)s.len + 1) * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)); //char
+		return ((int)s.len + 1) * CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)); //char
 	}
 
 	public static int sizeudata(LuaObject.Udata u) {
 		return (int)u.len;
 	}
 
-	public static LuaObject.TString luaS_new(LuaState.lua_State L, LuaConf.CharPtr s) {
-		return luaS_newlstr(L, s, LuaConf.strlen(s)); //(uint)
+	public static LuaObject.TString luaS_new(LuaState.lua_State L, CLib.CharPtr s) {
+		return luaS_newlstr(L, s, CLib.strlen(s)); //(uint)
 	}
 
-	public static LuaObject.TString luaS_newliteral(LuaState.lua_State L, LuaConf.CharPtr s) {
-		return luaS_newlstr(L, s, LuaConf.strlen(s)); //(uint)
+	public static LuaObject.TString luaS_newliteral(LuaState.lua_State L, CLib.CharPtr s) {
+		return luaS_newlstr(L, s, CLib.strlen(s)); //(uint)
 	}
 
 	public static void luaS_fix(LuaObject.TString s) {
@@ -47,7 +47,7 @@ public class LuaString {
 		// so that the garbage collector behaves identical to the C version.
 		//newhash = luaM_newvector<GCObjectRef>(L, newsize);
 		newhash = new LuaState.GCObject[newsize];
-		LuaMem.AddTotalBytes(L, newsize * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_GCOBJECTREF))); //typeof(GCObjectRef)
+		LuaMem.AddTotalBytes(L, newsize * CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_GCOBJECTREF))); //typeof(GCObjectRef)
 
 		tb = LuaState.G(L).strt;
 		for (i = 0; i < newsize; i++) {
@@ -61,8 +61,8 @@ public class LuaString {
 				// for each node in the list 
 				LuaState.GCObject next = p.getGch().next; // save next 
 				long h = LuaState.gco2ts(p).hash; //uint - int
-				int h1 = (int)LuaConf.lmod(h, newsize); // new position 
-				LuaLimits.lua_assert((int)(h % newsize) == LuaConf.lmod(h, newsize));
+				int h1 = (int)CLib.lmod(h, newsize); // new position 
+				LuaLimits.lua_assert((int)(h % newsize) == CLib.lmod(h, newsize));
 				p.getGch().next = newhash[h1]; // chain it 
 				newhash[h1] = p;
 				p = next;
@@ -70,30 +70,30 @@ public class LuaString {
 		}
 		//luaM_freearray(L, tb.hash);
 		if (tb.hash != null) {
-			LuaMem.SubtractTotalBytes(L, tb.hash.length * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_GCOBJECTREF))); //typeof(GCObjectRef)
+			LuaMem.SubtractTotalBytes(L, tb.hash.length * CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_GCOBJECTREF))); //typeof(GCObjectRef)
 		}
 		tb.size = newsize;
 		tb.hash = newhash;
 	}
 
-	public static LuaObject.TString newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int l, long h) { //uint - int - uint
+	public static LuaObject.TString newlstr(LuaState.lua_State L, CLib.CharPtr str, int l, long h) { //uint - int - uint
 		LuaObject.TString ts;
 		LuaState.stringtable tb;
-		if (l + 1 > LuaLimits.MAX_SIZET / LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR))) { //typeof(char)
+		if (l + 1 > LuaLimits.MAX_SIZET / CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR))) { //typeof(char)
 			LuaMem.luaM_toobig(L);
 		}
-		ts = new LuaObject.TString(LuaConf.CharPtr.toCharPtr(new char[l + 1]));
-		LuaMem.AddTotalBytes(L, (int)(l + 1) * LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TSTRING))); //typeof(TString)//typeof(char)
+		ts = new LuaObject.TString(CLib.CharPtr.toCharPtr(new char[l + 1]));
+		LuaMem.AddTotalBytes(L, (int)(l + 1) * CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)) + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TSTRING))); //typeof(TString)//typeof(char)
 		ts.getTsv().len = l;
 		ts.getTsv().hash = h;
 		ts.getTsv().marked = LuaGC.luaC_white(LuaState.G(L));
 		ts.getTsv().tt = Lua.LUA_TSTRING;
 		ts.getTsv().reserved = 0;
 		//memcpy(ts+1, str, l*GetUnmanagedSize(typeof(char)));
-		LuaConf.memcpy_char(ts.str.chars, str.chars, str.index, (int)l);
+		CLib.memcpy_char(ts.str.chars, str.chars, str.index, (int)l);
 		ts.str.set(l, '\0'); // ending 0 
 		tb = LuaState.G(L).strt;
-		h = (int)LuaConf.lmod(h, tb.size); //uint
+		h = (int)CLib.lmod(h, tb.size); //uint
 		ts.getTsv().next = tb.hash[(int)h]; // chain new entry 
 		tb.hash[(int)h] = LuaState.obj2gco(ts);
 		tb.nuse++;
@@ -103,7 +103,7 @@ public class LuaString {
 		return ts;
 	}
 
-	public static LuaObject.TString luaS_newlstr(LuaState.lua_State L, LuaConf.CharPtr str, int l) { //uint
+	public static LuaObject.TString luaS_newlstr(LuaState.lua_State L, CLib.CharPtr str, int l) { //uint
 		LuaState.GCObject o;
 		//FIXME:
 		long h = ((long)l) & 0xffffffffL; // seed  - (uint) - uint - int
@@ -114,9 +114,9 @@ public class LuaString {
 			// compute hash 
 			h = (0xffffffffL) & ((long)(h ^ ((h << 5)+(h >> 2) + (byte)str.get(l1 - 1))));
 		}
-		for (o = LuaState.G(L).strt.hash[(int)LuaConf.lmod(h, LuaState.G(L).strt.size)]; o != null; o = o.getGch().next) {
+		for (o = LuaState.G(L).strt.hash[(int)CLib.lmod(h, LuaState.G(L).strt.size)]; o != null; o = o.getGch().next) {
 			LuaObject.TString ts = LuaState.rawgco2ts(o);
-			if (ts.getTsv().len == l && (LuaConf.memcmp(str, LuaObject.getstr(ts), l) == 0)) {
+			if (ts.getTsv().len == l && (CLib.memcmp(str, LuaObject.getstr(ts), l) == 0)) {
 				// string may be dead 
 				if (LuaGC.isdead(LuaState.G(L), o)) {
 					LuaGC.changewhite(o);
@@ -151,7 +151,7 @@ public class LuaString {
 		u.uv.metatable = null;
 		u.uv.env = e;
 		u.user_data = LuaMem.luaM_realloc_(L, t);
-		LuaMem.AddTotalBytes(L, LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_UDATA))); //typeof(Udata)
+		LuaMem.AddTotalBytes(L, CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_UDATA))); //typeof(Udata)
 		// chain it on udata list (after main thread) 
 		u.uv.next = LuaState.G(L).mainthread.next;
 		LuaState.G(L).mainthread.next = LuaState.obj2gco(u);

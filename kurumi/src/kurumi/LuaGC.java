@@ -348,8 +348,8 @@ public class LuaGC {
 		mode = LuaTM.gfasttm(g, h.metatable, LuaTM.TMS.TM_MODE);
 		if ((mode != null) && LuaObject.ttisstring(mode)) {
 			// is there a weak mode? 
-			weakkey = (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaObject.svalue(mode), 'k'), null)) ? 1 : 0;
-			weakvalue = (LuaConf.CharPtr.isNotEqual(LuaConf.strchr(LuaObject.svalue(mode), 'v'), null)) ? 1 : 0;
+			weakkey = (CLib.CharPtr.isNotEqual(CLib.strchr(LuaObject.svalue(mode), 'k'), null)) ? 1 : 0;
+			weakvalue = (CLib.CharPtr.isNotEqual(CLib.strchr(LuaObject.svalue(mode), 'v'), null)) ? 1 : 0;
 			if ((weakkey != 0) || (weakvalue != 0)) {
 				// is really weak? 
 				h.marked &= (byte)~(KEYWEAK | VALUEWEAK); // clear bits 
@@ -491,7 +491,7 @@ public class LuaGC {
 					if (traversetable(g, h) != 0) { // table is weak? 
 						black2gray(o); // keep it gray 
 					}
-					return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TABLE)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * h.sizearray + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_NODE)) * LuaObject.sizenode(h); //typeof(Node) - typeof(TValue) - typeof(Table)
+					return CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TABLE)) + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * h.sizearray + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_NODE)) * LuaObject.sizenode(h); //typeof(Node) - typeof(TValue) - typeof(Table)
 				}
 			case Lua.LUA_TFUNCTION: {
 					LuaObject.Closure cl = LuaState.gco2cl(o);
@@ -509,7 +509,7 @@ public class LuaGC {
 					//typeof(lua_State)
 					//typeof(TValue)
 					//typeof(CallInfo)
-					return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LUA_STATE)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * th.stacksize + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CALLINFO)) * th.size_ci;
+					return CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LUA_STATE)) + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * th.stacksize + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_CALLINFO)) * th.size_ci;
 				}
 			case LuaObject.LUA_TPROTO: {
 					LuaObject.Proto p = LuaState.gco2p(o);
@@ -522,7 +522,7 @@ public class LuaGC {
 					//typeof(int)
 					//typeof(LocVar)
 					//typeof(TString)
-					return LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_PROTO)) + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LONG)) * p.sizecode + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_PROTO)) * p.sizep + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * p.sizek + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_INT)) * p.sizelineinfo + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LOCVAR)) * p.sizelocvars + LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_TSTRING)) * p.sizeupvalues;
+					return CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_PROTO)) + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LONG)) * p.sizecode + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_PROTO)) * p.sizep + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TVALUE)) * p.sizek + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_INT)) * p.sizelineinfo + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LOCVAR)) * p.sizelocvars + CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_TSTRING)) * p.sizeupvalues;
 				}
 			default: {
 					LuaLimits.lua_assert(0);

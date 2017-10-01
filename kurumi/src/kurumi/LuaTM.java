@@ -94,38 +94,38 @@ public class LuaTM {
 		return gfasttm(LuaState.G(l), et, e);
 	}
 
-	public final static LuaConf.CharPtr[] luaT_typenames = { 
-		LuaConf.CharPtr.toCharPtr("nil"), 
-		LuaConf.CharPtr.toCharPtr("boolean"), 
-		LuaConf.CharPtr.toCharPtr("userdata"), 
-		LuaConf.CharPtr.toCharPtr("number"), 
-		LuaConf.CharPtr.toCharPtr("string"), 
-		LuaConf.CharPtr.toCharPtr("table"), 
-		LuaConf.CharPtr.toCharPtr("function"), 
-		LuaConf.CharPtr.toCharPtr("userdata"), 
-		LuaConf.CharPtr.toCharPtr("thread"), 
-		LuaConf.CharPtr.toCharPtr("proto"), 
-		LuaConf.CharPtr.toCharPtr("upval") 
+	public final static CLib.CharPtr[] luaT_typenames = { 
+		CLib.CharPtr.toCharPtr("nil"), 
+		CLib.CharPtr.toCharPtr("boolean"), 
+		CLib.CharPtr.toCharPtr("userdata"), 
+		CLib.CharPtr.toCharPtr("number"), 
+		CLib.CharPtr.toCharPtr("string"), 
+		CLib.CharPtr.toCharPtr("table"), 
+		CLib.CharPtr.toCharPtr("function"), 
+		CLib.CharPtr.toCharPtr("userdata"), 
+		CLib.CharPtr.toCharPtr("thread"), 
+		CLib.CharPtr.toCharPtr("proto"), 
+		CLib.CharPtr.toCharPtr("upval") 
 	};
 
-	private final static LuaConf.CharPtr[] luaT_eventname = { 
-		LuaConf.CharPtr.toCharPtr("__index"), 
-		LuaConf.CharPtr.toCharPtr("__newindex"), 
-		LuaConf.CharPtr.toCharPtr("__gc"), 
-		LuaConf.CharPtr.toCharPtr("__mode"), 
-		LuaConf.CharPtr.toCharPtr("__eq"), 
-		LuaConf.CharPtr.toCharPtr("__add"), 
-		LuaConf.CharPtr.toCharPtr("__sub"), 
-		LuaConf.CharPtr.toCharPtr("__mul"), 
-		LuaConf.CharPtr.toCharPtr("__div"), 
-		LuaConf.CharPtr.toCharPtr("__mod"), 
-		LuaConf.CharPtr.toCharPtr("__pow"), 
-		LuaConf.CharPtr.toCharPtr("__unm"), 
-		LuaConf.CharPtr.toCharPtr("__len"), 
-		LuaConf.CharPtr.toCharPtr("__lt"), 
-		LuaConf.CharPtr.toCharPtr("__le"), 
-		LuaConf.CharPtr.toCharPtr("__concat"), 
-		LuaConf.CharPtr.toCharPtr("__call") 
+	private final static CLib.CharPtr[] luaT_eventname = { 
+		CLib.CharPtr.toCharPtr("__index"), 
+		CLib.CharPtr.toCharPtr("__newindex"), 
+		CLib.CharPtr.toCharPtr("__gc"), 
+		CLib.CharPtr.toCharPtr("__mode"), 
+		CLib.CharPtr.toCharPtr("__eq"), 
+		CLib.CharPtr.toCharPtr("__add"), 
+		CLib.CharPtr.toCharPtr("__sub"), 
+		CLib.CharPtr.toCharPtr("__mul"), 
+		CLib.CharPtr.toCharPtr("__div"), 
+		CLib.CharPtr.toCharPtr("__mod"), 
+		CLib.CharPtr.toCharPtr("__pow"), 
+		CLib.CharPtr.toCharPtr("__unm"), 
+		CLib.CharPtr.toCharPtr("__len"), 
+		CLib.CharPtr.toCharPtr("__lt"), 
+		CLib.CharPtr.toCharPtr("__le"), 
+		CLib.CharPtr.toCharPtr("__concat"), 
+		CLib.CharPtr.toCharPtr("__call") 
 	};
 
 	public static void luaT_init(LuaState.lua_State L) {

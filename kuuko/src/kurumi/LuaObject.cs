@@ -533,7 +533,7 @@ namespace kurumi
 		
 		public class TString : LuaObject.TString_tsv
 		{
-			public LuaConf.CharPtr str;
+			public CLib.CharPtr str;
 			
 			//public L_Umaxalign dummy;  /* ensures maximum alignment for strings */
 	
@@ -547,7 +547,7 @@ namespace kurumi
 				
 			}
 			
-			public TString(LuaConf.CharPtr str) 
+			public TString(CLib.CharPtr str) 
 			{ 
 				this.str = str; 
 			}
@@ -558,12 +558,12 @@ namespace kurumi
 			} // for debugging
 		}
 		
-		public static LuaConf.CharPtr getstr(TString ts) 
+		public static CLib.CharPtr getstr(TString ts) 
 		{ 
 			return ts.str; 
 		}
 		
-		public static LuaConf.CharPtr svalue(TValue/*StkId*/ o) 
+		public static CLib.CharPtr svalue(TValue/*StkId*/ o) 
 		{ 
 			return getstr(rawtsvalue(o)); 
 		}
@@ -1112,24 +1112,24 @@ namespace kurumi
 			}
 		}
 
-		public static int luaO_str2d(LuaConf.CharPtr s, /*out*/ Double[]/*lua_Number*/ result)
+		public static int luaO_str2d(CLib.CharPtr s, /*out*/ Double[]/*lua_Number*/ result)
 		{
-			LuaConf.CharPtr[] endptr = new LuaConf.CharPtr[1];
-			endptr[0] = new LuaConf.CharPtr();
+			CLib.CharPtr[] endptr = new CLib.CharPtr[1];
+			endptr[0] = new CLib.CharPtr();
 			result[0] = LuaConf.lua_str2number(s, /*out*/ endptr);
-			if (LuaConf.CharPtr.isEqual(endptr[0], s))
+			if (CLib.CharPtr.isEqual(endptr[0], s))
 			{
 				return 0;  /* conversion failed */
 			}
 			if (endptr[0].get(0) == 'x' || endptr[0].get(0) == 'X')  /* maybe an hexadecimal constant? */
 			{
-				result[0] = LuaLimits.cast_num(LuaConf.strtoul(s, /*out*/ endptr, 16));
+				result[0] = LuaLimits.cast_num(CLib.strtoul(s, /*out*/ endptr, 16));
 			}
 			if (endptr[0].get(0) == '\0') 
 			{
 				return 1;  /* most common case */
 			}
-			while (LuaConf.isspace(endptr[0].get(0))) 
+			while (CLib.isspace(endptr[0].get(0))) 
 			{
 				endptr[0] = endptr[0].next();
 			}
@@ -1140,47 +1140,47 @@ namespace kurumi
 			return 1;
 		}
 
-		private static void pushstr(LuaState.lua_State L, LuaConf.CharPtr str) 
+		private static void pushstr(LuaState.lua_State L, CLib.CharPtr str) 
 		{
 			setsvalue2s(L, L.top, LuaString.luaS_new(L, str));
 			LuaDo.incr_top(L);
 		}
 
 		/* this function handles only `%d', `%c', %f, %p, and `%s' formats */
-		public static LuaConf.CharPtr luaO_pushvfstring(LuaState.lua_State L, LuaConf.CharPtr fmt, params object[] argp) 
+		public static CLib.CharPtr luaO_pushvfstring(LuaState.lua_State L, CLib.CharPtr fmt, params object[] argp) 
 		{
 			int parm_index = 0;
 			int n = 1;
-			pushstr(L, LuaConf.CharPtr.toCharPtr(""));
+			pushstr(L, CLib.CharPtr.toCharPtr(""));
 			for (;;) 
 			{
-				LuaConf.CharPtr e = LuaConf.strchr(fmt, '%');
-				if (LuaConf.CharPtr.isEqual(e, null)) 
+				CLib.CharPtr e = CLib.strchr(fmt, '%');
+				if (CLib.CharPtr.isEqual(e, null)) 
 				{
 					break;
 				}
-				setsvalue2s(L, L.top, LuaString.luaS_newlstr(L, fmt, /*(uint)*/LuaConf.CharPtr.minus(e, fmt)));
+				setsvalue2s(L, L.top, LuaString.luaS_newlstr(L, fmt, /*(uint)*/CLib.CharPtr.minus(e, fmt)));
 				LuaDo.incr_top(L);
 				switch (e.get(1)) 
 				{
 					case 's': 
 						{
 							object o = argp[parm_index++];
-							LuaConf.CharPtr s = o as LuaConf.CharPtr;
-							if (LuaConf.CharPtr.isEqual(s, null))
+							CLib.CharPtr s = o as CLib.CharPtr;
+							if (CLib.CharPtr.isEqual(s, null))
 							{
-								s = LuaConf.CharPtr.toCharPtr((string)o);
+								s = CLib.CharPtr.toCharPtr((string)o);
 							}
-							if (LuaConf.CharPtr.isEqual(s, null)) 
+							if (CLib.CharPtr.isEqual(s, null)) 
 							{
-								s = LuaConf.CharPtr.toCharPtr("(null)");
+								s = CLib.CharPtr.toCharPtr("(null)");
 							}
 							pushstr(L, s);
 							break;
 						}
 					case 'c': 
 						{
-							LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[2]);
+							CLib.CharPtr buff = CLib.CharPtr.toCharPtr(new char[2]);
 							buff.set(0, (char)(int)argp[parm_index++]);
 							buff.set(1, '\0');
 							pushstr(L, buff);
@@ -1201,19 +1201,19 @@ namespace kurumi
 					case 'p': 
 						{
 							//CharPtr buff = new char[4*sizeof(void *) + 8]; /* should be enough space for a `%p' */
-							LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[32]);
-							LuaConf.sprintf(buff, LuaConf.CharPtr.toCharPtr("0x%08x"), argp[parm_index++].GetHashCode());
+							CLib.CharPtr buff = CLib.CharPtr.toCharPtr(new char[32]);
+							CLib.sprintf(buff, CLib.CharPtr.toCharPtr("0x%08x"), argp[parm_index++].GetHashCode());
 							pushstr(L, buff);
 							break;
 						}
 					case '%': 
 						{
-							pushstr(L, LuaConf.CharPtr.toCharPtr("%"));
+							pushstr(L, CLib.CharPtr.toCharPtr("%"));
 							break;
 						}
 					default: 
 						{
-							LuaConf.CharPtr buff = LuaConf.CharPtr.toCharPtr(new char[3]);
+							CLib.CharPtr buff = CLib.CharPtr.toCharPtr(new char[3]);
 							buff.set(0, '%');
 							buff.set(1, e.get(1));
 							buff.set(2, '\0');
@@ -1222,7 +1222,7 @@ namespace kurumi
 						}
 				}
 				n += 2;
-				fmt = LuaConf.CharPtr.plus(e, 2);
+				fmt = CLib.CharPtr.plus(e, 2);
 			}
 			pushstr(L, fmt);
 			LuaVM.luaV_concat(L, n + 1, LuaLimits.cast_int(TValue.minus(L.top, L.base_)) - 1);
@@ -1230,17 +1230,17 @@ namespace kurumi
 			return svalue(TValue.minus(L.top, 1));
 		}
 
-		public static LuaConf.CharPtr luaO_pushfstring(LuaState.lua_State L, LuaConf.CharPtr fmt, params object[] args)
+		public static CLib.CharPtr luaO_pushfstring(LuaState.lua_State L, CLib.CharPtr fmt, params object[] args)
 		{
 			return luaO_pushvfstring(L, fmt, args);
 		}
 
-		public static void luaO_chunkid(LuaConf.CharPtr out_, LuaConf.CharPtr source, int/*uint*/ bufflen) 
+		public static void luaO_chunkid(CLib.CharPtr out_, CLib.CharPtr source, int/*uint*/ bufflen) 
 		{
 			//out_ = "";
 			if (source.get(0) == '=') 
 			{
-				LuaConf.strncpy(out_, LuaConf.CharPtr.plus(source, 1), /*(int)*/bufflen);  /* remove first char */
+				CLib.strncpy(out_, CLib.CharPtr.plus(source, 1), /*(int)*/bufflen);  /* remove first char */
 				out_.set(bufflen - 1, '\0');  /* ensures null termination */
 			}
 			else
@@ -1251,36 +1251,36 @@ namespace kurumi
 					int/*uint*/ l;
 					source = source.next();  /* skip the `@' */
 					bufflen -= /*(uint)*/(" '...' ".Length + 1); //FIXME:
-					l = /*(uint)*/LuaConf.strlen(source);
-					LuaConf.strcpy(out_, LuaConf.CharPtr.toCharPtr(""));
+					l = /*(uint)*/CLib.strlen(source);
+					CLib.strcpy(out_, CLib.CharPtr.toCharPtr(""));
 					if (l > bufflen) 
 					{
-						source = LuaConf.CharPtr.plus(source, (l - bufflen));  /* get last part of file name */
-						LuaConf.strcat(out_, LuaConf.CharPtr.toCharPtr("..."));
+						source = CLib.CharPtr.plus(source, (l - bufflen));  /* get last part of file name */
+						CLib.strcat(out_, CLib.CharPtr.toCharPtr("..."));
 					}
-					LuaConf.strcat(out_, source);
+					CLib.strcat(out_, source);
 				}
 				else 
 				{  
 					/* out = [string "string"] */
-					int/*uint*/ len = LuaConf.strcspn(source, LuaConf.CharPtr.toCharPtr("\n\r"));  /* stop at first newline */
+					int/*uint*/ len = CLib.strcspn(source, CLib.CharPtr.toCharPtr("\n\r"));  /* stop at first newline */
 					bufflen -= /*(uint)*/(" [string \"...\"] ".Length + 1);
 					if (len > bufflen) 
 					{
 						len = bufflen;
 					}
-					LuaConf.strcpy(out_, LuaConf.CharPtr.toCharPtr("[string \""));
+					CLib.strcpy(out_, CLib.CharPtr.toCharPtr("[string \""));
 					if (source.get(len) != '\0') 
 					{  
 						/* must truncate? */
-						LuaConf.strncat(out_, source, (int)len);
-						LuaConf.strcat(out_, LuaConf.CharPtr.toCharPtr("..."));
+						CLib.strncat(out_, source, (int)len);
+						CLib.strcat(out_, CLib.CharPtr.toCharPtr("..."));
 					}
 					else
 					{
-						LuaConf.strcat(out_, source);
+						CLib.strcat(out_, source);
 					}
-					LuaConf.strcat(out_, LuaConf.CharPtr.toCharPtr("\"]"));
+					CLib.strcat(out_, CLib.CharPtr.toCharPtr("\"]"));
 				}
 			}
 		}

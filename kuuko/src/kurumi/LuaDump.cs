@@ -29,7 +29,7 @@ namespace kurumi
 			{
 				ch[i] = (char)bytes[i];
 			}
-			LuaConf.CharPtr str = LuaConf.CharPtr.toCharPtr(ch);
+			CLib.CharPtr str = CLib.CharPtr.toCharPtr(ch);
 			DumpBlock(str, /*(uint)*/str.chars.Length, D);
 		}
 
@@ -56,7 +56,7 @@ namespace kurumi
 			DumpMem(x, D, t);
 		}
 
-		private static void DumpBlock(LuaConf.CharPtr b, int/*uint*/ size, DumpState D)
+		private static void DumpBlock(CLib.CharPtr b, int/*uint*/ size, DumpState D)
 		{
 			if (D.status == 0)
 			{
@@ -96,7 +96,7 @@ namespace kurumi
 
 		private static void DumpString(LuaObject.TString s, DumpState D)
 		{
-			if (s == null || LuaConf.CharPtr.isEqual(LuaObject.getstr(s), null))
+			if (s == null || CLib.CharPtr.isEqual(LuaObject.getstr(s), null))
 			{
 				int/*uint*/ size = 0;
 				DumpVar(size, D, new ClassType(ClassType.TYPE_INT));
@@ -195,7 +195,7 @@ namespace kurumi
 
 		private static void DumpHeader(DumpState D)
 		{
-			LuaConf.CharPtr h = LuaConf.CharPtr.toCharPtr(new char[LuaUndump.LUAC_HEADERSIZE]);
+			CLib.CharPtr h = CLib.CharPtr.toCharPtr(new char[LuaUndump.LUAC_HEADERSIZE]);
 			LuaUndump.luaU_header(h);
 			DumpBlock(h, LuaUndump.LUAC_HEADERSIZE, D);
 		}

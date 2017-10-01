@@ -24,7 +24,7 @@ public class LuaDump {
 		for (int i = 0; i < bytes.length; i++) {
 			ch[i] = (char)bytes[i];
 		}
-		LuaConf.CharPtr str = LuaConf.CharPtr.toCharPtr(ch);
+		CLib.CharPtr str = CLib.CharPtr.toCharPtr(ch);
 		DumpBlock(str, str.chars.length, D); //(uint)
 	}
 
@@ -46,7 +46,7 @@ public class LuaDump {
 		DumpMem(x, D, t);
 	}
 
-	private static void DumpBlock(LuaConf.CharPtr b, int size, DumpState D) { //uint
+	private static void DumpBlock(CLib.CharPtr b, int size, DumpState D) { //uint
 		if (D.status == 0) {
 			LuaLimits.lua_unlock(D.L);
 			D.status = D.writer.exec(D.L, b, size, D.data);
@@ -78,7 +78,7 @@ public class LuaDump {
 	}
 
 	private static void DumpString(LuaObject.TString s, DumpState D) {
-		if (s == null || LuaConf.CharPtr.isEqual(LuaObject.getstr(s), null)) {
+		if (s == null || CLib.CharPtr.isEqual(LuaObject.getstr(s), null)) {
 			int size = 0; //uint
 			DumpVar(size, D, new ClassType(ClassType.TYPE_INT));
 		}
@@ -161,7 +161,7 @@ public class LuaDump {
 	}
 
 	private static void DumpHeader(DumpState D) {
-		LuaConf.CharPtr h = LuaConf.CharPtr.toCharPtr(new char[LuaUndump.LUAC_HEADERSIZE]);
+		CLib.CharPtr h = CLib.CharPtr.toCharPtr(new char[LuaUndump.LUAC_HEADERSIZE]);
 		LuaUndump.luaU_header(h);
 		DumpBlock(h, LuaUndump.LUAC_HEADERSIZE, D);
 	}

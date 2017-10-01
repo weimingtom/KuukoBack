@@ -506,7 +506,7 @@ public class LuaState {
 		LuaString.luaS_resize(L, LuaLimits.MINSTRTABSIZE); // initial size of string table 
 		LuaTM.luaT_init(L);
 		LuaLex.luaX_init(L);
-		LuaString.luaS_fix(LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr(LuaMem.MEMERRMSG)));
+		LuaString.luaS_fix(LuaString.luaS_newliteral(L, CLib.CharPtr.toCharPtr(LuaMem.MEMERRMSG)));
 		g.GCthreshold = 4 * g.totalbytes;
 	}
 
@@ -547,7 +547,7 @@ public class LuaState {
 		LuaMem.luaM_freearray_GCObject(L, G(L).strt.hash, new ClassType(ClassType.TYPE_GCOBJECT));
 		LuaZIO.luaZ_freebuffer(L, g.buff);
 		freestack(L, L);
-		LuaLimits.lua_assert(g.totalbytes == LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LG))); //typeof(LG)
+		LuaLimits.lua_assert(g.totalbytes == CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LG))); //typeof(LG)
 		//g.frealloc(g.ud, fromstate(L), (uint)state_size(typeof(LG)), 0);
 	}
 
@@ -618,7 +618,7 @@ public class LuaState {
 		g.grayagain = null;
 		g.weak = null;
 		g.tmudata = null;
-		g.totalbytes = (long)LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_LG)); //typeof(LG) - uint
+		g.totalbytes = (long)CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_LG)); //typeof(LG) - uint
 		g.gcpause = LuaConf.LUAI_GCPAUSE;
 		g.gcstepmul = LuaConf.LUAI_GCMUL;
 		g.gcdept = 0;

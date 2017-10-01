@@ -94,14 +94,14 @@ namespace kurumi
 
 		private static int math_fmod(LuaState.lua_State L)
 		{
-			LuaAPI.lua_pushnumber(L, LuaConf.fmod(LuaAuxLib.luaL_checknumber(L, 1), LuaAuxLib.luaL_checknumber(L, 2)));
+			LuaAPI.lua_pushnumber(L, CLib.fmod(LuaAuxLib.luaL_checknumber(L, 1), LuaAuxLib.luaL_checknumber(L, 2)));
 			return 1;
 		}
 
 		private static int math_modf(LuaState.lua_State L) 
 		{
 			double[] ip = new double[1];
-			double fp = LuaConf.modf(LuaAuxLib.luaL_checknumber(L, 1), /*out*/ ip);
+			double fp = CLib.modf(LuaAuxLib.luaL_checknumber(L, 1), /*out*/ ip);
 			LuaAPI.lua_pushnumber(L, ip[0]);
 			LuaAPI.lua_pushnumber(L, fp);
 			return 2;
@@ -152,14 +152,14 @@ namespace kurumi
 		private static int math_frexp(LuaState.lua_State L)
 		{
 			int[] e = new int[1];
-			LuaAPI.lua_pushnumber(L, LuaConf.frexp(LuaAuxLib.luaL_checknumber(L, 1), /*out*/ e));
+			LuaAPI.lua_pushnumber(L, CLib.frexp(LuaAuxLib.luaL_checknumber(L, 1), /*out*/ e));
 			LuaAPI.lua_pushinteger(L, e[0]);
 			return 2;
 		}
 
 		private static int math_ldexp(LuaState.lua_State L)
 		{
-			LuaAPI.lua_pushnumber(L, LuaConf.ldexp(LuaAuxLib.luaL_checknumber(L, 1), LuaAuxLib.luaL_checkint(L, 2)));
+			LuaAPI.lua_pushnumber(L, CLib.ldexp(LuaAuxLib.luaL_checknumber(L, 1), LuaAuxLib.luaL_checkint(L, 2)));
 			return 1;
 		}
 
@@ -234,7 +234,7 @@ namespace kurumi
 					}
 				default: 
 					{
-						return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("wrong number of arguments"));
+						return LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("wrong number of arguments"));
 					}
 			}
 			return 1;
@@ -249,34 +249,34 @@ namespace kurumi
 		}
 
 		private readonly static LuaAuxLib.luaL_Reg[] mathlib = {
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("abs"), new LuaMathLib_delegate("math_abs")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("acos"), new LuaMathLib_delegate("math_acos")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("asin"), new LuaMathLib_delegate("math_asin")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("atan2"), new LuaMathLib_delegate("math_atan2")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("atan"), new LuaMathLib_delegate("math_atan")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("ceil"), new LuaMathLib_delegate("math_ceil")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("cosh"), new LuaMathLib_delegate("math_cosh")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("cos"), new LuaMathLib_delegate("math_cos")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("deg"), new LuaMathLib_delegate("math_deg")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("exp"), new LuaMathLib_delegate("math_exp")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("floor"), new LuaMathLib_delegate("math_floor")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("fmod"), new LuaMathLib_delegate("math_fmod")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("frexp"), new LuaMathLib_delegate("math_frexp")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("ldexp"), new LuaMathLib_delegate("math_ldexp")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("log10"), new LuaMathLib_delegate("math_log10")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("log"), new LuaMathLib_delegate("math_log")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("max"), new LuaMathLib_delegate("math_max")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("min"), new LuaMathLib_delegate("math_min")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("modf"), new LuaMathLib_delegate("math_modf")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("pow"), new LuaMathLib_delegate("math_pow")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("rad"), new LuaMathLib_delegate("math_rad")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("random"), new LuaMathLib_delegate("math_random")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("randomseed"), new LuaMathLib_delegate("math_randomseed")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("sinh"), new LuaMathLib_delegate("math_sinh")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("sin"), new LuaMathLib_delegate("math_sin")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("sqrt"), new LuaMathLib_delegate("math_sqrt")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("tanh"), new LuaMathLib_delegate("math_tanh")),
-			new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("tan"), new LuaMathLib_delegate("math_tan")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("abs"), new LuaMathLib_delegate("math_abs")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("acos"), new LuaMathLib_delegate("math_acos")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("asin"), new LuaMathLib_delegate("math_asin")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("atan2"), new LuaMathLib_delegate("math_atan2")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("atan"), new LuaMathLib_delegate("math_atan")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("ceil"), new LuaMathLib_delegate("math_ceil")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("cosh"), new LuaMathLib_delegate("math_cosh")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("cos"), new LuaMathLib_delegate("math_cos")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("deg"), new LuaMathLib_delegate("math_deg")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("exp"), new LuaMathLib_delegate("math_exp")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("floor"), new LuaMathLib_delegate("math_floor")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("fmod"), new LuaMathLib_delegate("math_fmod")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("frexp"), new LuaMathLib_delegate("math_frexp")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("ldexp"), new LuaMathLib_delegate("math_ldexp")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("log10"), new LuaMathLib_delegate("math_log10")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("log"), new LuaMathLib_delegate("math_log")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("max"), new LuaMathLib_delegate("math_max")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("min"), new LuaMathLib_delegate("math_min")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("modf"), new LuaMathLib_delegate("math_modf")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("pow"), new LuaMathLib_delegate("math_pow")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("rad"), new LuaMathLib_delegate("math_rad")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("random"), new LuaMathLib_delegate("math_random")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("randomseed"), new LuaMathLib_delegate("math_randomseed")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("sinh"), new LuaMathLib_delegate("math_sinh")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("sin"), new LuaMathLib_delegate("math_sin")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("sqrt"), new LuaMathLib_delegate("math_sqrt")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("tanh"), new LuaMathLib_delegate("math_tanh")),
+			new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("tan"), new LuaMathLib_delegate("math_tan")),
 			new LuaAuxLib.luaL_Reg(null, null)
 		};
 
@@ -416,14 +416,14 @@ namespace kurumi
 		 */
 		public static int luaopen_math (LuaState.lua_State L)
 		{
-			LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_MATHLIBNAME), mathlib);
+			LuaAuxLib.luaL_register(L, CLib.CharPtr.toCharPtr(LuaLib.LUA_MATHLIBNAME), mathlib);
 			LuaAPI.lua_pushnumber(L, PI);
-			LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("pi"));
-			LuaAPI.lua_pushnumber(L, LuaConf.HUGE_VAL);
-			LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("huge"));
+			LuaAPI.lua_setfield(L, -2, CLib.CharPtr.toCharPtr("pi"));
+			LuaAPI.lua_pushnumber(L, CLib.HUGE_VAL);
+			LuaAPI.lua_setfield(L, -2, CLib.CharPtr.toCharPtr("huge"));
 			//#if LUA_COMPAT_MOD
-			LuaAPI.lua_getfield(L, -1, LuaConf.CharPtr.toCharPtr("fmod"));
-			LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("mod"));
+			LuaAPI.lua_getfield(L, -1, CLib.CharPtr.toCharPtr("fmod"));
+			LuaAPI.lua_setfield(L, -2, CLib.CharPtr.toCharPtr("mod"));
 			//#endif
 			return 1;
 		}

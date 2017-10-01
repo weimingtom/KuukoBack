@@ -50,7 +50,7 @@ public class Lua {
         /*sz*/
         /*out*/
         /*uint*/
-    	LuaConf.CharPtr exec(LuaState.lua_State L, Object ud, int[] sz);
+    	CLib.CharPtr exec(LuaState.lua_State L, Object ud, int[] sz);
     }
 	
     // functions that read/write blocks when loading/dumping Lua chunks
@@ -58,7 +58,7 @@ public class Lua {
 	public static interface lua_Writer
     {
         //uint sz
-		int exec(LuaState.lua_State L, LuaConf.CharPtr p, int sz, Object ud);
+		int exec(LuaState.lua_State L, CLib.CharPtr p, int sz, Object ud);
     }
 	
     public static interface lua_Alloc
@@ -115,7 +115,7 @@ public class Lua {
 		LuaAPI.lua_createtable(L, 0, 0);
 	}
 
-	public static void lua_register(LuaState.lua_State L, LuaConf.CharPtr n, lua_CFunction f) {
+	public static void lua_register(LuaState.lua_State L, CLib.CharPtr n, lua_CFunction f) {
 		lua_pushcfunction(L, f);
 		lua_setglobal(L, n);
 	}
@@ -160,21 +160,21 @@ public class Lua {
 		return LuaAPI.lua_type(L, (int)n) <= 0;
 	}
 
-	public static void lua_pushliteral(LuaState.lua_State L, LuaConf.CharPtr s) {
+	public static void lua_pushliteral(LuaState.lua_State L, CLib.CharPtr s) {
 		//TODO: Implement use using lua_pushlstring instead of lua_pushstring
 		//lua_pushlstring(L, "" s, (sizeof(s)/GetUnmanagedSize(typeof(char)))-1)
 		LuaAPI.lua_pushstring(L, s);
 	}
 
-	public static void lua_setglobal(LuaState.lua_State L, LuaConf.CharPtr s) {
+	public static void lua_setglobal(LuaState.lua_State L, CLib.CharPtr s) {
 		LuaAPI.lua_setfield(L, LUA_GLOBALSINDEX, s);
 	}
 
-	public static void lua_getglobal(LuaState.lua_State L, LuaConf.CharPtr s) {
+	public static void lua_getglobal(LuaState.lua_State L, CLib.CharPtr s) {
 		LuaAPI.lua_getfield(L, LUA_GLOBALSINDEX, s);
 	}
 
-	public static LuaConf.CharPtr lua_tostring(LuaState.lua_State L, int i) {
+	public static CLib.CharPtr lua_tostring(LuaState.lua_State L, int i) {
 		int[] blah = new int[1]; //uint
 		return LuaAPI.lua_tolstring(L, i, blah); //out
 	}
@@ -233,15 +233,15 @@ public class Lua {
 	public static class lua_Debug
 	{
 		public int event_;
-		public LuaConf.CharPtr name;	/* (n) */
-		public LuaConf.CharPtr namewhat;	/* (n) `global', `local', `field', `method' */
-		public LuaConf.CharPtr what;	/* (S) `Lua', `C', `main', `tail' */
-		public LuaConf.CharPtr source;	/* (S) */
+		public CLib.CharPtr name;	/* (n) */
+		public CLib.CharPtr namewhat;	/* (n) `global', `local', `field', `method' */
+		public CLib.CharPtr what;	/* (S) `Lua', `C', `main', `tail' */
+		public CLib.CharPtr source;	/* (S) */
 		public int currentline;	/* (l) */
 		public int nups;		/* (u) number of upvalues */
 		public int linedefined;	/* (S) */
 		public int lastlinedefined;	/* (S) */
-		public LuaConf.CharPtr short_src = LuaConf.CharPtr.toCharPtr(new char[LuaConf.LUA_IDSIZE]); /* (S) */
+		public CLib.CharPtr short_src = CLib.CharPtr.toCharPtr(new char[LuaConf.LUA_IDSIZE]); /* (S) */
 		/* private part */
 		public int i_ci;  /* active function */
 	}

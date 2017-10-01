@@ -18,47 +18,47 @@ public class LuaIOLib {
 
 	private static final String[] fnames = { "input", "output" };
 
-	private static int pushresult(LuaState.lua_State L, int i, LuaConf.CharPtr filename) {
-		int en = LuaConf.errno(); // calls to Lua API may change this value 
+	private static int pushresult(LuaState.lua_State L, int i, CLib.CharPtr filename) {
+		int en = CLib.errno(); // calls to Lua API may change this value 
 		if (i != 0) {
 			LuaAPI.lua_pushboolean(L, 1);
 			return 1;
 		}
 		else {
 			LuaAPI.lua_pushnil(L);
-			if (LuaConf.CharPtr.isNotEqual(filename, null)) {
-				LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("%s: %s"), filename, LuaConf.strerror(en));
+			if (CLib.CharPtr.isNotEqual(filename, null)) {
+				LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr("%s: %s"), filename, CLib.strerror(en));
 			}
 			else {
-				LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("%s"), LuaConf.strerror(en));
+				LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr("%s"), CLib.strerror(en));
 			}
 			LuaAPI.lua_pushinteger(L, en);
 			return 3;
 		}
 	}
 
-	private static void fileerror(LuaState.lua_State L, int arg, LuaConf.CharPtr filename) {
-		LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("%s: %s"), filename, LuaConf.strerror(LuaConf.errno()));
+	private static void fileerror(LuaState.lua_State L, int arg, CLib.CharPtr filename) {
+		LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr("%s: %s"), filename, CLib.strerror(CLib.errno()));
 		LuaAuxLib.luaL_argerror(L, arg, Lua.lua_tostring(L, -1));
 	}
 
 	public static FilePtr tofilep(LuaState.lua_State L) {
-		return (FilePtr)LuaAuxLib.luaL_checkudata(L, 1, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE));
+		return (FilePtr)LuaAuxLib.luaL_checkudata(L, 1, CLib.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE));
 	}
 
 	private static int io_type(LuaState.lua_State L) {
 		Object ud;
 		LuaAuxLib.luaL_checkany(L, 1);
 		ud = LuaAPI.lua_touserdata(L, 1);
-		LuaAPI.lua_getfield(L, Lua.LUA_REGISTRYINDEX, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE));
+		LuaAPI.lua_getfield(L, Lua.LUA_REGISTRYINDEX, CLib.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE));
 		if (ud == null || (LuaAPI.lua_getmetatable(L, 1) == 0) || (LuaAPI.lua_rawequal(L, -2, -1) == 0)) {
 			LuaAPI.lua_pushnil(L); // not a file 
 		}
 		else if (((FilePtr)((ud instanceof FilePtr) ? ud : null)).file == null) {
-			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("closed file"));
+			Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("closed file"));
 		}
 		else {
-			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("file"));
+			Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("file"));
 		}
 		return 1;
 	}
@@ -66,7 +66,7 @@ public class LuaIOLib {
 	private static StreamProxy tofile(LuaState.lua_State L) {
 		FilePtr f = tofilep(L);
 		if (f.file == null) {
-			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("attempt to use a closed file"));
+			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("attempt to use a closed file"));
 		}
 		return f.file;
 	}
@@ -79,7 +79,7 @@ public class LuaIOLib {
 	private static FilePtr newfile(LuaState.lua_State L) {
 		FilePtr pf = (FilePtr)LuaAPI.lua_newuserdata(L, new ClassType(ClassType.TYPE_FILEPTR)); //FilePtr
 		pf.file = null; // file file is currently `closed' 
-		LuaAuxLib.luaL_getmetatable(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE));
+		LuaAuxLib.luaL_getmetatable(L, CLib.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE));
 		LuaAPI.lua_setmetatable(L, -2);
 		return pf;
 	}
@@ -89,7 +89,7 @@ public class LuaIOLib {
 //		 
 	private static int io_noclose(LuaState.lua_State L) {
 		LuaAPI.lua_pushnil(L);
-		Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("cannot close standard file"));
+		Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("cannot close standard file"));
 		return 2;
 	}
 
@@ -108,14 +108,14 @@ public class LuaIOLib {
 //		 
 	private static int io_fclose(LuaState.lua_State L) {
 		FilePtr p = tofilep(L);
-		int ok = (LuaConf.fclose(p.file) == 0) ? 1 : 0;
+		int ok = (CLib.fclose(p.file) == 0) ? 1 : 0;
 		p.file = null;
 		return pushresult(L, ok, null);
 	}
 
 	private static int aux_close(LuaState.lua_State L) {
 		LuaAPI.lua_getfenv(L, 1);
-		LuaAPI.lua_getfield(L, -1, LuaConf.CharPtr.toCharPtr("__close"));
+		LuaAPI.lua_getfield(L, -1, CLib.CharPtr.toCharPtr("__close"));
 		return (LuaAPI.lua_tocfunction(L, -1)).exec(L);
 	}
 
@@ -139,19 +139,19 @@ public class LuaIOLib {
 	private static int io_tostring(LuaState.lua_State L) {
 		StreamProxy f = tofilep(L).file;
 		if (f == null) {
-			Lua.lua_pushliteral(L, LuaConf.CharPtr.toCharPtr("file (closed)"));
+			Lua.lua_pushliteral(L, CLib.CharPtr.toCharPtr("file (closed)"));
 		}
 		else {
-			LuaAPI.lua_pushfstring(L, LuaConf.CharPtr.toCharPtr("file (%p)"), f);
+			LuaAPI.lua_pushfstring(L, CLib.CharPtr.toCharPtr("file (%p)"), f);
 		}
 		return 1;
 	}
 
 	private static int io_open(LuaState.lua_State L) {
-		LuaConf.CharPtr filename = LuaAuxLib.luaL_checkstring(L, 1);
-		LuaConf.CharPtr mode = LuaAuxLib.luaL_optstring(L, 2, LuaConf.CharPtr.toCharPtr("r"));
+		CLib.CharPtr filename = LuaAuxLib.luaL_checkstring(L, 1);
+		CLib.CharPtr mode = LuaAuxLib.luaL_optstring(L, 2, CLib.CharPtr.toCharPtr("r"));
 		FilePtr pf = newfile(L);
-		pf.file = LuaConf.fopen(filename, mode);
+		pf.file = CLib.fopen(filename, mode);
 		return (pf.file == null) ? pushresult(L, 0, filename) : 1;
 	}
 
@@ -160,8 +160,8 @@ public class LuaIOLib {
 //		 ** correct __close for 'popen' files
 //		 
 	private static int io_popen(LuaState.lua_State L) {
-		LuaConf.CharPtr filename = LuaAuxLib.luaL_checkstring(L, 1);
-		LuaConf.CharPtr mode = LuaAuxLib.luaL_optstring(L, 2, LuaConf.CharPtr.toCharPtr("r"));
+		CLib.CharPtr filename = LuaAuxLib.luaL_checkstring(L, 1);
+		CLib.CharPtr mode = LuaAuxLib.luaL_optstring(L, 2, CLib.CharPtr.toCharPtr("r"));
 		FilePtr pf = newfile(L);
 		pf.file = LuaConf.lua_popen(L, filename, mode);
 		return (pf.file == null) ? pushresult(L, 0, filename) : 1;
@@ -169,7 +169,7 @@ public class LuaIOLib {
 
 	private static int io_tmpfile(LuaState.lua_State L) {
 		FilePtr pf = newfile(L);
-		pf.file = LuaConf.tmpfile();
+		pf.file = CLib.tmpfile();
 		return (pf.file == null) ? pushresult(L, 0, null) : 1;
 	}
 
@@ -179,17 +179,17 @@ public class LuaIOLib {
 		Object tempVar = LuaAPI.lua_touserdata(L, -1);
 		f = ((FilePtr)((tempVar instanceof FilePtr) ? tempVar : null)).file;
 		if (f == null) {
-			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("standard %s file is closed"), fnames[findex - 1]);
+			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("standard %s file is closed"), fnames[findex - 1]);
 		}
 		return f;
 	}
 
-	private static int g_iofile(LuaState.lua_State L, int f, LuaConf.CharPtr mode) {
+	private static int g_iofile(LuaState.lua_State L, int f, CLib.CharPtr mode) {
 		if (!Lua.lua_isnoneornil(L, 1)) {
-			LuaConf.CharPtr filename = Lua.lua_tostring(L, 1);
-			if (LuaConf.CharPtr.isNotEqual(filename, null)) {
+			CLib.CharPtr filename = Lua.lua_tostring(L, 1);
+			if (CLib.CharPtr.isNotEqual(filename, null)) {
 				FilePtr pf = newfile(L);
-				pf.file = LuaConf.fopen(filename, mode);
+				pf.file = CLib.fopen(filename, mode);
 				if (pf.file == null) {
 					fileerror(L, 1, filename);
 				}
@@ -206,11 +206,11 @@ public class LuaIOLib {
 	}
 
 	private static int io_input(LuaState.lua_State L) {
-		return g_iofile(L, IO_INPUT, LuaConf.CharPtr.toCharPtr("r"));
+		return g_iofile(L, IO_INPUT, CLib.CharPtr.toCharPtr("r"));
 	}
 
 	private static int io_output(LuaState.lua_State L) {
-		return g_iofile(L, IO_OUTPUT, LuaConf.CharPtr.toCharPtr("w"));
+		return g_iofile(L, IO_OUTPUT, CLib.CharPtr.toCharPtr("w"));
 	}
 
 	private static void aux_lines(LuaState.lua_State L, int idx, int toclose) {
@@ -233,9 +233,9 @@ public class LuaIOLib {
 			return f_lines(L);
 		}
 		else {
-			LuaConf.CharPtr filename = LuaAuxLib.luaL_checkstring(L, 1);
+			CLib.CharPtr filename = LuaAuxLib.luaL_checkstring(L, 1);
 			FilePtr pf = newfile(L);
-			pf.file = LuaConf.fopen(filename, LuaConf.CharPtr.toCharPtr("r"));
+			pf.file = CLib.fopen(filename, CLib.CharPtr.toCharPtr("r"));
 			if (pf.file == null) {
 				fileerror(L, 1, filename);
 			}
@@ -254,7 +254,7 @@ public class LuaIOLib {
 	private static int read_number(LuaState.lua_State L, StreamProxy f) {
 		//lua_Number d;
 		Object[] parms = {(Object)(double)0.0};
-		if (LuaConf.fscanf(f, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_NUMBER_SCAN), parms) == 1) {
+		if (CLib.fscanf(f, CLib.CharPtr.toCharPtr(LuaConf.LUA_NUMBER_SCAN), parms) == 1) {
 			LuaAPI.lua_pushnumber(L, ((Double)parms[0]).doubleValue());
 			return 1;
 		}
@@ -264,10 +264,10 @@ public class LuaIOLib {
 	}
 
 	private static int test_eof(LuaState.lua_State L, StreamProxy f) {
-		int c = LuaConf.getc(f);
-		LuaConf.ungetc(c, f);
+		int c = CLib.getc(f);
+		CLib.ungetc(c, f);
 		LuaAPI.lua_pushlstring(L, null, 0);
-		return (c != LuaConf.EOF) ? 1 : 0;
+		return (c != CLib.EOF) ? 1 : 0;
 	}
 
 	private static int read_line(LuaState.lua_State L, StreamProxy f) {
@@ -275,13 +275,13 @@ public class LuaIOLib {
 		LuaAuxLib.luaL_buffinit(L, b);
 		for (;;) {
 			int l; //uint
-			LuaConf.CharPtr p = LuaAuxLib.luaL_prepbuffer(b);
-			if (LuaConf.CharPtr.isEqual(LuaConf.fgets(p, f), null)) {
+			CLib.CharPtr p = LuaAuxLib.luaL_prepbuffer(b);
+			if (CLib.CharPtr.isEqual(CLib.fgets(p, f), null)) {
 				// eof? 
 				LuaAuxLib.luaL_pushresult(b); // close buffer 
 				return (LuaAPI.lua_objlen(L, -1) > 0) ? 1 : 0; // check whether read something 
 			}
-			l = (int)LuaConf.strlen(p); //uint
+			l = (int)CLib.strlen(p); //uint
 			if (l == 0 || p.get(l - 1) != '\n') {
 				LuaAuxLib.luaL_addsize(b, (int)l);
 			}
@@ -300,11 +300,11 @@ public class LuaIOLib {
 		LuaAuxLib.luaL_buffinit(L, b);
 		rlen = LuaConf.LUAL_BUFFERSIZE; // try to read that much each time 
 		do {
-			LuaConf.CharPtr p = LuaAuxLib.luaL_prepbuffer(b);
+			CLib.CharPtr p = LuaAuxLib.luaL_prepbuffer(b);
 			if (rlen > n) {
 				rlen = n; // cannot read more than asked 
 			}
-			nr = (int)LuaConf.fread(p, LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)), (int)rlen, f); //typeof(char) - uint
+			nr = (int)CLib.fread(p, CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)), (int)rlen, f); //typeof(char) - uint
 			LuaAuxLib.luaL_addsize(b, (int)nr);
 			n -= nr; // still have to read `n' chars 
 		} while (n > 0 && nr == rlen); // until end of count or eof 
@@ -316,7 +316,7 @@ public class LuaIOLib {
 		int nargs = LuaAPI.lua_gettop(L) - 1;
 		int success;
 		int n;
-		LuaConf.clearerr(f);
+		CLib.clearerr(f);
 		if (nargs == 0) {
 			// no arguments? 
 			success = read_line(L, f);
@@ -324,7 +324,7 @@ public class LuaIOLib {
 		}
 		else {
 			// ensure stack space for all results and for auxlib's buffer 
-			LuaAuxLib.luaL_checkstack(L, nargs + Lua.LUA_MINSTACK, LuaConf.CharPtr.toCharPtr("too many arguments"));
+			LuaAuxLib.luaL_checkstack(L, nargs + Lua.LUA_MINSTACK, CLib.CharPtr.toCharPtr("too many arguments"));
 			success = 1;
 			for (n = first; (nargs-- != 0) && (success != 0); n++) {
 				if (LuaAPI.lua_type(L, n) == Lua.LUA_TNUMBER) {
@@ -332,8 +332,8 @@ public class LuaIOLib {
 					success = (l == 0) ? test_eof(L, f) : read_chars(L, f, l);
 				}
 				else {
-					LuaConf.CharPtr p = Lua.lua_tostring(L, n);
-					LuaAuxLib.luaL_argcheck(L, (LuaConf.CharPtr.isNotEqual(p, null)) && (p.get(0) == '*'), n, "invalid option");
+					CLib.CharPtr p = Lua.lua_tostring(L, n);
+					LuaAuxLib.luaL_argcheck(L, (CLib.CharPtr.isNotEqual(p, null)) && (p.get(0) == '*'), n, "invalid option");
 					switch (p.get(1)) {
 						case 'n': { // number 
 								success = read_number(L, f);
@@ -349,13 +349,13 @@ public class LuaIOLib {
 								break;
 							}
 						default: {
-								return LuaAuxLib.luaL_argerror(L, n, LuaConf.CharPtr.toCharPtr("invalid format"));
+								return LuaAuxLib.luaL_argerror(L, n, CLib.CharPtr.toCharPtr("invalid format"));
 							}
 					}
 				}
 			}
 		}
-		if (LuaConf.ferror(f) != 0) {
+		if (CLib.ferror(f) != 0) {
 			return pushresult(L, 0, null);
 		}
 		if (success == 0) {
@@ -378,11 +378,11 @@ public class LuaIOLib {
 		StreamProxy f = ((FilePtr)((tempVar instanceof FilePtr) ? tempVar : null)).file;
 		int sucess;
 		if (f == null) { // file is already closed? 
-			LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("file is already closed"));
+			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("file is already closed"));
 		}
 		sucess = read_line(L, f);
-		if (LuaConf.ferror(f) != 0) {
-			return LuaAuxLib.luaL_error(L, LuaConf.CharPtr.toCharPtr("%s"), LuaConf.strerror(LuaConf.errno()));
+		if (CLib.ferror(f) != 0) {
+			return LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("%s"), CLib.strerror(CLib.errno()));
 		}
 		if (sucess != 0) {
 			return 1;
@@ -407,12 +407,12 @@ public class LuaIOLib {
 		for (; (nargs--) != 0; arg++) {
 			if (LuaAPI.lua_type(L, arg) == Lua.LUA_TNUMBER) {
 				// optimization: could be done exactly as for strings 
-				status = ((status!=0) && (LuaConf.fprintf(f, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_NUMBER_FMT), LuaAPI.lua_tonumber(L, arg)) > 0)) ? 1 : 0;
+				status = ((status!=0) && (CLib.fprintf(f, CLib.CharPtr.toCharPtr(LuaConf.LUA_NUMBER_FMT), LuaAPI.lua_tonumber(L, arg)) > 0)) ? 1 : 0;
 			}
 			else {
 				int[] l = new int[1]; //uint
-				LuaConf.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, l); //out
-				status = ((status != 0) && (LuaConf.fwrite(s, LuaConf.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)), (int)l[0], f) == l[0])) ? 1 : 0; //typeof(char)
+				CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, arg, l); //out
+				status = ((status != 0) && (CLib.fwrite(s, CLib.GetUnmanagedSize(new ClassType(ClassType.TYPE_CHAR)), (int)l[0], f) == l[0])) ? 1 : 0; //typeof(char)
 			}
 		}
 		return pushresult(L, status, null);
@@ -428,41 +428,41 @@ public class LuaIOLib {
 
 	private static int f_seek(LuaState.lua_State L) {
 		int[] mode = { 
-			LuaConf.SEEK_SET, 
-			LuaConf.SEEK_CUR, 
-			LuaConf.SEEK_END 
+			CLib.SEEK_SET, 
+			CLib.SEEK_CUR, 
+			CLib.SEEK_END 
 		};
-		LuaConf.CharPtr[] modenames = { 
-			LuaConf.CharPtr.toCharPtr("set"), 
-			LuaConf.CharPtr.toCharPtr("cur"), 
-			LuaConf.CharPtr.toCharPtr("end"), 
+		CLib.CharPtr[] modenames = { 
+			CLib.CharPtr.toCharPtr("set"), 
+			CLib.CharPtr.toCharPtr("cur"), 
+			CLib.CharPtr.toCharPtr("end"), 
 			null 
 		};
 		StreamProxy f = tofile(L);
-		int op = LuaAuxLib.luaL_checkoption(L, 2, LuaConf.CharPtr.toCharPtr("cur"), modenames);
+		int op = LuaAuxLib.luaL_checkoption(L, 2, CLib.CharPtr.toCharPtr("cur"), modenames);
 		long offset = LuaAuxLib.luaL_optlong(L, 3, 0);
-		op = LuaConf.fseek(f, offset, mode[op]);
+		op = CLib.fseek(f, offset, mode[op]);
 		if (op != 0) {
 			return pushresult(L, 0, null); // error 
 		}
 		else {
-			LuaAPI.lua_pushinteger(L, LuaConf.ftell(f));
+			LuaAPI.lua_pushinteger(L, CLib.ftell(f));
 			return 1;
 		}
 	}
 
 	private static int f_setvbuf(LuaState.lua_State L) {
-		LuaConf.CharPtr[] modenames = { 
-			LuaConf.CharPtr.toCharPtr("no"), 
-			LuaConf.CharPtr.toCharPtr("full"), 
-			LuaConf.CharPtr.toCharPtr("line"), 
+		CLib.CharPtr[] modenames = { 
+			CLib.CharPtr.toCharPtr("no"), 
+			CLib.CharPtr.toCharPtr("full"), 
+			CLib.CharPtr.toCharPtr("line"), 
 			null 
 		};
-		int[] mode = { LuaConf._IONBF, LuaConf._IOFBF, LuaConf._IOLBF };
+		int[] mode = { CLib._IONBF, CLib._IOFBF, CLib._IOLBF };
 		StreamProxy f = tofile(L);
 		int op = LuaAuxLib.luaL_checkoption(L, 2, null, modenames);
 		int sz = LuaAuxLib.luaL_optinteger(L, 3, LuaConf.LUAL_BUFFERSIZE); //lua_Integer - Int32
-		int res = LuaConf.setvbuf(f, null, mode[op], (int)sz); //uint
+		int res = CLib.setvbuf(f, null, mode[op], (int)sz); //uint
 		return pushresult(L, (res == 0) ? 1 : 0, null);
 	}
 
@@ -490,30 +490,30 @@ public class LuaIOLib {
 
 
 	private final static LuaAuxLib.luaL_Reg[] iolib = { 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("close"), new LuaIOLib_delegate("io_close")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("flush"), new LuaIOLib_delegate("io_flush")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("input"), new LuaIOLib_delegate("io_input")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("lines"), new LuaIOLib_delegate("io_lines")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("open"), new LuaIOLib_delegate("io_open")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("output"), new LuaIOLib_delegate("io_output")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("popen"), new LuaIOLib_delegate("io_popen")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("read"), new LuaIOLib_delegate("io_read")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("tmpfile"), new LuaIOLib_delegate("io_tmpfile")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("type"), new LuaIOLib_delegate("io_type")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("write"), new LuaIOLib_delegate("io_write")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("close"), new LuaIOLib_delegate("io_close")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("flush"), new LuaIOLib_delegate("io_flush")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("input"), new LuaIOLib_delegate("io_input")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("lines"), new LuaIOLib_delegate("io_lines")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("open"), new LuaIOLib_delegate("io_open")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("output"), new LuaIOLib_delegate("io_output")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("popen"), new LuaIOLib_delegate("io_popen")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("read"), new LuaIOLib_delegate("io_read")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("tmpfile"), new LuaIOLib_delegate("io_tmpfile")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("type"), new LuaIOLib_delegate("io_type")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("write"), new LuaIOLib_delegate("io_write")), 
 		new LuaAuxLib.luaL_Reg(null, null) 
 	};
 
 	private final static LuaAuxLib.luaL_Reg[] flib = { 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("close"), new LuaIOLib_delegate("io_close")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("flush"), new LuaIOLib_delegate("f_flush")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("lines"), new LuaIOLib_delegate("f_lines")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("read"), new LuaIOLib_delegate("f_read")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("seek"), new LuaIOLib_delegate("f_seek")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("setvbuf"), new LuaIOLib_delegate("f_setvbuf")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("write"), new LuaIOLib_delegate("f_write")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("__gc"), new LuaIOLib_delegate("io_gc")), 
-		new LuaAuxLib.luaL_Reg(LuaConf.CharPtr.toCharPtr("__tostring"), new LuaIOLib_delegate("io_tostring")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("close"), new LuaIOLib_delegate("io_close")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("flush"), new LuaIOLib_delegate("f_flush")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("lines"), new LuaIOLib_delegate("f_lines")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("read"), new LuaIOLib_delegate("f_read")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("seek"), new LuaIOLib_delegate("f_seek")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("setvbuf"), new LuaIOLib_delegate("f_setvbuf")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("write"), new LuaIOLib_delegate("f_write")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("__gc"), new LuaIOLib_delegate("io_gc")), 
+		new LuaAuxLib.luaL_Reg(CLib.CharPtr.toCharPtr("__tostring"), new LuaIOLib_delegate("io_tostring")), 
 		new LuaAuxLib.luaL_Reg(null, null) 
 	};
 
@@ -601,13 +601,13 @@ public class LuaIOLib {
 	}
 
 	private static void createmeta(LuaState.lua_State L) {
-		LuaAuxLib.luaL_newmetatable(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE)); // create metatable for file files 
+		LuaAuxLib.luaL_newmetatable(L, CLib.CharPtr.toCharPtr(LuaLib.LUA_FILEHANDLE)); // create metatable for file files 
 		LuaAPI.lua_pushvalue(L, -1); // push metatable 
-		LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("__index")); // metatable.__index = metatable 
+		LuaAPI.lua_setfield(L, -2, CLib.CharPtr.toCharPtr("__index")); // metatable.__index = metatable 
 		LuaAuxLib.luaL_register(L, null, flib); // file methods 
 	}
 
-	private static void createstdfile(LuaState.lua_State L, StreamProxy f, int k, LuaConf.CharPtr fname) {
+	private static void createstdfile(LuaState.lua_State L, StreamProxy f, int k, CLib.CharPtr fname) {
 		newfile(L).file = f;
 		if (k > 0) {
 			LuaAPI.lua_pushvalue(L, -1);
@@ -621,7 +621,7 @@ public class LuaIOLib {
 	private static void newfenv(LuaState.lua_State L, Lua.lua_CFunction cls) {
 		LuaAPI.lua_createtable(L, 0, 1);
 		Lua.lua_pushcfunction(L, cls);
-		LuaAPI.lua_setfield(L, -2, LuaConf.CharPtr.toCharPtr("__close"));
+		LuaAPI.lua_setfield(L, -2, CLib.CharPtr.toCharPtr("__close"));
 	}
 
 	public static int luaopen_io(LuaState.lua_State L) {
@@ -630,14 +630,14 @@ public class LuaIOLib {
 		newfenv(L, new LuaIOLib_delegate("io_fclose"));
 		LuaAPI.lua_replace(L, Lua.LUA_ENVIRONINDEX);
 		// open library 
-		LuaAuxLib.luaL_register(L, LuaConf.CharPtr.toCharPtr(LuaLib.LUA_IOLIBNAME), iolib);
+		LuaAuxLib.luaL_register(L, CLib.CharPtr.toCharPtr(LuaLib.LUA_IOLIBNAME), iolib);
 		// create (and set) default files 
 		newfenv(L, new LuaIOLib_delegate("io_noclose")); // close function for default files 
-		createstdfile(L, LuaConf.stdin, IO_INPUT, LuaConf.CharPtr.toCharPtr("stdin"));
-		createstdfile(L, LuaConf.stdout, IO_OUTPUT, LuaConf.CharPtr.toCharPtr("stdout"));
-		createstdfile(L, LuaConf.stderr, 0, LuaConf.CharPtr.toCharPtr("stderr"));
+		createstdfile(L, CLib.stdin, IO_INPUT, CLib.CharPtr.toCharPtr("stdin"));
+		createstdfile(L, CLib.stdout, IO_OUTPUT, CLib.CharPtr.toCharPtr("stdout"));
+		createstdfile(L, CLib.stderr, 0, CLib.CharPtr.toCharPtr("stderr"));
 		Lua.lua_pop(L, 1); // pop environment for default files 
-		LuaAPI.lua_getfield(L, -1, LuaConf.CharPtr.toCharPtr("popen"));
+		LuaAPI.lua_getfield(L, -1, CLib.CharPtr.toCharPtr("popen"));
 		newfenv(L, new LuaIOLib_delegate("io_pclose")); // create environment for 'popen' 
 		LuaAPI.lua_setfenv(L, -2); // set fenv for 'popen' 
 		Lua.lua_pop(L, 1); // pop 'popen' 
