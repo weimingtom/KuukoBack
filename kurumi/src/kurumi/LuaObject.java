@@ -558,9 +558,27 @@ public class LuaObject {
 		public int endpc;    /* first point where variable is dead */
 	}
 	
-	
-	
-	
+	/*
+	 ** Upvalues
+	 */
+	public static class UpVal extends LuaState.GCObject 
+	{
+		public static class _u 
+		{			
+			public static class _l 
+			{  
+				/* double linked list (when open) */
+				public UpVal prev;
+				public UpVal next;
+			}
+			
+			public LuaObject.TValue value = new LuaObject.TValue();  /* the value (when closed) */
+			public _l l = new _l();
+		}
+		public /*new*/ _u u = new _u();
+		
+		public LuaObject.TValue v;  /* points to stack or to its own value */
+	}
 	
     /*
      ** Closures

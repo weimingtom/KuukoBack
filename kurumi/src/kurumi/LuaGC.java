@@ -258,7 +258,7 @@ public class LuaGC {
 					return;
 				}
 			case LuaObject.LUA_TUPVAL: {
-					UpVal uv = LuaState.gco2uv(o);
+					LuaObject.UpVal uv = LuaState.gco2uv(o);
 					markvalue(g, uv.v);
 					if (uv.v == uv.u.value) { // closed? 
 						gray2black(o); // open upvalues are never black 
@@ -746,7 +746,7 @@ public class LuaGC {
 	}
 
 	private static void remarkupvals(LuaState.global_State g) {
-		UpVal uv;
+		LuaObject.UpVal uv;
 		for (uv = g.uvhead.u.l.next; uv != g.uvhead; uv = uv.u.l.next) {
 			LuaLimits.lua_assert(uv.u.l.next.u.l.prev == uv && uv.u.l.prev.u.l.next == uv);
 			if (isgray(LuaState.obj2gco(uv))) {
@@ -932,7 +932,7 @@ public class LuaGC {
 		o.getGch().tt = tt;
 	}
 
-	public static void luaC_linkupval(LuaState.lua_State L, UpVal uv) {
+	public static void luaC_linkupval(LuaState.lua_State L, LuaObject.UpVal uv) {
 		LuaState.global_State g = LuaState.G(L);
 		LuaState.GCObject o = LuaState.obj2gco(uv);
 		o.getGch().next = g.rootgc; // link upvalue into `rootgc' list 

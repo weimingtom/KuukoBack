@@ -282,7 +282,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_UPVAL)
 	            {
-	                result = new UpVal();
+	                result = new LuaObject.UpVal();
 	            }
 	            else if (type == TYPE_INT32)
 	            {
@@ -1001,7 +1001,7 @@ namespace kurumi
             }
             else if (type == TYPE_UPVAL)
             {
-                return typeof(UpVal);
+                return typeof(LuaObject.UpVal);
             }
             else if (type == TYPE_INT32)
             {
@@ -1175,7 +1175,7 @@ namespace kurumi
             {
                 return 12;
             }
-            else if (t == typeof(UpVal))
+            else if (t == typeof(LuaObject.UpVal))
             {
                 return 32;
             }

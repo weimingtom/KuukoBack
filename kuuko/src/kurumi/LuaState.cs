@@ -181,7 +181,7 @@ namespace kurumi
 			public Lua.lua_CFunction panic;  /* to be called in unprotected errors */
 			public LuaObject.TValue l_registry = new LuaObject.TValue();
 			public lua_State mainthread;
-			public UpVal uvhead = new UpVal();  /* head of double-linked list of all open upvalues */
+			public LuaObject.UpVal uvhead = new LuaObject.UpVal();  /* head of double-linked list of all open upvalues */
 			public LuaObject.Table[] mt = new LuaObject.Table[LuaObject.NUM_TAGS];  /* metatables for basic types */
 			public LuaObject.TString[] tmname = new LuaObject.TString[(int)LuaTM.TMS.TM_N];  /* array with tag-method names */
 		}
@@ -278,9 +278,9 @@ namespace kurumi
 	            return (LuaObject.Proto)this;
 	        }
 	
-	        public UpVal getUv()
+	        public LuaObject.UpVal getUv()
 	        {
-	            return (UpVal)this;
+	            return (LuaObject.UpVal)this;
 	        }
 	
 	        public lua_State getTh()
@@ -447,14 +447,14 @@ namespace kurumi
             return (LuaObject.Proto)LuaLimits.check_exp(o.getGch().tt == LuaObject.LUA_TPROTO, o.getP()); 
 		}
 		
-		public static UpVal gco2uv(GCObject o) 
+		public static LuaObject.UpVal gco2uv(GCObject o) 
 		{
-            return (UpVal)LuaLimits.check_exp(o.getGch().tt == LuaObject.LUA_TUPVAL, o.getUv()); 
+            return (LuaObject.UpVal)LuaLimits.check_exp(o.getGch().tt == LuaObject.LUA_TUPVAL, o.getUv()); 
 		}
 		
-		public static UpVal ngcotouv(GCObject o) 
+		public static LuaObject.UpVal ngcotouv(GCObject o) 
 		{
-            return (UpVal)LuaLimits.check_exp((o == null) || (o.getGch().tt == LuaObject.LUA_TUPVAL), o.getUv()); 
+            return (LuaObject.UpVal)LuaLimits.check_exp((o == null) || (o.getGch().tt == LuaObject.LUA_TUPVAL), o.getUv()); 
 		}
 		
 		public static lua_State gco2th(GCObject o) 

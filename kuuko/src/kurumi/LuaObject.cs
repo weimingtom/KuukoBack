@@ -611,10 +611,28 @@ namespace kurumi
 			public int startpc;  /* first point where variable is active */
 			public int endpc;    /* first point where variable is dead */
 		}
-		
-		
-		
-		
+			
+		/*
+		 ** Upvalues
+		 */
+		public class UpVal : LuaState.GCObject
+		{
+			public class _u
+			{			
+				public class _l
+				{  
+					/* double linked list (when open) */
+					public UpVal prev;
+					public UpVal next;
+				}
+				
+				public LuaObject.TValue value = new LuaObject.TValue();  /* the value (when closed) */
+				public _l l = new _l();
+			}
+			public /*new*/ _u u = new _u();
+			
+			public LuaObject.TValue v;  /* points to stack or to its own value */
+		}
 		
 	    /*
 	     ** Closures

@@ -221,7 +221,7 @@ public class ClassType {
 				result = new LuaObject.Closure();
 			}
 			else if (type == TYPE_UPVAL) {
-				result = new UpVal();
+				result = new LuaObject.UpVal();
 			}
 			else if (type == TYPE_INT32) {
 				result = new Integer(0); //FIXME:

@@ -792,7 +792,7 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_SETUPVAL: 
 							{
-								UpVal uv = cl.upvals[LuaOpCodes.GETARG_B(i)];
+								LuaObject.UpVal uv = cl.upvals[LuaOpCodes.GETARG_B(i)];
 								LuaObject.setobj(L, uv.v, ra);
 								LuaGC.luaC_barrier(L, uv, ra);
 								continue;

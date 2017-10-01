@@ -41,9 +41,9 @@ public class LuaFunc {
 		c.l.setIsC((byte)0);
 		c.l.setEnv(e);
 		c.l.setNupvalues(LuaLimits.cast_byte(nelems));
-		c.l.upvals = new UpVal[nelems];
+		c.l.upvals = new LuaObject.UpVal[nelems];
 		for (int i = 0; i < nelems; i++) {
-			c.l.upvals[i] = new UpVal();
+			c.l.upvals[i] = new LuaObject.UpVal();
 		}
 		while (nelems-- > 0) {
 			c.l.upvals[nelems] = null;
@@ -51,19 +51,19 @@ public class LuaFunc {
 		return c;
 	}
 
-	public static UpVal luaF_newupval(LuaState.lua_State L) {
-		UpVal uv = LuaMem.luaM_new_UpVal(L, new ClassType(ClassType.TYPE_UPVAL));
+	public static LuaObject.UpVal luaF_newupval(LuaState.lua_State L) {
+		LuaObject.UpVal uv = LuaMem.luaM_new_UpVal(L, new ClassType(ClassType.TYPE_UPVAL));
 		LuaGC.luaC_link(L, LuaState.obj2gco(uv), (byte)LuaObject.LUA_TUPVAL);
 		uv.v = uv.u.value;
 		LuaObject.setnilvalue(uv.v);
 		return uv;
 	}
 
-	public static UpVal luaF_findupval(LuaState.lua_State L, LuaObject.TValue level) { //StkId
+	public static LuaObject.UpVal luaF_findupval(LuaState.lua_State L, LuaObject.TValue level) { //StkId
 		LuaState.global_State g = LuaState.G(L);
 		LuaState.GCObjectRef pp = new LuaState.OpenValRef(L);
-		UpVal p;
-		UpVal uv;
+		LuaObject.UpVal p;
+		LuaObject.UpVal uv;
 		while (pp.get() != null && LuaObject.TValue.greaterEqual((p = LuaState.ngcotouv(pp.get())).v, level)) {
 			LuaLimits.lua_assert(p.v != p.u.value);
 			if (p.v == level) {
@@ -89,13 +89,13 @@ public class LuaFunc {
 		return uv;
 	}
 
-	private static void unlinkupval(UpVal uv) {
+	private static void unlinkupval(LuaObject.UpVal uv) {
 		LuaLimits.lua_assert(uv.u.l.next.u.l.prev == uv && uv.u.l.prev.u.l.next == uv);
 		uv.u.l.next.u.l.prev = uv.u.l.prev; // remove from `uvhead' list 
 		uv.u.l.prev.u.l.next = uv.u.l.next;
 	}
 
-	public static void luaF_freeupval(LuaState.lua_State L, UpVal uv) {
+	public static void luaF_freeupval(LuaState.lua_State L, LuaObject.UpVal uv) {
 		if (uv.v != uv.u.value) { // is it open? 
 			unlinkupval(uv); // remove from open list 
 		}
@@ -103,7 +103,7 @@ public class LuaFunc {
 	}
 
 	public static void luaF_close(LuaState.lua_State L, LuaObject.TValue level) { //StkId
-		UpVal uv;
+		LuaObject.UpVal uv;
 		LuaState.global_State g = LuaState.G(L);
 		while (L.openupval != null && LuaObject.TValue.greaterEqual((uv = LuaState.ngcotouv(L.openupval)).v, level)) {
 			LuaState.GCObject o = LuaState.obj2gco(uv);

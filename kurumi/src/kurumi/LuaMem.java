@@ -72,8 +72,8 @@ public class LuaMem {
 		luaM_realloc__Table(L, new LuaObject.Table[] {b}, 0, t);
 	}
 
-	public static void luaM_free_UpVal(LuaState.lua_State L, UpVal b, ClassType t) {
-		luaM_realloc__UpVal(L, new UpVal[] { b }, 0, t);
+	public static void luaM_free_UpVal(LuaState.lua_State L, LuaObject.UpVal b, ClassType t) {
+		luaM_realloc__UpVal(L, new LuaObject.UpVal[] { b }, 0, t);
 	}
 
 	public static void luaM_free_Proto(LuaState.lua_State L, LuaObject.Proto b, ClassType t) {
@@ -134,8 +134,8 @@ public class LuaMem {
 		return (LuaObject.Closure)luaM_realloc__Closure(L, t);
 	}
 
-	public static UpVal luaM_new_UpVal(LuaState.lua_State L, ClassType t) {
-		return (UpVal)luaM_realloc__UpVal(L, t);
+	public static LuaObject.UpVal luaM_new_UpVal(LuaState.lua_State L, ClassType t) {
+		return (LuaObject.UpVal)luaM_realloc__UpVal(L, t);
 	}
 
 	public static LuaState.lua_State luaM_new_lua_State(LuaState.lua_State L, ClassType t) {
@@ -463,7 +463,7 @@ public class LuaMem {
 	public static Object luaM_realloc__UpVal(LuaState.lua_State L, ClassType t) {
 		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
 		int nsize = unmanaged_size;
-		UpVal new_obj = (UpVal)t.Alloc(); //System.Activator.CreateInstance(typeof(T));
+		LuaObject.UpVal new_obj = (LuaObject.UpVal)t.Alloc(); //System.Activator.CreateInstance(typeof(T));
 		AddTotalBytes(L, nsize);
 		return new_obj;
 	}
@@ -560,17 +560,17 @@ public class LuaMem {
 		return new_block;
 	}
 
-	public static Object luaM_realloc__UpVal(LuaState.lua_State L, UpVal[] old_block, int new_size, ClassType t) {
+	public static Object luaM_realloc__UpVal(LuaState.lua_State L, LuaObject.UpVal[] old_block, int new_size, ClassType t) {
 		int unmanaged_size = (int)t.GetUnmanagedSize(); //LuaConf.GetUnmanagedSize(typeof(T));
 		int old_size = (old_block == null) ? 0 : old_block.length;
 		int osize = old_size * unmanaged_size;
 		int nsize = new_size * unmanaged_size;
-		UpVal[] new_block = new UpVal[new_size];
+		LuaObject.UpVal[] new_block = new LuaObject.UpVal[new_size];
 		for (int i = 0; i < Math.min(old_size, new_size); i++) {
 			new_block[i] = old_block[i];
 		}
 		for (int i = old_size; i < new_size; i++) {
-			new_block[i] = (UpVal)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
+			new_block[i] = (LuaObject.UpVal)t.Alloc(); // System.Activator.CreateInstance(typeof(T));
 		}
 		if (CanIndex(t)) {
 			for (int i = 0; i < new_size; i++) {
