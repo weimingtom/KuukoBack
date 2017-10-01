@@ -14,22 +14,22 @@ package kurumi;
 //using Instruction = System.UInt32;
 
 public class LuaVM {
-	public static int tostring(LuaState.lua_State L, TValue o) { //StkId
+	public static int tostring(LuaState.lua_State L, LuaObject.TValue o) { //StkId
 		return ((LuaObject.ttype(o) == Lua.LUA_TSTRING) || (luaV_tostring(L, o) != 0)) ? 1 : 0;
 	}
 
-	public static int tonumber(TValue[] o, TValue n) { //StkId - ref
+	public static int tonumber(LuaObject.TValue[] o, LuaObject.TValue n) { //StkId - ref
 		return ((LuaObject.ttype(o[0]) == Lua.LUA_TNUMBER || (((o[0]) = luaV_tonumber(o[0], n)) != null))) ? 1 : 0;
 	}
 
-	public static int equalobj(LuaState.lua_State L, TValue o1, TValue o2) {
+	public static int equalobj(LuaState.lua_State L, LuaObject.TValue o1, LuaObject.TValue o2) {
 		return ((LuaObject.ttype(o1) == LuaObject.ttype(o2)) && (luaV_equalval(L, o1, o2) != 0)) ? 1 : 0;
 	}
 
 	// limit for table tag-method chains (to avoid loops) 
 	public static final int MAXTAGLOOP = 100;
 
-	public static TValue luaV_tonumber(TValue obj, TValue n) {
+	public static LuaObject.TValue luaV_tonumber(LuaObject.TValue obj, LuaObject.TValue n) {
 		double[] num = new double[1]; //lua_Number
 		if (LuaObject.ttisnumber(obj)) {
 			return obj;
@@ -44,7 +44,7 @@ public class LuaVM {
 	}
 
 
-	public static int luaV_tostring(LuaState.lua_State L, TValue obj) { //StkId
+	public static int luaV_tostring(LuaState.lua_State L, LuaObject.TValue obj) { //StkId
 		if (!LuaObject.ttisnumber(obj)) {
 			return 0;
 		}
@@ -77,42 +77,42 @@ public class LuaVM {
 		}
 	}
 
-	private static void callTMres(LuaState.lua_State L, TValue res, TValue f, TValue p1, TValue p2) { //StkId
+	private static void callTMres(LuaState.lua_State L, LuaObject.TValue res, LuaObject.TValue f, LuaObject.TValue p1, LuaObject.TValue p2) { //StkId
 		int result = LuaDo.savestack(L, res); //ptrdiff_t - Int32
 		LuaObject.setobj2s(L, L.top, f); // push function 
-		LuaObject.setobj2s(L, TValue.plus(L.top, 1), p1); // 1st argument 
-		LuaObject.setobj2s(L, TValue.plus(L.top, 2), p2); // 2nd argument 
+		LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 1), p1); // 1st argument 
+		LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 2), p2); // 2nd argument 
 		LuaDo.luaD_checkstack(L, 3);
-		L.top = TValue.plus(L.top, 3);
-		LuaDo.luaD_call(L, TValue.minus(L.top, 3), 1);
+		L.top = LuaObject.TValue.plus(L.top, 3);
+		LuaDo.luaD_call(L, LuaObject.TValue.minus(L.top, 3), 1);
 		res = LuaDo.restorestack(L, result);
-		TValue[] top = new TValue[1];
+		LuaObject.TValue[] top = new LuaObject.TValue[1];
 		top[0] = L.top;
 		//StkId
-TValue.dec(top); //ref
+LuaObject.TValue.dec(top); //ref
 		L.top = top[0];
 		LuaObject.setobjs2s(L, res, L.top);
 	}
 
-	private static void callTM(LuaState.lua_State L, TValue f, TValue p1, TValue p2, TValue p3) {
+	private static void callTM(LuaState.lua_State L, LuaObject.TValue f, LuaObject.TValue p1, LuaObject.TValue p2, LuaObject.TValue p3) {
 		LuaObject.setobj2s(L, L.top, f); // push function 
-		LuaObject.setobj2s(L, TValue.plus(L.top, 1), p1); // 1st argument 
-		LuaObject.setobj2s(L, TValue.plus(L.top, 2), p2); // 2nd argument 
-		LuaObject.setobj2s(L, TValue.plus(L.top, 3), p3); // 3th argument 
+		LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 1), p1); // 1st argument 
+		LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 2), p2); // 2nd argument 
+		LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 3), p3); // 3th argument 
 		LuaDo.luaD_checkstack(L, 4);
-		L.top = TValue.plus(L.top, 4);
-		LuaDo.luaD_call(L, TValue.minus(L.top, 4), 0);
+		L.top = LuaObject.TValue.plus(L.top, 4);
+		LuaDo.luaD_call(L, LuaObject.TValue.minus(L.top, 4), 0);
 	}
 
 
-	public static void luaV_gettable(LuaState.lua_State L, TValue t, TValue key, TValue val) { //StkId
+	public static void luaV_gettable(LuaState.lua_State L, LuaObject.TValue t, LuaObject.TValue key, LuaObject.TValue val) { //StkId
 		int loop;
 		for (loop = 0; loop < MAXTAGLOOP; loop++) {
-			TValue tm;
+			LuaObject.TValue tm;
 			if (LuaObject.ttistable(t)) {
 				// `t' is a table? 
 				LuaObject.Table h = LuaObject.hvalue(t);
-				TValue res = LuaTable.luaH_get(h, key); // do a primitive get 
+				LuaObject.TValue res = LuaTable.luaH_get(h, key); // do a primitive get 
 				if (!LuaObject.ttisnil(res) || (tm = LuaTM.fasttm(L, h.metatable, LuaTM.TMS.TM_INDEX)) == null) { // result is no nil? 
 					// or no TM? 
 					LuaObject.setobj2s(L, val, res);
@@ -132,15 +132,15 @@ TValue.dec(top); //ref
 		LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("loop in gettable"));
 	}
 
-	public static void luaV_settable(LuaState.lua_State L, TValue t, TValue key, TValue val) { //StkId
+	public static void luaV_settable(LuaState.lua_State L, LuaObject.TValue t, LuaObject.TValue key, LuaObject.TValue val) { //StkId
 		int loop;
 
 		for (loop = 0; loop < MAXTAGLOOP; loop++) {
-			TValue tm;
+			LuaObject.TValue tm;
 			if (LuaObject.ttistable(t)) {
 				// `t' is a table? 
 				LuaObject.Table h = LuaObject.hvalue(t);
-				TValue oldval = LuaTable.luaH_set(L, h, key); // do a primitive set 
+				LuaObject.TValue oldval = LuaTable.luaH_set(L, h, key); // do a primitive set 
 				if (!LuaObject.ttisnil(oldval) || (tm = LuaTM.fasttm(L, h.metatable, LuaTM.TMS.TM_NEWINDEX)) == null) { // result is no nil? 
 					// or no TM? 
 					LuaObject.setobj2t(L, oldval, val);
@@ -161,8 +161,8 @@ TValue.dec(top); //ref
 		LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("loop in settable"));
 	}
 
-	private static int call_binTM(LuaState.lua_State L, TValue p1, TValue p2, TValue res, LuaTM.TMS event_) { //StkId
-		TValue tm = LuaTM.luaT_gettmbyobj(L, p1, event_); // try first operand 
+	private static int call_binTM(LuaState.lua_State L, LuaObject.TValue p1, LuaObject.TValue p2, LuaObject.TValue res, LuaTM.TMS event_) { //StkId
+		LuaObject.TValue tm = LuaTM.luaT_gettmbyobj(L, p1, event_); // try first operand 
 		if (LuaObject.ttisnil(tm)) {
 			tm = LuaTM.luaT_gettmbyobj(L, p2, event_); // try second operand 
 		}
@@ -173,9 +173,9 @@ TValue.dec(top); //ref
 		return 1;
 	}
 
-	private static TValue get_compTM(LuaState.lua_State L, LuaObject.Table mt1, LuaObject.Table mt2, LuaTM.TMS event_) {
-		TValue tm1 = LuaTM.fasttm(L, mt1, event_);
-		TValue tm2;
+	private static LuaObject.TValue get_compTM(LuaState.lua_State L, LuaObject.Table mt1, LuaObject.Table mt2, LuaTM.TMS event_) {
+		LuaObject.TValue tm1 = LuaTM.fasttm(L, mt1, event_);
+		LuaObject.TValue tm2;
 		if (tm1 == null) {
 			return null; // no metamethod 
 		}
@@ -192,9 +192,9 @@ TValue.dec(top); //ref
 		return null;
 	}
 
-	private static int call_orderTM(LuaState.lua_State L, TValue p1, TValue p2, LuaTM.TMS event_) {
-		TValue tm1 = LuaTM.luaT_gettmbyobj(L, p1, event_);
-		TValue tm2;
+	private static int call_orderTM(LuaState.lua_State L, LuaObject.TValue p1, LuaObject.TValue p2, LuaTM.TMS event_) {
+		LuaObject.TValue tm1 = LuaTM.luaT_gettmbyobj(L, p1, event_);
+		LuaObject.TValue tm2;
 		if (LuaObject.ttisnil(tm1)) {
 			return -1; // no metamethod? 
 		}
@@ -236,7 +236,7 @@ TValue.dec(top); //ref
 		}
 	}
 
-	public static int luaV_lessthan(LuaState.lua_State L, TValue l, TValue r) {
+	public static int luaV_lessthan(LuaState.lua_State L, LuaObject.TValue l, LuaObject.TValue r) {
 		int res;
 		if (LuaObject.ttype(l) != LuaObject.ttype(r)) {
 			return LuaDebug.luaG_ordererror(L, l, r);
@@ -253,7 +253,7 @@ TValue.dec(top); //ref
 		return LuaDebug.luaG_ordererror(L, l, r);
 	}
 
-	private static int lessequal(LuaState.lua_State L, TValue l, TValue r) {
+	private static int lessequal(LuaState.lua_State L, LuaObject.TValue l, LuaObject.TValue r) {
 		int res;
 		if (LuaObject.ttype(l) != LuaObject.ttype(r)) {
 			return LuaDebug.luaG_ordererror(L, l, r);
@@ -276,8 +276,8 @@ TValue.dec(top); //ref
 
 	private static LuaConf.CharPtr mybuff = null;
 
-	public static int luaV_equalval(LuaState.lua_State L, TValue t1, TValue t2) {
-		TValue tm = null;
+	public static int luaV_equalval(LuaState.lua_State L, LuaObject.TValue t1, LuaObject.TValue t2) {
+		LuaObject.TValue tm = null;
 		LuaLimits.lua_assert(LuaObject.ttype(t1) == LuaObject.ttype(t2));
 		switch (LuaObject.ttype(t1)) {
 			case Lua.LUA_TNIL: {
@@ -319,24 +319,24 @@ TValue.dec(top); //ref
 
 	public static void luaV_concat(LuaState.lua_State L, int total, int last) {
 		do {
-			TValue top = TValue.plus(L.base_, last + 1); //StkId
+			LuaObject.TValue top = LuaObject.TValue.plus(L.base_, last + 1); //StkId
 			int n = 2; // number of elements handled in this pass (at least 2) 
-			if (!(LuaObject.ttisstring(TValue.minus(top, 2)) || LuaObject.ttisnumber(TValue.minus(top, 2))) || (tostring(L, TValue.minus(top, 1)) == 0)) {
-				if (call_binTM(L, TValue.minus(top, 2), TValue.minus(top, 1), TValue.minus(top, 2), LuaTM.TMS.TM_CONCAT) == 0) {
-					LuaDebug.luaG_concaterror(L, TValue.minus(top, 2), TValue.minus(top, 1));
+			if (!(LuaObject.ttisstring(LuaObject.TValue.minus(top, 2)) || LuaObject.ttisnumber(LuaObject.TValue.minus(top, 2))) || (tostring(L, LuaObject.TValue.minus(top, 1)) == 0)) {
+				if (call_binTM(L, LuaObject.TValue.minus(top, 2), LuaObject.TValue.minus(top, 1), LuaObject.TValue.minus(top, 2), LuaTM.TMS.TM_CONCAT) == 0) {
+					LuaDebug.luaG_concaterror(L, LuaObject.TValue.minus(top, 2), LuaObject.TValue.minus(top, 1));
 				}
 			}
-			else if (LuaObject.tsvalue(TValue.minus(top, 1)).len == 0) { // second op is empty? 
-				tostring(L, TValue.minus(top, 2)); // result is first op (as string) 
+			else if (LuaObject.tsvalue(LuaObject.TValue.minus(top, 1)).len == 0) { // second op is empty? 
+				tostring(L, LuaObject.TValue.minus(top, 2)); // result is first op (as string) 
 			}
 			else {
 				// at least two string values; get as many as possible 
-				int tl = LuaObject.tsvalue(TValue.minus(top, 1)).len; //uint
+				int tl = LuaObject.tsvalue(LuaObject.TValue.minus(top, 1)).len; //uint
 				LuaConf.CharPtr buffer;
 				int i;
 				// collect total length 
-				for (n = 1; n < total && (tostring(L, TValue.minus(TValue.minus(top, n), 1)) != 0); n++) { //FIXME:
-					int l = LuaObject.tsvalue(TValue.minus(TValue.minus(top, n), 1)).len; //uint
+				for (n = 1; n < total && (tostring(L, LuaObject.TValue.minus(LuaObject.TValue.minus(top, n), 1)) != 0); n++) { //FIXME:
+					int l = LuaObject.tsvalue(LuaObject.TValue.minus(LuaObject.TValue.minus(top, n), 1)).len; //uint
 					if (l >= LuaLimits.MAX_SIZET - tl) {
 						LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("string length overflow"));
 					}
@@ -349,20 +349,20 @@ TValue.dec(top); //ref
 				tl = 0;
 				for (i = n; i > 0; i--) {
 					// concat all strings 
-					int l = LuaObject.tsvalue(TValue.minus(top, i)).len; //uint
-					LuaConf.memcpy_char(buffer.chars, tl, LuaObject.svalue(TValue.minus(top, i)).chars, (int)l); //(int)
+					int l = LuaObject.tsvalue(LuaObject.TValue.minus(top, i)).len; //uint
+					LuaConf.memcpy_char(buffer.chars, tl, LuaObject.svalue(LuaObject.TValue.minus(top, i)).chars, (int)l); //(int)
 					tl += l;
 				}
-				LuaObject.setsvalue2s(L, TValue.minus(top, n), LuaString.luaS_newlstr(L, buffer, tl));
+				LuaObject.setsvalue2s(L, LuaObject.TValue.minus(top, n), LuaString.luaS_newlstr(L, buffer, tl));
 			}
 			total -= n - 1; // got `n' strings to create 1 new 
 			last -= n - 1;
 		} while (total > 1); // repeat until only 1 result left 
 	}
 
-	public static void Arith(LuaState.lua_State L, TValue ra, TValue rb, TValue rc, LuaTM.TMS op) { //StkId
-		TValue tempb = new TValue(), tempc = new TValue();
-		TValue b, c;
+	public static void Arith(LuaState.lua_State L, LuaObject.TValue ra, LuaObject.TValue rb, LuaObject.TValue rc, LuaTM.TMS op) { //StkId
+		LuaObject.TValue tempb = new LuaObject.TValue(), tempc = new LuaObject.TValue();
+		LuaObject.TValue b, c;
 		if ((b = luaV_tonumber(rb, tempb)) != null && (c = luaV_tonumber(rc, tempc)) != null) {
 			double nb = LuaObject.nvalue(b), nc = LuaObject.nvalue(c); //lua_Number
 			switch (op) {
@@ -423,27 +423,27 @@ TValue.dec(top); //ref
 	///#define KBx(i)	check_exp(getBMode(GET_OPCODE(i)) == OpArgMask.OpArgK, k+GETARG_Bx(i))
 
 	// todo: implement proper checks, as above
-	public static TValue RA(LuaState.lua_State L, TValue base_, long i) { //Instruction - UInt32 - StkId
-		return TValue.plus(base_, LuaOpCodes.GETARG_A(i));
+	public static LuaObject.TValue RA(LuaState.lua_State L, LuaObject.TValue base_, long i) { //Instruction - UInt32 - StkId
+		return LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_A(i));
 	}
 
-	public static TValue RB(LuaState.lua_State L, TValue base_, long i) { //Instruction - UInt32 - StkId
-		return TValue.plus(base_, LuaOpCodes.GETARG_B(i));
+	public static LuaObject.TValue RB(LuaState.lua_State L, LuaObject.TValue base_, long i) { //Instruction - UInt32 - StkId
+		return LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_B(i));
 	}
 
-	public static TValue RC(LuaState.lua_State L, TValue base_, long i) { //Instruction - UInt32 - StkId
-		return TValue.plus(base_, LuaOpCodes.GETARG_C(i));
+	public static LuaObject.TValue RC(LuaState.lua_State L, LuaObject.TValue base_, long i) { //Instruction - UInt32 - StkId
+		return LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_C(i));
 	}
 
-	public static TValue RKB(LuaState.lua_State L, TValue base_, long i, TValue[] k) { //Instruction - UInt32 - StkId
-		return LuaOpCodes.ISK(LuaOpCodes.GETARG_B(i)) != 0 ? k[LuaOpCodes.INDEXK(LuaOpCodes.GETARG_B(i))] : TValue.plus(base_, LuaOpCodes.GETARG_B(i));
+	public static LuaObject.TValue RKB(LuaState.lua_State L, LuaObject.TValue base_, long i, LuaObject.TValue[] k) { //Instruction - UInt32 - StkId
+		return LuaOpCodes.ISK(LuaOpCodes.GETARG_B(i)) != 0 ? k[LuaOpCodes.INDEXK(LuaOpCodes.GETARG_B(i))] : LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_B(i));
 	}
 
-	public static TValue RKC(LuaState.lua_State L, TValue base_, long i, TValue[] k) { //Instruction - UInt32 - StkId
-		return LuaOpCodes.ISK(LuaOpCodes.GETARG_C(i)) != 0 ? k[LuaOpCodes.INDEXK(LuaOpCodes.GETARG_C(i))] : TValue.plus(base_, LuaOpCodes.GETARG_C(i));
+	public static LuaObject.TValue RKC(LuaState.lua_State L, LuaObject.TValue base_, long i, LuaObject.TValue[] k) { //Instruction - UInt32 - StkId
+		return LuaOpCodes.ISK(LuaOpCodes.GETARG_C(i)) != 0 ? k[LuaOpCodes.INDEXK(LuaOpCodes.GETARG_C(i))] : LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_C(i));
 	}
 
-	public static TValue KBx(LuaState.lua_State L, long i, TValue[] k) { //Instruction - UInt32
+	public static LuaObject.TValue KBx(LuaState.lua_State L, long i, LuaObject.TValue[] k) { //Instruction - UInt32
 		return k[LuaOpCodes.GETARG_Bx(i)];
 	}
 
@@ -454,9 +454,9 @@ TValue.dec(top); //ref
 
 	///#define Protect(x)	{ L.savedpc = pc; {x;}; base = L.base_; }
 
-	public static void arith_op(LuaState.lua_State L, LuaConf.op_delegate op, LuaTM.TMS tm, TValue base_, long i, TValue[] k, TValue ra, LuaCode.InstructionPtr pc) { //StkId - Instruction - UInt32 - StkId
-		TValue rb = RKB(L, base_, i, k);
-		TValue rc = RKC(L, base_, i, k);
+	public static void arith_op(LuaState.lua_State L, LuaConf.op_delegate op, LuaTM.TMS tm, LuaObject.TValue base_, long i, LuaObject.TValue[] k, LuaObject.TValue ra, LuaCode.InstructionPtr pc) { //StkId - Instruction - UInt32 - StkId
+		LuaObject.TValue rb = RKB(L, base_, i, k);
+		LuaObject.TValue rc = RKC(L, base_, i, k);
 		if (LuaObject.ttisnumber(rb) && LuaObject.ttisnumber(rc)) {
 			double nb = LuaObject.nvalue(rb), nc = LuaObject.nvalue(rc); //lua_Number
 			LuaObject.setnvalue(ra, op.exec(nb, nc));
@@ -544,8 +544,8 @@ TValue.dec(top); //ref
 
 	public static void luaV_execute(LuaState.lua_State L, int nexeccalls) {
 		LuaObject.LClosure cl;
-		TValue base_; //StkId
-		TValue[] k;
+		LuaObject.TValue base_; //StkId
+		LuaObject.TValue[] k;
 		//const
 		LuaCode.InstructionPtr pc;
 		//reentry:  /* entry point */
@@ -564,8 +564,8 @@ TValue.dec(top); //ref
 				LuaCode.InstructionPtr ret = LuaCode.InstructionPtr.inc(pc_ref); //ref
 				pc = pc_ref[0];
 				//const
- long i = ret.get(0); //Instruction - UInt32
-				TValue ra; //StkId
+				long i = ret.get(0); //Instruction - UInt32
+				LuaObject.TValue ra; //StkId
 				if (((L.hookmask & (Lua.LUA_MASKLINE | Lua.LUA_MASKCOUNT)) != 0) && (((--L.hookcount) == 0) || ((L.hookmask & Lua.LUA_MASKLINE) != 0))) {
 					traceexec(L, pc);
 					if (L.status == Lua.LUA_YIELD) {
@@ -578,7 +578,7 @@ TValue.dec(top); //ref
 				// warning!! several calls may realloc the stack and invalidate `ra' 
 				ra = RA(L, base_, i);
 				LuaLimits.lua_assert(base_ == L.base_ && L.base_ == L.ci.base_);
-				LuaLimits.lua_assert(TValue.lessEqual(base_, L.top) && ((TValue.minus(L.top, L.stack)) <= L.stacksize));
+				LuaLimits.lua_assert(LuaObject.TValue.lessEqual(base_, L.top) && ((LuaObject.TValue.minus(L.top, L.stack)) <= L.stacksize));
 				LuaLimits.lua_assert(L.top == L.ci.top || (LuaDebug.luaG_checkopenop(i) != 0));
 				//Dump(pc.pc, i);
 
@@ -604,14 +604,14 @@ TValue.dec(top); //ref
 							continue;
 						}
 					case OP_LOADNIL: {
-							TValue rb = RB(L, base_, i);
+							LuaObject.TValue rb = RB(L, base_, i);
 							do {
-								TValue[] rb_ref = new TValue[1];
+								LuaObject.TValue[] rb_ref = new LuaObject.TValue[1];
 								rb_ref[0] = rb;
-								TValue ret2 = TValue.dec(rb_ref); //ref - StkId
+								LuaObject.TValue ret2 = LuaObject.TValue.dec(rb_ref); //ref - StkId
 								rb = rb_ref[0];
 								LuaObject.setnilvalue(ret2);
-							} while (TValue.greaterEqual(rb, ra));
+							} while (LuaObject.TValue.greaterEqual(rb, ra));
 							continue;
 						}
 					case OP_GETUPVAL: {
@@ -620,8 +620,8 @@ TValue.dec(top); //ref
 							continue;
 						}
 					case OP_GETGLOBAL: {
-							TValue g = new TValue();
-							TValue rb = KBx(L, i, k);
+							LuaObject.TValue g = new LuaObject.TValue();
+							LuaObject.TValue rb = KBx(L, i, k);
 							LuaObject.sethvalue(L, g, cl.getEnv());
 							LuaLimits.lua_assert(LuaObject.ttisstring(rb));
 							//Protect(
@@ -642,7 +642,7 @@ TValue.dec(top); //ref
 							continue;
 						}
 					case OP_SETGLOBAL: {
-							TValue g = new TValue();
+							LuaObject.TValue g = new LuaObject.TValue();
 							LuaObject.sethvalue(L, g, cl.getEnv());
 							LuaLimits.lua_assert(LuaObject.ttisstring(KBx(L, i, k)));
 							//Protect(
@@ -682,8 +682,8 @@ TValue.dec(top); //ref
 						}
 					case OP_SELF: {
 							//StkId
-TValue rb = RB(L, base_, i);
-							LuaObject.setobjs2s(L, TValue.plus(ra, 1), rb);
+							LuaObject.TValue rb = RB(L, base_, i);
+							LuaObject.setobjs2s(L, LuaObject.TValue.plus(ra, 1), rb);
 							//Protect(
 							L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 							luaV_gettable(L, rb, RKC(L, base_, i, k), ra);
@@ -717,7 +717,7 @@ TValue rb = RB(L, base_, i);
 							continue;
 						}
 					case OP_UNM: {
-							TValue rb = RB(L, base_, i);
+							LuaObject.TValue rb = RB(L, base_, i);
 							if (LuaObject.ttisnumber(rb)) {
 								double nb = LuaObject.nvalue(rb); //lua_Number
 								LuaObject.setnvalue(ra, LuaConf.luai_numunm(nb));
@@ -738,7 +738,7 @@ TValue rb = RB(L, base_, i);
 							continue;
 						}
 					case OP_LEN: {
-							TValue rb = RB(L, base_, i);
+							LuaObject.TValue rb = RB(L, base_, i);
 							switch (LuaObject.ttype(rb)) {
 								case Lua.LUA_TTABLE: {
 										LuaObject.setnvalue(ra, (double)LuaTable.luaH_getn(LuaObject.hvalue(rb))); //lua_Number
@@ -771,7 +771,7 @@ TValue rb = RB(L, base_, i);
 							LuaGC.luaC_checkGC(L);
 							base_ = L.base_;
 							//);
-							LuaObject.setobjs2s(L, RA(L, base_, i), TValue.plus(base_, b));
+							LuaObject.setobjs2s(L, RA(L, base_, i), LuaObject.TValue.plus(base_, b));
 							continue;
 						}
 					case OP_JMP: {
@@ -779,8 +779,8 @@ TValue rb = RB(L, base_, i);
 							continue;
 						}
 					case OP_EQ: {
-							TValue rb = RKB(L, base_, i, k);
-							TValue rc = RKC(L, base_, i, k);
+							LuaObject.TValue rb = RKB(L, base_, i, k);
+							LuaObject.TValue rc = RKC(L, base_, i, k);
 							//Protect(
 							L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 							if (equalobj(L, rb, rc) == LuaOpCodes.GETARG_A(i)) {
@@ -833,7 +833,7 @@ TValue rb = RB(L, base_, i);
 							continue;
 						}
 					case OP_TESTSET: {
-							TValue rb = RB(L, base_, i);
+							LuaObject.TValue rb = RB(L, base_, i);
 							if (LuaObject.l_isfalse(rb) != LuaOpCodes.GETARG_C(i)) {
 								LuaObject.setobjs2s(L, ra, rb);
 								dojump(L, pc, LuaOpCodes.GETARG_sBx(pc.get(0)));
@@ -848,7 +848,7 @@ TValue rb = RB(L, base_, i);
 							int b = LuaOpCodes.GETARG_B(i);
 							int nresults = LuaOpCodes.GETARG_C(i) - 1;
 							if (b != 0) {
-								L.top = TValue.plus(ra, b); // else previous instruction set top 
+								L.top = LuaObject.TValue.plus(ra, b); // else previous instruction set top 
 							}
 							L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 							boolean reentry3 = false;
@@ -882,7 +882,7 @@ TValue rb = RB(L, base_, i);
 					case OP_TAILCALL: {
 							int b = LuaOpCodes.GETARG_B(i);
 							if (b != 0) {
-								L.top = TValue.plus(ra, b); // else previous instruction set top 
+								L.top = LuaObject.TValue.plus(ra, b); // else previous instruction set top 
 							}
 							L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 							LuaLimits.lua_assert(LuaOpCodes.GETARG_C(i) - 1 == Lua.LUA_MULTRET);
@@ -892,17 +892,17 @@ TValue rb = RB(L, base_, i);
 										// tail call: put new frame in place of previous one 
 										LuaState.CallInfo ci = LuaState.CallInfo.minus(L.ci, 1); // previous frame 
 										int aux;
-										TValue func = ci.func; //StkId
-										TValue pfunc = LuaState.CallInfo.plus(ci, 1).func; // previous function index  - StkId
+										LuaObject.TValue func = ci.func; //StkId
+										LuaObject.TValue pfunc = LuaState.CallInfo.plus(ci, 1).func; // previous function index  - StkId
 										if (L.openupval != null) {
 											LuaFunc.luaF_close(L, ci.base_);
 										}
-										L.base_ = ci.base_ = TValue.plus(ci.func, TValue.minus(ci.get(1).base_, pfunc));
-										for (aux = 0; TValue.lessThan(TValue.plus(pfunc, aux), L.top); aux++) { // move frame down 
-											LuaObject.setobjs2s(L, TValue.plus(func, aux), TValue.plus(pfunc, aux));
+										L.base_ = ci.base_ = LuaObject.TValue.plus(ci.func, LuaObject.TValue.minus(ci.get(1).base_, pfunc));
+										for (aux = 0; LuaObject.TValue.lessThan(LuaObject.TValue.plus(pfunc, aux), L.top); aux++) { // move frame down 
+											LuaObject.setobjs2s(L, LuaObject.TValue.plus(func, aux), LuaObject.TValue.plus(pfunc, aux));
 										}
-										ci.top = L.top = TValue.plus(func, aux); // correct top 
-										LuaLimits.lua_assert(L.top == TValue.plus(L.base_, LuaObject.clvalue(func).l.p.maxstacksize));
+										ci.top = L.top = LuaObject.TValue.plus(func, aux); // correct top 
+										LuaLimits.lua_assert(L.top == LuaObject.TValue.plus(L.base_, LuaObject.clvalue(func).l.p.maxstacksize));
 										ci.savedpc = LuaCode.InstructionPtr.Assign(L.savedpc);
 										ci.tailcalls++; // one more call lost 
 										LuaState.CallInfo[] ci_ref3 = new LuaState.CallInfo[1];
@@ -933,7 +933,7 @@ TValue rb = RB(L, base_, i);
 					case OP_RETURN: {
 							int b = LuaOpCodes.GETARG_B(i);
 							if (b != 0) {
-								L.top = TValue.plus(ra, b - 1); //FIXME:
+								L.top = LuaObject.TValue.plus(ra, b - 1); //FIXME:
 							}
 							if (L.openupval != null) {
 								LuaFunc.luaF_close(L, base_);
@@ -956,23 +956,23 @@ TValue rb = RB(L, base_, i);
 							}
 						}
 					case OP_FORLOOP: {
-							double step = LuaObject.nvalue(TValue.plus(ra, 2)); //lua_Number
+							double step = LuaObject.nvalue(LuaObject.TValue.plus(ra, 2)); //lua_Number
 							double idx = LuaConf.luai_numadd(LuaObject.nvalue(ra), step); // increment index  - lua_Number
-							double limit = LuaObject.nvalue(TValue.plus(ra, 1)); //lua_Number
+							double limit = LuaObject.nvalue(LuaObject.TValue.plus(ra, 1)); //lua_Number
 							if (LuaConf.luai_numlt(0, step) ? LuaConf.luai_numle(idx, limit) : LuaConf.luai_numle(limit, idx)) {
 								dojump(L, pc, LuaOpCodes.GETARG_sBx(i)); // jump back 
 								LuaObject.setnvalue(ra, idx); // update internal index... 
-								LuaObject.setnvalue(TValue.plus(ra, 3), idx); //...and external index 
+								LuaObject.setnvalue(LuaObject.TValue.plus(ra, 3), idx); //...and external index 
 							}
 							continue;
 						}
 					case OP_FORPREP: {
-							TValue init = ra;
-							TValue plimit = TValue.plus(ra, 1);
-							TValue pstep = TValue.plus(ra, 2);
+							LuaObject.TValue init = ra;
+							LuaObject.TValue plimit = LuaObject.TValue.plus(ra, 1);
+							LuaObject.TValue pstep = LuaObject.TValue.plus(ra, 2);
 							L.savedpc = LuaCode.InstructionPtr.Assign(pc); // next steps may throw errors 
 							int retxxx;
-							TValue[] init_ref = new TValue[1];
+							LuaObject.TValue[] init_ref = new LuaObject.TValue[1];
 							init_ref[0] = init;
 							retxxx = tonumber(init_ref, ra); //ref
 							init = init_ref[0];
@@ -980,17 +980,17 @@ TValue rb = RB(L, base_, i);
 								LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " initial value must be a number"));
 							}
 							else {
-								TValue[] plimit_ref = new TValue[1];
+								LuaObject.TValue[] plimit_ref = new LuaObject.TValue[1];
 								plimit_ref[0] = plimit;
-								retxxx = tonumber(plimit_ref, TValue.plus(ra, 1)); //ref
+								retxxx = tonumber(plimit_ref, LuaObject.TValue.plus(ra, 1)); //ref
 								plimit = plimit_ref[0];
 								if (retxxx == 0) {
 									LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " limit must be a number"));
 								}
 								else {
-									TValue[] pstep_ref = new TValue[1];
+									LuaObject.TValue[] pstep_ref = new LuaObject.TValue[1];
 									pstep_ref[0] = pstep;
-									retxxx = tonumber(pstep_ref, TValue.plus(ra, 2)); //ref
+									retxxx = tonumber(pstep_ref, LuaObject.TValue.plus(ra, 2)); //ref
 									pstep = pstep_ref[0];
 									if (retxxx == 0) {
 										LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr(LuaConf.LUA_QL("for") + " step must be a number"));
@@ -1002,21 +1002,21 @@ TValue rb = RB(L, base_, i);
 							continue;
 						}
 					case OP_TFORLOOP: {
-							TValue cb = TValue.plus(ra, 3); // call base  - StkId
-							LuaObject.setobjs2s(L, TValue.plus(cb, 2), TValue.plus(ra, 2));
-							LuaObject.setobjs2s(L, TValue.plus(cb, 1), TValue.plus(ra, 1));
+							LuaObject.TValue cb = LuaObject.TValue.plus(ra, 3); // call base  - StkId
+							LuaObject.setobjs2s(L, LuaObject.TValue.plus(cb, 2), LuaObject.TValue.plus(ra, 2));
+							LuaObject.setobjs2s(L, LuaObject.TValue.plus(cb, 1), LuaObject.TValue.plus(ra, 1));
 							LuaObject.setobjs2s(L, cb, ra);
-							L.top = TValue.plus(cb, 3); // func. + 2 args (state and index) 
+							L.top = LuaObject.TValue.plus(cb, 3); // func. + 2 args (state and index) 
 							//Protect(
 							L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 							LuaDo.luaD_call(L, cb, LuaOpCodes.GETARG_C(i));
 							base_ = L.base_;
 							//);
 							L.top = L.ci.top;
-							cb = TValue.plus(RA(L, base_, i), 3); // previous call may change the stack 
+							cb = LuaObject.TValue.plus(RA(L, base_, i), 3); // previous call may change the stack 
 							if (!LuaObject.ttisnil(cb)) {
 								// continue loop? 
-								LuaObject.setobjs2s(L, TValue.minus(cb, 1), cb); // save control variable 
+								LuaObject.setobjs2s(L, LuaObject.TValue.minus(cb, 1), cb); // save control variable 
 								dojump(L, pc, LuaOpCodes.GETARG_sBx(pc.get(0))); // jump back 
 							}
 							LuaCode.InstructionPtr[] pc_ref3 = new LuaCode.InstructionPtr[1];
@@ -1031,7 +1031,7 @@ TValue rb = RB(L, base_, i);
 							int last;
 							LuaObject.Table h;
 							if (n == 0) {
-								n = LuaLimits.cast_int(TValue.minus(L.top, ra)) - 1;
+								n = LuaLimits.cast_int(LuaObject.TValue.minus(L.top, ra)) - 1;
 								L.top = L.ci.top;
 							}
 							if (c == 0) {
@@ -1048,7 +1048,7 @@ TValue rb = RB(L, base_, i);
 								LuaTable.luaH_resizearray(L, h, last); // pre-alloc it at once 
 							}
 							for (; n > 0; n--) {
-								TValue val = TValue.plus(ra, n);
+								LuaObject.TValue val = LuaObject.TValue.plus(ra, n);
 								LuaObject.setobj2t(L, LuaTable.luaH_setnum(L, h, last--), val);
 								LuaGC.luaC_barriert(L, h, val);
 							}
@@ -1072,7 +1072,7 @@ TValue rb = RB(L, base_, i);
 								}
 								else {
 									LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(pc.get(0)) == LuaOpCodes.OpCode.OP_MOVE);
-									ncl.l.upvals[j] = LuaFunc.luaF_findupval(L, TValue.plus(base_, LuaOpCodes.GETARG_B(pc.get(0))));
+									ncl.l.upvals[j] = LuaFunc.luaF_findupval(L, LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_B(pc.get(0))));
 								}
 
 								j++;
@@ -1093,7 +1093,7 @@ TValue rb = RB(L, base_, i);
 							int b = LuaOpCodes.GETARG_B(i) - 1;
 							int j;
 							LuaState.CallInfo ci = L.ci;
-							int n = LuaLimits.cast_int(TValue.minus(ci.base_, ci.func)) - cl.p.numparams - 1;
+							int n = LuaLimits.cast_int(LuaObject.TValue.minus(ci.base_, ci.func)) - cl.p.numparams - 1;
 							if (b == Lua.LUA_MULTRET) {
 								//Protect(
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
@@ -1102,14 +1102,14 @@ TValue rb = RB(L, base_, i);
 								//);
 								ra = RA(L, base_, i); // previous call may change the stack 
 								b = n;
-								L.top = TValue.plus(ra, n);
+								L.top = LuaObject.TValue.plus(ra, n);
 							}
 							for (j = 0; j < b; j++) {
 								if (j < n) {
-									LuaObject.setobjs2s(L, TValue.plus(ra, j), TValue.plus(TValue.minus(ci.base_, n), j)); //FIXME:
+									LuaObject.setobjs2s(L, LuaObject.TValue.plus(ra, j), LuaObject.TValue.plus(LuaObject.TValue.minus(ci.base_, n), j)); //FIXME:
 								}
 								else {
-									LuaObject.setnilvalue(TValue.plus(ra, j));
+									LuaObject.setnilvalue(LuaObject.TValue.plus(ra, j));
 								}
 							}
 							continue;

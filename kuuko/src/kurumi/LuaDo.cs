@@ -17,7 +17,7 @@ namespace kurumi
 	{
 		public static void luaD_checkstack(LuaState.lua_State L, int n) 
 		{
-			if (TValue.minus(L.stack_last, L.top) <= n)
+			if (LuaObject.TValue.minus(L.stack_last, L.top) <= n)
 			{
 				luaD_growstack(L, n);
 			}
@@ -32,20 +32,20 @@ namespace kurumi
 		public static void incr_top(LuaState.lua_State L)
 		{
 			luaD_checkstack(L, 1);
-			TValue[] top = new TValue[1];
+			LuaObject.TValue[] top = new LuaObject.TValue[1];
 			top[0] = L.top;
-			/*StkId*/TValue.inc(/*ref*/ top);
+			/*StkId*/LuaObject.TValue.inc(/*ref*/ top);
 			L.top = top[0];
 		}
 
 		// in the original C code these values save and restore the stack by number of bytes. marshalling sizeof
 		// isn't that straightforward in managed languages, so i implement these by index instead.
-		public static int savestack(LuaState.lua_State L, TValue/*StkId*/ p) 
+		public static int savestack(LuaState.lua_State L, LuaObject.TValue/*StkId*/ p) 
 		{ 
-			return TValue.toInt(p); 
+			return LuaObject.TValue.toInt(p); 
 		}
 		
-		public static TValue/*StkId*/ restorestack(LuaState.lua_State L, int n) 
+		public static LuaObject.TValue/*StkId*/ restorestack(LuaState.lua_State L, int n) 
 		{ 
 			return L.stack[n]; 
 		}
@@ -90,7 +90,7 @@ namespace kurumi
 			public volatile int status;  /* error code */
 		}		
 		
-		public static void luaD_seterrorobj(LuaState.lua_State L, int errcode, TValue/*StkId*/ oldtop)
+		public static void luaD_seterrorobj(LuaState.lua_State L, int errcode, LuaObject.TValue/*StkId*/ oldtop)
 		{
 			switch (errcode) 
 			{
@@ -107,16 +107,16 @@ namespace kurumi
 				case Lua.LUA_ERRSYNTAX:
 				case Lua.LUA_ERRRUN:
 					{
-						LuaObject.setobjs2s(L, oldtop, TValue.minus(L.top, 1));  /* error message on current top */
+						LuaObject.setobjs2s(L, oldtop, LuaObject.TValue.minus(L.top, 1));  /* error message on current top */
 						break;
 					}
 			}
-			L.top = TValue.plus(oldtop, 1);
+			L.top = LuaObject.TValue.plus(oldtop, 1);
 		}
 
 		private static void restore_stack_limit(LuaState.lua_State L) 
 		{
-			LuaLimits.lua_assert(TValue.toInt(L.stack_last) == L.stacksize - LuaState.EXTRA_STACK - 1);
+			LuaLimits.lua_assert(LuaObject.TValue.toInt(L.stack_last) == L.stacksize - LuaState.EXTRA_STACK - 1);
 			if (L.size_ci > LuaConf.LUAI_MAXCALLS)
 			{  
 				/* there was an overflow? */
@@ -204,7 +204,7 @@ namespace kurumi
 
 		/* }====================================================== */
 
-		private static void correctstack (LuaState.lua_State L, TValue[] oldstack) 
+		private static void correctstack (LuaState.lua_State L, LuaObject.TValue[] oldstack) 
 		{
 			/* don't need to do this
 		  CallInfo ci;
@@ -223,10 +223,10 @@ namespace kurumi
 
 		public static void luaD_reallocstack (LuaState.lua_State L, int newsize) 
 		{
-			TValue[] oldstack = L.stack;
+			LuaObject.TValue[] oldstack = L.stack;
 			int realsize = newsize + 1 + LuaState.EXTRA_STACK;
-			LuaLimits.lua_assert(TValue.toInt(L.stack_last) == L.stacksize - LuaState.EXTRA_STACK - 1);
-			TValue[][] stack = new TValue[1][];
+			LuaLimits.lua_assert(LuaObject.TValue.toInt(L.stack_last) == L.stacksize - LuaState.EXTRA_STACK - 1);
+			LuaObject.TValue[][] stack = new LuaObject.TValue[1][];
 			stack[0] = L.stack;
 			LuaMem.luaM_reallocvector_TValue(L, /*ref*/ stack, L.stacksize, realsize/*, TValue*/, new ClassType(ClassType.TYPE_TVALUE));
 			L.stack = stack[0];
@@ -299,8 +299,8 @@ namespace kurumi
 					ar.i_ci = LuaState.CallInfo.minus(L.ci, L.base_ci);
 				}
 				luaD_checkstack(L, Lua.LUA_MINSTACK);  /* ensure minimum stack size */
-				L.ci.top = TValue.plus(L.top, Lua.LUA_MINSTACK);
-				LuaLimits.lua_assert(TValue.lessEqual(L.ci.top, L.stack_last));
+				L.ci.top = LuaObject.TValue.plus(L.top, Lua.LUA_MINSTACK);
+				LuaLimits.lua_assert(LuaObject.TValue.lessEqual(L.ci.top, L.stack_last));
 				L.allowhook = 0;  /* cannot call hooks inside a hook */
 				LuaLimits.lua_unlock(L);
 				hook.exec(L, ar);
@@ -313,17 +313,17 @@ namespace kurumi
 		}
 
 
-		private static TValue/*StkId*/ adjust_varargs(LuaState.lua_State L, LuaObject.Proto p, int actual)
+		private static LuaObject.TValue/*StkId*/ adjust_varargs(LuaState.lua_State L, LuaObject.Proto p, int actual)
 		{
 			int i;
 			int nfixargs = p.numparams;
 			LuaObject.Table htab = null;
-			TValue/*StkId*/ base_, fixed_;
+			LuaObject.TValue/*StkId*/ base_, fixed_;
 			for (; actual < nfixargs; ++actual) 
 			{
-				TValue[] top = new TValue[1];
+				LuaObject.TValue[] top = new LuaObject.TValue[1];
 				top[0] = L.top;
-				TValue ret = /*StkId*/TValue.inc(/*ref*/ top);
+				LuaObject.TValue ret = /*StkId*/LuaObject.TValue.inc(/*ref*/ top);
 				L.top = top[0];
 				LuaObject.setnilvalue(ret);
 			}
@@ -335,30 +335,30 @@ namespace kurumi
 				LuaGC.luaC_checkGC(L);
 				htab = LuaTable.luaH_new(L, nvar, 1);  /* create `arg' table */
 				for (i=0; i<nvar; i++)  /* put extra arguments into `arg' table */
-				LuaObject.setobj2n(L, LuaTable.luaH_setnum(L, htab, i + 1), TValue.plus(TValue.minus(L.top, nvar), i)); //FIXME:
+				LuaObject.setobj2n(L, LuaTable.luaH_setnum(L, htab, i + 1), LuaObject.TValue.plus(LuaObject.TValue.minus(L.top, nvar), i)); //FIXME:
 				/* store counter in field `n' */
 				LuaObject.setnvalue(LuaTable.luaH_setstr(L, htab, LuaString.luaS_newliteral(L, LuaConf.CharPtr.toCharPtr("n"))), LuaLimits.cast_num(nvar));
 			}
 			//#endif
 			/* move fixed parameters to final position */
-			fixed_ = TValue.minus(L.top, actual);  /* first fixed argument */
+			fixed_ = LuaObject.TValue.minus(L.top, actual);  /* first fixed argument */
 			base_ = L.top;  /* final position of first argument */
 			for (i = 0; i < nfixargs; i++) 
             {
-				TValue[] top = new TValue[1];
+				LuaObject.TValue[] top = new LuaObject.TValue[1];
 				top[0] = L.top;
-				TValue ret = /*StkId*/TValue.inc(/*ref*/ top);
+				LuaObject.TValue ret = /*StkId*/LuaObject.TValue.inc(/*ref*/ top);
 				L.top = top[0];
-				LuaObject.setobjs2s(L, ret, TValue.plus(fixed_, i));
-				LuaObject.setnilvalue(TValue.plus(fixed_, i));
+				LuaObject.setobjs2s(L, ret, LuaObject.TValue.plus(fixed_, i));
+				LuaObject.setnilvalue(LuaObject.TValue.plus(fixed_, i));
 			}
 			/* add `arg' parameter */
 			if (htab != null) 
             {
-				TValue/*StkId*/ top = L.top;
-				TValue[] top_ref = new TValue[1];
+				LuaObject.TValue/*StkId*/ top = L.top;
+				LuaObject.TValue[] top_ref = new LuaObject.TValue[1];
 				top_ref[0] = L.top;
-				/*StkId*/TValue.inc(/*ref*/ top_ref);
+				/*StkId*/LuaObject.TValue.inc(/*ref*/ top_ref);
 				L.top = top_ref[0];
 				LuaObject.sethvalue(L, top, htab);
 				LuaLimits.lua_assert(LuaGC.iswhite(LuaState.obj2gco(htab)));
@@ -367,21 +367,21 @@ namespace kurumi
 		}
 
 
-		static TValue/*StkId*/ tryfuncTM(LuaState.lua_State L, TValue/*StkId*/ func)
+		static LuaObject.TValue/*StkId*/ tryfuncTM(LuaState.lua_State L, LuaObject.TValue/*StkId*/ func)
 		{
 			/*const*/
-			TValue tm = LuaTM.luaT_gettmbyobj(L, func, LuaTM.TMS.TM_CALL);
-			TValue[]/*StkId*/ p = new TValue[1];
-			p[0] = new TValue();
+			LuaObject.TValue tm = LuaTM.luaT_gettmbyobj(L, func, LuaTM.TMS.TM_CALL);
+			LuaObject.TValue[]/*StkId*/ p = new LuaObject.TValue[1];
+			p[0] = new LuaObject.TValue();
 			int/*Int32*//*ptrdiff_t*/ funcr = savestack(L, func);
             if (!LuaObject.ttisfunction(tm))
             {
                 LuaDebug.luaG_typeerror(L, func, LuaConf.CharPtr.toCharPtr("call"));
             }
             /* Open a hole inside the stack at `func' */
-            for (p[0] = L.top; TValue.greaterThan(p[0], func); /*StkId*/TValue.dec(/*ref*/ p))
+            for (p[0] = L.top; LuaObject.TValue.greaterThan(p[0], func); /*StkId*/LuaObject.TValue.dec(/*ref*/ p))
             {
-            	LuaObject.setobjs2s(L, p[0], TValue.minus(p[0], 1));
+            	LuaObject.setobjs2s(L, p[0], LuaObject.TValue.minus(p[0], 1));
             }
 			incr_top(L);
 			func = restorestack(L, funcr);  /* previous call may change stack */
@@ -406,7 +406,7 @@ namespace kurumi
 		}
 
 
-		public static int luaD_precall(LuaState.lua_State L, TValue/*StkId*/ func, int nresults)
+		public static int luaD_precall(LuaState.lua_State L, LuaObject.TValue/*StkId*/ func, int nresults)
 		{
 			LuaObject.LClosure cl;
 			int/*Int32*//*ptrdiff_t*/ funcr;
@@ -419,37 +419,37 @@ namespace kurumi
             {  
                 /* Lua function? prepare its call */
 				LuaState.CallInfo ci;
-				TValue[]/*StkId*/ st = new TValue[1];
-				st[0] = new TValue();
-				TValue/*StkId*/ base_;
+				LuaObject.TValue[]/*StkId*/ st = new LuaObject.TValue[1];
+				st[0] = new LuaObject.TValue();
+				LuaObject.TValue/*StkId*/ base_;
 				LuaObject.Proto p = cl.p;
 				luaD_checkstack(L, p.maxstacksize);
 				func = restorestack(L, funcr);
 				if (p.is_vararg == 0) 
                 {  
                     /* no varargs? */
-					base_ = L.stack[TValue.toInt(TValue.plus(func, 1))];
-                    if (TValue.greaterThan(L.top, TValue.plus(base_, p.numparams)))
+					base_ = L.stack[LuaObject.TValue.toInt(LuaObject.TValue.plus(func, 1))];
+                    if (LuaObject.TValue.greaterThan(L.top, LuaObject.TValue.plus(base_, p.numparams)))
                     {
-                        L.top = TValue.plus(base_, p.numparams);
+                        L.top = LuaObject.TValue.plus(base_, p.numparams);
                     }
 				}
 				else 
                 {  
                     /* vararg function */
-					int nargs = TValue.minus(L.top, func) - 1;
+					int nargs = LuaObject.TValue.minus(L.top, func) - 1;
 					base_ = adjust_varargs(L, p, nargs);
 					func = restorestack(L, funcr);  /* previous call may change the stack */
 				}
 				ci = inc_ci(L);  /* now `enter' new function */
 				ci.func = func;
 				L.base_ = ci.base_ = base_;
-				ci.top = TValue.plus(L.base_, p.maxstacksize);
-                LuaLimits.lua_assert(TValue.lessEqual(ci.top, L.stack_last));
+				ci.top = LuaObject.TValue.plus(L.base_, p.maxstacksize);
+                LuaLimits.lua_assert(LuaObject.TValue.lessEqual(ci.top, L.stack_last));
 				L.savedpc = new LuaCode.InstructionPtr(p.code, 0);  /* starting point */
 				ci.tailcalls = 0;
 				ci.nresults = nresults;
-				for (st[0] = L.top; TValue.lessThan(st[0], ci.top); /*StkId*/TValue.inc(/*ref*/ st))
+				for (st[0] = L.top; LuaObject.TValue.lessThan(st[0], ci.top); /*StkId*/LuaObject.TValue.inc(/*ref*/ st))
 				{
 					LuaObject.setnilvalue(st[0]);
 				}
@@ -473,9 +473,9 @@ namespace kurumi
 				luaD_checkstack(L, Lua.LUA_MINSTACK);  /* ensure minimum stack size */
 				ci = inc_ci(L);  /* now `enter' new function */
 				ci.func = restorestack(L, funcr);
-				L.base_ = ci.base_ = TValue.plus(ci.func, 1);
-				ci.top = TValue.plus(L.top, Lua.LUA_MINSTACK);
-				LuaLimits.lua_assert(TValue.lessEqual(ci.top, L.stack_last));
+				L.base_ = ci.base_ = LuaObject.TValue.plus(ci.func, 1);
+				ci.top = LuaObject.TValue.plus(L.top, Lua.LUA_MINSTACK);
+				LuaLimits.lua_assert(LuaObject.TValue.lessEqual(ci.top, L.stack_last));
 				ci.nresults = nresults;
                 if ((L.hookmask & Lua.LUA_MASKCALL) != 0)
                 {
@@ -490,14 +490,14 @@ namespace kurumi
                 }
                 else
                 {
-                    luaD_poscall(L, TValue.minus(L.top, n));
+                    luaD_poscall(L, LuaObject.TValue.minus(L.top, n));
                     return PCRC;
                 }
 			}
 		}
 
 
-		private static TValue/*StkId*/ callrethooks(LuaState.lua_State L, TValue/*StkId*/ firstResult)
+		private static LuaObject.TValue/*StkId*/ callrethooks(LuaState.lua_State L, LuaObject.TValue/*StkId*/ firstResult)
 		{
 			int/*Int32*//*ptrdiff_t*/ fr = savestack(L, firstResult);  /* next call may change stack */
 			luaD_callhook(L, Lua.LUA_HOOKRET, -1);
@@ -510,9 +510,9 @@ namespace kurumi
 		}
 
 
-		public static int luaD_poscall(LuaState.lua_State L, TValue/*StkId*/ firstResult)
+		public static int luaD_poscall(LuaState.lua_State L, LuaObject.TValue/*StkId*/ firstResult)
 		{
-			TValue/*StkId*/ res;
+			LuaObject.TValue/*StkId*/ res;
 			int wanted, i;
 			LuaState.CallInfo ci;
 			if ((L.hookmask & Lua.LUA_MASKRET) != 0)
@@ -528,17 +528,17 @@ namespace kurumi
 			L.base_ = LuaState.CallInfo.minus(ci, 1).base_;  /* restore base */
 			L.savedpc = LuaCode.InstructionPtr.Assign(LuaState.CallInfo.minus(ci, 1).savedpc);  /* restore savedpc */
 			/* move results to correct place */
-			for (i = wanted; i != 0 && TValue.lessThan(firstResult, L.top); i--)
+			for (i = wanted; i != 0 && LuaObject.TValue.lessThan(firstResult, L.top); i--)
 			{
 				LuaObject.setobjs2s(L, res, firstResult);
-				res = TValue.plus(res, 1);
-				firstResult = TValue.plus(firstResult, 1);
+				res = LuaObject.TValue.plus(res, 1);
+				firstResult = LuaObject.TValue.plus(firstResult, 1);
 			}
             while (i-- > 0)
             {
-            	TValue[] res_ref = new TValue[1];
+            	LuaObject.TValue[] res_ref = new LuaObject.TValue[1];
             	res_ref[0] = res;
-            	TValue ret = /*StkId*/TValue.inc(/*ref*/ res_ref);
+            	LuaObject.TValue ret = /*StkId*/LuaObject.TValue.inc(/*ref*/ res_ref);
             	res = res_ref[0];
             	LuaObject.setnilvalue(ret);
             }
@@ -554,7 +554,7 @@ namespace kurumi
 		 ** function position.
 		 */
 		/*private*/
-		public static void luaD_call(LuaState.lua_State L, TValue/*StkId*/ func, int nResults)
+		public static void luaD_call(LuaState.lua_State L, LuaObject.TValue/*StkId*/ func, int nResults)
 		{
 			if (++L.nCcalls >= LuaConf.LUAI_MAXCCALLS)
 			{
@@ -575,13 +575,13 @@ namespace kurumi
 
 		public static void resume(LuaState.lua_State L, object ud) 
         {
-			TValue/*StkId*/ firstArg = (TValue/*StkId*/)ud;
+			LuaObject.TValue/*StkId*/ firstArg = (LuaObject.TValue/*StkId*/)ud;
 			LuaState.CallInfo ci = L.ci;
 			if (L.status == 0) 
             {  
                 /* start coroutine? */
-				LuaLimits.lua_assert(ci == L.base_ci[0] && TValue.greaterThan(firstArg, L.base_));
-                if (luaD_precall(L, TValue.minus(firstArg, 1), Lua.LUA_MULTRET) != PCRLUA)
+				LuaLimits.lua_assert(ci == L.base_ci[0] && LuaObject.TValue.greaterThan(firstArg, L.base_));
+                if (luaD_precall(L, LuaObject.TValue.minus(firstArg, 1), Lua.LUA_MULTRET) != PCRLUA)
                 {
                     return;
                 }
@@ -637,7 +637,7 @@ namespace kurumi
             LuaConf.luai_userstateresume(L, nargs);
 			LuaLimits.lua_assert(L.errfunc == 0);
 			L.baseCcalls = ++L.nCcalls;
-			status = luaD_rawrunprotected(L, new resume_delegate(), TValue.minus(L.top, nargs));
+			status = luaD_rawrunprotected(L, new resume_delegate(), LuaObject.TValue.minus(L.top, nargs));
 			if (status != 0) 
             {  
                 /* error? */
@@ -671,7 +671,7 @@ namespace kurumi
             {
                 LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("attempt to yield across metamethod/C-call boundary"));
             }
-            L.base_ = TValue.minus(L.top, nresults);  /* protect stack slots below */
+            L.base_ = LuaObject.TValue.minus(L.top, nresults);  /* protect stack slots below */
 			L.status = Lua.LUA_YIELD;
 			LuaLimits.lua_unlock(L);
 			return -1;
@@ -690,7 +690,7 @@ namespace kurumi
 			if (status != 0) 
 			{  
 				/* an error occurred? */
-				TValue/*StkId*/ oldtop = restorestack(L, old_top);
+				LuaObject.TValue/*StkId*/ oldtop = restorestack(L, old_top);
 				LuaFunc.luaF_close(L, oldtop);  /* close eventual pending closures */
 				luaD_seterrorobj(L, status, oldtop);
 				L.nCcalls = oldnCcalls;

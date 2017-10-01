@@ -227,7 +227,7 @@ namespace kurumi
 	            }
 	            else if (type == TYPE_TVALUE)
 	            {
-	                result = new TValue();
+	                result = new LuaObject.TValue();
 	            }
 	            else if (type == TYPE_CCLOSURE)
 	            {
@@ -949,7 +949,7 @@ namespace kurumi
             }
             else if (type == TYPE_TVALUE)
             {
-                return typeof(TValue);
+                return typeof(LuaObject.TValue);
             }
             else if (type == TYPE_CCLOSURE)
             {
@@ -1079,7 +1079,7 @@ namespace kurumi
             {
                 return 24;
             }
-            else if (t == typeof(TValue))
+            else if (t == typeof(LuaObject.TValue))
             {
                 return 16;
             }
@@ -1163,7 +1163,7 @@ namespace kurumi
             {
                 return 8;
             }
-            else if (t == typeof(TValue))
+            else if (t == typeof(LuaObject.TValue))
             {
                 return 16;
             }

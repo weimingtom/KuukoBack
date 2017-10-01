@@ -19,11 +19,11 @@ package kurumi;
 				public UpVal next;
 			}
 			
-			public TValue value = new TValue();  /* the value (when closed) */
+			public LuaObject.TValue value = new LuaObject.TValue();  /* the value (when closed) */
 			public _l l = new _l();
 		}
 		public /*new*/ _u u = new _u();
 		
-		public TValue v;  /* points to stack or to its own value */
+		public LuaObject.TValue v;  /* points to stack or to its own value */
 	}
 //}

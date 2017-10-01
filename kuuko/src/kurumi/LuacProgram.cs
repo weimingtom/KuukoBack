@@ -159,7 +159,7 @@ namespace kurumi
 
 		static LuaObject.Proto toproto(LuaState.lua_State L, int i) 
 		{
-			return LuaObject.clvalue(TValue.plus(L.top, i)).l.p;
+			return LuaObject.clvalue(LuaObject.TValue.plus(L.top, i)).l.p;
 		}
 
 		static LuaObject.Proto combine(LuaState.lua_State L, int n)

@@ -126,7 +126,7 @@ public class LuaGC {
 		gcheader.marked = marked_ref[0];
 	}
 
-	public static boolean valiswhite(TValue x) {
+	public static boolean valiswhite(LuaObject.TValue x) {
 		return (LuaObject.iscollectable(x) && iswhite(LuaObject.gcvalue(x)));
 	}
 
@@ -142,13 +142,13 @@ public class LuaGC {
 		}
 	}
 
-	public static void luaC_barrier(LuaState.lua_State L, Object p, TValue v) {
+	public static void luaC_barrier(LuaState.lua_State L, Object p, LuaObject.TValue v) {
 		if (valiswhite(v) && isblack(LuaState.obj2gco(p))) {
 			luaC_barrierf(L, LuaState.obj2gco(p), LuaObject.gcvalue(v));
 		}
 	}
 
-	public static void luaC_barriert(LuaState.lua_State L, LuaObject.Table t, TValue v) {
+	public static void luaC_barriert(LuaState.lua_State L, LuaObject.Table t, LuaObject.TValue v) {
 		if (valiswhite(v) && isblack(LuaState.obj2gco(t))) {
 			luaC_barrierback(L, t);
 		}
@@ -217,7 +217,7 @@ public class LuaGC {
 	public static int KEYWEAK = bitmask(KEYWEAKBIT);
 	public static int VALUEWEAK = bitmask(VALUEWEAKBIT);
 
-	public static void markvalue(LuaState.global_State g, TValue o) {
+	public static void markvalue(LuaState.global_State g, LuaObject.TValue o) {
 		LuaObject.checkconsistency(o);
 		if (LuaObject.iscollectable(o) && iswhite(LuaObject.gcvalue(o))) {
 			reallymarkobject(g, LuaObject.gcvalue(o));
@@ -341,7 +341,7 @@ public class LuaGC {
 		int weakkey = 0;
 		int weakvalue = 0;
 		//const
- TValue mode;
+		LuaObject.TValue mode;
 		if (h.metatable != null) {
 			markobject(g, h.metatable);
 		}
@@ -437,9 +437,9 @@ public class LuaGC {
 		}
 	}
 
-	private static void checkstacksizes(LuaState.lua_State L, TValue max) { //StkId
+	private static void checkstacksizes(LuaState.lua_State L, LuaObject.TValue max) { //StkId
 		int ci_used = LuaLimits.cast_int(LuaState.CallInfo.minus(L.ci, L.base_ci[0])); // number of `ci' in use 
-		int s_used = LuaLimits.cast_int(TValue.minus(max, L.stack)); // part of stack in use 
+		int s_used = LuaLimits.cast_int(LuaObject.TValue.minus(max, L.stack)); // part of stack in use 
 		if (L.size_ci > LuaConf.LUAI_MAXCALLS) { // handling overflow? 
 			return; // do not touch the stacks 
 		}
@@ -454,23 +454,23 @@ public class LuaGC {
 	}
 
 	private static void traversestack(LuaState.global_State g, LuaState.lua_State l) {
-		TValue[] o = new TValue[1]; //StkId
-		o[0] = new TValue();
-		TValue lim; //StkId
+		LuaObject.TValue[] o = new LuaObject.TValue[1]; //StkId
+		o[0] = new LuaObject.TValue();
+		LuaObject.TValue lim; //StkId
 		LuaState.CallInfo[] ci = new LuaState.CallInfo[1];
 		ci[0] = new LuaState.CallInfo();
 		markvalue(g, LuaState.gt(l));
 		lim = l.top;
 		for (ci[0] = l.base_ci[0]; LuaState.CallInfo.lessEqual(ci[0], l.ci); LuaState.CallInfo.inc(ci)) { //ref
-			LuaLimits.lua_assert(TValue.lessEqual(ci[0].top, l.stack_last));
-			if (TValue.lessThan(lim, ci[0].top)) {
+			LuaLimits.lua_assert(LuaObject.TValue.lessEqual(ci[0].top, l.stack_last));
+			if (LuaObject.TValue.lessThan(lim, ci[0].top)) {
 				lim = ci[0].top;
 			}
 		}
-		for (o[0] = l.stack[0]; TValue.lessThan(o[0], l.top); TValue.inc(o)) { //ref - StkId
+		for (o[0] = l.stack[0]; LuaObject.TValue.lessThan(o[0], l.top); LuaObject.TValue.inc(o)) { //ref - StkId
 			markvalue(g, o[0]);
 		}
-		for (; TValue.lessEqual(o[0], lim); TValue.inc(o)) { //ref - StkId
+		for (; LuaObject.TValue.lessEqual(o[0], lim); LuaObject.TValue.inc(o)) { //ref - StkId
 			LuaObject.setnilvalue(o[0]);
 		}
 		checkstacksizes(l, lim);
@@ -546,7 +546,7 @@ public class LuaGC {
 //		 ** other objects: if really collected, cannot keep them; for userdata
 //		 ** being finalized, keep them in keys, but not in values
 //		 
-	private static boolean iscleared(TValue o, boolean iskey) {
+	private static boolean iscleared(LuaObject.TValue o, boolean iskey) {
 		if (!LuaObject.iscollectable(o)) {
 			return false;
 		}
@@ -568,7 +568,7 @@ public class LuaGC {
 			LuaLimits.lua_assert(testbit(h.marked, VALUEWEAKBIT) || testbit(h.marked, KEYWEAKBIT));
 			if (testbit(h.marked, VALUEWEAKBIT)) {
 				while (i--!= 0) {
-					TValue o = h.array[i];
+					LuaObject.TValue o = h.array[i];
 					if (iscleared(o, false)) { // value was collected? 
 						LuaObject.setnilvalue(o); // remove value 
 					}
@@ -677,7 +677,7 @@ public class LuaGC {
 		LuaState.global_State g = LuaState.G(L);
 		LuaState.GCObject o = g.tmudata.getGch().next; // get first element 
 		Udata udata = LuaState.rawgco2u(o);
-		TValue tm;
+		LuaObject.TValue tm;
 		// remove udata from `tmudata' 
 		if (o == g.tmudata) { // last element? 
 			g.tmudata = null;
@@ -695,9 +695,9 @@ public class LuaGC {
 			L.allowhook = 0; // stop debug hooks during GC tag method 
 			g.GCthreshold = 2*g.totalbytes; // avoid GC steps 
 			LuaObject.setobj2s(L, L.top, tm);
-			LuaObject.setuvalue(L, TValue.plus(L.top, 1), udata);
-			L.top = TValue.plus(L.top, 2);
-			LuaDo.luaD_call(L, TValue.minus(L.top, 2), 0);
+			LuaObject.setuvalue(L, LuaObject.TValue.plus(L.top, 1), udata);
+			L.top = LuaObject.TValue.plus(L.top, 2);
+			LuaDo.luaD_call(L, LuaObject.TValue.minus(L.top, 2), 0);
 			L.allowhook = oldah; // restore hooks 
 			g.GCthreshold = oldt; // restore threshold  - (uint)
 		}

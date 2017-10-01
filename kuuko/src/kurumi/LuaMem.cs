@@ -18,9 +18,9 @@ namespace kurumi
             return (char[])luaM_realloc__char(L, block, new_size, t);
         }
 
-        public static TValue[] luaM_reallocv_TValue(LuaState.lua_State L, TValue[] block, int new_size, ClassType t)
+        public static LuaObject.TValue[] luaM_reallocv_TValue(LuaState.lua_State L, LuaObject.TValue[] block, int new_size, ClassType t)
         {
-            return (TValue[])luaM_realloc__TValue(L, block, new_size, t);
+            return (LuaObject.TValue[])luaM_realloc__TValue(L, block, new_size, t);
         }
 
         public static LuaObject.TString[] luaM_reallocv_TString(LuaState.lua_State L, LuaObject.TString[] block, int new_size, ClassType t)
@@ -109,7 +109,7 @@ namespace kurumi
             luaM_reallocv_Proto(L, b, 0, t);
         }
 
-        public static void luaM_freearray_TValue(LuaState.lua_State L, TValue[] b, ClassType t)
+        public static void luaM_freearray_TValue(LuaState.lua_State L, LuaObject.TValue[] b, ClassType t)
         {
             luaM_reallocv_TValue(L, b, 0, t);
         }
@@ -205,7 +205,7 @@ namespace kurumi
             return luaM_reallocv_Proto(L, null, n, t);
         }
 
-        public static TValue[] luaM_newvector_TValue(LuaState.lua_State L, int n, ClassType t)
+        public static LuaObject.TValue[] luaM_newvector_TValue(LuaState.lua_State L, int n, ClassType t)
         {
             return luaM_reallocv_TValue(L, null, n, t);
         }
@@ -252,11 +252,11 @@ namespace kurumi
             }
         }
 
-        public static void luaM_growvector_TValue(LuaState.lua_State L, /*ref*/ TValue[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
+        public static void luaM_growvector_TValue(LuaState.lua_State L, /*ref*/ LuaObject.TValue[][] v, int nelems, /*ref*/ int[] size, int limit, LuaConf.CharPtr e, ClassType t)
         {
             if (nelems + 1 > size[0])
             {
-                v[0] = (TValue[])luaM_growaux__TValue(L, /*ref*/ v, /*ref*/ size, limit, e, t);
+                v[0] = (LuaObject.TValue[])luaM_growaux__TValue(L, /*ref*/ v, /*ref*/ size, limit, e, t);
             }
         }
 
@@ -287,7 +287,7 @@ namespace kurumi
 			return v[0];
 		}
 
-        public static TValue[] luaM_reallocvector_TValue(LuaState.lua_State L, /*ref*/ TValue[][] v, int oldn, int n, ClassType t)
+        public static LuaObject.TValue[] luaM_reallocvector_TValue(LuaState.lua_State L, /*ref*/ LuaObject.TValue[][] v, int oldn, int n, ClassType t)
         {
             ClassType.Assert((v[0] == null && oldn == 0) || (v[0].Length == oldn));
             v[0] = luaM_reallocv_TValue(L, v[0], n, t);
@@ -440,10 +440,10 @@ namespace kurumi
             return newblock;
         }
 
-        public static TValue[] luaM_growaux__TValue(LuaState.lua_State L, /*ref*/ TValue[][] block, /*ref*/ int[] size,
+        public static LuaObject.TValue[] luaM_growaux__TValue(LuaState.lua_State L, /*ref*/ LuaObject.TValue[][] block, /*ref*/ int[] size,
                             int limit, LuaConf.CharPtr errormsg, ClassType t)
         {
-            TValue[] newblock;
+            LuaObject.TValue[] newblock;
             int newsize;
             if (size[0] >= limit / 2)
             {
@@ -729,20 +729,20 @@ namespace kurumi
             return new_block;
         }
 
-        public static object luaM_realloc__TValue(LuaState.lua_State L, TValue[] old_block, int new_size, ClassType t)
+        public static object luaM_realloc__TValue(LuaState.lua_State L, LuaObject.TValue[] old_block, int new_size, ClassType t)
         {
             int unmanaged_size = (int)t.GetUnmanagedSize();//LuaConf.GetUnmanagedSize(typeof(T));
             int old_size = (old_block == null) ? 0 : old_block.Length;
             int osize = old_size * unmanaged_size;
             int nsize = new_size * unmanaged_size;
-            TValue[] new_block = new TValue[new_size];
+            LuaObject.TValue[] new_block = new LuaObject.TValue[new_size];
             for (int i = 0; i < Math.Min(old_size, new_size); i++)
             {
                 new_block[i] = old_block[i];
             }
             for (int i = old_size; i < new_size; i++)
             {
-                new_block[i] = (TValue)t.Alloc();// System.Activator.CreateInstance(typeof(T));
+                new_block[i] = (LuaObject.TValue)t.Alloc();// System.Activator.CreateInstance(typeof(T));
             }
             if (CanIndex(t))
             {

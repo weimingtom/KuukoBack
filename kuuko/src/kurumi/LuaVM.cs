@@ -16,17 +16,17 @@ namespace kurumi
 
 	public class LuaVM
 	{
-		public static int tostring(LuaState.lua_State L, TValue/*StkId*/ o)
+		public static int tostring(LuaState.lua_State L, LuaObject.TValue/*StkId*/ o)
 		{
 			return ((LuaObject.ttype(o) == Lua.LUA_TSTRING) || (luaV_tostring(L, o) != 0)) ? 1 : 0;
 		}
 
-		public static int tonumber(/*ref*/ TValue[]/*StkId*/ o, TValue n)
+		public static int tonumber(/*ref*/ LuaObject.TValue[]/*StkId*/ o, LuaObject.TValue n)
 		{
 			return ((LuaObject.ttype(o[0]) == Lua.LUA_TNUMBER || (((o[0]) = luaV_tonumber(o[0], n)) != null))) ? 1 : 0;
 		}
 
-		public static int equalobj(LuaState.lua_State L, TValue o1, TValue o2) 
+		public static int equalobj(LuaState.lua_State L, LuaObject.TValue o1, LuaObject.TValue o2) 
 		{
 			return ((LuaObject.ttype(o1) == LuaObject.ttype(o2)) && (luaV_equalval(L, o1, o2) != 0)) ? 1 : 0;
 		}
@@ -34,7 +34,7 @@ namespace kurumi
 		/* limit for table tag-method chains (to avoid loops) */
 		public const int MAXTAGLOOP	= 100;
 
-		public static TValue luaV_tonumber(TValue obj, TValue n) 
+		public static LuaObject.TValue luaV_tonumber(LuaObject.TValue obj, LuaObject.TValue n) 
 		{
 			Double[]/*lua_Number*/ num = new Double[1];
 			if (LuaObject.ttisnumber(obj)) 
@@ -53,7 +53,7 @@ namespace kurumi
 		}
 
 
-		public static int luaV_tostring(LuaState.lua_State L, TValue/*StkId*/ obj)
+		public static int luaV_tostring(LuaState.lua_State L, LuaObject.TValue/*StkId*/ obj)
 		{
 			if (!LuaObject.ttisnumber(obj))
 			{
@@ -93,48 +93,48 @@ namespace kurumi
 			}
 		}
 
-		private static void callTMres(LuaState.lua_State L, TValue/*StkId*/ res, TValue f,
-			TValue p1, TValue p2) 
+		private static void callTMres(LuaState.lua_State L, LuaObject.TValue/*StkId*/ res, LuaObject.TValue f,
+			LuaObject.TValue p1, LuaObject.TValue p2) 
 		{
             int/*Int32*//*ptrdiff_t*/ result = LuaDo.savestack(L, res);
 			LuaObject.setobj2s(L, L.top, f);  /* push function */
-			LuaObject.setobj2s(L, TValue.plus(L.top, 1), p1);  /* 1st argument */
-			LuaObject.setobj2s(L, TValue.plus(L.top, 2), p2);  /* 2nd argument */
+			LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 1), p1);  /* 1st argument */
+			LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 2), p2);  /* 2nd argument */
 			LuaDo.luaD_checkstack(L, 3);
-			L.top = TValue.plus(L.top, 3);
-			LuaDo.luaD_call(L, TValue.minus(L.top, 3), 1);
+			L.top = LuaObject.TValue.plus(L.top, 3);
+			LuaDo.luaD_call(L, LuaObject.TValue.minus(L.top, 3), 1);
 			res = LuaDo.restorestack(L, result);
-			TValue[] top = new TValue[1];
+			LuaObject.TValue[] top = new LuaObject.TValue[1];
 			top[0] = L.top;
-			/*StkId*/TValue.dec(/*ref*/ top);
+			/*StkId*/LuaObject.TValue.dec(/*ref*/ top);
 			L.top = top[0];
 			LuaObject.setobjs2s(L, res, L.top);
 		}
 
-		private static void callTM(LuaState.lua_State L, TValue f, TValue p1,
-			TValue p2, TValue p3) 
+		private static void callTM(LuaState.lua_State L, LuaObject.TValue f, LuaObject.TValue p1,
+			LuaObject.TValue p2, LuaObject.TValue p3) 
 		{
 			LuaObject.setobj2s(L, L.top, f);  /* push function */
-			LuaObject.setobj2s(L, TValue.plus(L.top, 1), p1);  /* 1st argument */
-			LuaObject.setobj2s(L, TValue.plus(L.top, 2), p2);  /* 2nd argument */
-			LuaObject.setobj2s(L, TValue.plus(L.top, 3), p3);  /* 3th argument */
+			LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 1), p1);  /* 1st argument */
+			LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 2), p2);  /* 2nd argument */
+			LuaObject.setobj2s(L, LuaObject.TValue.plus(L.top, 3), p3);  /* 3th argument */
 			LuaDo.luaD_checkstack(L, 4);
-			L.top = TValue.plus(L.top, 4);
-			LuaDo.luaD_call(L, TValue.minus(L.top, 4), 0);
+			L.top = LuaObject.TValue.plus(L.top, 4);
+			LuaDo.luaD_call(L, LuaObject.TValue.minus(L.top, 4), 0);
 		}
 
 
-		public static void luaV_gettable(LuaState.lua_State L, TValue t, TValue key, TValue/*StkId*/ val)
+		public static void luaV_gettable(LuaState.lua_State L, LuaObject.TValue t, LuaObject.TValue key, LuaObject.TValue/*StkId*/ val)
 		{
 			int loop;
 			for (loop = 0; loop < MAXTAGLOOP; loop++) 
 			{
-				TValue tm;
+				LuaObject.TValue tm;
 				if (LuaObject.ttistable(t))
 				{  
 					/* `t' is a table? */
 					LuaObject.Table h = LuaObject.hvalue(t);
-					TValue res = LuaTable.luaH_get(h, key); /* do a primitive get */
+					LuaObject.TValue res = LuaTable.luaH_get(h, key); /* do a primitive get */
 					if (!LuaObject.ttisnil(res) ||  /* result is no nil? */
 					    (tm = LuaTM.fasttm(L, h.metatable, LuaTM.TMS.TM_INDEX)) == null)
 					{ 
@@ -158,18 +158,18 @@ namespace kurumi
 			LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("loop in gettable"));
 		}
 
-		public static void luaV_settable(LuaState.lua_State L, TValue t, TValue key, TValue/*StkId*/ val)
+		public static void luaV_settable(LuaState.lua_State L, LuaObject.TValue t, LuaObject.TValue key, LuaObject.TValue/*StkId*/ val)
 		{
 			int loop;
 
 			for (loop = 0; loop < MAXTAGLOOP; loop++) 
 			{
-				TValue tm;
+				LuaObject.TValue tm;
 				if (LuaObject.ttistable(t))
 				{  
 					/* `t' is a table? */
 					LuaObject.Table h = LuaObject.hvalue(t);
-					TValue oldval = LuaTable.luaH_set(L, h, key); /* do a primitive set */
+					LuaObject.TValue oldval = LuaTable.luaH_set(L, h, key); /* do a primitive set */
 					if (!LuaObject.ttisnil(oldval) ||  /* result is no nil? */
 					    (tm = LuaTM.fasttm(L, h.metatable, LuaTM.TMS.TM_NEWINDEX)) == null)
 					{ 
@@ -194,10 +194,10 @@ namespace kurumi
 			LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("loop in settable"));
 		}
 
-		private static int call_binTM(LuaState.lua_State L, TValue p1, TValue p2,
-			TValue/*StkId*/ res, LuaTM.TMS event_) 
+		private static int call_binTM(LuaState.lua_State L, LuaObject.TValue p1, LuaObject.TValue p2,
+			LuaObject.TValue/*StkId*/ res, LuaTM.TMS event_) 
 		{
-			TValue tm = LuaTM.luaT_gettmbyobj(L, p1, event_);  /* try first operand */
+			LuaObject.TValue tm = LuaTM.luaT_gettmbyobj(L, p1, event_);  /* try first operand */
 			if (LuaObject.ttisnil(tm))
 			{
 				tm = LuaTM.luaT_gettmbyobj(L, p2, event_);  /* try second operand */
@@ -210,11 +210,11 @@ namespace kurumi
 			return 1;
 		}
 
-		private static TValue get_compTM(LuaState.lua_State L, LuaObject.Table mt1, LuaObject.Table mt2,
+		private static LuaObject.TValue get_compTM(LuaState.lua_State L, LuaObject.Table mt1, LuaObject.Table mt2,
 			LuaTM.TMS event_) 
 		{
-			TValue tm1 = LuaTM.fasttm(L, mt1, event_);
-			TValue tm2;
+			LuaObject.TValue tm1 = LuaTM.fasttm(L, mt1, event_);
+			LuaObject.TValue tm2;
 			if (tm1 == null)
 			{
 				return null;  /* no metamethod */
@@ -235,11 +235,11 @@ namespace kurumi
 			return null;
 		}
 
-		private static int call_orderTM(LuaState.lua_State L, TValue p1, TValue p2,
+		private static int call_orderTM(LuaState.lua_State L, LuaObject.TValue p1, LuaObject.TValue p2,
 			LuaTM.TMS event_) 
 		{
-			TValue tm1 = LuaTM.luaT_gettmbyobj(L, p1, event_);
-			TValue tm2;
+			LuaObject.TValue tm1 = LuaTM.luaT_gettmbyobj(L, p1, event_);
+			LuaObject.TValue tm2;
 			if (LuaObject.ttisnil(tm1)) 
 			{
 				return -1;  /* no metamethod? */
@@ -289,7 +289,7 @@ namespace kurumi
 			}
 		}
 
-		public static int luaV_lessthan(LuaState.lua_State L, TValue l, TValue r) 
+		public static int luaV_lessthan(LuaState.lua_State L, LuaObject.TValue l, LuaObject.TValue r) 
 		{
 			int res;
 			if (LuaObject.ttype(l) != LuaObject.ttype(r))
@@ -311,7 +311,7 @@ namespace kurumi
 			return LuaDebug.luaG_ordererror(L, l, r);
 		}
 
-		private static int lessequal(LuaState.lua_State L, TValue l, TValue r) 
+		private static int lessequal(LuaState.lua_State L, LuaObject.TValue l, LuaObject.TValue r) 
 		{
 			int res;
 			if (LuaObject.ttype(l) != LuaObject.ttype(r))
@@ -340,9 +340,9 @@ namespace kurumi
 
 		static LuaConf.CharPtr mybuff = null;
 
-		public static int luaV_equalval(LuaState.lua_State L, TValue t1, TValue t2) 
+		public static int luaV_equalval(LuaState.lua_State L, LuaObject.TValue t1, LuaObject.TValue t2) 
 		{
-			TValue tm = null;
+			LuaObject.TValue tm = null;
 			LuaLimits.lua_assert(LuaObject.ttype(t1) == LuaObject.ttype(t2));
 			switch (LuaObject.ttype(t1))
 			{
@@ -398,29 +398,29 @@ namespace kurumi
 		{
 			do 
 			{
-				TValue/*StkId*/ top = TValue.plus(L.base_, last + 1);
+				LuaObject.TValue/*StkId*/ top = LuaObject.TValue.plus(L.base_, last + 1);
 				int n = 2;  /* number of elements handled in this pass (at least 2) */
-				if (!(LuaObject.ttisstring(TValue.minus(top, 2)) || LuaObject.ttisnumber(TValue.minus(top, 2))) || (tostring(L, TValue.minus(top, 1)) == 0))
+				if (!(LuaObject.ttisstring(LuaObject.TValue.minus(top, 2)) || LuaObject.ttisnumber(LuaObject.TValue.minus(top, 2))) || (tostring(L, LuaObject.TValue.minus(top, 1)) == 0))
 				{
-					if (call_binTM(L, TValue.minus(top, 2), TValue.minus(top, 1), TValue.minus(top, 2), LuaTM.TMS.TM_CONCAT) == 0)
+					if (call_binTM(L, LuaObject.TValue.minus(top, 2), LuaObject.TValue.minus(top, 1), LuaObject.TValue.minus(top, 2), LuaTM.TMS.TM_CONCAT) == 0)
 					{
-						LuaDebug.luaG_concaterror(L, TValue.minus(top, 2), TValue.minus(top, 1));
+						LuaDebug.luaG_concaterror(L, LuaObject.TValue.minus(top, 2), LuaObject.TValue.minus(top, 1));
 					}
 				}
-				else if (LuaObject.tsvalue(TValue.minus(top, 1)).len == 0)  /* second op is empty? */
+				else if (LuaObject.tsvalue(LuaObject.TValue.minus(top, 1)).len == 0)  /* second op is empty? */
 				{
-					tostring(L, TValue.minus(top, 2));  /* result is first op (as string) */
+					tostring(L, LuaObject.TValue.minus(top, 2));  /* result is first op (as string) */
 				}
 				else 
 				{
 					/* at least two string values; get as many as possible */
-					int/*uint*/ tl = LuaObject.tsvalue(TValue.minus(top, 1)).len;
+					int/*uint*/ tl = LuaObject.tsvalue(LuaObject.TValue.minus(top, 1)).len;
 					LuaConf.CharPtr buffer;
 					int i;
 					/* collect total length */
-					for (n = 1; n < total && (tostring(L, TValue.minus(TValue.minus(top, n), 1)) != 0); n++) //FIXME:
+					for (n = 1; n < total && (tostring(L, LuaObject.TValue.minus(LuaObject.TValue.minus(top, n), 1)) != 0); n++) //FIXME:
 					{
-						int/*uint*/ l = LuaObject.tsvalue(TValue.minus(TValue.minus(top, n), 1)).len;
+						int/*uint*/ l = LuaObject.tsvalue(LuaObject.TValue.minus(LuaObject.TValue.minus(top, n), 1)).len;
 						if (l >= LuaLimits.MAX_SIZET - tl) 
 						{
 							LuaDebug.luaG_runerror(L, LuaConf.CharPtr.toCharPtr("string length overflow"));
@@ -436,22 +436,22 @@ namespace kurumi
 					for (i = n; i > 0; i--) 
 					{  
 						/* concat all strings */
-						int/*uint*/ l = LuaObject.tsvalue(TValue.minus(top, i)).len;
-						LuaConf.memcpy_char(buffer.chars, /*(int)*/tl, LuaObject.svalue(TValue.minus(top, i)).chars, (int)l);
+						int/*uint*/ l = LuaObject.tsvalue(LuaObject.TValue.minus(top, i)).len;
+						LuaConf.memcpy_char(buffer.chars, /*(int)*/tl, LuaObject.svalue(LuaObject.TValue.minus(top, i)).chars, (int)l);
 						tl += l;
 					}
-					LuaObject.setsvalue2s(L, TValue.minus(top, n), LuaString.luaS_newlstr(L, buffer, tl));
+					LuaObject.setsvalue2s(L, LuaObject.TValue.minus(top, n), LuaString.luaS_newlstr(L, buffer, tl));
 				}
 				total -= n - 1;  /* got `n' strings to create 1 new */
 				last -= n - 1;
 			} while (total > 1);  /* repeat until only 1 result left */
 		}
 
-		public static void Arith(LuaState.lua_State L, TValue/*StkId*/ ra, TValue rb,
-			TValue rc, LuaTM.TMS op) 
+		public static void Arith(LuaState.lua_State L, LuaObject.TValue/*StkId*/ ra, LuaObject.TValue rb,
+			LuaObject.TValue rc, LuaTM.TMS op) 
 		{
-			TValue tempb = new TValue(), tempc = new TValue();
-			TValue b, c;
+			LuaObject.TValue tempb = new LuaObject.TValue(), tempc = new LuaObject.TValue();
+			LuaObject.TValue b, c;
 			if ((b = luaV_tonumber(rb, tempb)) != null &&
 			    (c = luaV_tonumber(rc, tempc)) != null) 
 			{
@@ -525,32 +525,32 @@ namespace kurumi
 		//#define KBx(i)	check_exp(getBMode(GET_OPCODE(i)) == OpArgMask.OpArgK, k+GETARG_Bx(i))
 
 		// todo: implement proper checks, as above
-		public static TValue RA(LuaState.lua_State L, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i) 
+		public static LuaObject.TValue RA(LuaState.lua_State L, LuaObject.TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i) 
 		{ 
-			return TValue.plus(base_, LuaOpCodes.GETARG_A(i)); 
+			return LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_A(i)); 
 		}
 		
-		public static TValue RB(LuaState.lua_State L, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i) 
+		public static LuaObject.TValue RB(LuaState.lua_State L, LuaObject.TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i) 
 		{ 
-			return TValue.plus(base_, LuaOpCodes.GETARG_B(i)); 
+			return LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_B(i)); 
 		}
 		
-		public static TValue RC(LuaState.lua_State L, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i) 
+		public static LuaObject.TValue RC(LuaState.lua_State L, LuaObject.TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i) 
 		{ 
-			return TValue.plus(base_, LuaOpCodes.GETARG_C(i)); 
+			return LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_C(i)); 
 		}
 		
-		public static TValue RKB(LuaState.lua_State L, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, TValue[] k) 
+		public static LuaObject.TValue RKB(LuaState.lua_State L, LuaObject.TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, LuaObject.TValue[] k) 
 		{ 
-			return LuaOpCodes.ISK(LuaOpCodes.GETARG_B(i)) != 0 ? k[LuaOpCodes.INDEXK(LuaOpCodes.GETARG_B(i))] : TValue.plus(base_, LuaOpCodes.GETARG_B(i)); 
+			return LuaOpCodes.ISK(LuaOpCodes.GETARG_B(i)) != 0 ? k[LuaOpCodes.INDEXK(LuaOpCodes.GETARG_B(i))] : LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_B(i)); 
 		}
 		
-		public static TValue RKC(LuaState.lua_State L, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, TValue[] k) 
+		public static LuaObject.TValue RKC(LuaState.lua_State L, LuaObject.TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, LuaObject.TValue[] k) 
 		{ 
-			return LuaOpCodes.ISK(LuaOpCodes.GETARG_C(i)) != 0 ? k[LuaOpCodes.INDEXK(LuaOpCodes.GETARG_C(i))] : TValue.plus(base_, LuaOpCodes.GETARG_C(i)); 
+			return LuaOpCodes.ISK(LuaOpCodes.GETARG_C(i)) != 0 ? k[LuaOpCodes.INDEXK(LuaOpCodes.GETARG_C(i))] : LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_C(i)); 
 		}
 		
-		public static TValue KBx(LuaState.lua_State L, long/*UInt32*//*Instruction*/ i, TValue[] k) 
+		public static LuaObject.TValue KBx(LuaState.lua_State L, long/*UInt32*//*Instruction*/ i, LuaObject.TValue[] k) 
 		{ 
 			return k[LuaOpCodes.GETARG_Bx(i)]; 
 		}
@@ -563,10 +563,10 @@ namespace kurumi
 
 		//#define Protect(x)	{ L.savedpc = pc; {x;}; base = L.base_; }
 
-		public static void arith_op(LuaState.lua_State L, LuaConf.op_delegate op, LuaTM.TMS tm, TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, TValue[] k, TValue/*StkId*/ ra, LuaCode.InstructionPtr pc)
+		public static void arith_op(LuaState.lua_State L, LuaConf.op_delegate op, LuaTM.TMS tm, LuaObject.TValue/*StkId*/ base_, long/*UInt32*//*Instruction*/ i, LuaObject.TValue[] k, LuaObject.TValue/*StkId*/ ra, LuaCode.InstructionPtr pc)
 		{
-			TValue rb = RKB(L, base_, i, k);
-			TValue rc = RKC(L, base_, i, k);
+			LuaObject.TValue rb = RKB(L, base_, i, k);
+			LuaObject.TValue rc = RKC(L, base_, i, k);
 			if (LuaObject.ttisnumber(rb) && LuaObject.ttisnumber(rc))
 			{
 				Double/*lua_Number*/ nb = LuaObject.nvalue(rb), nc = LuaObject.nvalue(rc);
@@ -667,8 +667,8 @@ namespace kurumi
 		public static void luaV_execute(LuaState.lua_State L, int nexeccalls) 
 		{
 			LuaObject.LClosure cl;
-			TValue/*StkId*/ base_;
-			TValue[] k;
+			LuaObject.TValue/*StkId*/ base_;
+			LuaObject.TValue[] k;
 			/*const*/ LuaCode.InstructionPtr pc;
 			//reentry:  /* entry point */
 			while (true)
@@ -688,7 +688,7 @@ namespace kurumi
 					LuaCode.InstructionPtr ret = LuaCode.InstructionPtr.inc(/*ref*/ pc_ref);
 					pc = pc_ref[0];
 					/*const*/ long/*UInt32*//*Instruction*/ i = ret.get(0);
-					TValue/*StkId*/ ra;
+					LuaObject.TValue/*StkId*/ ra;
 					if (((L.hookmask & (Lua.LUA_MASKLINE | Lua.LUA_MASKCOUNT)) != 0) &&
 					    (((--L.hookcount) == 0) || ((L.hookmask & Lua.LUA_MASKLINE) != 0)))
 					{
@@ -704,7 +704,7 @@ namespace kurumi
 					/* warning!! several calls may realloc the stack and invalidate `ra' */
 					ra = RA(L, base_, i);
 					LuaLimits.lua_assert(base_ == L.base_ && L.base_ == L.ci.base_);
-					LuaLimits.lua_assert(TValue.lessEqual(base_, L.top) && ((TValue.minus(L.top, L.stack)) <= L.stacksize));
+					LuaLimits.lua_assert(LuaObject.TValue.lessEqual(base_, L.top) && ((LuaObject.TValue.minus(L.top, L.stack)) <= L.stacksize));
 					LuaLimits.lua_assert(L.top == L.ci.top || (LuaDebug.luaG_checkopenop(i) != 0));
 					//Dump(pc.pc, i);
 					
@@ -736,15 +736,15 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_LOADNIL: 
 							{
-								TValue rb = RB(L, base_, i);
+								LuaObject.TValue rb = RB(L, base_, i);
 								do 
 								{
-									TValue[] rb_ref = new TValue[1];
+									LuaObject.TValue[] rb_ref = new LuaObject.TValue[1];
 									rb_ref[0] = rb;
-									TValue ret2 = /*StkId*/TValue.dec(/*ref*/ rb_ref);
+									LuaObject.TValue ret2 = /*StkId*/LuaObject.TValue.dec(/*ref*/ rb_ref);
 									rb = rb_ref[0];
 									LuaObject.setnilvalue(ret2);
-								} while (TValue.greaterEqual(rb, ra));
+								} while (LuaObject.TValue.greaterEqual(rb, ra));
 								continue;
 							}
 						case LuaOpCodes.OpCode.OP_GETUPVAL: 
@@ -755,8 +755,8 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_GETGLOBAL: 
 							{
-								TValue g = new TValue();
-								TValue rb = KBx(L, i, k);
+								LuaObject.TValue g = new LuaObject.TValue();
+								LuaObject.TValue rb = KBx(L, i, k);
 								LuaObject.sethvalue(L, g, cl.getEnv());
 								LuaLimits.lua_assert(LuaObject.ttisstring(rb));
 								//Protect(
@@ -779,7 +779,7 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_SETGLOBAL: 
 							{
-								TValue g = new TValue();
+								LuaObject.TValue g = new LuaObject.TValue();
 								LuaObject.sethvalue(L, g, cl.getEnv());
 								LuaLimits.lua_assert(LuaObject.ttisstring(KBx(L, i, k)));
 								//Protect(
@@ -822,8 +822,8 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_SELF: 
 							{
-								/*StkId*/TValue rb = RB(L, base_, i);
-								LuaObject.setobjs2s(L, TValue.plus(ra, 1), rb);
+								/*StkId*/LuaObject.TValue rb = RB(L, base_, i);
+								LuaObject.setobjs2s(L, LuaObject.TValue.plus(ra, 1), rb);
 								//Protect(
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								luaV_gettable(L, rb, RKC(L, base_, i, k), ra);
@@ -864,7 +864,7 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_UNM: 
 							{
-								TValue rb = RB(L, base_, i);
+								LuaObject.TValue rb = RB(L, base_, i);
 								if (LuaObject.ttisnumber(rb))
 								{
 									Double/*lua_Number*/ nb = LuaObject.nvalue(rb);
@@ -889,7 +889,7 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_LEN: 
 							{
-								TValue rb = RB(L, base_, i);
+								LuaObject.TValue rb = RB(L, base_, i);
 								switch (LuaObject.ttype(rb))
 								{
 									case Lua.LUA_TTABLE:
@@ -927,7 +927,7 @@ namespace kurumi
 								luaV_concat(L, c - b + 1, c); LuaGC.luaC_checkGC(L);
 								base_ = L.base_;
 								//);
-								LuaObject.setobjs2s(L, RA(L, base_, i), TValue.plus(base_, b));
+								LuaObject.setobjs2s(L, RA(L, base_, i), LuaObject.TValue.plus(base_, b));
 								continue;
 							}
 						case LuaOpCodes.OpCode.OP_JMP: 
@@ -937,8 +937,8 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_EQ: 
 							{
-								TValue rb = RKB(L, base_, i, k);
-								TValue rc = RKC(L, base_, i, k);
+								LuaObject.TValue rb = RKB(L, base_, i, k);
+								LuaObject.TValue rc = RKC(L, base_, i, k);
 								//Protect(
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								if (equalobj(L, rb, rc) == LuaOpCodes.GETARG_A(i))
@@ -997,7 +997,7 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_TESTSET: 
 							{
-								TValue rb = RB(L, base_, i);
+								LuaObject.TValue rb = RB(L, base_, i);
 								if (LuaObject.l_isfalse(rb) != LuaOpCodes.GETARG_C(i))
 								{
 									LuaObject.setobjs2s(L, ra, rb);
@@ -1015,7 +1015,7 @@ namespace kurumi
 								int nresults = LuaOpCodes.GETARG_C(i) - 1;
 								if (b != 0) 
 								{
-									L.top = TValue.plus(ra, b);  /* else previous instruction set top */
+									L.top = LuaObject.TValue.plus(ra, b);  /* else previous instruction set top */
 								}
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								bool reentry3 = false;
@@ -1058,7 +1058,7 @@ namespace kurumi
 								int b = LuaOpCodes.GETARG_B(i);
 								if (b != 0) 
 								{
-									L.top = TValue.plus(ra, b);  /* else previous instruction set top */
+									L.top = LuaObject.TValue.plus(ra, b);  /* else previous instruction set top */
 								}
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								LuaLimits.lua_assert(LuaOpCodes.GETARG_C(i) - 1 == Lua.LUA_MULTRET);
@@ -1070,19 +1070,19 @@ namespace kurumi
 											/* tail call: put new frame in place of previous one */
 											LuaState.CallInfo ci = LuaState.CallInfo.minus(L.ci, 1);  /* previous frame */
 											int aux;
-											TValue/*StkId*/ func = ci.func;
-											TValue/*StkId*/ pfunc = LuaState.CallInfo.plus(ci, 1).func;  /* previous function index */
+											LuaObject.TValue/*StkId*/ func = ci.func;
+											LuaObject.TValue/*StkId*/ pfunc = LuaState.CallInfo.plus(ci, 1).func;  /* previous function index */
 											if (L.openupval != null) 
 											{
 												LuaFunc.luaF_close(L, ci.base_);
 											}
-											L.base_ = ci.base_ = TValue.plus(ci.func, TValue.minus(ci.get(1).base_, pfunc));
-											for (aux = 0; TValue.lessThan(TValue.plus(pfunc, aux), L.top); aux++)  /* move frame down */
+											L.base_ = ci.base_ = LuaObject.TValue.plus(ci.func, LuaObject.TValue.minus(ci.get(1).base_, pfunc));
+											for (aux = 0; LuaObject.TValue.lessThan(LuaObject.TValue.plus(pfunc, aux), L.top); aux++)  /* move frame down */
 											{
-												LuaObject.setobjs2s(L, TValue.plus(func, aux), TValue.plus(pfunc, aux));
+												LuaObject.setobjs2s(L, LuaObject.TValue.plus(func, aux), LuaObject.TValue.plus(pfunc, aux));
 											}
-											ci.top = L.top = TValue.plus(func, aux);  /* correct top */
-											LuaLimits.lua_assert(L.top == TValue.plus(L.base_, LuaObject.clvalue(func).l.p.maxstacksize));
+											ci.top = L.top = LuaObject.TValue.plus(func, aux);  /* correct top */
+											LuaLimits.lua_assert(L.top == LuaObject.TValue.plus(L.base_, LuaObject.clvalue(func).l.p.maxstacksize));
 											ci.savedpc = LuaCode.InstructionPtr.Assign(L.savedpc);
 											ci.tailcalls++;  /* one more call lost */
 											LuaState.CallInfo[] ci_ref3 = new LuaState.CallInfo[1];
@@ -1119,7 +1119,7 @@ namespace kurumi
 								int b = LuaOpCodes.GETARG_B(i);
 								if (b != 0) 
 								{
-									L.top = TValue.plus(ra, b - 1); //FIXME:
+									L.top = LuaObject.TValue.plus(ra, b - 1); //FIXME:
 								}
 								if (L.openupval != null) 
 								{
@@ -1147,26 +1147,26 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_FORLOOP: 
 							{
-								Double/*lua_Number*/ step = LuaObject.nvalue(TValue.plus(ra, 2));
+								Double/*lua_Number*/ step = LuaObject.nvalue(LuaObject.TValue.plus(ra, 2));
 								Double/*lua_Number*/ idx = LuaConf.luai_numadd(LuaObject.nvalue(ra), step); /* increment index */
-								Double/*lua_Number*/ limit = LuaObject.nvalue(TValue.plus(ra, 1));
+								Double/*lua_Number*/ limit = LuaObject.nvalue(LuaObject.TValue.plus(ra, 1));
 								if (LuaConf.luai_numlt(0, step) ? LuaConf.luai_numle(idx, limit)
 								    : LuaConf.luai_numle(limit, idx))
 								{
 									dojump(L, pc, LuaOpCodes.GETARG_sBx(i));  /* jump back */
 									LuaObject.setnvalue(ra, idx);  /* update internal index... */
-									LuaObject.setnvalue(TValue.plus(ra, 3), idx);  /* ...and external index */
+									LuaObject.setnvalue(LuaObject.TValue.plus(ra, 3), idx);  /* ...and external index */
 								}
 								continue;
 							}
 						case LuaOpCodes.OpCode.OP_FORPREP: 
 							{
-								TValue init = ra;
-								TValue plimit = TValue.plus(ra, 1);
-								TValue pstep = TValue.plus(ra, 2);
+								LuaObject.TValue init = ra;
+								LuaObject.TValue plimit = LuaObject.TValue.plus(ra, 1);
+								LuaObject.TValue pstep = LuaObject.TValue.plus(ra, 2);
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);  /* next steps may throw errors */
 								int retxxx;
-								TValue[] init_ref = new TValue[1];
+								LuaObject.TValue[] init_ref = new LuaObject.TValue[1];
 								init_ref[0] = init;
 								retxxx = tonumber(/*ref*/ init_ref, ra);
 								init = init_ref[0];
@@ -1176,9 +1176,9 @@ namespace kurumi
 								} 
 								else 
 								{
-									TValue[] plimit_ref = new TValue[1];
+									LuaObject.TValue[] plimit_ref = new LuaObject.TValue[1];
 									plimit_ref[0] = plimit;
-									retxxx = tonumber(/*ref*/ plimit_ref, TValue.plus(ra, 1));
+									retxxx = tonumber(/*ref*/ plimit_ref, LuaObject.TValue.plus(ra, 1));
 									plimit = plimit_ref[0];
 									if (retxxx == 0)
 									{
@@ -1186,9 +1186,9 @@ namespace kurumi
 									}
 									else
 									{
-										TValue[] pstep_ref = new TValue[1];
+										LuaObject.TValue[] pstep_ref = new LuaObject.TValue[1];
 										pstep_ref[0] = pstep;
-										retxxx = tonumber(/*ref*/ pstep_ref, TValue.plus(ra, 2));
+										retxxx = tonumber(/*ref*/ pstep_ref, LuaObject.TValue.plus(ra, 2));
 										pstep = pstep_ref[0];									
 										if (retxxx == 0)
 										{
@@ -1202,22 +1202,22 @@ namespace kurumi
 							}
 						case LuaOpCodes.OpCode.OP_TFORLOOP: 
 							{
-								TValue/*StkId*/ cb = TValue.plus(ra, 3);  /* call base */
-								LuaObject.setobjs2s(L, TValue.plus(cb, 2), TValue.plus(ra, 2));
-								LuaObject.setobjs2s(L, TValue.plus(cb, 1), TValue.plus(ra, 1));
+								LuaObject.TValue/*StkId*/ cb = LuaObject.TValue.plus(ra, 3);  /* call base */
+								LuaObject.setobjs2s(L, LuaObject.TValue.plus(cb, 2), LuaObject.TValue.plus(ra, 2));
+								LuaObject.setobjs2s(L, LuaObject.TValue.plus(cb, 1), LuaObject.TValue.plus(ra, 1));
 								LuaObject.setobjs2s(L, cb, ra);
-								L.top = TValue.plus(cb, 3);  /* func. + 2 args (state and index) */
+								L.top = LuaObject.TValue.plus(cb, 3);  /* func. + 2 args (state and index) */
 								//Protect(
 								L.savedpc = LuaCode.InstructionPtr.Assign(pc);
 								LuaDo.luaD_call(L, cb, LuaOpCodes.GETARG_C(i));
 								base_ = L.base_;
 								//);
 								L.top = L.ci.top;
-								cb = TValue.plus(RA(L, base_, i), 3);  /* previous call may change the stack */
+								cb = LuaObject.TValue.plus(RA(L, base_, i), 3);  /* previous call may change the stack */
 								if (!LuaObject.ttisnil(cb))
 								{  
 									/* continue loop? */
-									LuaObject.setobjs2s(L, TValue.minus(cb, 1), cb);  /* save control variable */
+									LuaObject.setobjs2s(L, LuaObject.TValue.minus(cb, 1), cb);  /* save control variable */
 									dojump(L, pc, LuaOpCodes.GETARG_sBx(pc.get(0)));  /* jump back */
 								}
 								LuaCode.InstructionPtr[] pc_ref3 = new LuaCode.InstructionPtr[1];
@@ -1234,7 +1234,7 @@ namespace kurumi
 								LuaObject.Table h;
 								if (n == 0) 
 								{
-									n = LuaLimits.cast_int(TValue.minus(L.top, ra)) - 1;
+									n = LuaLimits.cast_int(LuaObject.TValue.minus(L.top, ra)) - 1;
 									L.top = L.ci.top;
 								}
 								if (c == 0)
@@ -1254,7 +1254,7 @@ namespace kurumi
 								}
 								for (; n > 0; n--) 
 								{
-									TValue val = TValue.plus(ra, n);
+									LuaObject.TValue val = LuaObject.TValue.plus(ra, n);
 									LuaObject.setobj2t(L, LuaTable.luaH_setnum(L, h, last--), val);
 									LuaGC.luaC_barriert(L, h, val);
 								}
@@ -1283,7 +1283,7 @@ namespace kurumi
 									else 
 									{
 										LuaLimits.lua_assert(LuaOpCodes.GET_OPCODE(pc.get(0)) == LuaOpCodes.OpCode.OP_MOVE);
-										ncl.l.upvals[j] = LuaFunc.luaF_findupval(L, TValue.plus(base_, LuaOpCodes.GETARG_B(pc.get(0))));
+										ncl.l.upvals[j] = LuaFunc.luaF_findupval(L, LuaObject.TValue.plus(base_, LuaOpCodes.GETARG_B(pc.get(0))));
 									}
 									
 									j++; 
@@ -1305,7 +1305,7 @@ namespace kurumi
 								int b = LuaOpCodes.GETARG_B(i) - 1;
 								int j;
 								LuaState.CallInfo ci = L.ci;
-								int n = LuaLimits.cast_int(TValue.minus(ci.base_, ci.func)) - cl.p.numparams - 1;
+								int n = LuaLimits.cast_int(LuaObject.TValue.minus(ci.base_, ci.func)) - cl.p.numparams - 1;
 								if (b == Lua.LUA_MULTRET)
 								{
 									//Protect(
@@ -1315,17 +1315,17 @@ namespace kurumi
 									//);
 									ra = RA(L, base_, i);  /* previous call may change the stack */
 									b = n;
-									L.top = TValue.plus(ra, n);
+									L.top = LuaObject.TValue.plus(ra, n);
 								}
 								for (j = 0; j < b; j++) 
 								{
 									if (j < n) 
 									{
-										LuaObject.setobjs2s(L, TValue.plus(ra, j), TValue.plus(TValue.minus(ci.base_, n), j)); //FIXME:
+										LuaObject.setobjs2s(L, LuaObject.TValue.plus(ra, j), LuaObject.TValue.plus(LuaObject.TValue.minus(ci.base_, n), j)); //FIXME:
 									}
 									else 
 									{
-										LuaObject.setnilvalue(TValue.plus(ra, j));
+										LuaObject.setnilvalue(LuaObject.TValue.plus(ra, j));
 									}
 								}
 								continue;

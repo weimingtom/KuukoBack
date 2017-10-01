@@ -120,7 +120,7 @@ namespace kurumi
 			DumpInt(n, D);
 			for (i = 0; i < n; i++)
 			{
-				/*const*/ TValue o = f.k[i];
+				/*const*/ LuaObject.TValue o = f.k[i];
 				DumpChar(LuaObject.ttype(o), D);
 				switch (LuaObject.ttype(o))
 				{

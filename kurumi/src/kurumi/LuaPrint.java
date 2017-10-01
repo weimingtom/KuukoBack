@@ -75,7 +75,7 @@ public class LuaPrint {
 
 	private static void PrintConstant(LuaObject.Proto f, int i) {
 		//const
-		TValue o = f.k[i];
+		LuaObject.TValue o = f.k[i];
 		switch (LuaObject.ttype(o)) {
 		case Lua.LUA_TNIL: {
 				LuaConf.printf(LuaConf.CharPtr.toCharPtr("nil"));

@@ -35,14 +35,14 @@ namespace kurumi
 			TM_N		/* number of elements in the enum */
 		}
 		
-		public static TValue gfasttm(LuaState.global_State g, LuaObject.Table et, TMS e)
+		public static LuaObject.TValue gfasttm(LuaState.global_State g, LuaObject.Table et, TMS e)
 		{
 			return (et == null) ? null :
 				((et.flags & (1 << (int)e)) != 0) ? null :
 				luaT_gettm(et, e, g.tmname[(int)e]);
 		}
 
-		public static TValue fasttm(LuaState.lua_State l, LuaObject.Table et, TMS e) 
+		public static LuaObject.TValue fasttm(LuaState.lua_State l, LuaObject.Table et, TMS e) 
 		{ 
 			return gfasttm(LuaState.G(l), et, e); 
 		}
@@ -95,10 +95,10 @@ namespace kurumi
 		 ** function to be used with macro "fasttm": optimized for absence of
 		 ** tag methods
 		 */
-		public static TValue luaT_gettm(LuaObject.Table events, TMS event_, LuaObject.TString ename) 
+		public static LuaObject.TValue luaT_gettm(LuaObject.Table events, TMS event_, LuaObject.TString ename) 
 		{
 			//const
-			TValue tm = LuaTable.luaH_getstr(events, ename);
+			LuaObject.TValue tm = LuaTable.luaH_getstr(events, ename);
 			LuaLimits.lua_assert(TMSUtil.convertTMStoInt(event_) <= TMSUtil.convertTMStoInt(TMS.TM_EQ));
 			if (LuaObject.ttisnil(tm))
 			{  
@@ -112,7 +112,7 @@ namespace kurumi
 			}
 		}
 
-		public static TValue luaT_gettmbyobj(LuaState.lua_State L, TValue o, TMS event_) 
+		public static LuaObject.TValue luaT_gettmbyobj(LuaState.lua_State L, LuaObject.TValue o, TMS event_) 
 		{
 			LuaObject.Table mt;
 			switch (LuaObject.ttype(o))

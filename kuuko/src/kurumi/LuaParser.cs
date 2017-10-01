@@ -548,7 +548,7 @@ namespace kurumi
 			LuaMem.luaM_reallocvector_int(L, /*ref*/ lineinfo_ref, f.sizelineinfo, fs.pc/*, typeof(int)*/, new ClassType(ClassType.TYPE_INT));
 			f.lineinfo = lineinfo_ref[0];
 			f.sizelineinfo = fs.pc;
-			TValue[][] k_ref = new TValue[1][];
+			LuaObject.TValue[][] k_ref = new LuaObject.TValue[1][];
 			k_ref[0] = f.k;
 			LuaMem.luaM_reallocvector_TValue(L, /*ref*/ k_ref, f.sizek, fs.nk/*, TValue*/, new ClassType(ClassType.TYPE_TVALUE));
 			f.k = k_ref[0];
@@ -576,7 +576,7 @@ namespace kurumi
 			LuaLimits.lua_assert(LuaDebug.luaG_checkcode(f));
 			LuaLimits.lua_assert(fs.bl == null);
 			ls.fs = fs.prev;
-			L.top = TValue.minus(L.top, 2);  /* remove table and prototype from the stack */
+			L.top = LuaObject.TValue.minus(L.top, 2);  /* remove table and prototype from the stack */
 			/* last token read was anchored in defunct function; must reanchor it */
 			if (fs != null) 
 			{

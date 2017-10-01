@@ -98,7 +98,7 @@ public class LuaDump {
 		DumpInt(n, D);
 		for (i = 0; i < n; i++) {
 			//const
- TValue o = f.k[i];
+			LuaObject.TValue o = f.k[i];
 			DumpChar(LuaObject.ttype(o), D);
 			switch (LuaObject.ttype(o)) {
 				case Lua.LUA_TNIL: {

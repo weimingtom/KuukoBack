@@ -138,8 +138,8 @@ namespace kurumi
 			}
 			else 
 			{
-				TValue/*StkId*/ limit = (ci == L.ci) ? L.top : (LuaState.CallInfo.plus(ci, 1)).func;
-				if (TValue.minus(limit, ci.base_) >= n && n > 0)  /* is 'n' inside 'ci' stack? */
+				LuaObject.TValue/*StkId*/ limit = (ci == L.ci) ? L.top : (LuaState.CallInfo.plus(ci, 1)).func;
+				if (LuaObject.TValue.minus(limit, ci.base_) >= n && n > 0)  /* is 'n' inside 'ci' stack? */
 				{
 					return LuaConf.CharPtr.toCharPtr("(*temporary)");
 				}
@@ -170,11 +170,11 @@ namespace kurumi
 			LuaLimits.lua_lock(L);
 			if (LuaConf.CharPtr.isNotEqual(name, null))
 			{
-				LuaObject.setobjs2s(L, ci.base_.get(n - 1), TValue.minus(L.top, 1));
+				LuaObject.setobjs2s(L, ci.base_.get(n - 1), LuaObject.TValue.minus(L.top, 1));
 			}
-			TValue[] top = new TValue[1];
+			LuaObject.TValue[] top = new LuaObject.TValue[1];
 			top[0] = L.top;
-			/*StkId*/TValue.dec(/*ref*/ top);  /* pop value */
+			/*StkId*/LuaObject.TValue.dec(/*ref*/ top);  /* pop value */
 			L.top = top[0];
 			LuaLimits.lua_unlock(L);
 			return name;
@@ -293,13 +293,13 @@ namespace kurumi
 			LuaLimits.lua_lock(L);
 			if (LuaConf.CharPtr.isEqualChar(what, '>')) 
 			{
-				TValue/*StkId*/ func = TValue.minus(L.top, 1);
+				LuaObject.TValue/*StkId*/ func = LuaObject.TValue.minus(L.top, 1);
 				LuaConf.luai_apicheck(L, LuaObject.ttisfunction(func));
 				what = what.next();  /* skip the '>' */
 				f = LuaObject.clvalue(func);
-				TValue[] top = new TValue[1];
+				LuaObject.TValue[] top = new LuaObject.TValue[1];
 				top[0] = L.top;
-				/*StkId*/TValue.dec(/*ref*/ top);  /* pop function */
+				/*StkId*/LuaObject.TValue.dec(/*ref*/ top);  /* pop function */
 				L.top = top[0];
 			}
 			else if (ar.i_ci != 0) 
@@ -861,11 +861,11 @@ namespace kurumi
 		}
 
 		/* only ANSI way to check whether a pointer points to an array */
-		private static int isinstack (LuaState.CallInfo ci, TValue o) 
+		private static int isinstack (LuaState.CallInfo ci, LuaObject.TValue o) 
 		{
-			TValue[]/*StkId*/ p = new TValue[1];
-			p[0] = new TValue();
-			for (p[0] = ci.base_; TValue.lessThan(p[0], ci.top); /*StkId*/TValue.inc(/*ref*/ p))
+			LuaObject.TValue[]/*StkId*/ p = new LuaObject.TValue[1];
+			p[0] = new LuaObject.TValue();
+			for (p[0] = ci.base_; LuaObject.TValue.lessThan(p[0], ci.top); /*StkId*/LuaObject.TValue.inc(/*ref*/ p))
 			{
 				if (o == p[0])
 				{
@@ -875,14 +875,14 @@ namespace kurumi
 			return 0;
 		}
 
-		public static void luaG_typeerror(LuaState.lua_State L, TValue o, LuaConf.CharPtr op) 
+		public static void luaG_typeerror(LuaState.lua_State L, LuaObject.TValue o, LuaConf.CharPtr op) 
 		{
 			LuaConf.CharPtr name = null;
 			LuaConf.CharPtr t = LuaTM.luaT_typenames[LuaObject.ttype(o)];
 			LuaConf.CharPtr[] name_ref = new LuaConf.CharPtr[1];
 			name_ref[0] = name;
 			LuaConf.CharPtr kind = (isinstack(L.ci, o)) != 0 ?
-				getobjname(L, L.ci, LuaLimits.cast_int(TValue.minus(o, L.base_)), /*ref*/ name_ref) :
+				getobjname(L, L.ci, LuaLimits.cast_int(LuaObject.TValue.minus(o, L.base_)), /*ref*/ name_ref) :
 				null;
 			name = name_ref[0];
 			if (LuaConf.CharPtr.isNotEqual(kind, null))
@@ -896,7 +896,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaG_concaterror(LuaState.lua_State L, TValue/*StkId*/ p1, TValue/*StkId*/ p2)
+		public static void luaG_concaterror(LuaState.lua_State L, LuaObject.TValue/*StkId*/ p1, LuaObject.TValue/*StkId*/ p2)
 		{
 			if (LuaObject.ttisstring(p1) || LuaObject.ttisnumber(p1)) 
 			{
@@ -906,9 +906,9 @@ namespace kurumi
 			luaG_typeerror(L, p1, LuaConf.CharPtr.toCharPtr("concatenate"));
 		}
 
-		public static void luaG_aritherror(LuaState.lua_State L, TValue p1, TValue p2) 
+		public static void luaG_aritherror(LuaState.lua_State L, LuaObject.TValue p1, LuaObject.TValue p2) 
 		{
-			TValue temp = new TValue();
+			LuaObject.TValue temp = new LuaObject.TValue();
 			if (LuaVM.luaV_tonumber(p1, temp) == null)
 			{
 				p2 = p1;  /* first operand is wrong */
@@ -916,7 +916,7 @@ namespace kurumi
 			luaG_typeerror(L, p2, LuaConf.CharPtr.toCharPtr("perform arithmetic on"));
 		}
 		
-		public static int luaG_ordererror(LuaState.lua_State L, TValue p1, TValue p2) 
+		public static int luaG_ordererror(LuaState.lua_State L, LuaObject.TValue p1, LuaObject.TValue p2) 
 		{
 			LuaConf.CharPtr t1 = LuaTM.luaT_typenames[LuaObject.ttype(p1)];
 			LuaConf.CharPtr t2 = LuaTM.luaT_typenames[LuaObject.ttype(p2)];
@@ -949,15 +949,15 @@ namespace kurumi
 			if (L.errfunc != 0) 
 			{  
 				/* is there an error handling function? */
-				TValue/*StkId*/ errfunc = LuaDo.restorestack(L, L.errfunc);
+				LuaObject.TValue/*StkId*/ errfunc = LuaDo.restorestack(L, L.errfunc);
 				if (!LuaObject.ttisfunction(errfunc)) 
 				{
 					LuaDo.luaD_throw(L, Lua.LUA_ERRERR);
 				}
-				LuaObject.setobjs2s(L, L.top, TValue.minus(L.top, 1));  /* move argument */
-				LuaObject.setobjs2s(L, TValue.minus(L.top, 1), errfunc);  /* push function */
+				LuaObject.setobjs2s(L, L.top, LuaObject.TValue.minus(L.top, 1));  /* move argument */
+				LuaObject.setobjs2s(L, LuaObject.TValue.minus(L.top, 1), errfunc);  /* push function */
 				LuaDo.incr_top(L);
-				LuaDo.luaD_call(L, TValue.minus(L.top, 2), 1);  /* call it */
+				LuaDo.luaD_call(L, LuaObject.TValue.minus(L.top, 2), 1);  /* call it */
 			}
 			LuaDo.luaD_throw(L, Lua.LUA_ERRRUN);
 		}

@@ -132,7 +132,7 @@ public class LuaUndump {
 			LuaObject.setnilvalue(f.k[i]);
 		}
 		for (i = 0; i < n; i++) {
-			TValue o = f.k[i];
+			LuaObject.TValue o = f.k[i];
 			int t = LoadChar(S);
 			switch (t) {
 				case Lua.LUA_TNIL: {
@@ -218,10 +218,10 @@ public class LuaUndump {
 		LoadConstants(S, f);
 		LoadDebug(S, f);
 		IF(LuaDebug.luaG_checkcode(f) == 0 ? 1 : 0, "bad code");
-		TValue[] top = new TValue[1];
+		LuaObject.TValue[] top = new LuaObject.TValue[1];
 		top[0] = S.L.top;
 		//StkId
-TValue.dec(top); //ref
+		LuaObject.TValue.dec(top); //ref
 		S.L.top = top[0];
 		S.L.nCcalls--;
 		return f;

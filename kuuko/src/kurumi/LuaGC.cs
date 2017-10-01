@@ -146,7 +146,7 @@ namespace kurumi
 			gcheader.marked = marked_ref[0];
 		}
 
-		public static bool valiswhite(TValue x) 
+		public static bool valiswhite(LuaObject.TValue x) 
 		{ 
 			return (LuaObject.iscollectable(x) && iswhite(LuaObject.gcvalue(x))); 
 		}
@@ -166,7 +166,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_barrier(LuaState.lua_State L, object p, TValue v)
+		public static void luaC_barrier(LuaState.lua_State L, object p, LuaObject.TValue v)
 		{
 			if (valiswhite(v) && isblack(LuaState.obj2gco(p)))
 			{
@@ -174,7 +174,7 @@ namespace kurumi
 			}
 		}
 
-		public static void luaC_barriert(LuaState.lua_State L, LuaObject.Table t, TValue v)
+		public static void luaC_barriert(LuaState.lua_State L, LuaObject.Table t, LuaObject.TValue v)
 		{
 			if (valiswhite(v) && isblack(LuaState.obj2gco(t)))
 			{
@@ -255,7 +255,7 @@ namespace kurumi
 		public static int KEYWEAK = bitmask(KEYWEAKBIT);
 		public static int VALUEWEAK = bitmask(VALUEWEAKBIT);
 
-		public static void markvalue(LuaState.global_State g, TValue o)
+		public static void markvalue(LuaState.global_State g, LuaObject.TValue o)
 		{
 			LuaObject.checkconsistency(o);
 			if (LuaObject.iscollectable(o) && iswhite(LuaObject.gcvalue(o)))
@@ -408,7 +408,7 @@ namespace kurumi
 			int i;
 			int weakkey = 0;
 			int weakvalue = 0;
-			/*const*/ TValue mode;
+			/*const*/ LuaObject.TValue mode;
 			if (h.metatable != null)
 			{
 				markobject(g, h.metatable);
@@ -530,10 +530,10 @@ namespace kurumi
 			}
 		}
 
-		private static void checkstacksizes(LuaState.lua_State L, TValue/*StkId*/ max)
+		private static void checkstacksizes(LuaState.lua_State L, LuaObject.TValue/*StkId*/ max)
 		{
 			int ci_used = LuaLimits.cast_int(LuaState.CallInfo.minus(L.ci, L.base_ci[0]));  /* number of `ci' in use */
-			int s_used = LuaLimits.cast_int(TValue.minus(max, L.stack));  /* part of stack in use */
+			int s_used = LuaLimits.cast_int(LuaObject.TValue.minus(max, L.stack));  /* part of stack in use */
 			if (L.size_ci > LuaConf.LUAI_MAXCALLS)  /* handling overflow? */
 			{
 				return;  /* do not touch the stacks */
@@ -553,26 +553,26 @@ namespace kurumi
 
 		private static void traversestack (LuaState.global_State g, LuaState.lua_State l) 
 		{
-			TValue[]/*StkId*/ o = new TValue[1];
-			o[0] = new TValue();
-			TValue/*StkId*/ lim;
+			LuaObject.TValue[]/*StkId*/ o = new LuaObject.TValue[1];
+			o[0] = new LuaObject.TValue();
+			LuaObject.TValue/*StkId*/ lim;
 			LuaState.CallInfo[] ci = new LuaState.CallInfo[1];
 			ci[0] = new LuaState.CallInfo();
 			markvalue(g, LuaState.gt(l));
 			lim = l.top;
 			for (ci[0] = l.base_ci[0]; LuaState.CallInfo.lessEqual(ci[0], l.ci); LuaState.CallInfo.inc(/*ref*/ ci))
 			{
-				LuaLimits.lua_assert(TValue.lessEqual(ci[0].top, l.stack_last));
-				if (TValue.lessThan(lim, ci[0].top)) 
+				LuaLimits.lua_assert(LuaObject.TValue.lessEqual(ci[0].top, l.stack_last));
+				if (LuaObject.TValue.lessThan(lim, ci[0].top)) 
 				{
 					lim = ci[0].top;
 				}
 			}
-			for (o[0] = l.stack[0]; TValue.lessThan(o[0], l.top); /*StkId*/TValue.inc(/*ref*/ o))
+			for (o[0] = l.stack[0]; LuaObject.TValue.lessThan(o[0], l.top); /*StkId*/LuaObject.TValue.inc(/*ref*/ o))
 			{
 				markvalue(g, o[0]);
 			}
-			for (; TValue.lessEqual(o[0], lim); /*StkId*/TValue.inc(/*ref*/ o))
+			for (; LuaObject.TValue.lessEqual(o[0], lim); /*StkId*/LuaObject.TValue.inc(/*ref*/ o))
 			{
 				LuaObject.setnilvalue(o[0]);
 			}
@@ -670,7 +670,7 @@ namespace kurumi
 		 ** other objects: if really collected, cannot keep them; for userdata
 		 ** being finalized, keep them in keys, but not in values
 		 */
-		private static bool iscleared (TValue o, bool iskey) 
+		private static bool iscleared (LuaObject.TValue o, bool iskey) 
 		{
 			if (!LuaObject.iscollectable(o)) 
 			{
@@ -701,7 +701,7 @@ namespace kurumi
 				{
 					while (i--!= 0) 
 					{
-						TValue o = h.array[i];
+						LuaObject.TValue o = h.array[i];
 						if (iscleared(o, false))  /* value was collected? */
 						{
 							LuaObject.setnilvalue(o);  /* remove value */
@@ -836,7 +836,7 @@ namespace kurumi
 			LuaState.global_State g = LuaState.G(L);
 			LuaState.GCObject o = g.tmudata.getGch().next;  /* get first element */
 			Udata udata = LuaState.rawgco2u(o);
-			TValue tm;
+			LuaObject.TValue tm;
 			/* remove udata from `tmudata' */
 			if (o == g.tmudata)  /* last element? */
 			{
@@ -857,9 +857,9 @@ namespace kurumi
 				L.allowhook = 0;  /* stop debug hooks during GC tag method */
 				g.GCthreshold = 2*g.totalbytes;  /* avoid GC steps */
 				LuaObject.setobj2s(L, L.top, tm);
-				LuaObject.setuvalue(L, TValue.plus(L.top, 1), udata);
-				L.top = TValue.plus(L.top, 2);
-				LuaDo.luaD_call(L, TValue.minus(L.top, 2), 0);
+				LuaObject.setuvalue(L, LuaObject.TValue.plus(L.top, 1), udata);
+				L.top = LuaObject.TValue.plus(L.top, 2);
+				LuaDo.luaD_call(L, LuaObject.TValue.minus(L.top, 2), 0);
 				L.allowhook = oldah;  /* restore hooks */
 				g.GCthreshold = /*(uint)*/oldt;  /* restore threshold */
 			}

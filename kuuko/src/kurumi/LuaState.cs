@@ -18,13 +18,13 @@ namespace kurumi
 	public class LuaState
 	{
 		/* table of globals */
-		public static TValue gt(lua_State L)	
+		public static LuaObject.TValue gt(lua_State L)	
 		{
 			return L.l_gt;
 		}
 
 		/* registry */
-		public static TValue registry(lua_State L)	
+		public static LuaObject.TValue registry(lua_State L)	
 		{
 			return G(L).l_registry;
 		}
@@ -51,9 +51,9 @@ namespace kurumi
 	        private CallInfo[] values = null;
 	        private int index = -1;
 	    
-	        public TValue base_;  /*StkId*/ /* base for this function */
-	        public TValue func;  /*StkId*/ /* function index in the stack */
-	        public TValue top;  /*StkId*/ /* top for this function */
+	        public LuaObject.TValue base_;  /*StkId*/ /* base for this function */
+	        public LuaObject.TValue func;  /*StkId*/ /* function index in the stack */
+	        public LuaObject.TValue top;  /*StkId*/ /* top for this function */
 	        public LuaCode.InstructionPtr savedpc;
 	        public int nresults;  /* expected number of results from this function */
 	        public int tailcalls;  /* number of tail calls lost under this entry */
@@ -179,7 +179,7 @@ namespace kurumi
 			public int gcpause;  /* size of pause between successive GCs */
 			public int gcstepmul;  /* GC `granularity' */
 			public Lua.lua_CFunction panic;  /* to be called in unprotected errors */
-			public TValue l_registry = new TValue();
+			public LuaObject.TValue l_registry = new LuaObject.TValue();
 			public lua_State mainthread;
 			public UpVal uvhead = new UpVal();  /* head of double-linked list of all open upvalues */
 			public LuaObject.Table[] mt = new LuaObject.Table[LuaObject.NUM_TAGS];  /* metatables for basic types */
@@ -192,13 +192,13 @@ namespace kurumi
 		public class lua_State : LuaState.GCObject
 		{
 			public byte status; /*Byte*/ /*lu_byte*/
-			public TValue/*StkId*/ top;  /* first free slot in the stack */
-			public TValue/*StkId*/ base_;  /* base of current function */
+			public LuaObject.TValue/*StkId*/ top;  /* first free slot in the stack */
+			public LuaObject.TValue/*StkId*/ base_;  /* base of current function */
 			public LuaState.global_State l_G;
 			public LuaState.CallInfo ci;  /* call info for current function */
 			public LuaCode.InstructionPtr savedpc = new LuaCode.InstructionPtr();  /* `savedpc' of current function */
-			public TValue/*StkId*/ stack_last;  /* last free slot in the stack */
-			public TValue[]/*StkId[]*/ stack;  /* stack base */
+			public LuaObject.TValue/*StkId*/ stack_last;  /* last free slot in the stack */
+			public LuaObject.TValue[]/*StkId[]*/ stack;  /* stack base */
 			public LuaState.CallInfo end_ci;  /* points after end of ci array*/
 			public LuaState.CallInfo[] base_ci;  /* array of CallInfo's */
 			public int stacksize;
@@ -210,8 +210,8 @@ namespace kurumi
 			public int basehookcount;
 			public int hookcount;
 			public Lua.lua_Hook hook;
-			public TValue l_gt = new TValue();  /* table of globals */
-			public TValue env = new TValue();  /* temporary place for environments */
+			public LuaObject.TValue l_gt = new LuaObject.TValue();  /* table of globals */
+			public LuaObject.TValue env = new LuaObject.TValue();  /* temporary place for environments */
 			public LuaState.GCObject openupval;  /* list of open upvalues in this stack */
 			public LuaState.GCObject gclist;
 			public LuaDo.lua_longjmp errorJmp;  /* current error recover point */
@@ -513,13 +513,13 @@ namespace kurumi
 			L1.stack_last = L1.stack[L1.stacksize - EXTRA_STACK - 1];
 			/* initialize first ci */
 			L1.ci.func = L1.top;
-			TValue[] top = new TValue[1];
+			LuaObject.TValue[] top = new LuaObject.TValue[1];
 			top[0] = L1.top;
-			TValue ret = /*StkId*/TValue.inc(/*ref*/ top);
+			LuaObject.TValue ret = /*StkId*/LuaObject.TValue.inc(/*ref*/ top);
 			L1.top = top[0];
 			LuaObject.setnilvalue(ret);  /* `function' entry for this `ci' */
 			L1.base_ = L1.ci.base_ = L1.top;
-			L1.ci.top = TValue.plus(L1.top, Lua.LUA_MINSTACK);
+			L1.ci.top = LuaObject.TValue.plus(L1.top, Lua.LUA_MINSTACK);
 		}
 
 		private static void freestack(lua_State L, lua_State L1) 

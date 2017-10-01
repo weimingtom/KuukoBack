@@ -30,10 +30,10 @@ namespace kurumi
 			c.c.setIsC((byte)1);
 			c.c.setEnv(e);
 			c.c.setNupvalues(LuaLimits.cast_byte(nelems));
-			c.c.upvalue = new TValue[nelems];
+			c.c.upvalue = new LuaObject.TValue[nelems];
 			for (int i = 0; i < nelems; i++)
 			{
-				c.c.upvalue[i] = new TValue();
+				c.c.upvalue[i] = new LuaObject.TValue();
 			}
 			return c;
 		}
@@ -68,13 +68,13 @@ namespace kurumi
 			return uv;
 		}
 
-		public static UpVal luaF_findupval(LuaState.lua_State L, TValue/*StkId*/ level)
+		public static UpVal luaF_findupval(LuaState.lua_State L, LuaObject.TValue/*StkId*/ level)
 		{
 			LuaState.global_State g = LuaState.G(L);
 			LuaState.GCObjectRef pp = new LuaState.OpenValRef(L);
 			UpVal p;
 			UpVal uv;
-			while (pp.get() != null && TValue.greaterEqual((p = LuaState.ngcotouv(pp.get())).v, level))
+			while (pp.get() != null && LuaObject.TValue.greaterEqual((p = LuaState.ngcotouv(pp.get())).v, level))
 			{
 				LuaLimits.lua_assert(p.v != p.u.value);
 				if (p.v == level) 
@@ -118,11 +118,11 @@ namespace kurumi
 			LuaMem.luaM_free_UpVal(L, uv, new ClassType(ClassType.TYPE_UPVAL));  /* free upvalue */
 		}
 
-		public static void luaF_close(LuaState.lua_State L, TValue/*StkId*/ level)
+		public static void luaF_close(LuaState.lua_State L, LuaObject.TValue/*StkId*/ level)
 		{
 			UpVal uv;
 			LuaState.global_State g = LuaState.G(L);
-			while (L.openupval != null && TValue.greaterEqual((uv = LuaState.ngcotouv(L.openupval)).v, level))
+			while (L.openupval != null && LuaObject.TValue.greaterEqual((uv = LuaState.ngcotouv(L.openupval)).v, level))
 			{
 				LuaState.GCObject o = LuaState.obj2gco(uv);
 				LuaLimits.lua_assert(!LuaGC.isblack(o) && uv.v != uv.u.value);

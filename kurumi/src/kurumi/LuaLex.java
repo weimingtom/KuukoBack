@@ -187,7 +187,7 @@ public class LuaLex {
 	public static LuaObject.TString luaX_newstring(LexState ls, LuaConf.CharPtr str, int l) { //uint
 		LuaState.lua_State L = ls.L;
 		LuaObject.TString ts = LuaString.luaS_newlstr(L, str, l);
-		TValue o = LuaTable.luaH_setstr(L, ls.fs.h, ts); // entry for `str' 
+		LuaObject.TValue o = LuaTable.luaH_setstr(L, ls.fs.h, ts); // entry for `str' 
 		if (LuaObject.ttisnil(o)) {
 			LuaObject.setbvalue(o, 1); // make sure `str' will not be collected 
 		}

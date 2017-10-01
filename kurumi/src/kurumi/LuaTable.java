@@ -32,7 +32,7 @@ public class LuaTable {
 		return n.i_key.nk;
 	}
 
-	public static TValue gval(LuaObject.Node n) {
+	public static LuaObject.TValue gval(LuaObject.Node n) {
 		return n.i_val;
 	}
 
@@ -44,7 +44,7 @@ public class LuaTable {
 		n.i_key.nk.next = v;
 	}
 
-	public static TValue key2tval(LuaObject.Node n) {
+	public static LuaObject.TValue key2tval(LuaObject.Node n) {
 		return n.i_key.getTvk();
 	}
 
@@ -93,7 +93,7 @@ public class LuaTable {
 	//{{null}, LUA_TNIL},  /* value */
 	//{{{null}, LUA_TNIL, null}}  /* key */
 	//};
-	public static LuaObject.Node dummynode_ = new LuaObject.Node(new TValue(new Value(), Lua.LUA_TNIL), new LuaObject.TKey(new Value(), Lua.LUA_TNIL, null));
+	public static LuaObject.Node dummynode_ = new LuaObject.Node(new LuaObject.TValue(new Value(), Lua.LUA_TNIL), new LuaObject.TKey(new Value(), Lua.LUA_TNIL, null));
 	public static LuaObject.Node dummynode = dummynode_;
 
 //        
@@ -111,7 +111,7 @@ public class LuaTable {
 //		 ** returns the `main' position of an element in a table (that is, the index
 //		 ** of its hash value)
 //		 
-	private static LuaObject.Node mainposition(LuaObject.Table t, TValue key) {
+	private static LuaObject.Node mainposition(LuaObject.Table t, LuaObject.TValue key) {
 		switch (LuaObject.ttype(key)) {
 			case Lua.LUA_TNUMBER: {
 					return hashnum(t, LuaObject.nvalue(key));
@@ -136,7 +136,7 @@ public class LuaTable {
 //		 ** returns the index for `key' if `key' is an appropriate key to live in
 //		 ** the array part of the table, -1 otherwise.
 //		 
-	private static int arrayindex(TValue key) {
+	private static int arrayindex(LuaObject.TValue key) {
 		if (LuaObject.ttisnumber(key)) {
 			double n = LuaObject.nvalue(key); //lua_Number
 			int[] k = new int[1];
@@ -153,7 +153,7 @@ public class LuaTable {
 //		 ** elements in the array part, then elements in the hash part. The
 //		 ** beginning of a traversal is signalled by -1.
 //		 
-	private static int findindex(LuaState.lua_State L, LuaObject.Table t, TValue key) { //StkId
+	private static int findindex(LuaState.lua_State L, LuaObject.Table t, LuaObject.TValue key) { //StkId
 		int i;
 		if (LuaObject.ttisnil(key)) {
 			return -1; // first iteration 
@@ -181,14 +181,14 @@ public class LuaTable {
 		}
 	}
 
-	public static int luaH_next(LuaState.lua_State L, LuaObject.Table t, TValue key) { //StkId
+	public static int luaH_next(LuaState.lua_State L, LuaObject.Table t, LuaObject.TValue key) { //StkId
 		int i = findindex(L, t, key); // find original element 
 		for (i++; i < t.sizearray; i++) {
 			// try first array part 
 			if (!LuaObject.ttisnil(t.array[i])) {
 				// a non-nil value? 
 				LuaObject.setnvalue(key, LuaLimits.cast_num(i + 1));
-				LuaObject.setobj2s(L, TValue.plus(key, 1), t.array[i]);
+				LuaObject.setobj2s(L, LuaObject.TValue.plus(key, 1), t.array[i]);
 				return 1;
 			}
 		}
@@ -197,7 +197,7 @@ public class LuaTable {
 			if (!LuaObject.ttisnil(gval(gnode(t, i)))) {
 				// a non-nil value? 
 				LuaObject.setobj2s(L, key, key2tval(gnode(t, i)));
-				LuaObject.setobj2s(L, TValue.plus(key, 1), gval(gnode(t, i)));
+				LuaObject.setobj2s(L, LuaObject.TValue.plus(key, 1), gval(gnode(t, i)));
 				return 1;
 			}
 		}
@@ -235,7 +235,7 @@ public class LuaTable {
 		return na;
 	}
 
-	private static int countint(TValue key, int[] nums) {
+	private static int countint(LuaObject.TValue key, int[] nums) {
 		int k = arrayindex(key);
 		if (0 < k && k <= MAXASIZE) {
 			// is `key' an appropriate array index? 
@@ -291,7 +291,7 @@ public class LuaTable {
 
 	private static void setarrayvector(LuaState.lua_State L, LuaObject.Table t, int size) {
 		int i;
-		TValue[][] array_ref = new TValue[1][];
+		LuaObject.TValue[][] array_ref = new LuaObject.TValue[1][];
 		array_ref[0] = t.array;
 		LuaMem.luaM_reallocvector_TValue(L, array_ref, t.sizearray, size, new ClassType(ClassType.TYPE_TVALUE)); //, TValue - ref
 		t.array = array_ref[0];
@@ -348,7 +348,7 @@ public class LuaTable {
 				}
 			}
 			// shrink array 
-			TValue[][] array_ref = new TValue[1][];
+			LuaObject.TValue[][] array_ref = new LuaObject.TValue[1][];
 			array_ref[0] = t.array;
 			LuaMem.luaM_reallocvector_TValue(L, array_ref, oldasize, nasize, new ClassType(ClassType.TYPE_TVALUE)); //, TValue - ref
 			t.array = array_ref[0];
@@ -370,7 +370,7 @@ public class LuaTable {
 		resize(L, t, nasize, nsize);
 	}
 
-	private static void rehash(LuaState.lua_State L, LuaObject.Table t, TValue ek) {
+	private static void rehash(LuaState.lua_State L, LuaObject.Table t, LuaObject.TValue ek) {
 		int[] nasize = new int[1];
 		int na;
 		int[] nums = new int[MAXBITS + 1]; // nums[i] = number of keys between 2^(i-1) and 2^i 
@@ -434,7 +434,7 @@ public class LuaTable {
 //		 ** put new key in its main position; otherwise (colliding node is in its main
 //		 ** position), new key goes to an empty position.
 //		 
-	private static TValue newkey(LuaState.lua_State L, LuaObject.Table t, TValue key) {
+	private static LuaObject.TValue newkey(LuaState.lua_State L, LuaObject.Table t, LuaObject.TValue key) {
 		LuaObject.Node mp = mainposition(t, key);
 		if (!LuaObject.ttisnil(gval(mp)) || LuaObject.Node.isEqual(mp, dummynode)) {
 			LuaObject.Node othern;
@@ -453,7 +453,7 @@ public class LuaTable {
 					othern = gnext(othern); // find previous 
 				}
 				gnext_set(othern, n); // redo the chain with `n' in place of `mp' 
-				n.i_val = new TValue(mp.i_val); // copy colliding node into free pos. (mp.next also goes) 
+				n.i_val = new LuaObject.TValue(mp.i_val); // copy colliding node into free pos. (mp.next also goes) 
 				n.i_key = new LuaObject.TKey(mp.i_key);
 				gnext_set(mp, null); // now `mp' is free 
 				LuaObject.setnilvalue(gval(mp));
@@ -476,7 +476,7 @@ public class LuaTable {
 //        
 //		 ** search function for integers
 //		 
-	public static TValue luaH_getnum(LuaObject.Table t, int key) {
+	public static LuaObject.TValue luaH_getnum(LuaObject.Table t, int key) {
 		// (1 <= key && key <= t.sizearray) 
 		if ((long)(((long)(key - 1)) & 0xffffffffL) < (long)(((long)t.sizearray) & 0xffffffffL)) { //uint - uint
 			return t.array[key - 1];
@@ -500,7 +500,7 @@ public class LuaTable {
 //        
 //		 ** search function for strings
 //		 
-	public static TValue luaH_getstr(LuaObject.Table t, LuaObject.TString key) {
+	public static LuaObject.TValue luaH_getstr(LuaObject.Table t, LuaObject.TString key) {
 		LuaObject.Node n = hashstr(t, key);
 		do {
 			// check whether `key' is somewhere in the chain 
@@ -517,7 +517,7 @@ public class LuaTable {
 //        
 //		 ** main search function
 //		 
-	public static TValue luaH_get(LuaObject.Table t, TValue key) {
+	public static LuaObject.TValue luaH_get(LuaObject.Table t, LuaObject.TValue key) {
 		switch (LuaObject.ttype(key)) {
 			case Lua.LUA_TNIL: {
 					return LuaObject.luaO_nilobject;
@@ -561,11 +561,11 @@ public class LuaTable {
 		}
 	}
 
-	public static TValue luaH_set(LuaState.lua_State L, LuaObject.Table t, TValue key) {
-		TValue p = luaH_get(t, key);
+	public static LuaObject.TValue luaH_set(LuaState.lua_State L, LuaObject.Table t, LuaObject.TValue key) {
+		LuaObject.TValue p = luaH_get(t, key);
 		t.flags = 0;
 		if (p != LuaObject.luaO_nilobject) {
-			return (TValue)p;
+			return (LuaObject.TValue)p;
 		}
 		else {
 			if (LuaObject.ttisnil(key)) {
@@ -578,25 +578,25 @@ public class LuaTable {
 		}
 	}
 
-	public static TValue luaH_setnum(LuaState.lua_State L, LuaObject.Table t, int key) {
-		TValue p = luaH_getnum(t, key);
+	public static LuaObject.TValue luaH_setnum(LuaState.lua_State L, LuaObject.Table t, int key) {
+		LuaObject.TValue p = luaH_getnum(t, key);
 		if (p != LuaObject.luaO_nilobject) {
-			return (TValue)p;
+			return (LuaObject.TValue)p;
 		}
 		else {
-			TValue k = new TValue();
+			LuaObject.TValue k = new LuaObject.TValue();
 			LuaObject.setnvalue(k, LuaLimits.cast_num(key));
 			return newkey(L, t, k);
 		}
 	}
 
-	public static TValue luaH_setstr(LuaState.lua_State L, LuaObject.Table t, LuaObject.TString key) {
-		TValue p = luaH_getstr(t, key);
+	public static LuaObject.TValue luaH_setstr(LuaState.lua_State L, LuaObject.Table t, LuaObject.TString key) {
+		LuaObject.TValue p = luaH_getstr(t, key);
 		if (p != LuaObject.luaO_nilobject) {
-			return (TValue)p;
+			return (LuaObject.TValue)p;
 		}
 		else {
-			TValue k = new TValue();
+			LuaObject.TValue k = new LuaObject.TValue();
 			LuaObject.setsvalue(L, k, key);
 			return newkey(L, t, k);
 		}

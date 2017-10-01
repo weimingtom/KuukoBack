@@ -179,7 +179,7 @@ public class ClassType {
 				result = new LuaIOLib.FilePtr();
 			}
 			else if (type == TYPE_TVALUE) {
-				result = new TValue();
+				result = new LuaObject.TValue();
 			}
 			else if (type == TYPE_CCLOSURE) {
 				throw new RuntimeException("alloc CClosure error");

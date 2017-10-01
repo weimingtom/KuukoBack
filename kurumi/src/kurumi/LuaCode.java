@@ -349,9 +349,9 @@ public class LuaCode {
 		}
 	}
 
-	private static int addk(LuaParser.FuncState fs, TValue k, TValue v) {
+	private static int addk(LuaParser.FuncState fs, LuaObject.TValue k, LuaObject.TValue v) {
 		LuaState.lua_State L = fs.L;
-		TValue idx = LuaTable.luaH_set(L, fs.h, k);
+		LuaObject.TValue idx = LuaTable.luaH_set(L, fs.h, k);
 		LuaObject.Proto f = fs.f;
 		int oldsize = f.sizek;
 		if (LuaObject.ttisnumber(idx)) {
@@ -361,7 +361,7 @@ public class LuaCode {
 		else {
 			// constant not found; create a new entry 
 			LuaObject.setnvalue(idx, LuaLimits.cast_num(fs.nk));
-			TValue[][] k_ref = new TValue[1][];
+			LuaObject.TValue[][] k_ref = new LuaObject.TValue[1][];
 			k_ref[0] = f.k;
 			int[] sizek_ref = new int[1];
 			sizek_ref[0] = f.sizek;
@@ -378,25 +378,25 @@ public class LuaCode {
 	}
 
 	public static int luaK_stringK(LuaParser.FuncState fs, LuaObject.TString s) {
-		TValue o = new TValue();
+		LuaObject.TValue o = new LuaObject.TValue();
 		LuaObject.setsvalue(fs.L, o, s);
 		return addk(fs, o, o);
 	}
 
 	public static int luaK_numberK(LuaParser.FuncState fs, double r) { //lua_Number
-		TValue o = new TValue();
+		LuaObject.TValue o = new LuaObject.TValue();
 		LuaObject.setnvalue(o, r);
 		return addk(fs, o, o);
 	}
 
 	private static int boolK(LuaParser.FuncState fs, int b) {
-		TValue o = new TValue();
+		LuaObject.TValue o = new LuaObject.TValue();
 		LuaObject.setbvalue(o, b);
 		return addk(fs, o, o);
 	}
 
 	private static int nilK(LuaParser.FuncState fs) {
-		TValue k = new TValue(), v = new TValue();
+		LuaObject.TValue k = new LuaObject.TValue(), v = new LuaObject.TValue();
 		LuaObject.setnilvalue(v);
 		// cannot use nil as key; instead use table itself to represent nil 
 		LuaObject.sethvalue(fs.L, k, fs.h);
