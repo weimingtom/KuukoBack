@@ -1,0 +1,16 @@
+(1) LuaConf (fixed)
+
+	public static CLib.CharPtr lua_number2str(double n) {
+"%1$s" is not very correct, 0 to 0.0 ----->		return CLib.CharPtr.toCharPtr(String.format("%1$s", n)); //FIXME:
+	}
+
+---->
+
+	public static CLib.CharPtr lua_number2str(double n) {
+		if (n == (int)n) {
+			return CLib.CharPtr.toCharPtr(Integer.toString((int)n)); //FIXME:
+		} else {
+			return CLib.CharPtr.toCharPtr(Double.toString(n)); //FIXME:
+		}
+	}
+	

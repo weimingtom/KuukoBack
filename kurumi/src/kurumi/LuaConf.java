@@ -533,7 +533,11 @@ public class LuaConf {
 	public static final String LUA_NUMBER_FMT = "%.14g";
 
 	public static CLib.CharPtr lua_number2str(double n) {
-		return CLib.CharPtr.toCharPtr(String.format("%1$s", n)); //FIXME:
+		if (n == (int)n) {
+			return CLib.CharPtr.toCharPtr(Integer.toString((int)n)); //FIXME:
+		} else {
+			return CLib.CharPtr.toCharPtr(Double.toString(n)); //FIXME:
+		}
 	}
 
 	public static final int LUAI_MAXNUMBER2STR = 32; // 16 digits, sign, point, and \0 
