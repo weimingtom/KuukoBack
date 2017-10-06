@@ -318,7 +318,8 @@ namespace kurumi
 			// todo: fix this - mjf
 			//if (envname.Equals("LUA_PATH"))
 			//return "MyPath";
-			return null;
+			string result = Environment.GetEnvironmentVariable(envname.ToString());
+			return result != null ? new CharPtr(result) : null;
 		}
 
 		public class CharPtr

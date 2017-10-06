@@ -680,12 +680,12 @@ public class ClassType {
 		}
 	}
 
-	public static byte[] GetBytes(double d) {
+	public static int[] GetBytes(double d) {
 		//FIXME:
 		long value = Double.doubleToRawLongBits(d);  
-		byte[] byteRet = new byte[8];  
+		int[] byteRet = new int[8];  
 		for (int i = 0; i < 8; i++) {  
-		    byteRet[i] = (byte) ((value >> 8 * i) & 0xff);  
+		    byteRet[i] = (int) ((value >> 8 * i) & 0xff);  
 		}
 		return byteRet;  
 	}

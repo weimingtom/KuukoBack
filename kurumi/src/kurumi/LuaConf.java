@@ -533,8 +533,8 @@ public class LuaConf {
 	public static final String LUA_NUMBER_FMT = "%.14g";
 
 	public static CLib.CharPtr lua_number2str(double n) {
-		if (n == (int)n) {
-			return CLib.CharPtr.toCharPtr(Integer.toString((int)n)); //FIXME:
+		if (n == (long)n) {
+			return CLib.CharPtr.toCharPtr(Long.toString((long)n)); //FIXME:
 		} else {
 			return CLib.CharPtr.toCharPtr(Double.toString(n)); //FIXME:
 		}

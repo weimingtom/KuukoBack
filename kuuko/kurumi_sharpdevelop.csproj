@@ -99,27 +99,59 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="test\bisect.lua" />
-    <None Include="test\cf.lua" />
-    <None Include="test\echo.lua" />
-    <None Include="test\env.lua" />
-    <None Include="test\factorial.lua" />
+    <None Include="test\bisect.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\cf.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\echo.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\env.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\factorial.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="test\fib.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="test\fibfor.lua" />
-    <None Include="test\globals.lua" />
-    <None Include="test\hello.lua" />
-    <None Include="test\life.lua" />
+    <None Include="test\fibfor.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\globals.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\hello.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\life.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="test\luac.lua" />
-    <None Include="test\printf.lua" />
+    <None Include="test\printf.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="test\README" />
-    <None Include="test\readonly.lua" />
-    <None Include="test\sieve.lua" />
-    <None Include="test\sort.lua" />
-    <None Include="test\table.lua" />
-    <None Include="test\trace-calls.lua" />
-    <None Include="test\trace-globals.lua" />
+    <None Include="test\readonly.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\sieve.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\sort.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\table.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\trace-calls.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test\trace-globals.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="test\xd.lua" />
   </ItemGroup>
   <ItemGroup>

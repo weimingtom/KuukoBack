@@ -100,11 +100,11 @@ public class LuaTable {
 //		 ** hash for lua_Numbers
 //		 
 	private static LuaObject.Node hashnum(LuaObject.Table t, double n) { //lua_Number
-		byte[] a = ClassType.GetBytes(n);
+		int[] a = ClassType.GetBytes(n);
 		for (int i = 1; i < a.length; i++) {
 			a[0] += a[i];
 		}
-		return hashmod(t, (int)a[0]);
+		return hashmod(t, (int)(a[0] & 0xff));
 	}
 
 //        

@@ -7,10 +7,69 @@
 ---->
 
 	public static CLib.CharPtr lua_number2str(double n) {
-		if (n == (int)n) {
-			return CLib.CharPtr.toCharPtr(Integer.toString((int)n)); //FIXME:
+		if (n == (long)n) {
+			return CLib.CharPtr.toCharPtr(Long.toString((long)n)); //FIXME:
 		} else {
 			return CLib.CharPtr.toCharPtr(Double.toString(n)); //FIXME:
 		}
 	}
+	
+(2) LuaIOLib (fixed)
+
+LuaConf.LUA_NUMBER_FMT convert int to double
+
+				status = ((status!=0) && (CLib.fprintf(f, CLib.CharPtr.toCharPtr(LuaConf.LUA_NUMBER_FMT), LuaAPI.lua_tonumber(L, arg)) > 0)) ? 1 : 0;
+				
+------>
+
+(CLib.fprintf(f, CLib.CharPtr.toCharPtr(LuaConf.LUA_NUMBER_FMT), LuaAPI.lua_tonumber(L, arg))
+LuaConf.LUA_NUMBER_FMT is not correct in printf
+
+
+fix method:
+	public static String sprintf(String Format, Object... Parameters) {
+		boolean hasFloat = false;
+		if (Format.equals(LuaConf.LUA_NUMBER_FMT) && Parameters.length == 1) {
+			if ((Double)Parameters[0] == ((Double)Parameters[0]).longValue()) {
+				Format = "%s";
+				Parameters[0] = ((Double)Parameters[0]).longValue();
+			} else {
+				Format = "%s";
+				hasFloat = true;
+			}
+		} else if (Format.equals("%ld")) {
+			Format = "%d";
+		}
+		String result = String.format(Format, Parameters);
+		if (hasFloat) {
+			String[] subResults = result.split("\\.");
+			if (subResults.length == 2 && subResults[1].length() > 13) {
+				result = String.format(LuaConf.LUA_NUMBER_FMT, Parameters);
+			}
+		}
+		return result;
+	}
+	
+
+(3) 
+	private static LuaObject.Node hashnum(LuaObject.Table t, double n) { //lua_Number
+--->		int[] a = ClassType.GetBytes(n);
+		for (int i = 1; i < a.length; i++) {
+--->			a[0] += a[i];
+		}
+--->		return hashmod(t, (int)(a[0] & 0xff));
+	}
+
+
+byte[] to int[]--->	public static int[] GetBytes(double d) {
+		//FIXME:
+		long value = Double.doubleToRawLongBits(d);  
+		int[] byteRet = new int[8];  
+		for (int i = 0; i < 8; i++) {  
+		    byteRet[i] = (int) ((value >> 8 * i) & 0xff);  
+		}
+		return byteRet;  
+	}
+	
+	
 	

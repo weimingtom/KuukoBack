@@ -252,7 +252,8 @@ public class CLib {
 		// todo: fix this - mjf
 		//if (envname.Equals("LUA_PATH"))
 		//return "MyPath";
-		return null;
+		String result = System.getenv(envname.toString());
+		return result != null ? new CharPtr(result) : null;
 	}
 
 	public static class CharPtr {

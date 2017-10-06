@@ -114,12 +114,12 @@ namespace kurumi
 		 */
 		private static LuaObject.Node hashnum(LuaObject.Table t, Double/*lua_Number*/ n)
 		{
-			byte[] a = ClassType.GetBytes(n);
+			int[] a = ClassType.GetBytes(n);
 			for (int i = 1; i < a.Length; i++) 
 			{
 				a[0] += a[i];
 			}
-			return hashmod(t, (int)a[0]);
+			return hashmod(t, (int)(a[0] & 0xff));
 		}
 
 		/*

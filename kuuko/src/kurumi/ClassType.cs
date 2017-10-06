@@ -834,7 +834,7 @@ namespace kurumi
         	}
         }
 
-        public static byte[] GetBytes(double d)
+        public static int[] GetBytes(double d)
         {
             //FIXME:
             //long value = Double.doubleToRawLongBits(d);  
@@ -843,7 +843,13 @@ namespace kurumi
             //    byteRet[i] = (byte) ((value >> 8 * i) & 0xff);  
             //}
             //return byteRet;  
-            return BitConverter.GetBytes(d);
+            byte[] byteRet = BitConverter.GetBytes(d);
+            int[] byteRet2 = new int[byteRet.Length];
+            for (int i = 0; i < byteRet.Length; ++i)
+            {
+            	byteRet2[i] = (int)(byteRet[i] & 0xff);
+            }
+            return byteRet2;
         }
 
         //--------------------------------
