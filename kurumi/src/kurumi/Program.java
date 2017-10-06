@@ -4,7 +4,7 @@
 	{
 		public static void main(String[] args) 
 		{
-			args = new String[] {"test/fib.lua"};
+			//args = new String[] {"test/fib.lua"};
 			if (false)
 			{
 				LuacProgram.MainLuac(args);

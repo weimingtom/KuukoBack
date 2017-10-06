@@ -9,21 +9,40 @@ public class StreamProxy {
 	private final static int TYPE_STDERR = 3;
 	public int type = TYPE_FILE;
 	public boolean isOK = false;
-
+	private RandomAccessFile _file = null;
+	
 	private StreamProxy() {
 		this.isOK = false;
 	}
 
 	public StreamProxy(String path, String modeStr) {
-		
+		this.isOK = false;
+		try {
+			this._file = new RandomAccessFile(path, modeStr);
+			this.isOK = true;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		this.type = TYPE_FILE;
 	}
 
 	public final void Flush() {
-		
+		if (this.type == TYPE_STDOUT) {
+			//RandomAccessFile flush not need ?
+		}
 	}
 
 	public final void Close() {
-		
+		if (this.type == TYPE_STDOUT) {
+			if (this._file != null) {
+				try {
+					this._file.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				this._file = null;
+			}
+		}		
 	}
 
 	public final void Write(byte[] buffer, int offset, int count) {
@@ -31,16 +50,61 @@ public class StreamProxy {
 			System.out.print(new String(buffer, offset, count));
 		} else if (this.type == TYPE_STDERR) {
 			System.err.print(new String(buffer, offset, count));
+		} else if (this.type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+					this._file.writeBytes(new String(buffer, offset, count));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		} else {
 			//FIXME:TODO
 		}
 	}
 
 	public final int Read(byte[] buffer, int offset, int count) {
+		if (type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+					return this._file.read(buffer, offset, count);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return 0;
 	}
 
 	public final int Seek(long offset, int origin) {
+		if (type == TYPE_FILE) {
+			if (this._file != null) {
+				//CLib.SEEK_SET, 
+				//CLib.SEEK_CUR, 
+				//CLib.SEEK_END 
+				long pos = -1;
+				if (origin == CLib.SEEK_CUR) {
+					pos = offset;
+				} else if (origin == CLib.SEEK_CUR) {
+					try {
+						pos = this._file.getFilePointer() + offset;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else if (origin == CLib.SEEK_END) {
+					try {
+						pos = this._file.length() + offset;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}					
+				}
+				try {
+					this._file.seek(pos);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return 0;
 	}
 
@@ -52,20 +116,55 @@ public class StreamProxy {
 				e.printStackTrace();
 			}
 			return 0;
+		} else if (type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+					return this._file.read();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return 0;
 		} else {
 			return 0;
 		}
 	}
 
 	public final void ungetc(int c) {
-
+		if (type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+					this._file.seek(this._file.getFilePointer() - 1);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public final long getPosition() {
+		if (type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+					return this._file.getFilePointer();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return 0;
 	}
 
 	public final boolean isEof() {
+		if (type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+					return this._file.getFilePointer() >= this._file.length();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return true;
 	}
 
@@ -103,11 +202,11 @@ public class StreamProxy {
 	}
 
 	public static void Delete(String path) {
-		
+		new File(path).delete();
 	}
 
 	public static void Move(String path1, String path2) {
-		
+		new File(path1).renameTo(new File(path2));
 	}
 
 	public static String GetTempFileName() {
