@@ -2,4 +2,11 @@
 			//args = new String[] {"-e", "N=100", "test/sieve.lua"}; // if N=1000, throw java.lang.StackOverflowError, use -Xss4096k
 	
 
+
+
+--->	public static final int LUAI_MAXCCALLS = 100;//200;
+
+CSharp & C can be 200
+java can be 100
+
 (2) new String("XXXX").equals(...)

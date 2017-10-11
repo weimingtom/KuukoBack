@@ -479,7 +479,7 @@ public class LuaConf {
 //		@@ LUAI_MAXCCALLS is the maximum depth for nested C calls (short) and
 //		@* syntactical nested non-terminals in a program.
 //		 
-	public static final int LUAI_MAXCCALLS = 200;
+	public static final int LUAI_MAXCCALLS = 100;//200; //FIXME:
 
 //        
 //		@@ LUAI_MAXVARS is the maximum number of local variables per function
