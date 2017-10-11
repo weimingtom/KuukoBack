@@ -1,5 +1,8 @@
 package kurumi;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class CLib {
 
 	// misc stuff needed for the compile
@@ -870,4 +873,312 @@ public class CLib {
 	public static int GetUnmanagedSize(ClassType t) {
 		return t.GetUnmanagedSize();
 	}
+	
+	
+	
+	//----------------------------------------		
+	//https://github.com/NLua/KopiLua/blob/master/KopiLua/src/loslib.cs
+
+	//
+	// This strftime implementation has been made following the
+	// Sanos OS open-source strftime.c implementation at
+	// http://www.jbox.dk/sanos/source/lib/strftime.c.html
+	
+	public static int strftime(CharPtr s, int maxsize, CharPtr format, DateTimeProxy t)
+	{
+		int sIndex = s.index;
+
+		CharPtr p = StrFTimeFmt(format == null ? CharPtr.toCharPtr("%c") : format, t._calendar, s, s.add((int)maxsize));
+		if (CLib.CharPtr.isEqual(p, CLib.CharPtr.plus(s, (int)maxsize))) return 0;
+		p.set(0, '\0');
+
+		return (int)Math.abs(s.index - sIndex);
+	}
+
+	private static CharPtr StrFTimeFmt(CharPtr baseFormat, Calendar t, CharPtr pt, CharPtr ptlim)
+	{
+		CharPtr format = new CharPtr(baseFormat);
+
+		for (; format.get(0) != 0; format.inc())
+		{
+
+			if (format.get(0) == '%')
+			{
+
+				format.inc();
+
+				if (format.get(0) == 'E')
+				{
+					format.inc(); // Alternate Era is ignored
+				}
+				else if (format.get(0) == 'O')
+				{
+					format.inc(); // Alternate numeric symbols is ignored
+				}
+
+				switch (format.get(0))
+				{
+					case '\0':
+						format.dec();
+						break;
+
+					case 'A': // Full day of week
+						//pt = _add((t->tm_wday < 0 || t->tm_wday > 6) ? "?" : _days[t->tm_wday], pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("dddd").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'a': // Abbreviated day of week
+						//pt = _add((t->tm_wday < 0 || t->tm_wday > 6) ? "?" : _days_abbrev[t->tm_wday], pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("ddd").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'B': // Full month name
+						//pt = _add((t->tm_mon < 0 || t->tm_mon > 11) ? "?" : _months[t->tm_mon], pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("MMMM").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'b': // Abbreviated month name
+					case 'h': // Abbreviated month name
+						//pt = _add((t->tm_mon < 0 || t->tm_mon > 11) ? "?" : _months_abbrev[t->tm_mon], pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("MMM").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'C': // First two digits of year (a.k.a. Year divided by 100 and truncated to integer (00-99))
+						//pt = _conv((t->tm_year + TM_YEAR_BASE) / 100, "%02d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("yyyy").format(t.getTime()).substring(0, 2)), pt, ptlim);
+						continue;
+
+					case 'c': // Abbreviated date/time representation (e.g. Thu Aug 23 14:55:02 2001)
+						//pt = StrFTimeFmt(CLib.CharPtr.toCharPtr("%a %b %e %H:%M:%S %Y"), t, pt, ptlim); //FIXME:
+						pt = StrFTimeFmt(CLib.CharPtr.toCharPtr("%m/%d/%y %H:%M:%S"), t, pt, ptlim); //FIXME:???
+						continue;
+
+					case 'D': // Short MM/DD/YY date
+						pt = StrFTimeFmt(CLib.CharPtr.toCharPtr("%m/%d/%y"), t, pt, ptlim);
+						continue;
+
+					case 'd': // Day of the month, zero-padded (01-31)
+						//pt = _conv(t->tm_mday, "%02d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("dd").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'e': // Day of the month, space-padded ( 1-31)
+						//pt = _conv(t->tm_mday, "%2d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(padLeft(Integer.toString(t.get(Calendar.DATE)), 2, ' ')), pt, ptlim);
+						continue;
+
+					case 'F': // Short YYYY-MM-DD date
+						pt = StrFTimeFmt(CLib.CharPtr.toCharPtr("%Y-%m-%d"), t, pt, ptlim);
+						continue;
+
+					case 'H': // Hour in 24h format (00-23)
+						//pt = _conv(t->tm_hour, "%02d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("HH").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'I': // Hour in 12h format (01-12)
+						//pt = _conv((t->tm_hour % 12) ? (t->tm_hour % 12) : 12, "%02d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("hh").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'j': // Day of the year (001-366)
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(padLeft(Integer.toString(t.get(Calendar.DAY_OF_YEAR)), 3, ' ')), pt, ptlim);
+						continue;
+
+					case 'k': // (Non-standard) // Hours in 24h format, space-padded ( 1-23)
+						//pt = _conv(t->tm_hour, "%2d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(padLeft(new SimpleDateFormat("%H").format(t.getTime()), 2, ' ')), pt, ptlim);
+						continue;
+
+					case 'l': // (Non-standard) // Hours in 12h format, space-padded ( 1-12)
+						//pt = _conv((t->tm_hour % 12) ? (t->tm_hour % 12) : 12, "%2d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(padLeft(new SimpleDateFormat("%h").format(t.getTime()), 2, ' ')), pt, ptlim);
+						continue;
+
+					case 'M': // Minute (00-59)
+						//pt = _conv(t->tm_min, "%02d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("mm").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'm': // Month as a decimal number (01-12)
+						//pt = _conv(t->tm_mon + 1, "%02d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("MM").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'n': // New-line character.
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr("\n"), pt, ptlim); //FIXME:????
+						continue;
+
+					case 'p': // AM or PM designation (locale dependent).
+						//pt = _add((t->tm_hour >= 12) ? "pm" : "am", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("tt").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'R': // 24-hour HH:MM time, equivalent to %H:%M
+						pt = StrFTimeFmt(CLib.CharPtr.toCharPtr("%H:%M"), t, pt, ptlim);
+						continue;
+
+					case 'r': // 12-hour clock time (locale dependent).
+						pt = StrFTimeFmt(CLib.CharPtr.toCharPtr("%I:%M:%S %p"), t, pt, ptlim);
+						continue;
+
+					case 'S': // Second ((00-59)
+						//pt = _conv(t->tm_sec, "%02d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("ss").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'T': // ISO 8601 time format (HH:MM:SS), equivalent to %H:%M:%S
+						pt = StrFTimeFmt(CLib.CharPtr.toCharPtr("%H:%M:%S"), t, pt, ptlim);
+						continue;
+
+					case 't': // Horizontal-tab character
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr("\t"), pt, ptlim);
+						continue;
+
+					case 'U': // Week number with the first Sunday as the first day of week one (00-53)
+						//pt = _conv((t->tm_yday + 7 - t->tm_wday) / 7, "%02d", pt, ptlim);
+//						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(System.Globalization.CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(t, System.Globalization.CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday).ToString()), pt, ptlim);
+						//FIXME:
+						continue;
+
+					case 'u': // ISO 8601 weekday as number with Monday as 1 (1-7) (locale independant).
+						//pt = _conv((t->tm_wday == 0) ? 7 : t->tm_wday, "%d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(t.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? "7" : (Integer.toString(t.get(Calendar.DAY_OF_WEEK)))), pt, ptlim);
+						continue;
+
+					case 'G':   // ISO 8601 year (four digits)
+					case 'g':  // ISO 8601 year (two digits)
+					case 'V':   // ISO 8601 week number
+						// See http://stackoverflow.com/questions/11154673/get-the-correct-week-number-of-a-given-date
+//						DateTime isoTime = t;
+//						DayOfWeek day = System.Globalization.CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(isoTime);
+//						if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+//						{
+//							isoTime = isoTime.AddDays(3);
+//						}
+//
+//						if (format.get(0) == 'V') // ISO 8601 week number
+//						{
+//							int isoWeek = System.Globalization.CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(isoTime, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+//							pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(isoWeek.ToString()), pt, ptlim);
+//						}
+//						else
+//						{
+//							string isoYear = System.Globalization.CultureInfo.InvariantCulture.Calendar.GetYear(isoTime).ToString(); // ISO 8601 year (four digits)
+//
+//							if (format.get(0) == 'g') // ISO 8601 year (two digits)
+//							{
+//								isoYear = isoYear.Substring(isoYear.Length - 2, 2);
+//							}
+//							pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(isoYear), pt, ptlim);
+//						}
+						//FIXME:
+						continue;
+
+					case 'W': // Week number with the first Monday as the first day of week one (00-53)
+						//pt = _conv((t->tm_yday + 7 - (t->tm_wday ? (t->tm_wday - 1) : 6)) / 7, "%02d", pt, ptlim);
+//						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(System.Globalization.CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(t, System.Globalization.CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday).ToString()), pt, ptlim);
+						//FIXME:
+						continue;
+
+					case 'w': // Weekday as a decimal number with Sunday as 0 (0-6)
+						//pt = _conv(t->tm_wday, "%d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(Integer.toString(t.get(Calendar.DAY_OF_WEEK))), pt, ptlim);
+						continue;
+
+					case 'X': // Long time representation (locale dependent)
+						//pt = _fmt("%H:%M:%S", t, pt, ptlim); // fails to comply with spec!
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("%T").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'x': // Short date representation (locale dependent)
+						//pt = _fmt("%m/%d/%y", t, pt, ptlim); // fails to comply with spec!
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("%d").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'y': // Last two digits of year (00-99)
+						//pt = _conv((t->tm_year + TM_YEAR_BASE) % 100, "%02d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(new SimpleDateFormat("yy").format(t.getTime())), pt, ptlim);
+						continue;
+
+					case 'Y': // Full year (all digits)
+						//pt = _conv(t->tm_year + TM_YEAR_BASE, "%04d", pt, ptlim);
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(Integer.toString(t.get(Calendar.YEAR))), pt, ptlim);
+						continue;
+
+					case 'Z': // Timezone name or abbreviation (locale dependent) or nothing if unavailable (e.g. CDT)
+//						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(TimeZone.CurrentTimeZone.StandardName), pt, ptlim);
+						//FIXME:
+						continue;
+
+					case 'z': // ISO 8601 offset from UTC in timezone (+/-hhmm), or nothing if unavailable
+//						TimeSpan ts = TimeZone.CurrentTimeZone.GetUtcOffset(t);
+//						string offset = (ts.Ticks < 0 ? "-" : "+") + ts.TotalHours.ToString("#00") + ts.Minutes.ToString("00");
+//						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr(offset), pt, ptlim);
+						//FIXME:
+						continue;
+
+					case '%': // Add '%'
+						pt = StrFTimeAdd(CLib.CharPtr.toCharPtr("%"), pt, ptlim);
+						continue;
+
+					default:
+						break;
+				}
+			}
+
+			if (pt == ptlim) break;
+
+			pt.set(0, format.get(0));
+			pt.inc();
+		}
+
+		return pt;
+	}
+
+	private static CharPtr StrFTimeAdd(CharPtr str, CharPtr pt, CharPtr ptlim)
+	{
+		pt.set(0, str.get(0));
+		str = str.next();
+
+		while (CLib.CharPtr.lessThan(pt, ptlim) && pt.get(0) != 0)
+		{
+			pt.inc();
+
+			pt.set(0, str.get(0));
+			str = str.next();
+		}
+		return pt;
+	} 
+	
+	//http://www.cnblogs.com/preacher/p/6826585.html
+	public static String padLeft(String src, int len, char ch) {
+        int diff = len - src.length();
+        if (diff <= 0) {
+            return src;
+        }
+
+        char[] charr = new char[len];
+        System.arraycopy(src.toCharArray(), 0, charr, 0, src.length());
+        for (int i = src.length(); i < len; i++) {
+            charr[i] = ch;
+        }
+        return new String(charr);
+    }
+    
+	//http://www.cnblogs.com/preacher/p/6826585.html
+    public static String padRight(String src, int len, char ch) {
+        int diff = len - src.length();
+        if (diff <= 0) {
+            return src;
+        }
+
+        char[] charr = new char[len];
+        System.arraycopy(src.toCharArray(), 0, charr, diff, src.length());
+        for (int i = 0; i < diff; i++) {
+            charr[i] = ch;
+        }
+        return new String(charr);
+    }
+	//-------------------
 }

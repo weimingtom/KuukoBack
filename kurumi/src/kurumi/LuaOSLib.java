@@ -142,30 +142,28 @@ public class LuaOSLib {
 			setboolfield(L, CLib.CharPtr.toCharPtr("isdst"), stm.IsDaylightSavingTime() ? 1 : 0);
 		}
 		else {
-			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("strftime not implemented yet")); // todo: implement this - mjf
+			//LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("strftime not implemented yet")); // todo: implement this - mjf
 			///#if false
-//				CharPtr cc = new char[3];
-//				luaL_Buffer b;
-//				cc[0] = '%'; 
-//				cc[2] = '\0';
-//				luaL_buffinit(L, b);
-//				for (; s[0] != 0; s.inc()) 
-//				{
-//					if (s[0] != '%' || s[1] == '\0')  /* no conversion specifier? */
-//					{
-//						luaL_addchar(b, s[0]);
-//					}
-//					else 
-//					{
-//						uint reslen;
-//						CharPtr buff = new char[200];  /* should be big enough for any conversion result */
-//						s.inc();
-//						cc[1] = s[0];
-//						reslen = strftime(buff, buff.Length, cc, stm);
-//						luaL_addlstring(b, buff, reslen);
-//					}
-//				}
-//				luaL_pushresult(b);
+			CLib.CharPtr cc = CLib.CharPtr.toCharPtr(new char[3]);
+			LuaAuxLib.luaL_Buffer b = new LuaAuxLib.luaL_Buffer();
+			cc.set(0, '%'); cc.set(2, '\0');
+			LuaAuxLib.luaL_buffinit(L, b);
+			for (; s.get(0) != 0; s.inc())
+			{
+				if (s.get(0) != '%' || s.get(1) == '\0')  /* no conversion specifier? */
+				{
+					LuaAuxLib.luaL_addchar(b, s.get(0));
+				}
+				else 
+				{
+					int reslen;
+					CLib.CharPtr buff = CLib.CharPtr.toCharPtr(new char[200]);  /* should be big enough for any conversion result */
+					s.inc(); cc.set(1, s.get(0));
+					reslen = CLib.strftime(new CLib.CharPtr(buff), buff.chars.length, cc, stm); //string kkk = buff.ToString();
+					LuaAuxLib.luaL_addlstring(b, buff, (int)reslen);
+				}
+			}
+			LuaAuxLib.luaL_pushresult(b);
 			///#endif // #if 0
 		}
 		return 1;

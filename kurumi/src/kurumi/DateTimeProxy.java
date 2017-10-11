@@ -7,7 +7,7 @@ import java.util.TimeZone;
 	public class DateTimeProxy 
 	{
 		//see https://github.com/weimingtom/mochalua/blob/master/Mochalua/src/com/groundspeak/mochalua/LuaOSLib.java
-		private Calendar _calendar;
+		public Calendar _calendar;
 		 
         public DateTimeProxy()
         {
