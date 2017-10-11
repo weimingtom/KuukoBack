@@ -1,0 +1,407 @@
+https://github.com/rzel/mochalua/blob/master/Mochalua/src/com/groundspeak/mochalua/LuaOSLib.java
+
+    public static final class os_date implements JavaFunction {
+
+        private void setfield ( lua_State thread, String key, int value ) {
+            LuaAPI.lua_pushinteger ( thread, value );
+            LuaAPI.lua_setfield ( thread, -2, key );
+        }
+
+        public int Call ( lua_State thread ) {
+            int si = 0;
+            String s = LuaAPI.luaL_optstring ( thread, 1, "%c" );
+            //long t = luaL_opt( thread, ( long )LuaAPI.luaL_checknumber, 2,  );
+            long t = LuaAPI.lua_isnoneornil ( thread, 2 ) ? ( long ) Calendar.getInstance ().getTime ().getTime () : ( long ) LuaAPI.luaL_checknumber ( thread, 2 );
+            Calendar calendar = null;
+            if ( s.charAt ( si ) == '!' ) // UTC?
+            {
+                calendar = Calendar.getInstance ( TimeZone.getTimeZone ( "UTC" ) );
+                si ++;  // skip `!'
+
+            }
+            else {
+                calendar = Calendar.getInstance ( TimeZone.getTimeZone ( "GMT" ) );
+            }
+
+            if ( calendar == null ) // invalid calendar?
+            {
+                LuaAPI.lua_pushnil ( thread );
+            }
+            else if ( s.substring ( si, 2 + si ).equals ( "*t" ) ) {
+                LuaAPI.lua_createtable ( thread, 0, 8 );  // 9 = number of fields
+
+                setfield ( thread, "sec", calendar.get ( Calendar.SECOND ) );
+                setfield ( thread, "min", calendar.get ( Calendar.MINUTE ) );
+                setfield ( thread, "hour", calendar.get ( Calendar.HOUR ) );
+                setfield ( thread, "day", calendar.get ( Calendar.DAY_OF_MONTH ) );
+                setfield ( thread, "month", calendar.get ( Calendar.MONTH ) + 1 );
+                setfield ( thread, "year", calendar.get ( Calendar.YEAR ) );
+                setfield ( thread, "wday", calendar.get ( Calendar.DAY_OF_WEEK ) - 1 );
+
+                int dayOfTheYear = getDayOfYear ( calendar );
+                setfield ( thread, "yday", dayOfTheYear );
+
+            //LuaAPI.setboolfield( thread, "isdst", calendar.get( Calendar. ) );	// FIXME:
+            }
+            else {
+
+                char cc;
+                luaL_Buffer b = new luaL_Buffer ();
+                LuaAPI.luaL_buffinit ( thread, b );
+                int stringIndex;
+                int strLen = s.length ();
+                for ( stringIndex = 0; stringIndex < strLen; stringIndex ++ ) {
+                    if ( s.charAt ( stringIndex ) != '%' || s.charAt ( stringIndex + 1 ) == '\0' ) /* no conversion specifier? */ {
+                        LuaAPI.luaL_addchar ( b, s.charAt ( stringIndex ) );
+                    }
+                    else {
+                        cc = s.charAt (  ++ stringIndex );
+                        StringBuffer buff = new StringBuffer ();
+                        strftime ( buff, cc, calendar );
+                        LuaAPI.luaL_addlstring ( b, buff.toString (), buff.length () );
+                    }
+                }
+                LuaAPI.luaL_pushresult ( b );
+            }
+            return 1;
+        }
+    }
+
+    private static int getDayOfYear ( Calendar cal ) {
+        Calendar calendar2 = Calendar.getInstance ();
+        calendar2.setTime ( cal.getTime () );
+        calendar2.set ( Calendar.MONTH, 0 );
+        calendar2.set ( Calendar.DAY_OF_MONTH, 1 );
+        long diff = ( Calendar.getInstance ().getTime ().getTime () - calendar2.getTime ().getTime () );
+
+        long f = diff;
+        double g = ( double ) diff / ( double ) ( 1000 * 24 * 60 * 60 );
+
+        Double d = new Double ( g );
+        if ( d.doubleValue () - d.intValue () != 0 ) {
+            return d.intValue () + 1;
+        }
+        else {
+            return d.intValue ();
+        }
+    }
+    
+    private static int strftime ( StringBuffer sb, char format, Calendar cal ) {
+        switch ( format ) {
+            case 'a':
+                 {
+                    int dayOfMonth = cal.get ( Calendar.DAY_OF_WEEK );
+                    switch ( dayOfMonth ) {
+                        case Calendar.MONDAY:
+                             {
+                                sb.append ( "Mon" );
+                            }
+                            break;
+                        case Calendar.TUESDAY:
+                             {
+                                sb.append ( "Tue" );
+                            }
+                            break;
+                        case Calendar.WEDNESDAY:
+                             {
+                                sb.append ( "Wed" );
+                            }
+                            break;
+                        case Calendar.THURSDAY:
+                             {
+                                sb.append ( "Thu" );
+                            }
+                            break;
+                        case Calendar.FRIDAY:
+                             {
+                                sb.append ( "Fri" );
+                            }
+                            break;
+                        case Calendar.SATURDAY:
+                             {
+                                sb.append ( "Sat" );
+                            }
+                            break;
+                        case Calendar.SUNDAY:
+                             {
+                                sb.append ( "Sun" );
+                            }
+                            break;
+                    }
+                }
+                break;
+            case 'A':
+                 {
+                    int dayOfMonth = cal.get ( Calendar.DAY_OF_WEEK );
+                    switch ( dayOfMonth ) {
+                        case Calendar.MONDAY:
+                             {
+                                sb.append ( "Monday" );
+                            }
+                            break;
+                        case Calendar.TUESDAY:
+                             {
+                                sb.append ( "Tuesday" );
+                            }
+                            break;
+                        case Calendar.WEDNESDAY:
+                             {
+                                sb.append ( "Wednesday" );
+                            }
+                            break;
+                        case Calendar.THURSDAY:
+                             {
+                                sb.append ( "Thursday" );
+                            }
+                            break;
+                        case Calendar.FRIDAY:
+                             {
+                                sb.append ( "Friday" );
+                            }
+                            break;
+                        case Calendar.SATURDAY:
+                             {
+                                sb.append ( "Satyrday" );
+                            }
+                            break;
+                        case Calendar.SUNDAY:
+                             {
+                                sb.append ( "Sunday" );
+                            }
+                            break;
+                    }
+                }
+                break;
+            case 'b':
+                 {
+                    int month = cal.get ( Calendar.MONTH );
+                    switch ( month ) {
+                        case Calendar.JANUARY:
+                             {
+                                sb.append ( "Jan" );
+                            }
+                            break;
+                        case Calendar.FEBRUARY:
+                             {
+                                sb.append ( "Feb" );
+                            }
+                            break;
+                        case Calendar.MARCH:
+                             {
+                                sb.append ( "Mar" );
+                            }
+                            break;
+                        case Calendar.APRIL:
+                             {
+                                sb.append ( "Apr" );
+                            }
+                            break;
+                        case Calendar.MAY:
+                             {
+                                sb.append ( "May" );
+                            }
+                            break;
+                        case Calendar.JUNE:
+                             {
+                                sb.append ( "Jun" );
+                            }
+                            break;
+                        case Calendar.JULY:
+                             {
+                                sb.append ( "Jul" );
+                            }
+                            break;
+                        case Calendar.AUGUST:
+                             {
+                                sb.append ( "Aug" );
+                            }
+                            break;
+                        case Calendar.SEPTEMBER:
+                             {
+                                sb.append ( "Sep" );
+                            }
+                            break;
+                        case Calendar.OCTOBER:
+                             {
+                                sb.append ( "Oct" );
+                            }
+                            break;
+                        case Calendar.NOVEMBER:
+                             {
+                                sb.append ( "Nov" );
+                            }
+                            break;
+                        case Calendar.DECEMBER:
+                             {
+                                sb.append ( "Dec" );
+                            }
+                            break;
+                    }
+                }
+                break;
+            case 'B':
+                 {
+                    int month = cal.get ( Calendar.MONTH );
+                    switch ( month ) {
+                        case Calendar.JANUARY:
+                             {
+                                sb.append ( "January" );
+                            }
+                            break;
+                        case Calendar.FEBRUARY:
+                             {
+                                sb.append ( "February" );
+                            }
+                            break;
+                        case Calendar.MARCH:
+                             {
+                                sb.append ( "March" );
+                            }
+                            break;
+                        case Calendar.APRIL:
+                             {
+                                sb.append ( "April" );
+                            }
+                            break;
+                        case Calendar.MAY:
+                             {
+                                sb.append ( "May" );
+                            }
+                            break;
+                        case Calendar.JUNE:
+                             {
+                                sb.append ( "June" );
+                            }
+                            break;
+                        case Calendar.JULY:
+                             {
+                                sb.append ( "July" );
+                            }
+                            break;
+                        case Calendar.AUGUST:
+                             {
+                                sb.append ( "August" );
+                            }
+                            break;
+                        case Calendar.SEPTEMBER:
+                             {
+                                sb.append ( "September" );
+                            }
+                            break;
+                        case Calendar.OCTOBER:
+                             {
+                                sb.append ( "October" );
+                            }
+                            break;
+                        case Calendar.NOVEMBER:
+                             {
+                                sb.append ( "November" );
+                            }
+                            break;
+                        case Calendar.DECEMBER:
+                             {
+                                sb.append ( "December" );
+                            }
+                            break;
+                    }
+                }
+                break;
+            case 'c':
+                 {
+                    sb.append ( cal.getTime ().toString () );
+                }
+                break;
+            case 'd':
+                 {
+                    sb.append ( cal.get ( Calendar.DAY_OF_MONTH ) );
+                }
+                break;
+            case 'H':
+                 {
+                    sb.append ( cal.get ( Calendar.HOUR_OF_DAY ) );
+                }
+                break;
+            case 'I':
+                 {
+                    sb.append ( cal.get ( Calendar.HOUR ) );
+                }
+                break;
+            case 'j':
+                 {
+                    sb.append ( getDayOfYear ( cal ) );
+                }
+                break;
+            case 'm':
+                 {
+                    sb.append ( ( cal.get ( Calendar.MONTH ) + 1 ) );
+                }
+                break;
+            case 'M':
+                 {
+                    sb.append ( cal.get ( Calendar.MINUTE ) );
+                }
+                break;
+            case 'p':
+                 {
+                    sb.append ( ( cal.get ( Calendar.AM_PM ) == Calendar.AM ) ? "AM" : "PM" );
+                }
+                break;
+            case 'S':
+                 {
+                    sb.append ( cal.get ( Calendar.SECOND ) );
+                }
+                break;
+            case 'U':
+                 {
+                    sb.append ( getWeekOfYear ( cal, true ) );
+                }
+                break;
+            case 'w':
+                 {
+                    sb.append ( ( cal.get ( Calendar.DAY_OF_WEEK ) - 1 ) );
+                }
+                break;
+            case 'W':
+                 {
+                    sb.append ( getWeekOfYear ( cal, false ) );
+                }
+                break;
+            case 'x':
+                 {
+                    sb.append ( cal.get ( Calendar.MONTH ) );
+                    sb.append ( "/" );
+                    sb.append ( cal.get ( Calendar.DAY_OF_MONTH ) );
+                    sb.append ( "/" );
+                    String str = "" + cal.get ( Calendar.YEAR );
+                    sb.append ( str.substring ( 2, str.length () ) );
+                }
+                break;
+            case 'X':
+                 {
+                    sb.append ( cal.get ( Calendar.HOUR_OF_DAY ) );
+                    sb.append ( ":" );
+                    sb.append ( cal.get ( Calendar.MINUTE ) );
+                    sb.append ( ":" );
+                    sb.append ( cal.get ( Calendar.SECOND ) );
+                }
+                break;
+            case 'y':
+                 {
+                    String str = "" + cal.get ( Calendar.YEAR );
+                    sb.append ( str.substring ( 2, str.length () ) );
+                }
+                break;
+            case 'Y':
+                 {
+                    sb.append ( cal.get ( Calendar.YEAR ) );
+                }
+                break;
+            case 'Z':
+                 {
+                    sb.append ( cal.getTimeZone ().getID () );
+                }
+                break;
+        }
+        return 1;
+    }
+    

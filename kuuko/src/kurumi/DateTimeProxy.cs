@@ -6,7 +6,7 @@ namespace kurumi
 {
     public class DateTimeProxy
     {
-        private DateTime stm;
+        public DateTime stm;
 
         public DateTimeProxy()
         {

@@ -10,3 +10,11 @@ CSharp & C can be 200
 java can be 100
 
 (2) new String("XXXX").equals(...)
+
+(3) os_date, strftime
+
+
+
+
+
+
