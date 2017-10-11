@@ -17,7 +17,7 @@
 			//args = new String[] {"test/luac.lua"}; // not tested
 			//args = new String[] {"test/printf.lua"}; // error
 			//args = new String[] {"test/readonly.lua"};
-			//args = new String[] {"test/sieve.lua"}; // java not pass
+			//args = new String[] {"-e", "N=100", "test/sieve.lua"}; // if N=1000, throw java.lang.StackOverflowError, use -Xss4096k
 			//args = new String[] {"test/sort.lua"};
 			//args = new String[] {"test/table.lua"}; // not tested
 			//args = new String[] {"test/trace-calls.lua"}; // not tested

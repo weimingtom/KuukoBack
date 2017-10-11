@@ -1,0 +1,5 @@
+(1) StackOverflowError (only for java):
+			//args = new String[] {"-e", "N=100", "test/sieve.lua"}; // if N=1000, throw java.lang.StackOverflowError, use -Xss4096k
+	
+
+
