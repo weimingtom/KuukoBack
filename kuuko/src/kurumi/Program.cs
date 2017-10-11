@@ -18,7 +18,7 @@
 			//args = new string[] {"test/printf.lua"}; // error
 			//args = new string[] {"test/readonly.lua"};
 			//args = new string[] {"-e", "N=100", "test/sieve.lua"};
-			args = new string[] {"test/sieve.lua"};
+			//args = new string[] {"test/sieve.lua"};
 			//args = new string[] {"test/sort.lua"};
 			//args = new string[] {"test/table.lua"}; // not tested
 			//args = new string[] {"test/trace-calls.lua"}; // not tested
