@@ -124,7 +124,7 @@ public class StreamProxy {
 					e.printStackTrace();
 				}
 			}
-			return 0;
+			return -1;
 		} else {
 			return 0;
 		}

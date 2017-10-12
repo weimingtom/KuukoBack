@@ -702,8 +702,19 @@ public class CLib {
 		try {
 			while (true) {
 				str.set(index, (char)stream.ReadByte());
-				if (str.get(index) == '\n') {
-					break;
+				if (str.get(index) == '\r' || str.get(index) == '\n') {
+					if (str.get(index) == '\r') {
+						index--; //ignore
+					} else if (str.get(index) == '\n') {
+						if (index >= str.chars.length)
+							break;
+						index++;									
+						str.set(index, '\0');
+						break;
+					}
+				}
+				if (str.get(index) == '\uffff') { //Ctrl+Z
+					return null;
 				}
 				if (index >= str.chars.length) {
 					break;

@@ -22,3 +22,103 @@
 ----->		if (LUA_ENABLE_LUAC != null && LUA_ENABLE_LUAC.Length > 0)
 			{
 			
+			
+(4) not bug
+
+Thread [main] (Suspended (exception ArrayIndexOutOfBoundsException))	
+	CLib$CharPtr.get(int) line: 269	
+	CLib.strlen(CLib$CharPtr) line: 603	
+	LuaIOLib.read_line(LuaState$lua_State, StreamProxy) line: 284	
+	LuaIOLib.g_read(LuaState$lua_State, StreamProxy, int) line: 322	
+	LuaIOLib.io_read(LuaState$lua_State) line: 369	
+	LuaIOLib.access$7(LuaState$lua_State) line: 368	
+	LuaIOLib$LuaIOLib_delegate.exec(LuaState$lua_State) line: 550	
+	LuaDo.luaD_precall(LuaState$lua_State, LuaObject$TValue, int) line: 426	
+	LuaVM.luaV_execute(LuaState$lua_State, int) line: 855	
+	LuaDo.luaD_call(LuaState$lua_State, LuaObject$TValue, int) line: 502	
+	LuaAPI.f_call(LuaState$lua_State, Object) line: 832	
+	LuaAPI.access$0(LuaState$lua_State, Object) line: 830	
+	LuaAPI$f_call_delegate.exec(LuaState$lua_State, Object) line: 837	
+	LuaDo.luaD_rawrunprotected(LuaState$lua_State, LuaDo$Pfunc, Object) line: 162	
+	LuaDo.luaD_pcall(LuaState$lua_State, LuaDo$Pfunc, Object, int, int) line: 603	
+	LuaAPI.lua_pcall(LuaState$lua_State, int, int, int) line: 858	
+	LuaProgram.docall(LuaState$lua_State, int, int) line: 89	
+	LuaProgram.handle_script(LuaState$lua_State, String[], int) line: 242	
+	LuaProgram.pmain(LuaState$lua_State) line: 412	
+	LuaProgram.access$1(LuaState$lua_State) line: 376	
+	LuaProgram$pmain_delegate.exec(LuaState$lua_State) line: 434	
+	LuaDo.luaD_precall(LuaState$lua_State, LuaObject$TValue, int) line: 426	
+	LuaDo.luaD_call(LuaState$lua_State, LuaObject$TValue, int) line: 501	
+	LuaAPI.f_Ccall(LuaState$lua_State, Object) line: 882	
+	LuaAPI.access$1(LuaState$lua_State, Object) line: 873	
+	LuaAPI$f_Ccall_delegate.exec(LuaState$lua_State, Object) line: 887	
+	LuaDo.luaD_rawrunprotected(LuaState$lua_State, LuaDo$Pfunc, Object) line: 162	
+	LuaDo.luaD_pcall(LuaState$lua_State, LuaDo$Pfunc, Object, int, int) line: 603	
+	LuaAPI.lua_cpcall(LuaState$lua_State, Lua$lua_CFunction, Object) line: 897	
+	LuaProgram.MainLua(String[]) line: 464	
+	Program.main(String[]) line: 35	
+
+
+	public static int strlen(CharPtr str) {
+		int index = 0;
+index will be larger than str.chars.Length---->		while (str.get(index) != '\0') {
+			index++;
+		}
+		return index;
+	}
+
+(5)
+	public final int ReadByte() {
+		if (type == TYPE_STDIN) {
+			try {
+				return System.in.read();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return 0;
+		} else if (type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+					return this._file.read();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+---->			return -1;
+		} else {
+			return 0;
+		}
+	}
+
+	public static CharPtr fgets(CharPtr str, StreamProxy stream) {
+		int index = 0;
+		try {
+			while (true) {
+				str.set(index, (char)stream.ReadByte());
+changed---->{{
+				if (str.get(index) == '\r' || str.get(index) == '\n') {
+					if (str.get(index) == '\r') {
+						index--; //ignore
+					} else if (str.get(index) == '\n') {
+						if (index >= str.chars.length)
+							break;
+						index++;									
+						str.set(index, '\0');
+						break;
+					}
+				}
+---->}}
++ ---->				if (str.get(index) == '\uffff') { //Ctrl+Z
++ ---->				return null;
++ ---->				}
+				if (index >= str.chars.length) {
+					break;
+				}
+
+------------------------------
+????
+
+\uffff ? \xffff ?
+
+------------------------------
+
