@@ -262,4 +262,40 @@ Java: RandomAccessFile.read and InputStream.read return -1 if EOF
 		return n;
 	}
 	
-	
+(11) windows c version seem eat \r if use pipe redirect input
+
+	public final int Read(byte[] buffer, int offset, int count) {
+		if (type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+					int result = this._file.read(buffer, offset, count);
+					return result < 0 ? 0 : result;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} else if (this.type == TYPE_STDIN) {
+			//don't use System.in.read(), windows seem eat \r if use pipe redirect input
+//			int size = 0;
+//			try {
+//				for (int i = offset; i < offset + count; ++i) {
+//					 int result = System.in.read();
+//					 if (result < 0) {
+//						 break;
+//					 }
+//					 buffer[offset + i] = (byte)result;
+//					 size++;
+//				}
+//			}
+//			catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			return size;
+			try {
+				int result = System.in.read(buffer, offset, count);
+				return result < 0 ? 0 : result;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			

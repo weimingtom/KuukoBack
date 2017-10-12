@@ -74,6 +74,22 @@ public class StreamProxy {
 				}
 			}
 		} else if (this.type == TYPE_STDIN) {
+			//don't use System.in.read(), windows seem eat \r if use pipe redirect input
+//			int size = 0;
+//			try {
+//				for (int i = offset; i < offset + count; ++i) {
+//					 int result = System.in.read();
+//					 if (result < 0) {
+//						 break;
+//					 }
+//					 buffer[offset + i] = (byte)result;
+//					 size++;
+//				}
+//			}
+//			catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			return size;
 			try {
 				int result = System.in.read(buffer, offset, count);
 				return result < 0 ? 0 : result;

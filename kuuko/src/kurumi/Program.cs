@@ -25,7 +25,7 @@
 			//args = new string[] {"test/table.lua"};
 			//args = new string[] {"-ltest/trace-calls", "test/bisect.lua"};
 			//args = new string[] {"test/trace-globals.lua"};
-			//args = new string[] {"test/xd.lua"}; // not tested
+			//args = new string[] {"test/xd.lua"};
 			if (LUA_ENABLE_LUAC != null && LUA_ENABLE_LUAC.Length > 0)
 			{
 				LuacProgram.MainLuac(args);
