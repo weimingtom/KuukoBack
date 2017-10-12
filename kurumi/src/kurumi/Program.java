@@ -16,7 +16,7 @@
 			//args = new String[] {"test/globals.lua"};
 			//args = new String[] {"test/hello.lua"};
 			//args = new String[] {"test/life.lua"};
-			//args = new String[] {"test/luac.lua", "test/luac/sample.lua"}; // throw error
+			args = new String[] {"test/luac.lua", "test/luac/sample.lua"}; // throw error
 			//args = new String[] {"test/printf.lua"};
 			//args = new String[] {"test/readonly.lua"};
 			//args = new String[] {"-e", "N=100", "test/sieve.lua"}; // if N=1000 and LUAI_MAXCCALLS=200, throw java.lang.StackOverflowError, use -Xss4096k

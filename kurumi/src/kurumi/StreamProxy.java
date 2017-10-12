@@ -18,6 +18,12 @@ public class StreamProxy {
 	public StreamProxy(String path, String modeStr) {
 		this.isOK = false;
 		try {
+			if (modeStr != null) {
+				modeStr = modeStr.replace("b", "");
+				if (modeStr.contains("w")) {
+					modeStr = "rw";
+				}
+			}
 			this._file = new RandomAccessFile(path, modeStr);
 			this.isOK = true;
 		} catch (FileNotFoundException e) {

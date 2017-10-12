@@ -770,6 +770,7 @@ public class CLib {
 			}
 		}
 		catch (java.lang.Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

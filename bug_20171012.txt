@@ -297,5 +297,83 @@ Java: RandomAccessFile.read and InputStream.read return -1 if EOF
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			
+
+
+(12) RandomAccessFile not very same as fopen()
+
+java.lang.IllegalArgumentException: Illegal mode "wb" must be one of "r", "rw", "rws", or "rwd"
+
+java.lang.IllegalArgumentException: Illegal mode "wb" must be one of "r", "rw", "rws", or "rwd"
+	at java.io.RandomAccessFile.<init>(RandomAccessFile.java:197)
+	at java.io.RandomAccessFile.<init>(RandomAccessFile.java:98)
+	at kurumi.StreamProxy.<init>(StreamProxy.java:21)
+	at kurumi.CLib.fopen(CLib.java:764)
+	at kurumi.LuaIOLib.io_open(LuaIOLib.java:154)
+	at kurumi.LuaIOLib.access$4(LuaIOLib.java:150)
+	at kurumi.LuaIOLib$LuaIOLib_delegate.exec(LuaIOLib.java:541)
+	at kurumi.LuaDo.luaD_precall(LuaDo.java:426)
+	at kurumi.LuaVM.luaV_execute(LuaVM.java:855)
+	at kurumi.LuaDo.luaD_call(LuaDo.java:502)
+	at kurumi.LuaAPI.f_call(LuaAPI.java:832)
+	at kurumi.LuaAPI.access$0(LuaAPI.java:830)
+	at kurumi.LuaAPI$f_call_delegate.exec(LuaAPI.java:837)
+	at kurumi.LuaDo.luaD_rawrunprotected(LuaDo.java:162)
+	at kurumi.LuaDo.luaD_pcall(LuaDo.java:603)
+	at kurumi.LuaAPI.lua_pcall(LuaAPI.java:858)
+	at kurumi.LuaProgram.docall(LuaProgram.java:89)
+	at kurumi.LuaProgram.handle_script(LuaProgram.java:242)
+	at kurumi.LuaProgram.pmain(LuaProgram.java:412)
+	at kurumi.LuaProgram.access$1(LuaProgram.java:376)
+	at kurumi.LuaProgram$pmain_delegate.exec(LuaProgram.java:434)
+	at kurumi.LuaDo.luaD_precall(LuaDo.java:426)
+	at kurumi.LuaDo.luaD_call(LuaDo.java:501)
+	at kurumi.LuaAPI.f_Ccall(LuaAPI.java:882)
+	at kurumi.LuaAPI.access$1(LuaAPI.java:873)
+	at kurumi.LuaAPI$f_Ccall_delegate.exec(LuaAPI.java:887)
+	at kurumi.LuaDo.luaD_rawrunprotected(LuaDo.java:162)
+	at kurumi.LuaDo.luaD_pcall(LuaDo.java:603)
+	at kurumi.LuaAPI.lua_cpcall(LuaAPI.java:897)
+	at kurumi.LuaProgram.MainLua(LuaProgram.java:464)
+	at kurumi.Program.main(Program.java:35)
+	
+
+	public static StreamProxy fopen(CharPtr filename, CharPtr mode) {
+		String str = filename.toString();
+		String modeStr = "";
+		for (int i = 0; mode.get(i) != '\0'; i++) {
+			modeStr += mode.get(i);
+		}
+		try {
+			StreamProxy result = new StreamProxy(str, modeStr);
+			if (result.isOK) {
+				return result;
+			}
+			else {
+				return null;
+			}
+		}
+		catch (java.lang.Exception e) {
+--------------->			e.printStackTrace();
+			return null;
+		}
+	}
+
+
+
+
+	public StreamProxy(String path, String modeStr) {
+		this.isOK = false;
+		try {
+			if (modeStr != null) {
+--------->			modeStr = modeStr.replace("b", "");
+			}
+			this._file = new RandomAccessFile(path, modeStr);
+			this.isOK = true;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		this.type = TYPE_FILE;
+	}
+	
+
+
