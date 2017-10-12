@@ -594,7 +594,71 @@ namespace kurumi
         	else
         	{
         		//TODO:not implemented
-        		return null;
+        		//return null;
+				if (t.type == TYPE_CHARPTR && size >= 0) 
+				{
+					CLib.CharPtr ptr = (CLib.CharPtr)b;
+					char[] chars = ptr.chars;
+					byte[] result = new byte[size];
+					for (int i = 0; i < chars.Length && i < size; i++) {
+						result[i] = (byte)(chars[i] & 0xff);
+					}
+					return result;
+				} 
+				else if (t.type == TYPE_INT) 
+				{
+					int a = (int)b;
+					return new byte[] {  
+					    (byte) (a & 0xFF),  
+				        (byte) ((a >> 8) & 0xFF),     
+				        (byte) ((a >> 16) & 0xFF),     
+				        (byte) ((a >> 24) & 0xFF),  
+				    };
+				} 
+				else if (t.type == TYPE_CHAR) 
+				{
+					char a = (char)b;
+					return new byte[] {  
+				        (byte) (a & 0xFF)
+				    };				
+				} 
+				else if (t.type == TYPE_LONG)
+				{
+					long data = (long)b;
+			        byte[] bytes = new byte[4];
+			        bytes[0] = (byte) (data & 0xff);
+			        bytes[1] = (byte) ((data >> 8) & 0xff);
+			        bytes[2] = (byte) ((data >> 16) & 0xff);
+			        bytes[3] = (byte) ((data >> 24) & 0xff);
+//			        bytes[4] = (byte) ((data >> 32) & 0xff);
+//			        bytes[5] = (byte) ((data >> 40) & 0xff);
+//			        bytes[6] = (byte) ((data >> 48) & 0xff);
+//			        bytes[7] = (byte) ((data >> 56) & 0xff);
+			        
+			        //debug code array dump
+//			        for (int i = 0; i < 4; ++i) {
+//			        	System.out.print(String.format("%02X, ", bytes[i]));
+//			        }
+//			    	System.out.println();
+			        
+			        return bytes;
+				} 
+				else if (t.type == TYPE_DOUBLE) 
+				{
+					double d = (double)b;
+					long data = BitConverter.DoubleToInt64Bits(d);
+			        byte[] bytes = new byte[8];
+			        bytes[0] = (byte) (data & 0xff);
+			        bytes[1] = (byte) ((data >> 8) & 0xff);
+			        bytes[2] = (byte) ((data >> 16) & 0xff);
+			        bytes[3] = (byte) ((data >> 24) & 0xff);
+			        bytes[4] = (byte) ((data >> 32) & 0xff);
+			        bytes[5] = (byte) ((data >> 40) & 0xff);
+			        bytes[6] = (byte) ((data >> 48) & 0xff);
+			        bytes[7] = (byte) ((data >> 56) & 0xff);
+			        return bytes;
+				}
+				return null;
         		//LuaDump.DumpMem not work
         		//LuaStrLib.writer not work
         	}
