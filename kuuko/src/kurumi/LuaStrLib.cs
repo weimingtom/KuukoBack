@@ -141,7 +141,7 @@ namespace kurumi
 			LuaAuxLib.luaL_checkstack(L, n, CLib.CharPtr.toCharPtr("string slice too long"));
 			for (i = 0; i < n; i++)
 			{
-				LuaAPI.lua_pushinteger(L, (byte)(s.get(posi + i - 1)));
+				LuaAPI.lua_pushinteger(L, (int)(s.get(posi + i - 1) & 0xff));
 			}
 			return n;
 		}

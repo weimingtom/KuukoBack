@@ -165,3 +165,101 @@ public static class CallInfo implements LuaObject.ArrayElement {
 	}
 
 
+(7) C# StreamProxy no TYPE_* compare
+
+(8) Java Tools.sprintf not implemented well
+
+???I don't know why %08X convert to %08lX
+
+	public static String sprintf(String Format, Object... Parameters) {
+		boolean hasFloat = false;
+		if (Format.equals(LuaConf.LUA_NUMBER_FMT) && Parameters.length == 1) {
+			if ((Double)Parameters[0] == ((Double)Parameters[0]).longValue()) {
+				Format = "%s";
+				Parameters[0] = ((Double)Parameters[0]).longValue();
+			} else {
+				Format = "%s";
+				hasFloat = true;
+			}
+		} else if (Format.equals("%ld")) {
+			Format = "%d";
+--------->		} else if (Format.contains("l")) {
+--------->			Format = Format.replace("l", ""); //FIXME:???, string.format("%08X  ",offset)->%08lX
+		}
+
+
+		} else if (Format.contains("l")) {
+			//FIXME:???, string.format("%08X  ",offset) changed to %08lX
+			//see addintlen, LuaConf.LUA_INTFRMLEN
+----------->			Format = Format.replace(LuaConf.LUA_INTFRMLEN, ""); 
+		} 
+		
+		
+
+(9)
+C#: Stream.Read return 0 if EOF
+
+        public int Read(byte[] buffer, int offset, int count)
+        {
+            if (this.isOK && this.file != null)
+            {
+--------->                return this.file.Read(buffer, offset, count);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        
+Java: RandomAccessFile.read and InputStream.read return -1 if EOF
+
+	public final int Read(byte[] buffer, int offset, int count) {
+		if (type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+					int result = this._file.read(buffer, offset, count);
+---------> 					return result < 0 ? 0 : result;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} else if (this.type == TYPE_STDIN) {
+			try {
+				int result = System.in.read(buffer, offset, count);
+---------> 				return result < 0 ? 0 : result;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return 0;
+	}
+
+(10) string.byte(c)
+
+	public static int str_byte(LuaState.lua_State L) {
+		int[] l = new int[1]; //uint
+		CLib.CharPtr s = LuaAuxLib.luaL_checklstring(L, 1, l); //out
+		int posi = posrelat(LuaAuxLib.luaL_optinteger(L, 2, 1), l[0]); //ptrdiff_t - Int32
+		int pose = posrelat(LuaAuxLib.luaL_optinteger(L, 3, posi), l[0]); //ptrdiff_t - Int32
+		int n, i;
+		if (posi <= 0) {
+			posi = 1;
+		}
+		if ((int)pose > l[0]) { //uint
+			pose = (int)l[0];
+		}
+		if (posi > pose) {
+			return 0; // empty interval; return no values 
+		}
+		n = (int)(pose - posi + 1);
+		if (posi + n <= pose) { // overflow? 
+			LuaAuxLib.luaL_error(L, CLib.CharPtr.toCharPtr("string slice too long"));
+		}
+		LuaAuxLib.luaL_checkstack(L, n, CLib.CharPtr.toCharPtr("string slice too long"));
+		for (i = 0; i < n; i++) {
+(byte)(xxxx)->(int)(xxx & 0xff) ---------->			LuaAPI.lua_pushinteger(L, (int)(s.get(posi + i - 1) & 0xff));
+		}
+		return n;
+	}
+	
+	

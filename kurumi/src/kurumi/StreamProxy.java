@@ -67,10 +67,18 @@ public class StreamProxy {
 		if (type == TYPE_FILE) {
 			if (this._file != null) {
 				try {
-					return this._file.read(buffer, offset, count);
+					int result = this._file.read(buffer, offset, count);
+					return result < 0 ? 0 : result;
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+		} else if (this.type == TYPE_STDIN) {
+			try {
+				int result = System.in.read(buffer, offset, count);
+				return result < 0 ? 0 : result;
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		return 0;

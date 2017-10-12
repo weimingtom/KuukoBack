@@ -13,7 +13,11 @@ public final class Tools {
 			}
 		} else if (Format.equals("%ld")) {
 			Format = "%d";
-		}
+		} else if (LuaConf.LUA_INTFRMLEN.length() > 0 && Format.contains(LuaConf.LUA_INTFRMLEN)) {
+			//FIXME:???, string.format("%08X  ",offset) changed to %08lX
+			//see str_format, addintlen, LuaConf.LUA_INTFRMLEN
+			Format = Format.replace(LuaConf.LUA_INTFRMLEN, ""); 
+		} 
 		String result = String.format(Format, Parameters);
 		if (hasFloat) {
 			String[] subResults = result.split("\\.");
