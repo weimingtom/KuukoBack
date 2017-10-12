@@ -16,7 +16,7 @@
 			//args = new string[] {"test/globals.lua"};
 			//args = new string[] {"test/hello.lua"};
 			//args = new string[] {"test/life.lua"};
-			//args = new string[] {"test/luac.lua"}; // not tested
+			//args = new string[] {"test/luac.lua", "test/luac/sample.lua"}; // throw error
 			//args = new string[] {"test/printf.lua"};
 			//args = new string[] {"test/readonly.lua"};
 			//args = new string[] {"-e", "N=100", "test/sieve.lua"};
