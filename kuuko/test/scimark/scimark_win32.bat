@@ -1,0 +1,2 @@
+@lua scimark.lua
+@pause

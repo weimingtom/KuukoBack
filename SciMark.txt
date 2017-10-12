@@ -1,0 +1,48 @@
+========
+C# Debug
+========
+FFT         0.40  [1024]
+SOR         1.01  [100]
+MC          0.25
+SPARSE      0.65  [1000, 5000]
+LU          0.81  [100]
+
+SciMark     0.62  [small problem sizes]
+
+
+
+========
+C# Release
+========
+FFT         1.27  [1024]
+SOR         2.97  [100]
+MC          0.71
+SPARSE      1.72  [1000, 5000]
+LU          2.26  [100]
+
+SciMark     1.79  [small problem sizes]
+
+
+========
+Java
+========
+FFT         1.56  [1024]
+SOR         3.49  [100]
+MC          0.89
+SPARSE      2.29  [1000, 5000]
+LU          2.74  [100]
+
+SciMark     2.20  [small problem sizes]
+
+
+========
+win32 
+========
+FFT        10.02  [1024]
+SOR        22.67  [100]
+MC          6.59
+SPARSE     14.65  [1000, 5000]
+LU         17.73  [100]
+
+SciMark    14.33  [small problem sizes]
+
