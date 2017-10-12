@@ -499,10 +499,10 @@ public class ClassType {
 			} else if (t.type == TYPE_INT) {
 				int a = ((Integer)b).intValue();
 				return new byte[] {  
-			        (byte) ((a >> 24) & 0xFF),  
-			        (byte) ((a >> 16) & 0xFF),     
+				    (byte) (a & 0xFF),  
 			        (byte) ((a >> 8) & 0xFF),     
-			        (byte) (a & 0xFF)  
+			        (byte) ((a >> 16) & 0xFF),     
+			        (byte) ((a >> 24) & 0xFF),  
 			    };
 			} else if (t.type == TYPE_CHAR) {
 				char a = ((Character)b).charValue();
@@ -511,15 +511,22 @@ public class ClassType {
 			    };				
 			} else if (t.type == TYPE_LONG) {
 				long data = ((Long)b).longValue();
-		        byte[] bytes = new byte[8];
+		        byte[] bytes = new byte[4];
 		        bytes[0] = (byte) (data & 0xff);
 		        bytes[1] = (byte) ((data >> 8) & 0xff);
 		        bytes[2] = (byte) ((data >> 16) & 0xff);
 		        bytes[3] = (byte) ((data >> 24) & 0xff);
-		        bytes[4] = (byte) ((data >> 32) & 0xff);
-		        bytes[5] = (byte) ((data >> 40) & 0xff);
-		        bytes[6] = (byte) ((data >> 48) & 0xff);
-		        bytes[7] = (byte) ((data >> 56) & 0xff);
+//		        bytes[4] = (byte) ((data >> 32) & 0xff);
+//		        bytes[5] = (byte) ((data >> 40) & 0xff);
+//		        bytes[6] = (byte) ((data >> 48) & 0xff);
+//		        bytes[7] = (byte) ((data >> 56) & 0xff);
+		        
+		        //debug code array dump
+//		        for (int i = 0; i < 4; ++i) {
+//		        	System.out.print(String.format("%02X, ", bytes[i]));
+//		        }
+//		    	System.out.println();
+		        
 		        return bytes;
 			} else if (t.type == TYPE_DOUBLE) {
 				double d = ((Double)b).doubleValue();

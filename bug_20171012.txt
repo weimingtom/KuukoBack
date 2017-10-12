@@ -446,3 +446,134 @@ java.lang.IllegalArgumentException: Illegal mode "wb" must be one of "r", "rw", 
 
 
 
+(14) luac.lua
+
+	public static void luaU_header(CLib.CharPtr h) {
+		h = new CLib.CharPtr(h);
+		int x = 1;
+		CLib.memcpy(h, CLib.CharPtr.toCharPtr(Lua.LUA_SIGNATURE), Lua.LUA_SIGNATURE.length());
+		h = h.add(Lua.LUA_SIGNATURE.length());
+		h.set(0, (char)LUAC_VERSION);
+		h.inc();
+		h.set(0, (char)LUAC_FORMAT);
+		h.inc();
+		//*h++=(char)*(char*)&x;				/* endianness */
+-------->		h.set(0, (char)x); // endianness  //endianness (1=little endian)
+		h.inc();
+		h.set(0, (char)ClassType.SizeOfInt());
+		h.inc();
+		//FIXME:
+--------->		h.set(0, (char)ClassType.SizeOfInt()); //size of size_t
+		//sizeof(long/*uint*/)
+		h.inc();
+--------->		h.set(0, (char)ClassType.SizeOfInt()); //size of Instruction
+		//sizeof(long/*UInt32*//*Instruction*/));
+		h.inc();
+		h.set(0, (char)ClassType.SizeOfDouble());
+		//sizeof(Double/*lua_Number*/)
+		h.inc();
+		//(h++)[0] = ((lua_Number)0.5 == 0) ? 0 : 1;		/* is lua_Number integral? */
+		h.set(0, (char)0); // always 0 on this build
+	}
+	
+	
+-------->%02X
+	
+	public static int fwrite(CharPtr ptr, int size, int num, StreamProxy stream) {
+		int num_bytes = num * size;
+		byte[] bytes = new byte[num_bytes];
+		for (int i = 0; i < num_bytes; i++) {
+			bytes[i] = (byte)(ptr.get(i) & 0xff);
+-------->//			System.out.print(String.format("%02X,", bytes[i]));
+//			if (i % 16 == 15) {
+//				System.out.println();
+//			}
+		}
+		
+	private static int writer(LuaState.lua_State L, Object b, int size, Object B, ClassType t) { //uint
+		//FIXME:b always is CharPtr
+		//if (b.GetType() != typeof(CharPtr))
+		if (t.GetTypeID() == ClassType.TYPE_CHARPTR) {
+			byte[] bytes = t.ObjToBytes2(b, t, size);
+			char[] chars = new char[bytes.length];
+			for (int i = 0; i < bytes.length; i++) {
+				chars[i] = (char)bytes[i];
+-------->//				System.out.print(String.format("%02X", (byte)(chars[i] & 0xff)));
+			}
+//			System.out.println();
+			b = new CLib.CharPtr(chars);
+		}
+		LuaAuxLib.luaL_addlstring((LuaAuxLib.luaL_Buffer)B, (CLib.CharPtr)b, size);
+		return 0;
+	}
+	
+
+	//only byValue type
+	public final byte[] ObjToBytes(Object b, ClassType t, int size) {
+		if (DONNOT_USE_REIMPLEMENT) {
+			return ObjToBytes_csharp(b);
+		}
+		else {
+			//TODO:not implemented
+			//return null;
+			if (t.type == TYPE_CHARPTR && size >= 0) {
+				CLib.CharPtr ptr = (CLib.CharPtr)b;
+				char[] chars = ptr.chars;
+				byte[] result = new byte[size];
+				for (int i = 0; i < chars.length && i < size; i++) {
+					result[i] = (byte)(chars[i] & 0xff);
+				}
+				return result;
+			} else if (t.type == TYPE_INT) {
+				int a = ((Integer)b).intValue();
+				return new byte[] {  
+				    (byte) (a & 0xFF),  
+			        (byte) ((a >> 8) & 0xFF),     
+			        (byte) ((a >> 16) & 0xFF),     
+			        (byte) ((a >> 24) & 0xFF),  
+			    };
+			} else if (t.type == TYPE_CHAR) {
+				char a = ((Character)b).charValue();
+				return new byte[] {  
+			        (byte) (a & 0xFF)
+			    };				
+			} else if (t.type == TYPE_LONG) {
+				long data = ((Long)b).longValue();
+		        byte[] bytes = new byte[4];
+		        bytes[0] = (byte) (data & 0xff);
+		        bytes[1] = (byte) ((data >> 8) & 0xff);
+		        bytes[2] = (byte) ((data >> 16) & 0xff);
+		        bytes[3] = (byte) ((data >> 24) & 0xff);
+for code array 32bit---------------->//		        bytes[4] = (byte) ((data >> 32) & 0xff);
+//		        bytes[5] = (byte) ((data >> 40) & 0xff);
+//		        bytes[6] = (byte) ((data >> 48) & 0xff);
+//		        bytes[7] = (byte) ((data >> 56) & 0xff);
+		        
+		        //debug code array dump
+//		        for (int i = 0; i < 4; ++i) {
+//		        	System.out.print(String.format("%02X, ", bytes[i]));
+//		        }
+//		    	System.out.println();
+		        
+		        return bytes;
+		        
+		        
+	public final void Write(byte[] buffer, int offset, int count) {
+		if (this.type == TYPE_STDOUT) {
+			System.out.print(new String(buffer, offset, count));
+		} else if (this.type == TYPE_STDERR) {
+			System.err.print(new String(buffer, offset, count));
+		} else if (this.type == TYPE_FILE) {
+			if (this._file != null) {
+				try {
+----------->					this._file.write(buffer, offset, count); //FIXME:don't use writeBytes(String s)
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			//FIXME:TODO
+		}
+	}
+
+

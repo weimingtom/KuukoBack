@@ -269,15 +269,15 @@ public class LuaUndump {
 		h.set(0, (char)LUAC_FORMAT);
 		h.inc();
 		//*h++=(char)*(char*)&x;				/* endianness */
-		h.set(0, (char)x); // endianness 
+		h.set(0, (char)x); // endianness  //endianness (1=little endian)
 		h.inc();
 		h.set(0, (char)ClassType.SizeOfInt());
 		h.inc();
 		//FIXME:
-		h.set(0, (char)ClassType.SizeOfLong());
+		h.set(0, (char)ClassType.SizeOfInt()); //size of size_t
 		//sizeof(long/*uint*/)
 		h.inc();
-		h.set(0, (char)ClassType.SizeOfLong());
+		h.set(0, (char)ClassType.SizeOfInt()); //size of Instruction
 		//sizeof(long/*UInt32*//*Instruction*/));
 		h.inc();
 		h.set(0, (char)ClassType.SizeOfDouble());

@@ -145,7 +145,9 @@ public class LuaStrLib {
 			char[] chars = new char[bytes.length];
 			for (int i = 0; i < bytes.length; i++) {
 				chars[i] = (char)bytes[i];
+//				System.out.print(String.format("%02X", (byte)(chars[i] & 0xff)));
 			}
+//			System.out.println();
 			b = new CLib.CharPtr(chars);
 		}
 		LuaAuxLib.luaL_addlstring((LuaAuxLib.luaL_Buffer)B, (CLib.CharPtr)b, size);

@@ -59,7 +59,7 @@ public class StreamProxy {
 		} else if (this.type == TYPE_FILE) {
 			if (this._file != null) {
 				try {
-					this._file.writeBytes(new String(buffer, offset, count));
+					this._file.write(buffer, offset, count); //FIXME:don't use writeBytes(String s)
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

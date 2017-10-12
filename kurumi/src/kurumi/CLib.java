@@ -660,7 +660,11 @@ public class CLib {
 		int num_bytes = num * size;
 		byte[] bytes = new byte[num_bytes];
 		for (int i = 0; i < num_bytes; i++) {
-			bytes[i] = (byte)ptr.get(i);
+			bytes[i] = (byte)(ptr.get(i) & 0xff);
+//			System.out.print(String.format("%02X,", bytes[i]));
+//			if (i % 16 == 15) {
+//				System.out.println();
+//			}
 		}
 		try {
 			stream.Write(bytes, 0, num_bytes);
