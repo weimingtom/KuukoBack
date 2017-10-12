@@ -14,4 +14,11 @@
 
 (2) java implementation of strftime not complete
 
- 
+(3) add LUA_ENABLE_LUAC environment var
+
+----->		string LUA_ENABLE_LUAC = System.Environment.GetEnvironmentVariable("LUA_ENABLE_LUAC");
+			
+...
+----->		if (LUA_ENABLE_LUAC != null && LUA_ENABLE_LUAC.Length > 0)
+			{
+			

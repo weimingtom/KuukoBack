@@ -4,6 +4,8 @@
 	{
 		public static void main(String[] args) 
 		{
+			String LUA_ENABLE_LUAC = System.getenv("LUA_ENABLE_LUAC");
+			
 			//args = new String[] {"test/bisect.lua"};
 			//args = new String[] {"test/cf.lua"};
 			//args = new String[] {"test/echo.lua"};
@@ -24,7 +26,7 @@
 			//args = new String[] {"test/trace-calls.lua"}; // not tested
 			//args = new String[] {"test/trace-globals.lua"};
 			//args = new String[] {"test/xd.lua"}; //not tested
-			if (false)
+			if (LUA_ENABLE_LUAC != null && LUA_ENABLE_LUAC.length() > 0)
 			{
 				LuacProgram.MainLuac(args);
 			}

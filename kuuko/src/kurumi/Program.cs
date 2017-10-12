@@ -4,6 +4,8 @@
 	{
 		static int Main(string[] args)
 		{
+			string LUA_ENABLE_LUAC = System.Environment.GetEnvironmentVariable("LUA_ENABLE_LUAC");
+			
 			//args = new string[] {"test/bisect.lua"};
 			//args = new string[] {"test/cf.lua"};
 			//args = new string[] {"test/echo.lua"};
@@ -24,7 +26,7 @@
 			//args = new string[] {"test/trace-calls.lua"}; // not tested
 			//args = new string[] {"test/trace-globals.lua"};
 			//args = new string[] {"test/xd.lua"}; // not tested
-			if (false)
+			if (LUA_ENABLE_LUAC != null && LUA_ENABLE_LUAC.Length > 0)
 			{
 				LuacProgram.MainLuac(args);
 			}
