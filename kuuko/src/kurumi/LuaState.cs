@@ -108,6 +108,12 @@ namespace kurumi
 	            return ci1.index <= ci2.index;
 	        }
 	    
+			public static bool isEqual(CallInfo ci1, CallInfo ci2) //FIXME:add
+	        {
+	            ClassType.Assert(ci1.values == ci2.values);
+	            return ci1.index == ci2.index;
+	        }
+	        
 	        public static bool greaterThan(CallInfo ci1, CallInfo ci2)
 	        {
 	            ClassType.Assert(ci1.values == ci2.values);

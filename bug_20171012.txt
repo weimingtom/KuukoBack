@@ -122,3 +122,46 @@ changed---->{{
 
 ------------------------------
 
+
+(6) args = new String[] {"-ltest/trace-calls", "test/bisect.lua"}; //throw error
+
+public static class CallInfo implements LuaObject.ArrayElement {
+    
+++ ---------->
+		public static boolean isEqual(CallInfo ci1, CallInfo ci2) //FIXME:add
+        {
+            ClassType.Assert(ci1.values == ci2.values);
+            return ci1.index == ci2.index;
+        }
+
+
+	private static void traversestack(LuaState.global_State g, LuaState.lua_State l) {
+		LuaObject.TValue[] o = new LuaObject.TValue[1]; //StkId
+		o[0] = new LuaObject.TValue();
+		LuaObject.TValue lim; //StkId
+		LuaState.CallInfo[] ci = new LuaState.CallInfo[1];
+		ci[0] = new LuaState.CallInfo();
+		markvalue(g, LuaState.gt(l));
+		lim = l.top;
+		for (ci[0] = l.base_ci[0]; LuaState.CallInfo.lessEqual(ci[0], l.ci); LuaState.CallInfo.inc(ci)) { //ref
+			LuaLimits.lua_assert(LuaObject.TValue.lessEqual(ci[0].top, l.stack_last));
+			if (LuaObject.TValue.lessThan(lim, ci[0].top)) {
+				lim = ci[0].top;
+			}
+---------->			//--------------
+			//FIXME: added, for stopping LuaState.CallInfo.inc(ci) java.lang.ArrayIndexOutOfBoundsException
+			if (LuaState.CallInfo.isEqual(ci[0], l.ci)) {
+				break;
+			}
+			//--------------
+		}
+		for (o[0] = l.stack[0]; LuaObject.TValue.lessThan(o[0], l.top); LuaObject.TValue.inc(o)) { //ref - StkId
+			markvalue(g, o[0]);
+		}
+		for (; LuaObject.TValue.lessEqual(o[0], lim); LuaObject.TValue.inc(o)) { //ref - StkId
+			LuaObject.setnilvalue(o[0]);
+		}
+		checkstacksizes(l, lim);
+	}
+
+

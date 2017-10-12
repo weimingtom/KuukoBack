@@ -567,6 +567,13 @@ namespace kurumi
 				{
 					lim = ci[0].top;
 				}
+				//--------------
+				//FIXME: added, for stopping LuaState.CallInfo.inc(ci) java.lang.ArrayIndexOutOfBoundsException
+				if (LuaState.CallInfo.isEqual(ci[0], l.ci)) 
+				{
+					break;
+				}
+				//--------------
 			}
 			for (o[0] = l.stack[0]; LuaObject.TValue.lessThan(o[0], l.top); /*StkId*/LuaObject.TValue.inc(/*ref*/ o))
 			{

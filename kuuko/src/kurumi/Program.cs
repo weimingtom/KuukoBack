@@ -23,7 +23,7 @@
 			//args = new string[] {"test/sieve.lua"};
 			//args = new string[] {"test/sort.lua"};
 			//args = new string[] {"test/table.lua"};
-			//args = new string[] {"-ltest/trace-calls", "test/bisect.lua"}; //throw error
+			//args = new string[] {"-ltest/trace-calls", "test/bisect.lua"};
 			//args = new string[] {"test/trace-globals.lua"};
 			//args = new string[] {"test/xd.lua"}; // not tested
 			if (LUA_ENABLE_LUAC != null && LUA_ENABLE_LUAC.Length > 0)
