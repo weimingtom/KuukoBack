@@ -375,5 +375,74 @@ java.lang.IllegalArgumentException: Illegal mode "wb" must be one of "r", "rw", 
 		this.type = TYPE_FILE;
 	}
 	
+(13) ObjToBytes2(b) -> ObjToBytes2(b, t, size)
+
+@@ -139,11 +139,11 @@ public class LuaStrLib {
+ 
+ 	private static int writer(LuaState.lua_State L, Object b, int size, Object B, ClassType t) { //uint
+ 		//FIXME:b always is CharPtr
+ 		//if (b.GetType() != typeof(CharPtr))
+ 		if (t.GetTypeID() == ClassType.TYPE_CHARPTR) {
+-			byte[] bytes = t.ObjToBytes2(b);
++			byte[] bytes = t.ObjToBytes2(b, t, size);
+ 			char[] chars = new char[bytes.length];
+ 			for (int i = 0; i < bytes.length; i++) {
+ 				chars[i] = (char)bytes[i];
+ 			}
+ 			b = new CLib.CharPtr(chars);
+
+
+ 	public static void DumpMem(Object b, DumpState D, ClassType t) {
+-		byte[] bytes = t.ObjToBytes(b);
++		byte[] bytes = t.ObjToBytes(b, t, 0);
+ 		char[] ch = new char[bytes.length];
+ 		for (int i = 0; i < bytes.length; i++) {
+ 			ch[i] = (char)bytes[i];
+ 		}
+ 		CLib.CharPtr str = CLib.CharPtr.toCharPtr(ch);
+
+
+
+ 
+ 	//only byValue type
+-	public final byte[] ObjToBytes(Object b) {
++	public final byte[] ObjToBytes(Object b, ClassType t, int size) {
+ 		if (DONNOT_USE_REIMPLEMENT) {
+ 			return ObjToBytes_csharp(b);
+ 		}
+ 		else {
+ 			//TODO:not implemented
++			//return null;
++			if (b instanceof CLib.CharPtr && size > 0) {
++				CLib.CharPtr ptr = (CLib.CharPtr)b;
++				char[] chars = ptr.chars;
++				byte[] result = new byte[size];
++				for (int i = 0; i < chars.length && i < size; i++) {
++					result[i] = (byte)(chars[i] & 0xff);
++				}
++				return result;
++			}
+ 			return null;
+ 			//LuaDump.DumpMem not work
+ 			//LuaStrLib.writer not work
+ 		}
+ 	}
+ 
+ 	//TODO:need reimplementation
+-	public final byte[] ObjToBytes2(Object b) {
++	public final byte[] ObjToBytes2(Object b, ClassType t, int size) {
+ 		if (DONNOT_USE_REIMPLEMENT) {
+ 			return ObjToBytes2_csharp(b);
+ 		}
+ 		else {
+-			return ObjToBytes(b);
++			return ObjToBytes(b, t, size);
+ 		}
+ 	}
+ 
+ 	//TODO:need reimplementation
+ 	public final Object bytesToObj(byte[] bytes) {
+
+
 
 

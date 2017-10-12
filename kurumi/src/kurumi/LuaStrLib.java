@@ -141,7 +141,7 @@ public class LuaStrLib {
 		//FIXME:b always is CharPtr
 		//if (b.GetType() != typeof(CharPtr))
 		if (t.GetTypeID() == ClassType.TYPE_CHARPTR) {
-			byte[] bytes = t.ObjToBytes2(b);
+			byte[] bytes = t.ObjToBytes2(b, t, size);
 			char[] chars = new char[bytes.length];
 			for (int i = 0; i < bytes.length; i++) {
 				chars[i] = (char)bytes[i];

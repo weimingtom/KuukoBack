@@ -481,12 +481,60 @@ public class ClassType {
 	}
 
 	//only byValue type
-	public final byte[] ObjToBytes(Object b) {
+	public final byte[] ObjToBytes(Object b, ClassType t, int size) {
 		if (DONNOT_USE_REIMPLEMENT) {
 			return ObjToBytes_csharp(b);
 		}
 		else {
 			//TODO:not implemented
+			//return null;
+			if (t.type == TYPE_CHARPTR && size >= 0) {
+				CLib.CharPtr ptr = (CLib.CharPtr)b;
+				char[] chars = ptr.chars;
+				byte[] result = new byte[size];
+				for (int i = 0; i < chars.length && i < size; i++) {
+					result[i] = (byte)(chars[i] & 0xff);
+				}
+				return result;
+			} else if (t.type == TYPE_INT) {
+				int a = ((Integer)b).intValue();
+				return new byte[] {  
+			        (byte) ((a >> 24) & 0xFF),  
+			        (byte) ((a >> 16) & 0xFF),     
+			        (byte) ((a >> 8) & 0xFF),     
+			        (byte) (a & 0xFF)  
+			    };
+			} else if (t.type == TYPE_CHAR) {
+				char a = ((Character)b).charValue();
+				return new byte[] {  
+			        (byte) (a & 0xFF)
+			    };				
+			} else if (t.type == TYPE_LONG) {
+				long data = ((Long)b).longValue();
+		        byte[] bytes = new byte[8];
+		        bytes[0] = (byte) (data & 0xff);
+		        bytes[1] = (byte) ((data >> 8) & 0xff);
+		        bytes[2] = (byte) ((data >> 16) & 0xff);
+		        bytes[3] = (byte) ((data >> 24) & 0xff);
+		        bytes[4] = (byte) ((data >> 32) & 0xff);
+		        bytes[5] = (byte) ((data >> 40) & 0xff);
+		        bytes[6] = (byte) ((data >> 48) & 0xff);
+		        bytes[7] = (byte) ((data >> 56) & 0xff);
+		        return bytes;
+			} else if (t.type == TYPE_DOUBLE) {
+				double d = ((Double)b).doubleValue();
+				long data = Double.doubleToLongBits(d);
+		        byte[] bytes = new byte[8];
+		        bytes[0] = (byte) (data & 0xff);
+		        bytes[1] = (byte) ((data >> 8) & 0xff);
+		        bytes[2] = (byte) ((data >> 16) & 0xff);
+		        bytes[3] = (byte) ((data >> 24) & 0xff);
+		        bytes[4] = (byte) ((data >> 32) & 0xff);
+		        bytes[5] = (byte) ((data >> 40) & 0xff);
+		        bytes[6] = (byte) ((data >> 48) & 0xff);
+		        bytes[7] = (byte) ((data >> 56) & 0xff);
+		        return bytes;
+			}
 			return null;
 			//LuaDump.DumpMem not work
 			//LuaStrLib.writer not work
@@ -494,12 +542,12 @@ public class ClassType {
 	}
 
 	//TODO:need reimplementation
-	public final byte[] ObjToBytes2(Object b) {
+	public final byte[] ObjToBytes2(Object b, ClassType t, int size) {
 		if (DONNOT_USE_REIMPLEMENT) {
 			return ObjToBytes2_csharp(b);
 		}
 		else {
-			return ObjToBytes(b);
+			return ObjToBytes(b, t, size);
 		}
 	}
 

@@ -23,7 +23,7 @@ namespace kurumi
 		
 		public static void DumpMem(object b, DumpState D, ClassType t)
 		{
-            byte[] bytes = t.ObjToBytes(b);
+            byte[] bytes = t.ObjToBytes(b, t, 0);
 			char[] ch = new char[bytes.Length];
 			for (int i = 0; i < bytes.Length; i++)
 			{

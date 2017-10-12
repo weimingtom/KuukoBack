@@ -19,7 +19,7 @@ public class LuaDump {
     }	
 	
 	public static void DumpMem(Object b, DumpState D, ClassType t) {
-		byte[] bytes = t.ObjToBytes(b);
+		byte[] bytes = t.ObjToBytes(b, t, 0);
 		char[] ch = new char[bytes.length];
 		for (int i = 0; i < bytes.length; i++) {
 			ch[i] = (char)bytes[i];

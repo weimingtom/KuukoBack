@@ -585,7 +585,7 @@ namespace kurumi
         }
 
         //only byValue type
-        public byte[] ObjToBytes(object b)
+        public byte[] ObjToBytes(object b, ClassType t, int size)
         {
         	if (DONNOT_USE_REIMPLEMENT) 
         	{
@@ -601,7 +601,7 @@ namespace kurumi
         }
 
         //TODO:need reimplementation
-        public byte[] ObjToBytes2(object b)
+        public byte[] ObjToBytes2(object b, ClassType t, int size)
         {
         	if (DONNOT_USE_REIMPLEMENT) 
         	{
@@ -609,7 +609,7 @@ namespace kurumi
         	} 
         	else 
         	{
-        		return ObjToBytes(b);
+        		return ObjToBytes(b, t, size);
         	}
         }
 
