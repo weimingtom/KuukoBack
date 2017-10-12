@@ -886,6 +886,7 @@ public class CLib {
 	
 	public static int strftime(CharPtr s, int maxsize, CharPtr format, DateTimeProxy t)
 	{
+		s = new CLib.CharPtr(s); //FIXME:
 		int sIndex = s.index;
 
 		CharPtr p = StrFTimeFmt(format == null ? CharPtr.toCharPtr("%c") : format, t._calendar, s, s.add((int)maxsize));

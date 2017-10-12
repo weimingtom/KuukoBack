@@ -159,7 +159,7 @@ public class LuaOSLib {
 					int reslen;
 					CLib.CharPtr buff = CLib.CharPtr.toCharPtr(new char[200]);  /* should be big enough for any conversion result */
 					s.inc(); cc.set(1, s.get(0));
-					reslen = CLib.strftime(new CLib.CharPtr(buff), buff.chars.length, cc, stm); //string kkk = buff.ToString();
+					reslen = CLib.strftime(buff, buff.chars.length, cc, stm); //string kkk = buff.ToString();
 					LuaAuxLib.luaL_addlstring(b, buff, (int)reslen);
 				}
 			}

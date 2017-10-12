@@ -1047,6 +1047,7 @@ namespace kurumi
 		
 		public static uint strftime(CharPtr s, uint maxsize, CharPtr format, DateTimeProxy t)
 		{
+			s = new CLib.CharPtr(s); //FIXME:
 			int sIndex = s.index;
 
 			CharPtr p = StrFTimeFmt((format as object) == null ? CharPtr.toCharPtr("%c") : format, t.stm, s, s.add((int)maxsize));
