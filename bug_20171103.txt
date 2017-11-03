@@ -1,0 +1,2 @@
+(1) dotnetcore build failed (see vendor/kuuko_dotnetcore_v1.rar)  
+ 
