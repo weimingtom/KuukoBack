@@ -1,4 +1,132 @@
-(1)
+(1) two >>
 > exit
 >>
 >> >>
+
+----------------
+Debug Method:
+
+* C:
+  if (lua_readline(L, b, prmt) == 0)
+    return 0;  /* no input */
++  for (k = 0; k < strlen(b); k++)
++  {
++	printf("%02X,", b[k]);
++  }
++  printf("\n");
+
+* C#:
+			if (!LuaConf.lua_readline(L, b, prmt))
+			{
+				return 0;  /* no input */
+			}
++		    for (int k = 0; k < CLib.strlen(b); k++)
++		    {
++		    	Console.Write("{0:X2},", (int)b.chars[k]);
++		    }
++		    Console.WriteLine();
+
+
+------------------------------------
+FIX (C#):
+
+	    private enum PlatformType
+	    {
+	        Windows,
+	        Linux,
+	        MacOs
+	    }
+
+        private static PlatformType GetExecutingPlatform()
+        {
+            switch ((int)Environment.OSVersion.Platform)
+            {
+                case 4:
+                    return PlatformType.Linux;
+                case 6:
+                    return PlatformType.MacOs;
+                case 128:
+                    return PlatformType.Linux;
+                default:
+                    return PlatformType.Windows;
+            }
+        }		
+		
+		public static CharPtr fgets(CharPtr str, StreamProxy stream)
+		{
+			int index = 0;
+			try
+			{
+				while (true)
+				{
+					str.set(index, (char)stream.ReadByte());
+					
+					if (str.get(index) == '\r' || str.get(index) == '\n')
+					{
+						PlatformType type = GetExecutingPlatform();
+						if (type == PlatformType.Linux)
+						{
+							if (str.get(index) == '\r')
+							{
+								index--; //ignore
+							} 
+							else if (str.get(index) == '\n')
+							{
+								if (index >= str.chars.Length)
+									break;
+								index++;									
+								str.set(index, '\0');
+								break;
+							}						
+						}
+						else if (type == PlatformType.MacOs)  //not tested
+						{
+							if (str.get(index) == '\n') 
+							{
+								index--; //ignore
+							} 
+							else if (str.get(index) == '\r')
+							{
+								str.set(index, '\n');
+								if (index >= str.chars.Length)
+									break;
+								index++;									
+								str.set(index, '\0');
+								break;
+							}						
+						}
+						else
+						{
+							if (str.get(index) == '\r') 
+							{
+								index--; //ignore
+							} 
+							else if (str.get(index) == '\n')
+							{
+								if (index >= str.chars.Length)
+									break;
+								index++;									
+								str.set(index, '\0');
+								break;
+							}
+						}
+					}
+					else if (str.get(index) == '\xffff') //Ctrl+Z
+					{
+						return null;
+					}
+					if (index >= str.chars.Length)
+						break;
+					index++;
+				}
+			}
+			catch
+			{
+			}
+			return str;
+		}
+		
+
+-------------------------------------
+
+

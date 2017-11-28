@@ -816,6 +816,28 @@ namespace kurumi
 			}
 		}
 
+	    private enum PlatformType
+	    {
+	        Windows,
+	        Linux,
+	        MacOs
+	    }
+
+        private static PlatformType GetExecutingPlatform()
+        {
+            switch ((int)Environment.OSVersion.Platform)
+            {
+                case 4:
+                    return PlatformType.Linux;
+                case 6:
+                    return PlatformType.MacOs;
+                case 128:
+                    return PlatformType.Linux;
+                default:
+                    return PlatformType.Windows;
+            }
+        }		
+		
 		public static CharPtr fgets(CharPtr str, StreamProxy stream)
 		{
 			int index = 0;
@@ -824,35 +846,68 @@ namespace kurumi
 				while (true)
 				{
 					str.set(index, (char)stream.ReadByte());
-					if (str.get(index) == '\r' || str.get(index) == '\n') 
+					
+					if (str.get(index) == '\r' || str.get(index) == '\n')
 					{
-						if (str.get(index) == '\r') 
+						PlatformType type = GetExecutingPlatform();
+						if (type == PlatformType.Linux)
 						{
-							index--; //ignore
-						} 
-						else if (str.get(index) == '\n') 
-						{
-							if (index >= str.chars.Length)
+							if (str.get(index) == '\r')
+							{
+								index--; //ignore
+							} 
+							else if (str.get(index) == '\n')
+							{
+								if (index >= str.chars.Length)
+									break;
+								index++;									
+								str.set(index, '\0');
 								break;
-							index++;									
-							str.set(index, '\0');
-							break;
+							}						
+						}
+						else if (type == PlatformType.MacOs)  //not tested
+						{
+							if (str.get(index) == '\n') 
+							{
+								index--; //ignore
+							} 
+							else if (str.get(index) == '\r')
+							{
+								str.set(index, '\n');
+								if (index >= str.chars.Length)
+									break;
+								index++;									
+								str.set(index, '\0');
+								break;
+							}						
+						}
+						else
+						{
+							if (str.get(index) == '\r') 
+							{
+								index--; //ignore
+							} 
+							else if (str.get(index) == '\n')
+							{
+								if (index >= str.chars.Length)
+									break;
+								index++;									
+								str.set(index, '\0');
+								break;
+							}
 						}
 					}
-					if (str.get(index) == '\uffff') //Ctrl+Z
+					else if (str.get(index) == '\xffff') //Ctrl+Z
 					{
 						return null;
 					}
 					if (index >= str.chars.Length)
-					{
 						break;
-					}
 					index++;
 				}
 			}
 			catch
 			{
-				
 			}
 			return str;
 		}
