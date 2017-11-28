@@ -205,6 +205,11 @@ namespace kurumi
 			{
 				return 0;  /* no input */
 			}
+//		    for (int k = 0; k < CLib.strlen(b); k++)
+//		    {
+//		    	Console.Write("{0:X2},", (int)b.chars[k]);
+//		    }
+//		    Console.WriteLine();			
 			l = CLib.strlen(b);
 			if (l > 0 && b.get(l - 1) == '\n')  /* line ends with newline? */
 			{

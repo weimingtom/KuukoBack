@@ -823,7 +823,7 @@ namespace kurumi
 	        MacOs
 	    }
 
-        private static PlatformType GetExecutingPlatform()
+        private static PlatformType getExecutingPlatform()
         {
             switch ((int)Environment.OSVersion.Platform)
             {
@@ -849,7 +849,7 @@ namespace kurumi
 					
 					if (str.get(index) == '\r' || str.get(index) == '\n')
 					{
-						PlatformType type = GetExecutingPlatform();
+						PlatformType type = getExecutingPlatform();
 						if (type == PlatformType.Linux)
 						{
 							if (str.get(index) == '\r')

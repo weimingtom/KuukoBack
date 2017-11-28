@@ -701,23 +701,68 @@ public class CLib {
 		}
 	}
 
+    private enum PlatformType {
+        Windows,
+        Linux,
+        MacOs
+    }
+
+    private static PlatformType getExecutingPlatform() {
+    	String os = System.getProperty("os.name").toLowerCase();
+    	if (os == null) {
+    		os = "";
+    	}
+    	if (os.contains("linux")) {
+    		return PlatformType.Linux;
+    	} else if (os.contains("mac")) {
+    		return PlatformType.MacOs;
+    	} else if (os.contains("windows")) {
+    		return PlatformType.Windows; 
+    	} else {
+    		return PlatformType.Linux;
+    	}
+    }		
+	
 	public static CharPtr fgets(CharPtr str, StreamProxy stream) {
 		int index = 0;
 		try {
 			while (true) {
 				str.set(index, (char)stream.ReadByte());
 				if (str.get(index) == '\r' || str.get(index) == '\n') {
-					if (str.get(index) == '\r') {
-						index--; //ignore
-					} else if (str.get(index) == '\n') {
-						if (index >= str.chars.length)
+					PlatformType type = getExecutingPlatform();
+					if (type == PlatformType.Linux) {
+						if (str.get(index) == '\r') {
+							index--; //ignore
+						} else if (str.get(index) == '\n') {
+							if (index >= str.chars.length)
+								break;
+							index++;									
+							str.set(index, '\0');
 							break;
-						index++;									
-						str.set(index, '\0');
-						break;
+						}
+					} else if (type == PlatformType.MacOs) { //not tested
+						if (str.get(index) == '\n') {
+							index--; //ignore
+						} else if (str.get(index) == '\r') {
+							str.set(index, '\n');
+							if (index >= str.chars.length)
+								break;
+							index++;									
+							str.set(index, '\0');
+							break;
+						}	
+					} else {
+						if (str.get(index) == '\r') {
+							index--; //ignore
+						} else if (str.get(index) == '\n') {
+							if (index >= str.chars.length)
+								break;
+							index++;									
+							str.set(index, '\0');
+							break;
+						}
 					}
-				}
-				if (str.get(index) == '\uffff') { //Ctrl+Z
+				} else if (str.get(index) == '\uffff') { //Ctrl+Z
 					return null;
 				}
 				if (index >= str.chars.length) {
@@ -725,8 +770,7 @@ public class CLib {
 				}
 				index++;
 			}
-		}
-		catch (java.lang.Exception e) {
+		} catch (Exception e) {
 
 		}
 		return str;

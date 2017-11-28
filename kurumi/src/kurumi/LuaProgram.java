@@ -165,6 +165,10 @@ public class LuaProgram {
 		if (!LuaConf.lua_readline(L, b, prmt)) {
 			return 0; // no input 
 		}
+//		for (int i = 0; i < CLib.strlen(b); ++i) {
+//			System.out.print(String.format("%02X,", (int)b.chars[i]));
+//		}
+//		System.out.println();
 		l = CLib.strlen(b);
 		if (l > 0 && b.get(l - 1) == '\n') { // line ends with newline? 
 			b.set(l - 1, '\0'); // remove it 
