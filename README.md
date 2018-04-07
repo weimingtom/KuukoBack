@@ -1,7 +1,7 @@
 # KuukoBack
 The backward port of Kuuko to kopilua   
 KopiLua Java and CSharp port with outter classes (for example, CharPtr is changed to CLib.CharPtr)   
-It's also the reference of golang port  
+It's also the reference of golang port (and swift port too =_=b)    
 
 ## Status  
 * Lua 5.1.4 all tests pass    
